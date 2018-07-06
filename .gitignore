@@ -2,3 +2,20 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# 'data' folder #
+data/
+
+# Common text files that may contain data #
+*.[cC][sS][vV]
+*.[tT][xX][tT]
+
+# Excel files #
+*.[xX][lL][sS][xXmMtT]?
+
+# SPSS formats #
+*.[sS][aA][vV]
+
+# R data files #
+*.[rR][dD][aA][tT][aA]
+*.[rR][dD][sS]
