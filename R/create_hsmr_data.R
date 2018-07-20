@@ -24,36 +24,39 @@ library("foreign")       # For reading in SPSS SAV Files
 library("data.table")    # For efficient aggregation
 
 
-# Define the database connection with SMRA
-suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn="SMRA",
-                                           uid=.rs.askForPassword("SMRA Username:"),
-                                           pwd=.rs.askForPassword("SMRA Password:")))
+### 2 - Define the database connection with SMRA
+suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
+                                           uid = .rs.askForPassword("SMRA Username:"),
+                                           pwd = .rs.askForPassword("SMRA Password:")))
 
-### 2 - Extract dates ----
-# Define the dates that the data are extracted from
+
+### 3 - Extract dates ----
+# Define the dates that the data are extracted from and to
 start_date   <- c("'2017-01-01'")     # The beginning of baseline period
 start_date_1 <- c("'2016-01-01'")     # One year earlier for the one year look-back (pmorbs1)
 start_date_5 <- c("'2011-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
 start_date_l <- c("2017-01-01")       # Beginning of the baseline period (pmorbs)
 end_date     <- c("'2017-03-31'")     # End date for the cut off for data
 
-### 3 - Set filepaths ----
+
+### 4 - Set filepaths ----
 # Define lookups and output directory
 lookups   <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
 base_file <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
 
 
-### 4 - Read in lookup files
+### 5 - Read in lookup files ----
 # Primary Diagnosis Groupings
-pdiag_grp_data <- as.data.frame(read.spss(paste(lookups,'shmi_diag_grps_lookup.sav',sep="")))
-pdiag_grp_data <- pdiag_grp_data[,c("diag1_4","SHMI_DIAGNOSIS_GROUP")]
+pdiag_grp_data <- as.data.frame(read.spss(paste(lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+pdiag_grp_data <- pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-morbs <- read.csv(paste(lookups,"morbs.csv", sep = ""))
+morbs          <- read.csv(paste(lookups, "morbs.csv", sep = ""))
 
 # Postcode lookups for SIMD
-simd <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[,c("pc7","simd2016_sc_quintile")]
-names(simd) <- c("POSTCODE", "simd")
+simd           <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
+names(simd)    <- c("POSTCODE", "simd")
+
 
 ### SECTION 2 - DATA EXTRACTION----
 
