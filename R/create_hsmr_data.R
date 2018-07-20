@@ -1,24 +1,25 @@
-## Codename - HSMR_001_basefile                           ##
-## Data Release - Quarterly HSMR                          ##
-## Original Authors - David Caldwell                      ##
-## Orginal Date - February 2018                           ##
-## Latest Update Author -                                 ##
-## Latest Update Date -                                   ##
-## Updates to script (if any):                            ##
-##                                                        ##
-## Type - Extraction/preparation                          ##
-##                                                        ##
-## Description - Extracts SMR01 & deaths data and         ##
-## creates basefile                                       ##
-## required for subsequent aggregations                   ##
-##                                                        ##
-## Approximate run time: xx minutes                       ##
+#########################################################################
+# Name of file - create_hsmr_data.R
+# Data release - Quarterly HSMR publication
+# Original Authors - David Caldwell
+# Orginal Date - February 2018
+#
+# Type - Data extraction/preparation/modelling
+# Written/run on - RStudio server
+# Version of R - ?
+#
+# Description - Extracts SMR01 & deaths data and carries out required
+# manipulations and modelling to create the minimal tidy dataset for HSMR
+#
+# Approximate run time - xx minutes
+#########################################################################
+
 
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
 library("odbc")          # Accessing SMRA
-library("dplyr")         # Suite of packages to allow scripting in R in the "tidy" way
+library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
 library("data.table")    # For efficient aggregation
 
