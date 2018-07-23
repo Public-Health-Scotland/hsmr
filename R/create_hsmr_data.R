@@ -199,10 +199,6 @@ data <- data %>%
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
 
 
-
-save(data,file = paste(base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
-
-
 ### 4 - Prior morbidities within previous 1 year ----
 
 data_pmorbs <- as_tibble(dbGetQuery(SMRA_connect, Query_SMR01_minus5))
@@ -311,9 +307,6 @@ data_pmorbs1 <- data_pmorbs1 %>%
 
 data <- data %>%
   left_join(data_pmorbs1, by = c("link_no", "cis_marker"))
-
-
-save(data,file = paste(base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
 
 ###############
 ### PMORBS5 ###
