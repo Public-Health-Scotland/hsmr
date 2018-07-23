@@ -1,3 +1,4 @@
+start <- proc.time()
 #########################################################################
 # Name of file - create_hsmr_data.R
 # Data release - Quarterly HSMR publication
@@ -46,11 +47,11 @@ z_base_file <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_fi
 
 ### 5 - Read in lookup files ----
 # Primary Diagnosis Groupings
-z_pdiag_grp_data <- as.data.frame(read.spss(paste(lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+z_pdiag_grp_data <- as.data.frame(read.spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
 z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs          <- read.csv(paste(lookups, "morbs.csv", sep = ""))
+z_morbs          <- read.csv(paste(z_lookups, "morbs.csv", sep = ""))
 
 # Postcode lookups for SIMD
 z_simd           <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
@@ -97,17 +98,17 @@ Query_SMR01 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_MARKER
                      "WHEN age_in_years >= 90 THEN '10'",
                      "ELSE 'NULL' END age_grp,to_char(admission_date,'Q') AS quarter, extract(year from admission_date) AS year,",
                      "HBTREAT_CURRENTDATE, AGE_IN_YEARS from SMR01_PI",
-                     "where ADMISSION_DATE >= to_date(",start_date,",'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",end_date,",'yyyy-MM-dd')",
+                     "where ADMISSION_DATE >= to_date(",z_start_date,",'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",z_end_date,",'yyyy-MM-dd')",
                      "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
 Query_SMR01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, OLD_SMR1_TADM_CODE, CIS_MARKER,",
                             "SPECIALTY, MAIN_CONDITION from SMR01_PI",
-                            "where ADMISSION_DATE >= to_date(",start_date_5,",'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",end_date,",'yyyy-MM-dd')",
+                            "where ADMISSION_DATE >= to_date(",start_date_5,",'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",z_end_date,",'yyyy-MM-dd')",
                             "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
 Query_GRO <- paste("select LINK_NO, DATE_OF_DEATH",
                    "from ANALYSIS.GRO_DEATHS_C",
-                   "where DATE_OF_DEATH >= to_date(",start_date,",'yyyy-MM-dd') AND DATE_OF_DEATH <= to_date('2017-09-30','yyyy-MM-dd')",
+                   "where DATE_OF_DEATH >= to_date(",z_start_date,",'yyyy-MM-dd') AND DATE_OF_DEATH <= to_date('2017-09-30','yyyy-MM-dd')",
                    "ORDER BY LINK_NO")
 
 ### 2 - Extract Data ----
@@ -395,9 +396,10 @@ data$simd <- z_simd$simd[match(data$POSTCODE,z_simd$POSTCODE)]
 ###################
 ### SAVING DATA ###
 ###################
-save(data,file = paste(base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
+save(data,file = paste(z_base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
 
 # Remove all temporary objects starting with z
 rm(list = ls(pattern = "^z"))
 
 ### END OF SCRIPT
+proc.time() - start
