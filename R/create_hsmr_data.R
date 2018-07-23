@@ -1,58 +1,62 @@
-## Codename - HSMR_001_basefile                           ##
-## Data Release - Quarterly HSMR                          ##
-## Original Authors - David Caldwell                      ##
-## Orginal Date - February 2018                           ##
-## Latest Update Author -                                 ##
-## Latest Update Date -                                   ##
-## Updates to script (if any):                            ##
-##                                                        ##
-## Type - Extraction/preparation                          ##
-##                                                        ##
-## Description - Extracts SMR01 & deaths data and         ##
-## creates basefile                                       ##
-## required for subsequent aggregations                   ##
-##                                                        ##
-## Approximate run time: xx minutes                       ##
+#########################################################################
+# Name of file - create_hsmr_data.R
+# Data release - Quarterly HSMR publication
+# Original Authors - David Caldwell
+# Orginal Date - February 2018
+#
+# Type - Data extraction/preparation/modelling
+# Written/run on - RStudio server
+# Version of R - ?
+#
+# Description - Extracts SMR01 & deaths data and carries out required
+# manipulations and modelling to create the minimal tidy dataset for HSMR
+#
+# Approximate run time - xx minutes
+#########################################################################
+
 
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
 library("odbc")          # Accessing SMRA
-library("dplyr")         # Suite of packages to allow scripting in R in the "tidy" way
+library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
 library("data.table")    # For efficient aggregation
 
 
-# Define the database connection with SMRA
-suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn="SMRA",
-                                           uid=.rs.askForPassword("SMRA Username:"),
-                                           pwd=.rs.askForPassword("SMRA Password:")))
+### 2 - Define the database connection with SMRA
+suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
+                                           uid = .rs.askForPassword("SMRA Username:"),
+                                           pwd = .rs.askForPassword("SMRA Password:")))
 
-### 2 - Extract dates ----
-# Define the dates that the data are extracted from
-start_date   <- c("'2017-01-01'")     # The beginning of baseline period
-start_date_1 <- c("'2016-01-01'")     # One year earlier for the one year look-back (pmorbs1)
-start_date_5 <- c("'2011-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
-start_date_l <- c("2017-01-01")       # Beginning of the baseline period (pmorbs)
-end_date     <- c("'2017-03-31'")     # End date for the cut off for data
 
-### 3 - Set filepaths ----
+### 3 - Extract dates ----
+# Define the dates that the data are extracted from and to
+z_start_date   <- c("'2017-01-01'")     # The beginning of baseline period
+z_start_date_1 <- c("'2016-01-01'")     # One year earlier for the one year look-back (pmorbs1)
+z_start_date_5 <- c("'2011-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
+z_start_date_l <- c("2017-01-01")       # Beginning of the baseline period (pmorbs)
+z_end_date     <- c("'2017-03-31'")     # End date for the cut off for data
+
+
+### 4 - Set filepaths ----
 # Define lookups and output directory
-lookups   <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
-base_file <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
+z_lookups   <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
+z_base_file <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
 
 
-### 4 - Read in lookup files
+### 5 - Read in lookup files ----
 # Primary Diagnosis Groupings
-pdiag_grp_data <- as.data.frame(read.spss(paste(lookups,'shmi_diag_grps_lookup.sav',sep="")))
-pdiag_grp_data <- pdiag_grp_data[,c("diag1_4","SHMI_DIAGNOSIS_GROUP")]
+z_pdiag_grp_data <- as.data.frame(read.spss(paste(lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-morbs <- read.csv(paste(lookups,"morbs.csv", sep = ""))
+z_morbs          <- read.csv(paste(lookups, "morbs.csv", sep = ""))
 
 # Postcode lookups for SIMD
-simd <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[,c("pc7","simd2016_sc_quintile")]
-names(simd) <- c("POSTCODE", "simd")
+z_simd           <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
+names(z_simd)    <- c("POSTCODE", "simd")
+
 
 ### SECTION 2 - DATA EXTRACTION----
 
@@ -172,22 +176,22 @@ data <- data %>%
          diag4_3      = substr(other_condition_3, 1, 3),
          diag5_3      = substr(other_condition_4, 1, 3),
          diag6_3      = substr(other_condition_5, 1, 3),
-         pdiag_grp    = pdiag_grp_data$SHMI_DIAGNOSIS_GROUP[match(diag1_4,pdiag_grp_data$diag1_4)],
-         wcomorbs1    = ifelse(!is.na(morbs$morb[match(diag2_3, morbs$diag_3)]),morbs$morb[match(diag2_3, morbs$diag_3)],
-                               ifelse(!is.na(morbs$morb[match(diag2_4, morbs$diag_4)]), morbs$morb[match(diag2_4, morbs$diag_4)], 0)),
-         wcomorbs2    = ifelse(!is.na(morbs$morb[match(diag3_3, morbs$diag_3)]),morbs$morb[match(diag3_3, morbs$diag_3)],
-                               ifelse(!is.na(morbs$morb[match(diag3_4, morbs$diag_4)]), morbs$morb[match(diag3_4, morbs$diag_4)], 0)),
-         wcomorbs3    = ifelse(!is.na(morbs$morb[match(diag4_3, morbs$diag_3)]),morbs$morb[match(diag4_3, morbs$diag_3)],
-                               ifelse(!is.na(morbs$morb[match(diag4_4, morbs$diag_4)]), morbs$morb[match(diag4_4, morbs$diag_4)], 0)),
-         wcomorbs4    = ifelse(!is.na(morbs$morb[match(diag5_3, morbs$diag_3)]),morbs$morb[match(diag5_3, morbs$diag_3)],
-                               ifelse(!is.na(morbs$morb[match(diag5_4, morbs$diag_4)]), morbs$morb[match(diag5_4, morbs$diag_4)], 0)),
-         wcomorbs5    = ifelse(!is.na(morbs$morb[match(diag6_3, morbs$diag_3)]),morbs$morb[match(diag6_3, morbs$diag_3)],
-                               ifelse(!is.na(morbs$morb[match(diag6_4, morbs$diag_4)]), morbs$morb[match(diag6_4, morbs$diag_4)], 0)),
-         wcomorbs1     = morbs$wmorbs[match(wcomorbs1, morbs$morb)],
-         wcomorbs2    = ifelse(!(wcomorbs2 %in% c(wcomorbs1)), morbs$wmorbs[match(wcomorbs2, morbs$morb)], 0),
-         wcomorbs3    = ifelse(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), morbs$wmorbs[match(wcomorbs3, morbs$morb)], 0),
-         wcomorbs4    = ifelse(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), morbs$wmorbs[match(wcomorbs4, morbs$morb)], 0),
-         wcomorbs5    = ifelse(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), morbs$wmorbs[match(wcomorbs5, morbs$morb)], 0),
+         pdiag_grp    = z_pdiag_grp_data$SHMI_DIAGNOSIS_GROUP[match(diag1_4,z_pdiag_grp_data$diag1_4)],
+         wcomorbs1    = ifelse(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
+                               ifelse(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
+         wcomorbs2    = ifelse(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
+                               ifelse(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
+         wcomorbs3    = ifelse(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
+                               ifelse(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
+         wcomorbs4    = ifelse(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
+                               ifelse(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
+         wcomorbs5    = ifelse(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
+                               ifelse(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
+         wcomorbs1     = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
+         wcomorbs2    = ifelse(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
+         wcomorbs3    = ifelse(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
+         wcomorbs4    = ifelse(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
+         wcomorbs5    = ifelse(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
          comorbs_sum  = wcomorbs1 + wcomorbs2 + wcomorbs3 + wcomorbs4 + wcomorbs5) %>%
 
   # epinum           = the episode number for each individual episode within the CIS
@@ -200,8 +204,6 @@ data <- data %>%
   select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
 
-# Deleting unecessary dataframes
-rm(pdiag_grp_data);gc()
 
 
 save(data,file = paste(base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
@@ -216,8 +218,8 @@ data_pmorbs1 <- data_pmorbs1 %>%
   ungroup() %>%
   mutate(diag1_4  = substr(main_condition, 1, 4),
          diag1_3  = substr(main_condition, 1, 3),
-         pmorbs   = ifelse(!is.na(morbs$morb[match(diag1_3, morbs$diag_3)]), morbs$morb[match(diag1_3, morbs$diag_3)],
-                           ifelse(!is.na(morbs$morb[match(diag1_4, morbs$diag_4)]), morbs$morb[match(diag1_4, morbs$diag_4)], 0)),
+         pmorbs   = ifelse(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
+                           ifelse(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
          pmorbs1  = 0,
          pmorbs2  = 0,
          pmorbs3  = 0,
@@ -333,8 +335,8 @@ data_pmorbs5 <- data_pmorbs5 %>%
   ungroup() %>%
   mutate(diag1_4  = substr(main_condition, 1, 4),
          diag1_3  = substr(main_condition, 1, 3),
-         pmorbs   = ifelse(!is.na(morbs$morb[match(diag1_3, morbs$diag_3)]), morbs$morb[match(diag1_3, morbs$diag_3)],
-                           ifelse(!is.na(morbs$morb[match(diag1_4, morbs$diag_4)]), morbs$morb[match(diag1_4, morbs$diag_4)], 0)),
+         pmorbs   = ifelse(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
+                           ifelse(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
          pmorbs1  = 0,
          pmorbs2  = 0,
          pmorbs3  = 0,
@@ -436,10 +438,15 @@ data$POSTCODE <- sub("  "," ", data$POSTCODE)
 data$POSTCODE <- sub("   ","  ", data$POSTCODE)
 data$POSTCODE[which(regexpr(" ",data$POSTCODE) == 5)] <- sub(" ", "",data$POSTCODE[which(regexpr(" ",data$POSTCODE) == 5)])
 
-data$simd <- simd$simd[match(data$POSTCODE,simd$POSTCODE)]
-rm(simd)
+data$simd <- z_simd$simd[match(data$POSTCODE,z_simd$POSTCODE)]
+
 
 ###################
 ### SAVING DATA ###
 ###################
 save(data,file = paste(base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
+
+# Remove all temporary objects starting with z
+rm(list = ls(pattern = "^z"))
+
+### END OF SCRIPT
