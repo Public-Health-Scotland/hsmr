@@ -359,55 +359,55 @@ data_pmorbs5 <- data_pmorbs5 %>%
 for(i in 1:74){
 
   data_pmorbs5 <- data_pmorbs5 %>%
-    mutate(pmorbs1  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+    mutate(pmorbs1  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 5, pmorbs1), pmorbs1),
 
-           pmorbs2  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs2  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 11, pmorbs2), pmorbs2),
 
-           pmorbs3  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs3  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 13, pmorbs3), pmorbs3),
 
-           pmorbs4  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs4  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs4), pmorbs4),
 
-           pmorbs5  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs5), pmorbs5),
 
-           pmorbs6  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs6  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 3, pmorbs6), pmorbs6),
 
-           pmorbs7  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs7  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs7), pmorbs7),
 
-           pmorbs8  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs8  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 9, pmorbs8), pmorbs8),
 
-           pmorbs9  = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs9  = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 6, pmorbs9), pmorbs9),
 
-           pmorbs10 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs10 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs10), pmorbs10),
 
-           pmorbs11 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs11 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs11), pmorbs11),
 
-           pmorbs12 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs12 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, -1, pmorbs12), pmorbs12),
 
-           pmorbs13 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs13 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 1, pmorbs13), pmorbs13),
 
-           pmorbs14 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs14 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 10, pmorbs14), pmorbs14),
 
-           pmorbs15 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs15 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs15), pmorbs15),
 
-           pmorbs16 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs16 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 18, pmorbs16), pmorbs16),
 
-           pmorbs17 = ifelse(!is.na(lag(link_no, i)) | admission_date >= start_date_l, ifelse(17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs17 = ifelse(!is.na(lag(link_no, i)) | admission_date >= z_start_date_l, ifelse(17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                                                                                 (admission_date - lag(admission_date, i)) <= 1825, 2, pmorbs17), pmorbs17))
 
 }
