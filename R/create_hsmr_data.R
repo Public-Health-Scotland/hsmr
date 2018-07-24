@@ -42,8 +42,9 @@ z_end_date     <- c("'2017-03-31'")     # End date for the cut off for data
 
 ### 4 - Set filepaths ----
 # Define lookups and output directory
-z_lookups   <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
-z_base_file <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
+z_lookups     <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
+z_hosp_lookup <- "/conf/linkage/output/lookups/Data Management/standard reference files/location.sav"
+z_base_file   <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
 
 
 ### 5 - Read in lookup files ----
@@ -57,6 +58,9 @@ z_morbs          <- read.csv(paste(z_lookups, "morbs.csv", sep = ""))
 # Postcode lookups for SIMD 2016 and 2012
 z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+
+# Read in hospital lookups
+z_hospitals         <- read_spss(z_hosp_lookup)[ , c("Location", "Locname")]
 
 
 ### 6 - Source functions ----
@@ -374,7 +378,7 @@ data <- data %>%
 
 # Create subset of data for modelling
 z_data_lr <- data %>%
-  filter(quarter <= 12) %>%
+  filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
   group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
@@ -397,3 +401,51 @@ data$pred_eq <- predict.glm(risk_model, data, type = "response")
 data <- data %>%
   filter(!is.na(pred_eq))
 
+
+### SECTION 5 - CREATE MINIMAL TIDY DATASET ----
+
+### 1 - Create Scotland-level aggregation ----
+z_hsmr_scot <- data %>%
+  group_by(quarter) %>%
+  summarise(deaths = sum(death30),
+            pred   = sum(pred_eq),
+            pats   = length(death30)) %>%
+  mutate(smr           = deaths/pred,
+         crd_rate      = (deaths/pats) * 100,
+         location_type = "Scotland",
+         location      = "Scot",
+         location_name = "Scotland")
+
+
+### 2 - Create Hospital-level aggregation ----
+z_hsmr_hosp <- data %>%
+  group_by(quarter, location) %>%
+  summarise(deaths = sum(death30),
+            pred   = sum(pred_eq),
+            pats   = length(death30)) %>%
+  mutate(smr      = deaths/pred,
+         crd_rate = (deaths/pats) * 100,
+         location_type = "hospital")
+
+
+### 3 - Create HB-level aggregation ----
+z_hsmr_hb <- data %>%
+  group_by(quarter, hbtreat_new) %>%
+  summarise(deaths = sum(death30),
+            pred   = sum(pred_eq),
+            pats   = length(death30)) %>%
+  mutate(smr      = deaths/pred,
+         crd_rate = (deaths/pats) * 100,
+         location_type = "NHS Board") %>%
+  rename(location = hbtreat_new)
+
+
+### 4 - Merge dataframes and calculate regression line ----
+hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb)
+
+hsmr <- hsmr %>%
+  mutate(quarter_reg = ifelse(quarter <= 12, 0, quarter - 12))
+
+reg_line <- lm(smr ~ quarter * location_name, data = hsmr)
+
+hsmr$reg <- predict(reg_line, hsmr, type = "response")
