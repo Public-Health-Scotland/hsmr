@@ -23,6 +23,7 @@ library("odbc")          # Accessing SMRA
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
 library("data.table")    # For efficient aggregation
+library("haven")         # For reading in spss files
 
 
 ### 2 - Define the database connection with SMRA
@@ -53,9 +54,9 @@ z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
 z_morbs          <- read.csv(paste(z_lookups, "morbs.csv", sep = ""))
 
-# Postcode lookups for SIMD
-z_simd           <- data.frame(read.spss("/conf/linkage/output/lookups/deprivation/postcode_2017_2_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
-names(z_simd)    <- c("POSTCODE", "simd")
+# Postcode lookups for SIMD 2016 and 2012
+z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
 
 
 ### SECTION 2 - DATA EXTRACTION----
@@ -279,28 +280,28 @@ for(i in 1:74){
                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_9),
 
            pmorbs5_10  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_10),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_10),
 
            pmorbs5_11  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_11),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_11),
 
            pmorbs5_12  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_12),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_12),
 
            pmorbs5_13  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_13),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_13),
 
            pmorbs5_14  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_14),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_14),
 
            pmorbs5_15  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_15),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_15),
 
            pmorbs5_16  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_16),
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_16),
 
            pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17)m,
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17)m,
 
            pmorbs1_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 5, pmorbs1_1),
@@ -386,20 +387,16 @@ rm(data_pmorbs)
 ### SIMD ###
 ############
 
-data$POSTCODE <- sub("  "," ", data$POSTCODE)
-data$POSTCODE <- sub("   ","  ", data$POSTCODE)
-data$POSTCODE[which(regexpr(" ",data$POSTCODE) == 5)] <- sub(" ", "",data$POSTCODE[which(regexpr(" ",data$POSTCODE) == 5)])
+# Fix formatting of postcode variable (remove trailing spaces and any other
+# unnecessary white space)
+data$postcode <- sub("  ", " ", data$postcode)
+data$postcode <- sub("   ", "  ", data$postcode)
+data$postcode[which(regexpr(" ", data$postcode) == 5)] <- sub(" ", "", data$postcode[which(regexpr(" ", data$postcode) == 5)])
 
-data$simd <- z_simd$simd[match(data$POSTCODE,z_simd$POSTCODE)]
+# Match SIMD 2016 onto years beyond 2014
+names(z_simd_2016)                  <- c("postcode", "simd")
+data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_simd_2016$postcode)]
 
-
-###################
-### SAVING DATA ###
-###################
-save(data,file = paste(z_base_file,"QHSMR_SMR01_raw_basefile",".rda",sep=""))
-
-# Remove all temporary objects starting with z
-rm(list = ls(pattern = "^z"))
-
-### END OF SCRIPT
-proc.time() - start
+# Match SIMD 2012 onto years before 2014
+names(z_simd_2012)                  <- c("postcode", "simd")
+data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
