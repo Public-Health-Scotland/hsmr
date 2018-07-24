@@ -59,6 +59,10 @@ z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
 
 
+### 6 - Source functions ----
+source("R/data_prep_functions.R")
+
+
 ### SECTION 2 - DATA EXTRACTION----
 
 ### 1 - Data extraction ----
@@ -73,9 +77,10 @@ data   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01))
 
 ### SECTION 3 - DATA PREPARATION----
 
-### 1 - Variable names - to lower case ----
+### 1 - Variable names to lower case ----
 names(data)   <- tolower(names(data))
 names(deaths) <- tolower(names(deaths))
+
 
 ### 2 - Deaths data ----
 # Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
@@ -104,8 +109,9 @@ rm(deaths);gc()
 # diagx_4      = ICD-10 code to 4 digits
 # diagx_3      = ICD-10 code to 3 digits
 # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10 code
-# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10 codes are present in any
-# of the five "other diagnosis" positions
+# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10 codes
+#                are present in any
+#                of the five "other diagnosis" positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
 data <- data %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
@@ -113,7 +119,8 @@ data <- data %>%
          death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
-         location     = plyr::mapvalues(location, c("V102H","V201H","C206H","G207H","F805H","F705H","G306H","G516H"),
+         location     = plyr::mapvalues(location,
+                                        c("V102H","V201H","C206H","G207H","F805H","F705H","G306H","G516H"),
                                         c("V217H","V217H","C418H","G107H","F704H","F704H","G405H","G405H")),
          diag1_4      = substr(main_condition, 1, 4),
          diag2_4      = substr(other_condition_1, 1, 4),
@@ -338,9 +345,7 @@ data <- data %>%
 rm(data_pmorbs)
 
 
-############
-### SIMD ###
-############
+### 5 - SIMD ----
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
@@ -355,3 +360,40 @@ data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_s
 # Match SIMD 2012 onto years before 2014
 names(z_simd_2012)                  <- c("postcode", "simd")
 data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
+
+
+### 6 - Create patient level file
+
+data <- data %>%
+  group_by(link_no, quarter) %>%
+  mutate(last_cis = max(cis)) %>%
+  filter(epinum == 1 & cis_marker == last_cis)
+
+
+### SECTION 4 - MODELLING ----
+
+# Create subset of data for modelling
+z_data_lr <- data %>%
+  filter(quarter <= 12) %>%
+  select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+         pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+  group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+           pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
+  summarise(x = sum(death30), n = length(death30))
+
+# Run logistic regression
+risk_model <- glm(cbind(x, n-x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_sum +
+                    age_in_years + factor(sex) + factor(surgmed) + factor(pdiag_grp) +
+                    factor(admfgrp) + factor(admgrp) + factor(ipdc) + factor(simd),
+                  data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
+
+# Delete unnecessary model information using bespoke function
+risk_model <- clean_model(risk_model)
+
+# Create predicted probabilities
+data$pred_eq <- predict.glm(risk_model, data, type = "response")
+
+# Remove rows with no probability calculated
+data <- data %>%
+  filter(!is.na(pred_eq))
+
