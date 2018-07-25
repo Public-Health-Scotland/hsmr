@@ -119,6 +119,7 @@ rm(deaths);gc()
 data <- data %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
+         death30      = 0,
          death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
@@ -212,7 +213,8 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs1_14 = 0,
          pmorbs1_15 = 0,
          pmorbs1_16 = 0,
-         pmorbs1_17 = 0) %>%
+         pmorbs1_17 = 0,
+         n_emerg    = 0) %>%
   # Only keep records with link numbers which appear in the main extract above
   filter(link_no %in% z_unique_id) %>%
   # Keep all records after the start date and only keep records before the start date
@@ -376,8 +378,9 @@ data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_s
 
 data <- data %>%
   group_by(link_no, quarter) %>%
-  mutate(last_cis = max(cis)) %>%
-  filter(epinum == 1 & cis_marker == last_cis)
+  mutate(last_cis = max(cis_marker)) %>%
+  filter(epinum == 1 & cis_marker == last_cis) %>%
+  ungroup()
 
 
 ### SECTION 4 - MODELLING ----
@@ -385,9 +388,9 @@ data <- data %>%
 # Create subset of data for modelling
 z_data_lr <- data %>%
   filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
-  select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+  select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
-  group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+  group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
            pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
   summarise(x = sum(death30), n = length(death30))
 
