@@ -424,7 +424,9 @@ z_hsmr_hosp <- data %>%
             pats   = length(death30)) %>%
   mutate(smr      = deaths/pred,
          crd_rate = (deaths/pats) * 100,
-         location_type = "hospital")
+         location_type = "hospital") %>%
+  # FILTER ON PUBLISHED HOSPITALS
+  #filter(location %in% )
 
 
 ### 3 - Create HB-level aggregation ----
