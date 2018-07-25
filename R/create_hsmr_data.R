@@ -43,7 +43,6 @@ z_end_date     <- c("'2017-03-31'")     # End date for the cut off for data
 ### 4 - Set filepaths ----
 # Define lookups and output directory
 z_lookups     <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
-z_hosp_lookup <- "/conf/linkage/output/lookups/Data Management/standard reference files/location.sav"
 z_base_file   <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
 
 
@@ -60,7 +59,7 @@ z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
 
 # Read in hospital lookups
-z_hospitals         <- read_spss(z_hosp_lookup)[ , c("Location", "Locname")]
+z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -441,7 +440,9 @@ z_hsmr_hb <- data %>%
 
 
 ### 4 - Merge dataframes and calculate regression line ----
-hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb)
+# Merging data and matching on location name
+hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
+  join(z_hospitals, by = location)
 
 hsmr <- hsmr %>%
   mutate(quarter_reg = ifelse(quarter <= 12, 0, quarter - 12))
