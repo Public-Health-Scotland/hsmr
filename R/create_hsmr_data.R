@@ -265,7 +265,7 @@ for(i in 1:74){
                                   (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_16),
 
            pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17)m,
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17),
 
            pmorbs1_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 5, pmorbs1_1),
