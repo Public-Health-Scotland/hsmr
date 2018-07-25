@@ -22,7 +22,6 @@ start <- proc.time()
 library("odbc")          # Accessing SMRA
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
-library("data.table")    # For efficient aggregation
 library("haven")         # For reading in spss files
 
 
