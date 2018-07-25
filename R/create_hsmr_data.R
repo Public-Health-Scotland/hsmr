@@ -22,7 +22,6 @@ start <- proc.time()
 library("odbc")          # Accessing SMRA
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
-library("data.table")    # For efficient aggregation
 library("haven")         # For reading in spss files
 
 
@@ -59,7 +58,7 @@ z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
 
 # Read in hospital lookups
-z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv"))
+z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
 
 
 ### 6 - Source functions ----
@@ -266,7 +265,7 @@ for(i in 1:74){
                                   (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_16),
 
            pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17)m,
+                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17),
 
            pmorbs1_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 5, pmorbs1_1),
@@ -424,7 +423,9 @@ z_hsmr_hosp <- data %>%
             pats   = length(death30)) %>%
   mutate(smr      = deaths/pred,
          crd_rate = (deaths/pats) * 100,
-         location_type = "hospital")
+         location_type = "hospital") %>%
+  # FILTER ON PUBLISHED HOSPITALS
+  #filter(location %in% )
 
 
 ### 3 - Create HB-level aggregation ----
