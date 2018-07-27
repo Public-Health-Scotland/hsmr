@@ -22,7 +22,6 @@ start <- proc.time()
 library("odbc")          # Accessing SMRA
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
-library("data.table")    # For efficient aggregation
 library("haven")         # For reading in spss files
 
 
@@ -59,7 +58,7 @@ z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
 
 # Read in hospital lookups
-z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv"))
+z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
 
 
 ### 6 - Source functions ----
