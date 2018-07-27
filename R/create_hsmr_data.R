@@ -33,10 +33,10 @@ suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
 
 ### 3 - Extract dates ----
 # Define the dates that the data are extracted from and to
-z_start_date   <- c("'2017-01-01'")     # The beginning of baseline period
-z_start_date_5 <- c("'2011-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
-z_start_date_l <- c("2017-01-01")       # Beginning of the baseline period (pmorbs)
-z_end_date     <- c("'2017-03-31'")     # End date for the cut off for data
+z_start_date   <- c("'2011-01-01'")     # The beginning of baseline period
+z_start_date_5 <- c("'2006-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
+z_start_date_l <- c("2011-01-01")       # Beginning of the baseline period (pmorbs)
+z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
 
 
 ### 4 - Set filepaths ----
@@ -118,6 +118,7 @@ rm(deaths);gc()
 data <- data %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
+         death30      = 0,
          death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
@@ -164,6 +165,9 @@ data <- data %>%
   select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
 
+# Vector of unique link numbers used for filtering below
+z_unique_id <- unique(data$link_no)
+
 
 ### 4 - Prior morbidities within previous 1 & 5 years ----
 
@@ -171,7 +175,6 @@ data_pmorbs <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_minus5))
 names(data_pmorbs) <- tolower(names(data_pmorbs))
 
 data_pmorbs <- data_pmorbs %>%
-  ungroup() %>%
   mutate(diag1_4  = substr(main_condition, 1, 4),
          diag1_3  = substr(main_condition, 1, 3),
          pmorbs   = ifelse(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
@@ -209,7 +212,13 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs1_14 = 0,
          pmorbs1_15 = 0,
          pmorbs1_16 = 0,
-         pmorbs1_17 = 0)
+         pmorbs1_17 = 0,
+         n_emerg    = 0) %>%
+  # Only keep records with link numbers which appear in the main extract above
+  filter(link_no %in% z_unique_id) %>%
+  # Keep all records after the start date and only keep records before the start date
+  # which have a valid pmorbs value
+  filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
 
 for(i in 1:74){
@@ -368,8 +377,9 @@ data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_s
 
 data <- data %>%
   group_by(link_no, quarter) %>%
-  mutate(last_cis = max(cis)) %>%
-  filter(epinum == 1 & cis_marker == last_cis)
+  mutate(last_cis = max(cis_marker)) %>%
+  filter(epinum == 1 & cis_marker == last_cis) %>%
+  ungroup()
 
 
 ### SECTION 4 - MODELLING ----
@@ -377,9 +387,9 @@ data <- data %>%
 # Create subset of data for modelling
 z_data_lr <- data %>%
   filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
-  select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+  select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
-  group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age, sex, surgmed,
+  group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
            pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
   summarise(x = sum(death30), n = length(death30))
 
