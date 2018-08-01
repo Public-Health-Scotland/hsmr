@@ -221,7 +221,7 @@ data_pmorbs <- data_pmorbs %>%
   filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
 
-for(i in 1:74){
+for(i in 1:50){
   print(i)
 
   data_pmorbs <- data_pmorbs %>%
