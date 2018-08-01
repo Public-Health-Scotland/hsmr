@@ -221,111 +221,111 @@ data_pmorbs <- data_pmorbs %>%
   filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
 
-for(i in 1:74){
+for(i in 1:50){
   print(i)
 
   data_pmorbs <- data_pmorbs %>%
     mutate(pmorbs5_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 5, pmorbs5_1),
 
-           pmorbs5_2  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_2  = ifelse(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 11, pmorbs5_2),
 
-           pmorbs5_3  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_3),
+           pmorbs5_3  = ifelse(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 13, pmorbs5_3),
 
-           pmorbs5_4  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_4),
+           pmorbs5_4  = ifelse(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs5_4),
 
-           pmorbs5_5  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_5),
+           pmorbs5_5  = ifelse(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs5_5),
 
-           pmorbs5_6  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_6),
+           pmorbs5_6  = ifelse(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 3, pmorbs5_6),
 
-           pmorbs5_7  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_7),
+           pmorbs5_7  = ifelse(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs5_7),
 
-           pmorbs5_8  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_8),
+           pmorbs5_8  = ifelse(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 9, pmorbs5_8),
 
-           pmorbs5_9  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_9),
+           pmorbs5_9  = ifelse(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 1825, 6, pmorbs5_9),
 
-           pmorbs5_10  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_10),
+           pmorbs5_10  = ifelse(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs5_10),
 
-           pmorbs5_11  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_11),
+           pmorbs5_11  = ifelse(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs5_11),
 
-           pmorbs5_12  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_12),
+           pmorbs5_12  = ifelse(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, -1, pmorbs5_12),
 
-           pmorbs5_13  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_13),
+           pmorbs5_13  = ifelse(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 1, pmorbs5_13),
 
-           pmorbs5_14  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_14),
+           pmorbs5_14  = ifelse(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 10, pmorbs5_14),
 
-           pmorbs5_15  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_15),
+           pmorbs5_15  = ifelse(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs5_15),
 
-           pmorbs5_16  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_16),
+           pmorbs5_16  = ifelse(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 18, pmorbs5_16),
 
-           pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 1825, 5,pmorbs5_17),
+           pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 1825, 2, pmorbs5_17),
 
            pmorbs1_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 5, pmorbs1_1),
 
-           pmorbs1_2  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_2  = ifelse(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 11, pmorbs1_2),
 
-           pmorbs1_3  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_3),
+           pmorbs1_3  = ifelse(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 13, pmorbs1_3),
 
-           pmorbs1_4  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_4),
+           pmorbs1_4  = ifelse(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 4, pmorbs1_4),
 
-           pmorbs1_5  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_5),
+           pmorbs1_5  = ifelse(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 14, pmorbs1_5),
 
-           pmorbs1_6  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_6),
+           pmorbs1_6  = ifelse(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 3, pmorbs1_6),
 
-           pmorbs1_7  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_7),
+           pmorbs1_7  = ifelse(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 8, pmorbs1_7),
 
-           pmorbs1_8  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_8),
+           pmorbs1_8  = ifelse(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 9, pmorbs1_8),
 
-           pmorbs1_9  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                 (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_9),
+           pmorbs1_9  = ifelse(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                 (admission_date - lag(admission_date, i)) <= 365, 6, pmorbs1_9),
 
-           pmorbs1_10  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_10),
+           pmorbs1_10  = ifelse(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 4, pmorbs1_10),
 
-           pmorbs1_11  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_11),
+           pmorbs1_11  = ifelse(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 8, pmorbs1_11),
 
-           pmorbs1_12  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_12),
+           pmorbs1_12  = ifelse(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, -1, pmorbs1_12),
 
-           pmorbs1_13  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_13),
+           pmorbs1_13  = ifelse(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 1, pmorbs1_13),
 
-           pmorbs1_14  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_14),
+           pmorbs1_14  = ifelse(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 10, pmorbs1_14),
 
-           pmorbs1_15  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_15),
+           pmorbs1_15  = ifelse(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 14, pmorbs1_15),
 
-           pmorbs1_16  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_16),
+           pmorbs1_16  = ifelse(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 18, pmorbs1_16),
 
-           pmorbs1_17  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
-                                  (admission_date - lag(admission_date, i)) <= 365, 5,pmorbs1_17))
+           pmorbs1_17  = ifelse(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+                                  (admission_date - lag(admission_date, i)) <= 365, 2, pmorbs1_17))
 
 }
 
@@ -431,8 +431,8 @@ z_hsmr_hosp <- data %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
-  mutate(smr      = deaths/pred,
-         crd_rate = (deaths/pats) * 100,
+  mutate(smr           = deaths/pred,
+         crd_rate      = (deaths/pats) * 100,
          location_type = "hospital") %>%
   # FILTER ON PUBLISHED HOSPITALS
   #filter(location %in% )
@@ -444,8 +444,8 @@ z_hsmr_hb <- data %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
-  mutate(smr      = deaths/pred,
-         crd_rate = (deaths/pats) * 100,
+  mutate(smr           = deaths/pred,
+         crd_rate      = (deaths/pats) * 100,
          location_type = "NHS Board") %>%
   rename(location = hbtreat_new)
 
@@ -461,3 +461,12 @@ hsmr <- hsmr %>%
 reg_line <- lm(smr ~ quarter * location_name, data = hsmr)
 
 hsmr$reg <- predict(reg_line, hsmr, type = "response")
+
+
+### 5 - Save data and create data folder ----
+devtools::use_data(hsmr)
+
+rm(hsmr)
+rm(list = ls(pattern = "^z"))
+
+### END OF SCRIPT ###
