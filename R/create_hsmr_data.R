@@ -431,8 +431,8 @@ z_hsmr_hosp <- data %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
-  mutate(smr      = deaths/pred,
-         crd_rate = (deaths/pats) * 100,
+  mutate(smr           = deaths/pred,
+         crd_rate      = (deaths/pats) * 100,
          location_type = "hospital") %>%
   # FILTER ON PUBLISHED HOSPITALS
   #filter(location %in% )
@@ -444,8 +444,8 @@ z_hsmr_hb <- data %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
-  mutate(smr      = deaths/pred,
-         crd_rate = (deaths/pats) * 100,
+  mutate(smr           = deaths/pred,
+         crd_rate      = (deaths/pats) * 100,
          location_type = "NHS Board") %>%
   rename(location = hbtreat_new)
 
@@ -461,3 +461,12 @@ hsmr <- hsmr %>%
 reg_line <- lm(smr ~ quarter * location_name, data = hsmr)
 
 hsmr$reg <- predict(reg_line, hsmr, type = "response")
+
+
+### 5 - Save data and create data folder ----
+devtools::use_data(hsmr)
+
+rm(hsmr)
+rm(list = ls(pattern = "^z"))
+
+### END OF SCRIPT ###
