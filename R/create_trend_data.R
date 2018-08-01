@@ -34,3 +34,44 @@ suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
 # Define the dates that the data are extracted from and to
 z_start_date   <- c("'2008-01-01'")     # The beginning of the ten year trend
 z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
+
+
+# Postcode lookups for SIMD 2016 and 2012
+z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Depirvation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009_sc_quintile")]
+
+
+### SECTION 2 - DATA EXTRACTION----
+
+### 1 - Data extraction ----
+# Source SQL queries
+source("R/sql_queries_ltr.R")
+
+
+### 2 - Extract data ----
+deaths <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
+data   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_ltt))
+
+### SECTION 3 - DATA PREPARATION----
+
+### 1 - Variable names to lower case ----
+names(data)   <- tolower(names(data))
+names(deaths) <- tolower(names(deaths))
+
+
+### 2 - Deaths data ----
+# Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
+# link_no needs to be unique
+deaths <- deaths %>%
+  distinct(link_no, .keep_all = TRUE)
+
+# Matching deaths data on to SMR01 data
+data$date_of_death <- deaths$date_of_death[match(data$link_no,deaths$link_no)]
+
+# Sorting data by link_no, cis_marker, adm_date and dis_date
+data <- data %>%
+  arrange(link_no, cis_marker, admission_date, discharge_date)
+
+# Deleting unecessary dataframes
+rm(deaths);gc()
