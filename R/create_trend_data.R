@@ -46,7 +46,7 @@ z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Depirvation/
 
 ### 1 - Data extraction ----
 # Source SQL queries
-source("R/sql_queries_ltr.R")
+source("R/sql_queries_trends.R")
 
 
 ### 2 - Extract data ----
