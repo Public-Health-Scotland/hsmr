@@ -51,5 +51,5 @@ z_query_smr01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, O
 
 z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH",
                      "from ANALYSIS.GRO_DEATHS_C",
-                     "where DATE_OF_DEATH >= to_date(",z_start_date,",'yyyy-MM-dd') AND DATE_OF_DEATH <= to_date('2017-09-30','yyyy-MM-dd')",
+                     "where DATE_OF_DEATH >= to_date(",z_start_date,",'yyyy-MM-dd')",
                      "ORDER BY LINK_NO")
