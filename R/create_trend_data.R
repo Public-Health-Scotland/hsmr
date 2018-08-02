@@ -96,3 +96,17 @@ z_smr01$simd[which(z_smr01$year < 2014 & z_smr01$year > 2009)]  <- z_simd_2012$s
 # Match SIMD 2009 onto years before 2010
 names(z_simd_2009)                  <- c("postcode", "simd")
 z_smr01$simd[which(z_smr01$year < 2010)]  <- z_simd_2009$simd[match(z_smr01$postcode, z_simd_2009$postcode)]
+
+### 4 - Manipulations
+
+z_smr01 <- z_smr01 %>%
+  mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
+         dthdays      = (date_of_death - admission_date)/60/60/24,
+         death30      = 0,
+         death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
+         quarter_name = paste(year, "Q", quarter, sep = ""),
+         quarter      = as.numeric(as.factor(quarter_name))) %>%
+  group_by(link_no, cis_marker) %>%
+  mutate(epinum           = row_number(),
+         death_inhosp_max = max(death_inhosp)) %>%
+  arrange(link_no, cis_marker, admission_date, discharge_date)
