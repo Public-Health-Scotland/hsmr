@@ -73,15 +73,15 @@ source("R/sql_queries.R")
 
 
 ### 2 - Extract data ----
-deaths <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
-data   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01))
+deaths  <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
+z_smr01 <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01))
 
 
 ### SECTION 3 - DATA PREPARATION----
 
 ### 1 - Variable names to lower case ----
-names(data)   <- tolower(names(data))
-names(deaths) <- tolower(names(deaths))
+names(z_smr01) <- tolower(names(z_smr01))
+names(deaths)  <- tolower(names(deaths))
 
 
 ### 2 - Deaths data ----
@@ -91,10 +91,10 @@ deaths <- deaths %>%
   distinct(link_no, .keep_all = TRUE)
 
 # Matching deaths data on to SMR01 data
-data$date_of_death <- deaths$date_of_death[match(data$link_no,deaths$link_no)]
+z_smr01$date_of_death <- deaths$date_of_death[match(z_smr01$link_no,deaths$link_no)]
 
 # Sorting data by link_no, cis_marker, adm_date and dis_date
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 # Deleting unecessary dataframes
@@ -115,7 +115,7 @@ rm(deaths);gc()
 #                are present in any
 #                of the five "other diagnosis" positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
          death30      = 0,
@@ -166,7 +166,7 @@ data <- data %>%
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
 
 # Vector of unique link numbers used for filtering below
-z_unique_id <- unique(data$link_no)
+z_unique_id <- unique(z_smr01$link_no)
 
 
 ### 4 - Prior morbidities within previous 1 & 5 years ----
@@ -350,7 +350,7 @@ for (i in 1:54) {
 data_pmorbs <- data_pmorbs %>%
   select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
 
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   left_join(data_pmorbs, by = c("link_no", "cis_marker"))
 
 rm(data_pmorbs)
@@ -360,22 +360,22 @@ rm(data_pmorbs)
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
-data$postcode <- sub("  ", " ", data$postcode)
-data$postcode <- sub("   ", "  ", data$postcode)
-data$postcode[which(regexpr(" ", data$postcode) == 5)] <- sub(" ", "", data$postcode[which(regexpr(" ", data$postcode) == 5)])
+z_smr01$postcode <- sub("  ", " ", z_smr01$postcode)
+z_smr01$postcode <- sub("   ", "  ", z_smr01$postcode)
+z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)] <- sub(" ", "", z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)])
 
 # Match SIMD 2016 onto years beyond 2014
 names(z_simd_2016)                  <- c("postcode", "simd")
-data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_simd_2016$postcode)]
+z_smr01$simd[which(z_smr01$year >= 2014)] <- z_simd_2016$simd[match(z_smr01$postcode, z_simd_2016$postcode)]
 
 # Match SIMD 2012 onto years before 2014
 names(z_simd_2012)                  <- c("postcode", "simd")
-data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
+z_smr01$simd[which(z_smr01$year < 2014)]  <- z_simd_2012$simd[match(z_smr01$postcode, z_simd_2012$postcode)]
 
 
 ### 6 - Create patient level file
 
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   filter(epinum == 1 & cis_marker == last_cis) %>%
@@ -385,7 +385,7 @@ data <- data %>%
 ### SECTION 4 - MODELLING ----
 
 # Create subset of data for modelling
-z_data_lr <- data %>%
+z_data_lr <- z_smr01 %>%
   filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
@@ -403,17 +403,17 @@ risk_model <- glm(cbind(x, n-x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_
 risk_model <- clean_model(risk_model)
 
 # Create predicted probabilities
-data$pred_eq <- predict.glm(risk_model, data, type = "response")
+z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
 
 # Remove rows with no probability calculated
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   filter(!is.na(pred_eq))
 
 
 ### SECTION 5 - CREATE MINIMAL TIDY DATASET ----
 
 ### 1 - Create Scotland-level aggregation ----
-z_hsmr_scot <- data %>%
+z_hsmr_scot <- z_smr01 %>%
   group_by(quarter) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
@@ -426,7 +426,7 @@ z_hsmr_scot <- data %>%
 
 
 ### 2 - Create Hospital-level aggregation ----
-z_hsmr_hosp <- data %>%
+z_hsmr_hosp <- z_smr01 %>%
   group_by(quarter, location) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
@@ -439,7 +439,7 @@ z_hsmr_hosp <- data %>%
 
 
 ### 3 - Create HB-level aggregation ----
-z_hsmr_hb <- data %>%
+z_hsmr_hb <- z_smr01 %>%
   group_by(quarter, hbtreat_new) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
