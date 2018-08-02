@@ -348,7 +348,7 @@ for (i in 1:54) {
 
 
 data_pmorbs <- data_pmorbs %>%
-  select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum"))
+  select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
 
 data <- data %>%
   left_join(data_pmorbs, by = c("link_no", "cis_marker"))
