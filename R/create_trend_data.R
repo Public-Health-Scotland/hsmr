@@ -39,7 +39,7 @@ z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
 # Postcode lookups for SIMD 2016 and 2012
 z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
 z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
-z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009_sc_quintile")]
+z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009v2_sc_quintile")]
 
 
 ### SECTION 2 - DATA EXTRACTION----
@@ -75,3 +75,24 @@ data <- data %>%
 
 # Deleting unecessary dataframes
 rm(deaths);gc()
+
+
+### 3 - SIMD ---
+
+# Fix formatting of postcode variable (remove trailing spaces and any other
+# unnecessary white space)
+data$postcode <- sub("  ", " ", data$postcode)
+data$postcode <- sub("   ", "  ", data$postcode)
+data$postcode[which(regexpr(" ", data$postcode) == 5)] <- sub(" ", "", data$postcode[which(regexpr(" ", data$postcode) == 5)])
+
+# Match SIMD 2016 onto years beyond 2014
+names(z_simd_2016)                  <- c("postcode", "simd")
+data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_simd_2016$postcode)]
+
+# Match SIMD 2012 onto years before 2014 and after 2009
+names(z_simd_2012)                  <- c("postcode", "simd")
+data$simd[which(data$year < 2014 & data$year > 2009)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
+
+# Match SIMD 2009 onto years before 2010
+names(z_simd_2009)                  <- c("postcode", "simd")
+data$simd[which(data$year < 2010)]  <- z_simd_2009$simd[match(data$postcode, z_simd_2009$postcode)]
