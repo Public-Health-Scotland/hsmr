@@ -1,10 +1,10 @@
 #########################################################################
 # Name of file - create_hsmr_data.R
-# Data release - Quarterly HSMR publication
+# data release - Quarterly HSMR publication
 # Original Authors - David Caldwell & Anna Price
 # Orginal Date - August 2018
 #
-# Type - Data extraction/preparation/modelling
+# Type - data extraction/preparation/modelling
 # Written/run on - RStudio server
 # Version of R - 3.2.3
 #
@@ -33,7 +33,7 @@ suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
 ### 3 - Extract dates ----
 # Define the dates that the data are extracted from and to
 z_start_date   <- c("'2008-01-01'")     # The beginning of the ten year trend
-z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
+z_end_date     <- c("'2018-03-31'")     # End date for the cut off for z_smr01
 
 
 # Postcode lookups for SIMD 2016 and 2012
@@ -44,55 +44,69 @@ z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 
 ### SECTION 2 - DATA EXTRACTION----
 
-### 1 - Data extraction ----
+### 1 - data extraction ----
 # Source SQL queries
 source("R/sql_queries_trends.R")
 
 
 ### 2 - Extract data ----
-deaths <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
-data   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_ltt))
+z_gro     <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
+z_smr01   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_ltt))
 
 ### SECTION 3 - DATA PREPARATION----
 
 ### 1 - Variable names to lower case ----
-names(data)   <- tolower(names(data))
-names(deaths) <- tolower(names(deaths))
+names(z_smr01)   <- tolower(names(z_smr01))
+names(z_gro) <- tolower(names(z_gro))
 
 
-### 2 - Deaths data ----
+### 2 - Deaths Data ----
 # Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
 # link_no needs to be unique
-deaths <- deaths %>%
+z_gro <- z_gro %>%
   distinct(link_no, .keep_all = TRUE)
 
 # Matching deaths data on to SMR01 data
-data$date_of_death <- deaths$date_of_death[match(data$link_no,deaths$link_no)]
+z_smr01$date_of_death <- z_gro$date_of_death[match(z_smr01$link_no,z_gro$link_no)]
 
 # Sorting data by link_no, cis_marker, adm_date and dis_date
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 # Deleting unecessary dataframes
-rm(deaths);gc()
+rm(z_gro);gc()
 
 
 ### 3 - SIMD ---
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
-data$postcode <- sub("  ", " ", data$postcode)
-data$postcode <- sub("   ", "  ", data$postcode)
-data$postcode[which(regexpr(" ", data$postcode) == 5)] <- sub(" ", "", data$postcode[which(regexpr(" ", data$postcode) == 5)])
+z_smr01$postcode <- sub("  ", " ", z_smr01$postcode)
+z_smr01$postcode <- sub("   ", "  ", z_smr01$postcode)
+z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)] <- sub(" ", "", z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)])
 
 # Match SIMD 2016 onto years beyond 2014
 names(z_simd_2016)                  <- c("postcode", "simd")
-data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_simd_2016$postcode)]
+z_smr01$simd[which(z_smr01$year >= 2014)] <- z_simd_2016$simd[match(z_smr01$postcode, z_simd_2016$postcode)]
 
 # Match SIMD 2012 onto years before 2014 and after 2009
 names(z_simd_2012)                  <- c("postcode", "simd")
-data$simd[which(data$year < 2014 & data$year > 2009)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
+z_smr01$simd[which(z_smr01$year < 2014 & z_smr01$year > 2009)]  <- z_simd_2012$simd[match(z_smr01$postcode, z_simd_2012$postcode)]
 
 # Match SIMD 2009 onto years before 2010
 names(z_simd_2009)                  <- c("postcode", "simd")
-data$simd[which(data$year < 2010)]  <- z_simd_2009$simd[match(data$postcode, z_simd_2009$postcode)]
+z_smr01$simd[which(z_smr01$year < 2010)]  <- z_simd_2009$simd[match(z_smr01$postcode, z_simd_2009$postcode)]
+
+### 4 - Manipulations
+
+z_smr01 <- z_smr01 %>%
+  mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
+         dthdays      = (date_of_death - admission_date)/60/60/24,
+         death30      = 0,
+         death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
+         quarter_name = paste(year, "Q", quarter, sep = ""),
+         quarter      = as.numeric(as.factor(quarter_name))) %>%
+  group_by(link_no, cis_marker) %>%
+  mutate(epinum           = row_number(),
+         death_inhosp_max = max(death_inhosp)) %>%
+  arrange(link_no, cis_marker, admission_date, discharge_date)
