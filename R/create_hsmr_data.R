@@ -44,7 +44,7 @@ z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
 ### 4 - Set filepaths ----
 
 # Define lookups directory
-z_lookups <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
+z_lookups <- "R/reference_files/"
 
 
 ### 5 - Read in lookup files ----
