@@ -19,19 +19,22 @@ start <- proc.time()
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
-library("odbc")          # Accessing SMRA
+library("odbc")          # For accessing SMRA databases
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
 library("haven")         # For reading in spss files
+library("readr")         # For reading in csv files
 
 
-### 2 - Define the database connection with SMRA
-suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
-                                           uid = .rs.askForPassword("SMRA Username:"),
-                                           pwd = .rs.askForPassword("SMRA Password:")))
+### 2 - Define the database connection with SMRA ----
+
+suppressWarnings(z_SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
+                                             uid = .rs.askForPassword("SMRA Username:"),
+                                             pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
+
 # Define the dates that the data are extracted from and to
 z_start_date   <- c("'2011-01-01'")     # The beginning of baseline period
 z_start_date_5 <- c("'2006-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
@@ -40,41 +43,44 @@ z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
 
 
 ### 4 - Set filepaths ----
-# Define lookups and output directory
-z_lookups     <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
-z_base_file   <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
+
+# Define lookups directory
+z_lookups <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
 
 
 ### 5 - Read in lookup files ----
+
 # Primary Diagnosis Groupings
-z_pdiag_grp_data <- as.data.frame(read.spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+# Ignore warning message regarding unrecognized record type (function is )
+z_pdiag_grp_data <- as_tibble(read.spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
 z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs          <- read.csv(paste(z_lookups, "morbs.csv", sep = ""))
+z_morbs          <- read_csv(paste(z_lookups, "morbs.csv", sep = ""))
 
 # Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2016      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation",
+                                     "/postcode_2018_1.5_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation/",
+                                     "postcode_2016_1_simd2012.sav"))[ , c("pc7", "simd2012_sc_quintile")]
 
-# Read in hospital lookups
-z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
+# Hospital names
+z_hospitals      <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
 
 
 ### 6 - Source functions ----
+
 source("R/data_prep_functions.R")
 
 
 ### SECTION 2 - DATA EXTRACTION----
 
-### 1 - Data extraction ----
 # Source SQL queries
 source("R/sql_queries.R")
 
-
-### 2 - Extract data ----
-deaths  <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
-z_smr01 <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01))
+# Extract deaths and SMR01 data from SMRA databases
+deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
+z_smr01 <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01))
 
 
 ### SECTION 3 - DATA PREPARATION----
@@ -84,24 +90,25 @@ names(z_smr01) <- tolower(names(z_smr01))
 names(deaths)  <- tolower(names(deaths))
 
 
-### 2 - Deaths data ----
-# Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
-# link_no needs to be unique
+### 2 - Match deaths data to SMR01 ----
+# Remove duplicate records on link_no
+# The deaths file is matched on to SMR01 by link_no, therefore link_no needs to be unique
 deaths <- deaths %>%
   distinct(link_no, .keep_all = TRUE)
 
-# Matching deaths data on to SMR01 data
+# Match deaths data on to SMR01 data
 z_smr01$date_of_death <- deaths$date_of_death[match(z_smr01$link_no,deaths$link_no)]
 
-# Sorting data by link_no, cis_marker, adm_date and dis_date
+# Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
 z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
-# Deleting unecessary dataframes
+# Delete death tibble and remove from memory as no longer required
 rm(deaths);gc()
 
 
 ### 3 - Basic SMR01 processing ----
+# Create the following variables:
 # death_inhosp = 1 if the patient died in hospital during that episode of care
 # dthdays      = the number of days from admission till death
 # death30      = 1 if the patient died within 30 days of admission date
@@ -123,8 +130,10 @@ z_smr01 <- z_smr01 %>%
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
          location     = plyr::mapvalues(location,
-                                        c("V102H","V201H","C206H","G207H","F805H","F705H","G306H","G516H"),
-                                        c("V217H","V217H","C418H","G107H","F704H","F704H","G405H","G405H")),
+                                        c("V102H", "V201H", "C206H", "G207H",
+                                          "F805H", "F705H", "G306H", "G516H"),
+                                        c("V217H", "V217H", "C418H", "G107H",
+                                          "F704H", "F704H", "G405H", "G405H")),
          diag1_4      = substr(main_condition, 1, 4),
          diag2_4      = substr(other_condition_1, 1, 4),
          diag3_4      = substr(other_condition_2, 1, 4),
@@ -148,7 +157,7 @@ z_smr01 <- z_smr01 %>%
                                ifelse(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
          wcomorbs5    = ifelse(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
                                ifelse(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
-         wcomorbs1     = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
+         wcomorbs1    = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
          wcomorbs2    = ifelse(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
          wcomorbs3    = ifelse(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
          wcomorbs4    = ifelse(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
