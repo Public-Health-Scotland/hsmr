@@ -21,7 +21,7 @@ start <- proc.time()
 ### 1 - Load packages ----
 library("odbc")          # For accessing SMRA databases
 library("dplyr")         # For data manipulation in the "tidy" way
-library("foreign")       # For reading in SPSS SAV Files
+library("haven")         # For reading in SPSS files
 library("readr")         # For reading in csv files
 
 
@@ -71,6 +71,7 @@ z_hospitals      <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
 source("R/data_prep_functions.R")
 
 
+
 ### SECTION 2 - DATA EXTRACTION----
 
 # Source SQL queries
@@ -79,6 +80,7 @@ source("R/sql_queries.R")
 # Extract deaths and SMR01 data from SMRA databases
 deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
 z_smr01 <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01))
+
 
 
 ### SECTION 3 - DATA PREPARATION----
@@ -171,7 +173,9 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, cis_marker) %>%
   mutate(epinum           = row_number(),
          death_inhosp_max = max(death_inhosp)) %>%
+
   # Sort data as per guidance and remove variables no longer required
+
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
@@ -234,12 +238,16 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs1_16 = 0,
          pmorbs1_17 = 0,
          n_emerg    = 0) %>%
+
   # In order to increase the efficiency of the following for loop:
   # Only keep records with link numbers which appear in the main extract (z_smr01)
+
   filter(link_no %in% z_unique_id) %>%
+
   # In order to increase the efficiency of the following for loop:
   # Keep all records after the start date and only keep records before the start date
   # which have a valid Charlson Index grouping
+
   filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
 
@@ -359,6 +367,8 @@ for(i in 1:50){
 
 }
 
+# Calculate the sum of the Charlson Index weightings for each CIS, for both 1
+# and 5 years prior to admission
 data_pmorbs <- data_pmorbs %>%
   group_by(link_no, cis_marker) %>%
   mutate(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
@@ -376,14 +386,16 @@ for (i in 1:54) {
                                                               (admission_date - lag(admission_date, i)) <= 365, n_emerg + 1, n_emerg), n_emerg))
 }
 
-
+# Select required variables from data_pmorbs
 data_pmorbs <- data_pmorbs %>%
   select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
 
+# Join data_pmorbs on to the main tibble
 z_smr01 <- z_smr01 %>%
   left_join(data_pmorbs, by = c("link_no", "cis_marker"))
 
-rm(data_pmorbs)
+# Delete data_pmorbs as no longer required
+rm(data_pmorbs);gc()
 
 
 ### 5 - SIMD ----
@@ -405,6 +417,7 @@ z_smr01$simd[which(z_smr01$year < 2014)]  <- z_simd_2012$simd[match(z_smr01$post
 
 ### 6 - Create patient level file
 
+# Select first episode of final CIS for each patient
 z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
@@ -412,13 +425,21 @@ z_smr01 <- z_smr01 %>%
   ungroup()
 
 
+
 ### SECTION 4 - MODELLING ----
 
 # Create subset of data for modelling
 z_data_lr <- z_smr01 %>%
+
+  # Select baseline period rows and those with valid SIMD and admission from group
   filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
+
+  # Select required variables for model
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+
+  # Calculate total number of deaths and total number of patients for each
+  # combination of variables
   group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
            pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
   summarise(x = sum(death30), n = length(death30))
@@ -429,10 +450,11 @@ risk_model <- glm(cbind(x, n-x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_
                     factor(admfgrp) + factor(admgrp) + factor(ipdc) + factor(simd),
                   data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
 
-# Delete unnecessary model information using bespoke function
+# Delete unnecessary model information using bespoke function in order to retain
+# special class of object for predicted probabilities below
 risk_model <- clean_model(risk_model)
 
-# Create predicted probabilities
+# Calculate predicted probabilities
 z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
 
 # Remove rows with no probability calculated
@@ -440,9 +462,11 @@ z_smr01 <- z_smr01 %>%
   filter(!is.na(pred_eq))
 
 
+
 ### SECTION 5 - CREATE MINIMAL TIDY DATASET ----
 
 ### 1 - Create Scotland-level aggregation ----
+
 z_hsmr_scot <- z_smr01 %>%
   group_by(quarter) %>%
   summarise(deaths = sum(death30),
@@ -456,6 +480,7 @@ z_hsmr_scot <- z_smr01 %>%
 
 
 ### 2 - Create Hospital-level aggregation ----
+
 z_hsmr_hosp <- z_smr01 %>%
   group_by(quarter, location) %>%
   summarise(deaths = sum(death30),
@@ -464,11 +489,12 @@ z_hsmr_hosp <- z_smr01 %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
          location_type = "hospital") %>%
-  # FILTER ON PUBLISHED HOSPITALS
+  # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
   #filter(location %in% )
 
 
 ### 3 - Create HB-level aggregation ----
+
 z_hsmr_hb <- z_smr01 %>%
   group_by(quarter, hbtreat_new) %>%
   summarise(deaths = sum(death30),
@@ -481,10 +507,12 @@ z_hsmr_hb <- z_smr01 %>%
 
 
 ### 4 - Merge dataframes and calculate regression line ----
-# Merging data and matching on location name
+
+# Merge data and match on location name
 hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
   join(z_hospitals, by = location)
 
+# Create
 hsmr <- hsmr %>%
   mutate(quarter_reg = ifelse(quarter <= 12, 0, quarter - 12))
 
