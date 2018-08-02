@@ -22,7 +22,6 @@ start <- proc.time()
 library("odbc")          # For accessing SMRA databases
 library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
-library("haven")         # For reading in spss files
 library("readr")         # For reading in csv files
 
 
@@ -51,8 +50,7 @@ z_lookups <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
 ### 5 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
-# Ignore warning message regarding unrecognized record type (function is )
-z_pdiag_grp_data <- as_tibble(read.spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+z_pdiag_grp_data <- read_spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = ""))
 z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
@@ -108,6 +106,7 @@ rm(deaths);gc()
 
 
 ### 3 - Basic SMR01 processing ----
+
 # Create the following variables:
 # death_inhosp = 1 if the patient died in hospital during that episode of care
 # dthdays      = the number of days from admission till death
@@ -122,6 +121,7 @@ rm(deaths);gc()
 #                are present in any
 #                of the five "other diagnosis" positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
+
 z_smr01 <- z_smr01 %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
@@ -164,12 +164,14 @@ z_smr01 <- z_smr01 %>%
          wcomorbs5    = ifelse(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
          comorbs_sum  = wcomorbs1 + wcomorbs2 + wcomorbs3 + wcomorbs4 + wcomorbs5) %>%
 
+  # Create two further variables at CIS level:
   # epinum           = the episode number for each individual episode within the CIS
   # death_inhosp_max = 1 if the patient died in hospital during any episode of the CIS
 
   group_by(link_no, cis_marker) %>%
   mutate(epinum           = row_number(),
          death_inhosp_max = max(death_inhosp)) %>%
+  # Sort data as per guidance and remove variables no longer required
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
@@ -180,8 +182,17 @@ z_unique_id <- unique(z_smr01$link_no)
 
 ### 4 - Prior morbidities within previous 1 & 5 years ----
 
-data_pmorbs <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_minus5))
+# Extract SMR01 data from SMRA database required for the prior morbidities
+# ("pmorbs") look-back
+data_pmorbs        <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01_minus5))
 names(data_pmorbs) <- tolower(names(data_pmorbs))
+
+# Create the following variables:
+# diag1_4 = ICD10 code for main condition to 4 digits
+# diag1_3 = ICD10 code for main condition to 3 digits
+# pmorbs  = Charlson Index grouping (1-17) for main condition (0 if none apply)
+# pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
+# n_emerg                 = initialise empty vector for use in loop below
 
 data_pmorbs <- data_pmorbs %>%
   mutate(diag1_4  = substr(main_condition, 1, 4),
@@ -223,12 +234,22 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs1_16 = 0,
          pmorbs1_17 = 0,
          n_emerg    = 0) %>%
-  # Only keep records with link numbers which appear in the main extract above
+  # In order to increase the efficiency of the following for loop:
+  # Only keep records with link numbers which appear in the main extract (z_smr01)
   filter(link_no %in% z_unique_id) %>%
+  # In order to increase the efficiency of the following for loop:
   # Keep all records after the start date and only keep records before the start date
-  # which have a valid pmorbs value
+  # which have a valid Charlson Index grouping
   filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
+
+# For every row in the pmorbs extract, look at each of the prior 50 rows and
+# IF the previous episode belongs to the same person
+# AND the admission date on the episode is after the start date
+# AND the pmorbs value belongs to one of the Charlson index groups
+# AND the time between the two episodes is either 5 or 1 year(s)
+# THEN assign the correct Charlson Index weighting. These weightings are saved in the
+# 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
 
 for(i in 1:50){
   print(i)
