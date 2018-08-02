@@ -1,15 +1,15 @@
 #########################################################################
-# Name of file - create_hsmr_z_smr01.R
-# z_smr01 release - Quarterly HSMR publication
+# Name of file - create_hsmr_data.R
+# data release - Quarterly HSMR publication
 # Original Authors - David Caldwell & Anna Price
 # Orginal Date - August 2018
 #
-# Type - z_smr01 extraction/preparation/modelling
+# Type - data extraction/preparation/modelling
 # Written/run on - RStudio server
 # Version of R - 3.2.3
 #
-# Description - Extracts SMR01 & deaths z_smr01 and carries out required
-# manipulations to create minimal tidy z_smr01set for long term trends for HSMR
+# Description - Extracts SMR01 & deaths data and carries out required
+# manipulations to create minimal tidy dataset for long term trends for HSMR
 #
 # Approximate run time - xx minutes
 #########################################################################
@@ -19,19 +19,19 @@
 
 ### 1 - Load packages ----
 library("odbc")          # Accessing SMRA
-library("dplyr")         # For z_smr01 manipulation in the "tidy" way
+library("dplyr")         # For data manipulation in the "tidy" way
 library("foreign")       # For reading in SPSS SAV Files
 library("haven")         # For reading in spss files
 
 
-### 2 - Define the z_smr01base connection with SMRA
+### 2 - Define the database connection with SMRA
 suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
                                            uid = .rs.askForPassword("SMRA Username:"),
                                            pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
-# Define the dates that the z_smr01 are extracted from and to
+# Define the dates that the data are extracted from and to
 z_start_date   <- c("'2008-01-01'")     # The beginning of the ten year trend
 z_end_date     <- c("'2018-03-31'")     # End date for the cut off for z_smr01
 
@@ -42,38 +42,38 @@ z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/
 z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009v2_sc_quintile")]
 
 
-### SECTION 2 - z_smr01 EXTRACTION----
+### SECTION 2 - DATA EXTRACTION----
 
-### 1 - z_smr01 extraction ----
+### 1 - data extraction ----
 # Source SQL queries
 source("R/sql_queries_trends.R")
 
 
-### 2 - Extract z_smr01 ----
+### 2 - Extract data ----
 z_gro     <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
 z_smr01   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_ltt))
 
-### SECTION 3 - z_smr01 PREPARATION----
+### SECTION 3 - DATA PREPARATION----
 
 ### 1 - Variable names to lower case ----
 names(z_smr01)   <- tolower(names(z_smr01))
 names(z_gro) <- tolower(names(z_gro))
 
 
-### 2 - Deaths z_smr01 ----
+### 2 - Deaths Data ----
 # Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
 # link_no needs to be unique
 z_gro <- z_gro %>%
   distinct(link_no, .keep_all = TRUE)
 
-# Matching deaths z_smr01 on to SMR01 z_smr01
+# Matching deaths data on to SMR01 data
 z_smr01$date_of_death <- z_gro$date_of_death[match(z_smr01$link_no,z_gro$link_no)]
 
-# Sorting z_smr01 by link_no, cis_marker, adm_date and dis_date
+# Sorting data by link_no, cis_marker, adm_date and dis_date
 z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
-# Deleting unecessary z_smr01frames
+# Deleting unecessary dataframes
 rm(z_gro);gc()
 
 
