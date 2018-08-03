@@ -19,19 +19,21 @@ start <- proc.time()
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
-library("odbc")          # Accessing SMRA
+library("odbc")          # For accessing SMRA databases
 library("dplyr")         # For data manipulation in the "tidy" way
-library("foreign")       # For reading in SPSS SAV Files
-library("haven")         # For reading in spss files
+library("haven")         # For reading in SPSS files
+library("readr")         # For reading in csv files
 
 
-### 2 - Define the database connection with SMRA
-suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
-                                           uid = .rs.askForPassword("SMRA Username:"),
-                                           pwd = .rs.askForPassword("SMRA Password:")))
+### 2 - Define the database connection with SMRA ----
+
+suppressWarnings(z_SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
+                                             uid = .rs.askForPassword("SMRA Username:"),
+                                             pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
+
 # Define the dates that the data are extracted from and to
 z_start_date   <- c("'2011-01-01'")     # The beginning of baseline period
 z_start_date_5 <- c("'2006-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
@@ -40,68 +42,74 @@ z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
 
 
 ### 4 - Set filepaths ----
-# Define lookups and output directory
-z_lookups     <- "/conf/quality_indicators/hsmr/quarter_cycle/ref_files/"
-z_base_file   <- "/conf/quality_indicators/hsmr/projects/R Adaptation/data/base_files/"
+
+# Define lookups directory
+z_lookups <- "R/reference_files/"
 
 
 ### 5 - Read in lookup files ----
+
 # Primary Diagnosis Groupings
-z_pdiag_grp_data <- as.data.frame(read.spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = "")))
+z_pdiag_grp_data <- read_spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = ""))
 z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs          <- read.csv(paste(z_lookups, "morbs.csv", sep = ""))
+z_morbs          <- read_csv(paste(z_lookups, "morbs.csv", sep = ""))
 
 # Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2016      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation",
+                                     "/postcode_2018_1.5_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation/",
+                                     "postcode_2016_1_simd2012.sav"))[ , c("pc7", "simd2012_sc_quintile")]
 
-# Read in hospital lookups
-z_hospitals         <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
+# Hospital names
+z_hospitals      <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
 
 
 ### 6 - Source functions ----
+
 source("R/data_prep_functions.R")
+
 
 
 ### SECTION 2 - DATA EXTRACTION----
 
-### 1 - Data extraction ----
 # Source SQL queries
 source("R/sql_queries.R")
 
+# Extract deaths and SMR01 data from SMRA databases
+deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
+z_smr01 <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01))
 
-### 2 - Extract data ----
-deaths <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
-data   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01))
 
 
 ### SECTION 3 - DATA PREPARATION----
 
 ### 1 - Variable names to lower case ----
-names(data)   <- tolower(names(data))
-names(deaths) <- tolower(names(deaths))
+names(z_smr01) <- tolower(names(z_smr01))
+names(deaths)  <- tolower(names(deaths))
 
 
-### 2 - Deaths data ----
-# Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
-# link_no needs to be unique
+### 2 - Match deaths data to SMR01 ----
+# Remove duplicate records on link_no
+# The deaths file is matched on to SMR01 by link_no, therefore link_no needs to be unique
 deaths <- deaths %>%
   distinct(link_no, .keep_all = TRUE)
 
-# Matching deaths data on to SMR01 data
-data$date_of_death <- deaths$date_of_death[match(data$link_no,deaths$link_no)]
+# Match deaths data on to SMR01 data
+z_smr01$date_of_death <- deaths$date_of_death[match(z_smr01$link_no,deaths$link_no)]
 
-# Sorting data by link_no, cis_marker, adm_date and dis_date
-data <- data %>%
+# Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
+z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
-# Deleting unecessary dataframes
+# Delete death tibble and remove from memory as no longer required
 rm(deaths);gc()
 
 
 ### 3 - Basic SMR01 processing ----
+
+# Create the following variables:
 # death_inhosp = 1 if the patient died in hospital during that episode of care
 # dthdays      = the number of days from admission till death
 # death30      = 1 if the patient died within 30 days of admission date
@@ -115,16 +123,19 @@ rm(deaths);gc()
 #                are present in any
 #                of the five "other diagnosis" positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
-data <- data %>%
-  mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
+
+z_smr01 <- z_smr01 %>%
+  mutate(death_inhosp = if_else(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
          death30      = 0,
-         death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
+         death30      = if_else(dthdays >= 0 & dthdays <= 30, 1, 0),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
          location     = plyr::mapvalues(location,
-                                        c("V102H","V201H","C206H","G207H","F805H","F705H","G306H","G516H"),
-                                        c("V217H","V217H","C418H","G107H","F704H","F704H","G405H","G405H")),
+                                        c("V102H", "V201H", "C206H", "G207H",
+                                          "F805H", "F705H", "G306H", "G516H"),
+                                        c("V217H", "V217H", "C418H", "G107H",
+                                          "F704H", "F704H", "G405H", "G405H")),
          diag1_4      = substr(main_condition, 1, 4),
          diag2_4      = substr(other_condition_1, 1, 4),
          diag3_4      = substr(other_condition_2, 1, 4),
@@ -138,47 +149,60 @@ data <- data %>%
          diag5_3      = substr(other_condition_4, 1, 3),
          diag6_3      = substr(other_condition_5, 1, 3),
          pdiag_grp    = z_pdiag_grp_data$SHMI_DIAGNOSIS_GROUP[match(diag1_4,z_pdiag_grp_data$diag1_4)],
-         wcomorbs1    = ifelse(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
-                               ifelse(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
-         wcomorbs2    = ifelse(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
-                               ifelse(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
-         wcomorbs3    = ifelse(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
-                               ifelse(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
-         wcomorbs4    = ifelse(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
-                               ifelse(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
-         wcomorbs5    = ifelse(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
-                               ifelse(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
-         wcomorbs1     = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
-         wcomorbs2    = ifelse(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
-         wcomorbs3    = ifelse(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
-         wcomorbs4    = ifelse(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
-         wcomorbs5    = ifelse(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
+         wcomorbs1    = if_else(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
+                               if_else(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
+         wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
+                               if_else(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
+         wcomorbs3    = if_else(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
+                               if_else(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
+         wcomorbs4    = if_else(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
+                               if_else(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
+         wcomorbs5    = if_else(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
+                               if_else(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
+         wcomorbs1    = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
+         wcomorbs2    = if_else(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
+         wcomorbs3    = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
+         wcomorbs4    = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
+         wcomorbs5    = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
          comorbs_sum  = wcomorbs1 + wcomorbs2 + wcomorbs3 + wcomorbs4 + wcomorbs5) %>%
 
+  # Create two further variables at CIS level:
   # epinum           = the episode number for each individual episode within the CIS
   # death_inhosp_max = 1 if the patient died in hospital during any episode of the CIS
 
   group_by(link_no, cis_marker) %>%
   mutate(epinum           = row_number(),
          death_inhosp_max = max(death_inhosp)) %>%
+
+  # Sort data as per guidance and remove variables no longer required
+
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
                    "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
 
 # Vector of unique link numbers used for filtering below
-z_unique_id <- unique(data$link_no)
+z_unique_id <- unique(z_smr01$link_no)
 
 
 ### 4 - Prior morbidities within previous 1 & 5 years ----
 
-data_pmorbs <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_minus5))
+# Extract SMR01 data from SMRA database required for the prior morbidities
+# ("pmorbs") look-back
+data_pmorbs        <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01_minus5))
 names(data_pmorbs) <- tolower(names(data_pmorbs))
+
+# Create the following variables:
+# diag1_4 = ICD10 code for main condition to 4 digits
+# diag1_3 = ICD10 code for main condition to 3 digits
+# pmorbs  = Charlson Index grouping (1-17) for main condition (0 if none apply)
+# pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
+# n_emerg                 = initialise empty vector for use in loop below
 
 data_pmorbs <- data_pmorbs %>%
   mutate(diag1_4  = substr(main_condition, 1, 4),
          diag1_3  = substr(main_condition, 1, 3),
-         pmorbs   = ifelse(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
-                           ifelse(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
+         pmorbs   = if_else(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
+                           if_else(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
          pmorbs5_1  = 0,
          pmorbs5_2  = 0,
          pmorbs5_3  = 0,
@@ -214,121 +238,139 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs1_16 = 0,
          pmorbs1_17 = 0,
          n_emerg    = 0) %>%
-  # Only keep records with link numbers which appear in the main extract above
+
+  # In order to increase the efficiency of the following for loop:
+  # Only keep records with link numbers which appear in the main extract (z_smr01)
+
   filter(link_no %in% z_unique_id) %>%
+
+  # In order to increase the efficiency of the following for loop:
   # Keep all records after the start date and only keep records before the start date
-  # which have a valid pmorbs value
+  # which have a valid Charlson Index grouping
+
   filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
 
 
+# For every row in the pmorbs extract, look at each of the prior 50 rows and
+# IF the previous episode belongs to the same person
+# AND the admission date on the episode is after the start date
+# AND the pmorbs value belongs to one of the Charlson index groups
+# AND the time between the two episodes is either 5 or 1 year(s)
+# THEN assign the correct Charlson Index weighting. These weightings are saved in the
+# 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
+
 for(i in 1:50){
+
+  # 1:50 because the 95th percentile of episode counts per patient was 51
   print(i)
 
   data_pmorbs <- data_pmorbs %>%
-    mutate(pmorbs5_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+    mutate(pmorbs5_1  = if_else(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 5, pmorbs5_1),
 
-           pmorbs5_2  = ifelse(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_2  = if_else(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 11, pmorbs5_2),
 
-           pmorbs5_3  = ifelse(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_3  = if_else(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 13, pmorbs5_3),
 
-           pmorbs5_4  = ifelse(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_4  = if_else(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs5_4),
 
-           pmorbs5_5  = ifelse(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_5  = if_else(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs5_5),
 
-           pmorbs5_6  = ifelse(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_6  = if_else(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 3, pmorbs5_6),
 
-           pmorbs5_7  = ifelse(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_7  = if_else(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs5_7),
 
-           pmorbs5_8  = ifelse(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_8  = if_else(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 9, pmorbs5_8),
 
-           pmorbs5_9  = ifelse(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_9  = if_else(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 1825, 6, pmorbs5_9),
 
-           pmorbs5_10  = ifelse(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_10  = if_else(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 4, pmorbs5_10),
 
-           pmorbs5_11  = ifelse(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_11  = if_else(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 8, pmorbs5_11),
 
-           pmorbs5_12  = ifelse(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_12  = if_else(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, -1, pmorbs5_12),
 
-           pmorbs5_13  = ifelse(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_13  = if_else(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 1, pmorbs5_13),
 
-           pmorbs5_14  = ifelse(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_14  = if_else(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 10, pmorbs5_14),
 
-           pmorbs5_15  = ifelse(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_15  = if_else(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 14, pmorbs5_15),
 
-           pmorbs5_16  = ifelse(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_16  = if_else(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 18, pmorbs5_16),
 
-           pmorbs5_17  = ifelse(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs5_17  = if_else(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 1825, 2, pmorbs5_17),
 
-           pmorbs1_1  = ifelse(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_1  = if_else(admission_date >= z_start_date_l & 1 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 5, pmorbs1_1),
 
-           pmorbs1_2  = ifelse(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_2  = if_else(admission_date >= z_start_date_l & 2 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 11, pmorbs1_2),
 
-           pmorbs1_3  = ifelse(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_3  = if_else(admission_date >= z_start_date_l & 3 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 13, pmorbs1_3),
 
-           pmorbs1_4  = ifelse(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_4  = if_else(admission_date >= z_start_date_l & 4 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 4, pmorbs1_4),
 
-           pmorbs1_5  = ifelse(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_5  = if_else(admission_date >= z_start_date_l & 5 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 14, pmorbs1_5),
 
-           pmorbs1_6  = ifelse(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_6  = if_else(admission_date >= z_start_date_l & 6 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 3, pmorbs1_6),
 
-           pmorbs1_7  = ifelse(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_7  = if_else(admission_date >= z_start_date_l & 7 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 8, pmorbs1_7),
 
-           pmorbs1_8  = ifelse(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_8  = if_else(admission_date >= z_start_date_l & 8 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 9, pmorbs1_8),
 
-           pmorbs1_9  = ifelse(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_9  = if_else(admission_date >= z_start_date_l & 9 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                  (admission_date - lag(admission_date, i)) <= 365, 6, pmorbs1_9),
 
-           pmorbs1_10  = ifelse(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_10  = if_else(admission_date >= z_start_date_l & 10 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 4, pmorbs1_10),
 
-           pmorbs1_11  = ifelse(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_11  = if_else(admission_date >= z_start_date_l & 11 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 8, pmorbs1_11),
 
-           pmorbs1_12  = ifelse(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_12  = if_else(admission_date >= z_start_date_l & 12 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, -1, pmorbs1_12),
 
-           pmorbs1_13  = ifelse(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_13  = if_else(admission_date >= z_start_date_l & 13 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 1, pmorbs1_13),
 
-           pmorbs1_14  = ifelse(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_14  = if_else(admission_date >= z_start_date_l & 14 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 10, pmorbs1_14),
 
-           pmorbs1_15  = ifelse(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_15  = if_else(admission_date >= z_start_date_l & 15 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 14, pmorbs1_15),
 
-           pmorbs1_16  = ifelse(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_16  = if_else(admission_date >= z_start_date_l & 16 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 18, pmorbs1_16),
 
-           pmorbs1_17  = ifelse(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
+           pmorbs1_17  = if_else(admission_date >= z_start_date_l & 17 == lag(pmorbs, i) & link_no == lag(link_no, i) &
                                   (admission_date - lag(admission_date, i)) <= 365, 2, pmorbs1_17))
 
 }
 
+# Calculate the sum of the Charlson Index weightings for each CIS, for both 1
+# and 5 years prior to admission
 data_pmorbs <- data_pmorbs %>%
   group_by(link_no, cis_marker) %>%
   mutate(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
@@ -336,84 +378,110 @@ data_pmorbs <- data_pmorbs %>%
          pmorbs5_sum = max(pmorbs5_1) + max(pmorbs5_2) + max(pmorbs5_3) + max(pmorbs5_4) + max(pmorbs5_5) + max(pmorbs5_6) + max(pmorbs5_7) + max(pmorbs5_8) + max(pmorbs5_9) +
            max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17),
          epinum      = row_number()) %>%
+
+  # Select first episode to reduce tibble size (only first episode required for
+  # n_emerg)
   filter(epinum == 1) %>%
   ungroup()
 
-for (i in 1:54) {
+
+# For every row in the pmorbs extract, look at each of the prior 50 rows and
+# IF the previous episode belongs to the same person
+# AND the time between the two episodes is 1 year
+# AND the previous episode is an emergency admission
+# THEN increase the number of emergency admissions by one in the n_emerg
+# vector initiliased above.
+
+for (i in 1:50) {
+  # 1:50 because the 95th percentile of episode counts per patient was 51
 
   data_pmorbs <- data_pmorbs %>%
-    mutate(n_emerg = ifelse(!is.na(lag(link_no, i)), ifelse(lag(old_smr1_tadm_code, i) >= 4 & link_no == lag(link_no, i) &
+    mutate(n_emerg = if_else(!is.na(lag(link_no, i)), if_else(lag(old_smr1_tadm_code, i) >= 4 & link_no == lag(link_no, i) &
                                                               (admission_date - lag(admission_date, i)) <= 365, n_emerg + 1, n_emerg), n_emerg))
 }
 
-
+# Select required variables from data_pmorbs
 data_pmorbs <- data_pmorbs %>%
-  select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum"))
+  select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
 
-data <- data %>%
+# Join data_pmorbs on to the main tibble
+z_smr01 <- z_smr01 %>%
   left_join(data_pmorbs, by = c("link_no", "cis_marker"))
 
-rm(data_pmorbs)
+# Delete data_pmorbs as no longer required
+rm(data_pmorbs);gc()
 
 
 ### 5 - SIMD ----
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
-data$postcode <- sub("  ", " ", data$postcode)
-data$postcode <- sub("   ", "  ", data$postcode)
-data$postcode[which(regexpr(" ", data$postcode) == 5)] <- sub(" ", "", data$postcode[which(regexpr(" ", data$postcode) == 5)])
+z_smr01$postcode <- sub("  ", " ", z_smr01$postcode)
+z_smr01$postcode <- sub("   ", "  ", z_smr01$postcode)
+z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)] <- sub(" ", "", z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)])
 
 # Match SIMD 2016 onto years beyond 2014
 names(z_simd_2016)                  <- c("postcode", "simd")
-data$simd[which(data$year >= 2014)] <- z_simd_2016$simd[match(data$postcode, z_simd_2016$postcode)]
+z_smr01$simd[which(z_smr01$year >= 2014)] <- z_simd_2016$simd[match(z_smr01$postcode, z_simd_2016$postcode)]
 
 # Match SIMD 2012 onto years before 2014
 names(z_simd_2012)                  <- c("postcode", "simd")
-data$simd[which(data$year < 2014)]  <- z_simd_2012$simd[match(data$postcode, z_simd_2012$postcode)]
+z_smr01$simd[which(z_smr01$year < 2014)]  <- z_simd_2012$simd[match(z_smr01$postcode, z_simd_2012$postcode)]
 
 
 ### 6 - Create patient level file
 
-data <- data %>%
+# Select first episode of final CIS for each patient
+z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   filter(epinum == 1 & cis_marker == last_cis) %>%
   ungroup()
 
 
+
 ### SECTION 4 - MODELLING ----
 
 # Create subset of data for modelling
-z_data_lr <- data %>%
+z_data_lr <- z_smr01 %>%
+
+  # Select baseline period rows and those with valid SIMD and admission from group
   filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
+
+  # Select required variables for model
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
          pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+
+  # Calculate total number of deaths and total number of patients for each
+  # combination of variables
   group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
            pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
   summarise(x = sum(death30), n = length(death30))
 
 # Run logistic regression
-risk_model <- glm(cbind(x, n-x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_sum +
+risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_sum +
                     age_in_years + factor(sex) + factor(surgmed) + factor(pdiag_grp) +
                     factor(admfgrp) + factor(admgrp) + factor(ipdc) + factor(simd),
                   data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
 
-# Delete unnecessary model information using bespoke function
+# Delete unnecessary model information using bespoke function in order to retain
+# special class of object for predicted probabilities below
 risk_model <- clean_model(risk_model)
 
-# Create predicted probabilities
-data$pred_eq <- predict.glm(risk_model, data, type = "response")
+# Calculate predicted probabilities
+z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
 
 # Remove rows with no probability calculated
-data <- data %>%
+z_smr01 <- z_smr01 %>%
   filter(!is.na(pred_eq))
+
 
 
 ### SECTION 5 - CREATE MINIMAL TIDY DATASET ----
 
 ### 1 - Create Scotland-level aggregation ----
-z_hsmr_scot <- data %>%
+
+z_hsmr_scot <- z_smr01 %>%
   group_by(quarter) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
@@ -426,7 +494,8 @@ z_hsmr_scot <- data %>%
 
 
 ### 2 - Create Hospital-level aggregation ----
-z_hsmr_hosp <- data %>%
+
+z_hsmr_hosp <- z_smr01 %>%
   group_by(quarter, location) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
@@ -434,12 +503,13 @@ z_hsmr_hosp <- data %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
          location_type = "hospital") %>%
-  # FILTER ON PUBLISHED HOSPITALS
+  # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
   #filter(location %in% )
 
 
 ### 3 - Create HB-level aggregation ----
-z_hsmr_hb <- data %>%
+
+z_hsmr_hb <- z_smr01 %>%
   group_by(quarter, hbtreat_new) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
@@ -451,21 +521,29 @@ z_hsmr_hb <- data %>%
 
 
 ### 4 - Merge dataframes and calculate regression line ----
-# Merging data and matching on location name
+
+# Merge data and match on location name
 hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
   join(z_hospitals, by = location)
 
+# Create quarter variable used in linear model - every data point in the first year
+# is considered to come from one time point (baseline period)
 hsmr <- hsmr %>%
-  mutate(quarter_reg = ifelse(quarter <= 12, 0, quarter - 12))
+  mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
 
-reg_line <- lm(smr ~ quarter * location_name, data = hsmr)
+# Run linear regression
+reg_line <- lm(smr ~ quarter_reg * location_name, data = hsmr)
 
+# Create reg variable of predicted values
 hsmr$reg <- predict(reg_line, hsmr, type = "response")
 
 
-### 5 - Save data and create data folder ----
+### 5 - Save data ----
+
+# Create data folder and save hsmr as an RDA file
 devtools::use_data(hsmr)
 
+# Tidy workspace
 rm(hsmr)
 rm(list = ls(pattern = "^z"))
 
