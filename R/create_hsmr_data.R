@@ -127,8 +127,8 @@ rm(deaths);gc()
 z_smr01 <- z_smr01 %>%
   mutate(death_inhosp = if_else(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
-         death30      = 0,
          death30      = if_else(dthdays >= 0 & dthdays <= 30, 1, 0),
+         death30      = ifelse(is.na(death30), 0, death30),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name)),
          location     = plyr::mapvalues(location,
