@@ -36,10 +36,11 @@ z_start_date   <- c("'2008-01-01'")     # The beginning of the ten year trend
 z_end_date     <- c("'2018-03-31'")     # End date for the cut off for z_smr01
 
 
-# Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
-z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009v2_sc_quintile")]
+# Postcode lookups for SIMD 2016, 2012 and 2009
+z_simd_2016        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2009        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("PC7", "simd2009v2_sc_quintile")]
+names(z_simd_2009) <- tolower(names(z_simd_2009))
 
 
 ### SECTION 2 - DATA EXTRACTION----
@@ -102,11 +103,18 @@ z_smr01$simd[which(z_smr01$year < 2010)]  <- z_simd_2009$simd[match(z_smr01$post
 z_smr01 <- z_smr01 %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
          dthdays      = (date_of_death - admission_date)/60/60/24,
-         death30      = 0,
          death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
+         death30      = ifelse(is.na(death30), 0, death30),
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name))) %>%
   group_by(link_no, cis_marker) %>%
-  mutate(epinum           = row_number(),
-         death_inhosp_max = max(death_inhosp)) %>%
-  arrange(link_no, cis_marker, admission_date, discharge_date)
+  mutate(epinum             = row_number(),
+         death_inhosp_max   = max(death_inhosp),
+         discharge_date_cis = max(discharge_date),
+         dthdays_dis        = (date_of_death - discharge_date_cis),
+         death30_dis        = ifelse(dthdays_dis >= 0 & dthdays_dis <= 30, 1, 0),
+         death30_dis        = ifelse(is.na(death30_dis), 0, death30_dis)) %>%
+  arrange(link_no, cis_marker, admission_date, discharge_date) %>%
+  group_by(link_no, quarter) %>%
+  mutate(last_cis = max(cis_marker)) %>%
+  filter(epinum == 1 & cis_marker == last_cis)
