@@ -24,7 +24,7 @@ z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_
                            "where ADMISSION_DATE >= to_date(",z_start_date,", 'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",z_end_date,",'yyyy-MM-dd')",
                            "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
-z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE, extract(year from DATE_OF_DEATH) AS year",
+z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE, to_char(DATE_OF_DEATH,'Q') AS quarter, extract(year from DATE_OF_DEATH) AS year",
                      "from ANALYSIS.GRO_DEATHS_C",
                      "where DATE_OF_DEATH >= to_date(",z_start_date,",'yyyy-MM-dd')",
                      "ORDER BY LINK_NO")

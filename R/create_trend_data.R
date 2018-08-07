@@ -47,7 +47,7 @@ z_pop_est  <- read_spss("/conf/linkage/output/lookups/populations/estimates/HB20
   group_by(Year, HB2014) %>%
   summarise(pop = sum(Pop))
 z_pop_proj <- read_spss("/conf/linkage/output/lookups/populations/projections/HB2014_pop_proj_2016_2041.sav") %>%
-  filter(year >= 2017) %>%
+  filter(Year >= 2017) %>%
   group_by(Year, HB2014) %>%
   summarise(pop = sum(Pop))
 
@@ -229,3 +229,16 @@ z_hb_dis <- z_smr01 %>%
 
 # Merge dataframes together
 z_dis <- rbind(z_scot_dis, z_hb_dis)
+
+# Population-based mortality
+z_scot_pop <- z_gro %>%
+  group_by(year, quarter) %>%
+  summarise(deaths = length(year)) %>%
+  mutate(hbres_currentdate = "Scotland")
+
+z_hb_pop <- z_gro %>%
+  group_by(year, quarter, hbres_currentdate) %>%
+  summarise(deaths = length(year))
+
+z_pop_deaths <- rbind(z_scot_pop, z_hb_pop) %>%
+  left_join(z_pop, by = c("year"= "Year", "hbres_currentdate" = "HB2014"))
