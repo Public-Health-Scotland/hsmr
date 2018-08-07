@@ -143,7 +143,9 @@ z_scot_specadm <- z_smr01 %>%
     surgmed == 2 & admgrp == 1 ~ "Elective/Surgical",
     surgmed == 1 & admgrp == 2 ~ "Non-Elective/Non-Surgical",
     surgmed == 2 & admgrp == 2 ~ "Non-Elective/Surgical"
-  ))
+  )) %>%
+  select(quarter, deaths, pats, label)
+
 
 # Age group
 z_scot_age <- z_smr01 %>%
@@ -157,7 +159,8 @@ z_scot_age <- z_smr01 %>%
     agegrp == 3 ~ "40-59 years",
     agegrp == 4 ~ "60-79 years",
     agegrp == 5 ~ "80+ years"
-  ))
+  ))%>%
+  select(quarter, deaths, pats, label)
 
 
 # Sex
@@ -169,7 +172,9 @@ z_scot_sex <- z_smr01 %>%
   mutate(label = case_when(
     sex == 1 ~ "Male",
     sex == 2 ~ "Female"
-  ))
+  ))%>%
+  select(quarter, deaths, pats, label)
+
 
 # Deprivation
 z_scot_dep <- z_smr01 %>%
@@ -184,3 +189,9 @@ z_scot_dep <- z_smr01 %>%
     simd == 4 ~ "4",
     simd == 5 ~ "5 - Least Deprived"
   ))
+%>%
+  select(quarter, deaths, pats, label)
+
+z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
+                          z_scot_sex, z_scot_specadm,
+                          z_scot_dep)
