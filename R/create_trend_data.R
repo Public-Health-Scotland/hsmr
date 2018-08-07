@@ -187,11 +187,12 @@ z_scot_dep <- z_smr01 %>%
             pats   = length(death30)) %>%
   ungroup() %>%
   mutate(label = case_when(
-                  simd == 1 ~ "1 - Most Deprived",
-                  simd == 2 ~ "2",
-                  simd == 3 ~ "3",
-                  simd == 4 ~ "4",
-                  simd == 5 ~ "5 - Least Deprived"
+                  is.na(simd) ~ "Unknown",
+                  simd == 1   ~ "1 - Most Deprived",
+                  simd == 2   ~ "2",
+                  simd == 3   ~ "3",
+                  simd == 4   ~ "4",
+                  simd == 5   ~ "5 - Least Deprived"
                 ),
           hbtreat_currentdate = "Scotland") %>%
   select(hbtreat_currentdate, quarter, deaths, pats, label)
