@@ -108,6 +108,10 @@ z_smr01 <- z_smr01 %>%
          quarter_name = paste(year, "Q", quarter, sep = ""),
          quarter      = as.numeric(as.factor(quarter_name))) %>%
   group_by(link_no, cis_marker) %>%
-  mutate(epinum           = row_number(),
-         death_inhosp_max = max(death_inhosp)) %>%
+  mutate(epinum             = row_number(),
+         death_inhosp_max   = max(death_inhosp),
+         discharge_date_cis = max(discharge_date),
+         dthdays_dis        = (date_of_death - discharge_date_cis),
+         death30_dis        = ifelse(dthdays_dis >= 0 & dthdays_dis <= 30, 1, 0),
+         death30)dis        = ifelse(is.na(death30_dis), 0, death30_dis)) %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
