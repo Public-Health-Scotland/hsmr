@@ -193,8 +193,7 @@ z_scot_dep <- z_smr01 %>%
                   simd == 4 ~ "4",
                   simd == 5 ~ "5 - Least Deprived"
                 ),
-          hbtreat_currentdate = "Scotland")
-%>%
+          hbtreat_currentdate = "Scotland") %>%
   select(quarter, deaths, pats, label)
 
 # Merge dataframes together
