@@ -120,3 +120,67 @@ z_smr01 <- z_smr01 %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
   filter(epinum == 1 & cis_marker == last_cis)
+
+
+### 5 - Aggregation
+
+# All Admissions
+z_scot_all_adm <- z_smr01 %>%
+  group_by(quarter) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = "All Admissions")
+
+# Specialty/Admission type
+z_scot_specadm <- z_smr01 %>%
+  group_by(quarter, surgmed, admgrp) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+    surgmed == 1 & admgrp == 1 ~ "Elective/Non-Surgical",
+    surgmed == 2 & admgrp == 1 ~ "Elective/Surgical",
+    surgmed == 1 & admgrp == 2 ~ "Non-Elective/Non-Surgical",
+    surgmed == 2 & admgrp == 2 ~ "Non-Elective/Surgical"
+  ))
+
+# Age group
+z_scot_age <- z_smr01 %>%
+  group_by(quarter, agegrp) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+    agegrp == 1 ~ "0-19 years",
+    agegrp == 2 ~ "20-39 years",
+    agegrp == 3 ~ "40-59 years",
+    agegrp == 4 ~ "60-79 years",
+    agegrp == 5 ~ "80+ years"
+  ))
+
+
+# Sex
+z_scot_sex <- z_smr01 %>%
+  group_by(quarter, sex) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+    sex == 1 ~ "Male",
+    sex == 2 ~ "Female"
+  ))
+
+# Deprivation
+z_scot_dep <- z_smr01 %>%
+  group_by(quarter, simd) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+    simd == 1 ~ "1 - Most Deprived",
+    simd == 2 ~ "2",
+    simd == 3 ~ "3",
+    simd == 4 ~ "4",
+    simd == 5 ~ "5 - Least Deprived"
+  ))
