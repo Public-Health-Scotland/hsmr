@@ -523,28 +523,28 @@ z_hsmr_hb <- z_smr01 %>%
 ### 4 - Merge dataframes and calculate regression line ----
 
 # Merge data and match on location name
-hsmr <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
+smr_data <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
   join(z_hospitals, by = location)
 
 # Create quarter variable used in linear model - every data point in the first year
 # is considered to come from one time point (baseline period)
-hsmr <- hsmr %>%
+smr_data <- smr_data %>%
   mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
 
 # Run linear regression
-reg_line <- lm(smr ~ quarter_reg * location_name, data = hsmr)
+reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
 
 # Create reg variable of predicted values
-hsmr$reg <- predict(reg_line, hsmr, type = "response")
+smr_data$reg <- predict(reg_line, smr_data, type = "response")
 
 
 ### 5 - Save data ----
 
-# Create data folder and save hsmr as an RDA file
-devtools::use_data(hsmr)
+# Create data folder and save smr_data as an RDA file
+devtools::use_data(smr_data)
 
 # Tidy workspace
-rm(hsmr)
+rm(smr_data)
 rm(list = ls(pattern = "^z"))
 
 ### END OF SCRIPT ###
