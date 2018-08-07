@@ -85,9 +85,6 @@ z_smr01$date_of_death <- z_gro$date_of_death[match(z_smr01$link_no,z_gro$link_no
 z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
-# Deleting unecessary dataframes
-rm(z_gro);gc()
-
 
 ### 3 - SIMD ---
 
