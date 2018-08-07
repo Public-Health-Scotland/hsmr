@@ -110,11 +110,13 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, cis_marker) %>%
   mutate(epinum             = row_number(),
          death_inhosp_max   = max(death_inhosp),
-         discharge_date_cis = max(discharge_date),
-         dthdays_dis        = (date_of_death - discharge_date_cis),
+         discharge_date_cis = max(discharge_date)) %>%
+  ungroup() %>%
+  mutate(dthdays_dis        = (date_of_death - discharge_date_cis),
          death30_dis        = ifelse(dthdays_dis >= 0 & dthdays_dis <= 30, 1, 0),
          death30_dis        = ifelse(is.na(death30_dis), 0, death30_dis)) %>%
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
+  ungroup() %>%
   filter(epinum == 1 & cis_marker == last_cis)
