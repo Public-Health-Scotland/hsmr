@@ -131,7 +131,7 @@ z_scot_all_adm <- z_smr01 %>%
             pats   = length(death30)) %>%
   ungroup() %>%
   mutate(label = "All Admissions",
-         hbtreat_new = "Scotland")
+         hbtreat_currentdate = "Scotland")
 
 # Specialty/Admission type
 z_scot_specadm <- z_smr01 %>%
@@ -145,7 +145,7 @@ z_scot_specadm <- z_smr01 %>%
                   surgmed == 1 & admgrp == 2 ~ "Non-Elective/Non-Surgical",
                   surgmed == 2 & admgrp == 2 ~ "Non-Elective/Surgical"
                 ),
-          hbtreat_new = "Scotland") %>%
+          hbtreat_currentdate = "Scotland") %>%
   select(quarter, deaths, pats, label)
 
 
@@ -162,7 +162,7 @@ z_scot_age <- z_smr01 %>%
                   agegrp == 4 ~ "60-79 years",
                   agegrp == 5 ~ "80+ years"
                 ),
-          hbtreat_new = "Scotland")%>%
+          hbtreat_currentdate = "Scotland")%>%
   select(quarter, deaths, pats, label)
 
 
@@ -176,7 +176,7 @@ z_scot_sex <- z_smr01 %>%
                   sex == 1 ~ "Male",
                   sex == 2 ~ "Female"
                 ),
-         hbtreat_new = "Scotland")%>%
+         hbtreat_currentdate = "Scotland")%>%
   select(quarter, deaths, pats, label)
 
 
@@ -193,7 +193,7 @@ z_scot_dep <- z_smr01 %>%
                   simd == 4 ~ "4",
                   simd == 5 ~ "5 - Least Deprived"
                 ),
-          hbtreat_new = "Scotland")
+          hbtreat_currentdate = "Scotland")
 %>%
   select(quarter, deaths, pats, label)
 
@@ -202,11 +202,19 @@ z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
                           z_scot_sex, z_scot_specadm,
                           z_scot_dep)
 
-# All Admissions
+# Crude Rate - Date of Discharge (Scotland)
 z_scot_dis <- z_smr01 %>%
   group_by(quarter) %>%
   summarise(deaths = sum(death30_dis),
             pats   = length(death30_dis)) %>%
   ungroup() %>%
-  mutate(label       = "All Admissions",
-         hbtreat_new = "Scotland")
+  mutate(label       = "Discharge",
+         hbtreat_currentdate = "Scotland")
+
+# Crude Rate - Date of Discharge (NHS Board)
+z_hb_dis <- z_smr01 %>%
+  group_by(quarter, hbtreat_currentdate) %>%
+  summarise(deaths = sum(death30_dis),
+            pats   = length(death30_dis)) %>%
+  ungroup() %>%
+  mutate(label       = "Discharge")
