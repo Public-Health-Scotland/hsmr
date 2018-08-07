@@ -192,6 +192,7 @@ z_scot_dep <- z_smr01 %>%
 %>%
   select(quarter, deaths, pats, label)
 
+# Merge dataframes together
 z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
                           z_scot_sex, z_scot_specadm,
                           z_scot_dep)
