@@ -37,9 +37,10 @@ z_end_date     <- c("'2018-03-31'")     # End date for the cut off for z_smr01
 
 
 # Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
-z_simd_2009      <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("pc7", "simd2009v2_sc_quintile")]
+z_simd_2016        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
+z_simd_2012        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2009        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("PC7", "simd2009v2_sc_quintile")]
+names(z_simd_2009) <- tolower(names(z_simd_2009))
 
 
 ### SECTION 2 - DATA EXTRACTION----
