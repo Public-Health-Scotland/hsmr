@@ -51,6 +51,9 @@ z_pop_proj <- read_spss("/conf/linkage/output/lookups/populations/projections/HB
   group_by(Year, HB2014) %>%
   summarise(pop = sum(Pop))
 
+# Combine population lookups into one lookup
+z_pop <- rbind(z_pop_est, z_pop_proj)
+
 ### SECTION 2 - DATA EXTRACTION----
 
 ### 1 - data extraction ----
