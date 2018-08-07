@@ -42,6 +42,17 @@ z_simd_2012        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivatio
 z_simd_2009        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("PC7", "simd2009v2_sc_quintile")]
 names(z_simd_2009) <- tolower(names(z_simd_2009))
 
+# Population lookups for 2017
+z_pop_est  <- read_spss("/conf/linkage/output/lookups/populations/estimates/HB2014_pop_est_1981_2016.sav") %>%
+  group_by(Year, HB2014) %>%
+  summarise(pop = sum(Pop))
+z_pop_proj <- read_spss("/conf/linkage/output/lookups/populations/projections/HB2014_pop_proj_2016_2041.sav") %>%
+  filter(Year >= 2017) %>%
+  group_by(Year, HB2014) %>%
+  summarise(pop = sum(Pop))
+
+# Combine population lookups into one lookup
+z_pop <- rbind(z_pop_est, z_pop_proj)
 
 ### SECTION 2 - DATA EXTRACTION----
 
@@ -73,9 +84,6 @@ z_smr01$date_of_death <- z_gro$date_of_death[match(z_smr01$link_no,z_gro$link_no
 # Sorting data by link_no, cis_marker, adm_date and dis_date
 z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
-
-# Deleting unecessary dataframes
-rm(z_gro);gc()
 
 
 ### 3 - SIMD ---
@@ -110,11 +118,127 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, cis_marker) %>%
   mutate(epinum             = row_number(),
          death_inhosp_max   = max(death_inhosp),
-         discharge_date_cis = max(discharge_date),
-         dthdays_dis        = (date_of_death - discharge_date_cis),
+         discharge_date_cis = max(discharge_date)) %>%
+  ungroup() %>%
+  mutate(dthdays_dis        = (date_of_death - discharge_date_cis),
          death30_dis        = ifelse(dthdays_dis >= 0 & dthdays_dis <= 30, 1, 0),
          death30_dis        = ifelse(is.na(death30_dis), 0, death30_dis)) %>%
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
+  ungroup() %>%
   filter(epinum == 1 & cis_marker == last_cis)
+
+
+### 5 - Aggregation
+
+# Crude Rates (Scotland) - All Admissions
+z_scot_all_adm <- z_smr01 %>%
+  group_by(quarter) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = "All Admissions",
+         hbtreat_currentdate = "Scotland")
+
+# Crude Rates (Scotland) - Specialty/Admission type
+z_scot_specadm <- z_smr01 %>%
+  group_by(quarter, surgmed, admgrp) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+                  surgmed == 1 & admgrp == 1 ~ "Elective/Non-Surgical",
+                  surgmed == 2 & admgrp == 1 ~ "Elective/Surgical",
+                  surgmed == 1 & admgrp == 2 ~ "Non-Elective/Non-Surgical",
+                  surgmed == 2 & admgrp == 2 ~ "Non-Elective/Surgical"
+                ),
+          hbtreat_currentdate = "Scotland") %>%
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
+
+
+# Crude Rates (Scotland) - Age group
+z_scot_age <- z_smr01 %>%
+  group_by(quarter, age_grp) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+                  age_grp == 1 ~ "0-19 years",
+                  age_grp == 2 ~ "20-39 years",
+                  age_grp == 3 ~ "40-59 years",
+                  age_grp == 4 ~ "60-79 years",
+                  age_grp == 5 ~ "80+ years"
+                ),
+          hbtreat_currentdate = "Scotland")%>%
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
+
+
+# Crude Rates (Scotland) - Sex
+z_scot_sex <- z_smr01 %>%
+  group_by(quarter, sex) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+                  sex == 1 ~ "Male",
+                  sex == 2 ~ "Female"
+                ),
+         hbtreat_currentdate = "Scotland")%>%
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
+
+
+# Crude Rates (Scotland) - Deprivation
+z_scot_dep <- z_smr01 %>%
+  group_by(quarter, simd) %>%
+  summarise(deaths = sum(death30),
+            pats   = length(death30)) %>%
+  ungroup() %>%
+  mutate(label = case_when(
+                  is.na(simd) ~ "Unknown",
+                  simd == 1   ~ "1 - Most Deprived",
+                  simd == 2   ~ "2",
+                  simd == 3   ~ "3",
+                  simd == 4   ~ "4",
+                  simd == 5   ~ "5 - Least Deprived"
+                ),
+          hbtreat_currentdate = "Scotland") %>%
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
+
+# Merge dataframes together
+z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
+                          z_scot_sex, z_scot_specadm,
+                          z_scot_dep)
+
+# Crude Rate - Date of Discharge (Scotland)
+z_scot_dis <- z_smr01 %>%
+  group_by(quarter) %>%
+  summarise(deaths = sum(death30_dis),
+            pats   = length(death30_dis)) %>%
+  ungroup() %>%
+  mutate(label       = "Discharge",
+         hbtreat_currentdate = "Scotland")
+
+# Crude Rate - Date of Discharge (NHS Board)
+z_hb_dis <- z_smr01 %>%
+  group_by(quarter, hbtreat_currentdate) %>%
+  summarise(deaths = sum(death30_dis),
+            pats   = length(death30_dis)) %>%
+  ungroup() %>%
+  mutate(label       = "Discharge")
+
+# Merge dataframes together
+z_dis <- rbind(z_scot_dis, z_hb_dis)
+
+# Population-based mortality
+z_scot_pop <- z_gro %>%
+  group_by(year, quarter) %>%
+  summarise(deaths = length(year)) %>%
+  mutate(hbres_currentdate = "Scotland")
+
+z_hb_pop <- z_gro %>%
+  group_by(year, quarter, hbres_currentdate) %>%
+  summarise(deaths = length(year))
+
+z_pop_deaths <- rbind(z_scot_pop, z_hb_pop) %>%
+  left_join(z_pop, by = c("year"= "Year", "hbres_currentdate" = "HB2014"))
