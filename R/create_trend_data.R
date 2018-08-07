@@ -124,7 +124,7 @@ z_smr01 <- z_smr01 %>%
 
 ### 5 - Aggregation
 
-# All Admissions
+# Crude Rates (Scotland) - All Admissions
 z_scot_all_adm <- z_smr01 %>%
   group_by(quarter) %>%
   summarise(deaths = sum(death30),
@@ -133,7 +133,7 @@ z_scot_all_adm <- z_smr01 %>%
   mutate(label = "All Admissions",
          hbtreat_currentdate = "Scotland")
 
-# Specialty/Admission type
+# Crude Rates (Scotland) - Specialty/Admission type
 z_scot_specadm <- z_smr01 %>%
   group_by(quarter, surgmed, admgrp) %>%
   summarise(deaths = sum(death30),
@@ -149,7 +149,7 @@ z_scot_specadm <- z_smr01 %>%
   select(quarter, deaths, pats, label)
 
 
-# Age group
+# Crude Rates (Scotland) - Age group
 z_scot_age <- z_smr01 %>%
   group_by(quarter, agegrp) %>%
   summarise(deaths = sum(death30),
@@ -166,7 +166,7 @@ z_scot_age <- z_smr01 %>%
   select(quarter, deaths, pats, label)
 
 
-# Sex
+# Crude Rates (Scotland) - Sex
 z_scot_sex <- z_smr01 %>%
   group_by(quarter, sex) %>%
   summarise(deaths = sum(death30),
@@ -180,7 +180,7 @@ z_scot_sex <- z_smr01 %>%
   select(quarter, deaths, pats, label)
 
 
-# Deprivation
+# Crude Rates (Scotland) - Deprivation
 z_scot_dep <- z_smr01 %>%
   group_by(quarter, simd) %>%
   summarise(deaths = sum(death30),
@@ -218,3 +218,6 @@ z_hb_dis <- z_smr01 %>%
             pats   = length(death30_dis)) %>%
   ungroup() %>%
   mutate(label       = "Discharge")
+
+# Merge dataframes together
+z_dis <- rbind(z_scot_dis, z_hb_dis)
