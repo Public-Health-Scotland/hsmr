@@ -1,5 +1,5 @@
 z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_MARKER, POSTCODE, SPECIALTY,",
-                           "DISCHARGE_TYPE, HBTREAT_CURRENTDATE,",
+                           "DISCHARGE_TYPE, HBTREAT_CURRENTDATE, SEX,",
                            "CASE WHEN ADMISSION_TYPE BETWEEN 20 AND 48 OR ADMISSION_TYPE = 18 THEN '2'",
                            "WHEN ADMISSION_TYPE BETWEEN 10 AND 12 OR ADMISSION_TYPE = 19 THEN '1'",
                            "ELSE 'NULL' END admgrp,",
