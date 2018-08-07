@@ -146,24 +146,24 @@ z_scot_specadm <- z_smr01 %>%
                   surgmed == 2 & admgrp == 2 ~ "Non-Elective/Surgical"
                 ),
           hbtreat_currentdate = "Scotland") %>%
-  select(quarter, deaths, pats, label)
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
 
 
 # Crude Rates (Scotland) - Age group
 z_scot_age <- z_smr01 %>%
-  group_by(quarter, agegrp) %>%
+  group_by(quarter, age_grp) %>%
   summarise(deaths = sum(death30),
             pats   = length(death30)) %>%
   ungroup() %>%
   mutate(label = case_when(
-                  agegrp == 1 ~ "0-19 years",
-                  agegrp == 2 ~ "20-39 years",
-                  agegrp == 3 ~ "40-59 years",
-                  agegrp == 4 ~ "60-79 years",
-                  agegrp == 5 ~ "80+ years"
+                  age_grp == 1 ~ "0-19 years",
+                  age_grp == 2 ~ "20-39 years",
+                  age_grp == 3 ~ "40-59 years",
+                  age_grp == 4 ~ "60-79 years",
+                  age_grp == 5 ~ "80+ years"
                 ),
           hbtreat_currentdate = "Scotland")%>%
-  select(quarter, deaths, pats, label)
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
 
 
 # Crude Rates (Scotland) - Sex
@@ -177,7 +177,7 @@ z_scot_sex <- z_smr01 %>%
                   sex == 2 ~ "Female"
                 ),
          hbtreat_currentdate = "Scotland")%>%
-  select(quarter, deaths, pats, label)
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
 
 
 # Crude Rates (Scotland) - Deprivation
@@ -194,7 +194,7 @@ z_scot_dep <- z_smr01 %>%
                   simd == 5 ~ "5 - Least Deprived"
                 ),
           hbtreat_currentdate = "Scotland") %>%
-  select(quarter, deaths, pats, label)
+  select(hbtreat_currentdate, quarter, deaths, pats, label)
 
 # Merge dataframes together
 z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
