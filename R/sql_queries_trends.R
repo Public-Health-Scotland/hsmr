@@ -20,7 +20,7 @@ z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_
                            "WHEN age_in_years BETWEEN 40 AND 59 THEN '3'",
                            "WHEN age_in_years BETWEEN 60 AND 79 THEN '4'",
                            "WHEN age_in_years >= 80 THEN '5'",
-                           "ELSE 'NULL' END age_grp  to_char(admission_date,'Q') AS quarter, extract(year from admission_date) AS year from SMR01_PI",
+                           "ELSE 'NULL' END age_grp,  to_char(admission_date,'Q') AS quarter, extract(year from admission_date) AS year from SMR01_PI",
                            "where ADMISSION_DATE >= to_date(",z_start_date,", 'yyyy-MM-dd') AND ADMISSION_DATE <= to_date(",z_end_date,",'yyyy-MM-dd')",
                            "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
