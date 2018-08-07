@@ -42,6 +42,14 @@ z_simd_2012        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivatio
 z_simd_2009        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("PC7", "simd2009v2_sc_quintile")]
 names(z_simd_2009) <- tolower(names(z_simd_2009))
 
+# Population lookups for 2017
+z_pop_est  <- read_spss("/conf/linkage/output/lookups/populations/estimates/HB2014_pop_est_1981_2016.sav") %>%
+  group_by(Year, HB2014) %>%
+  summarise(pop = sum(Pop))
+z_pop_proj <- read_spss("/conf/linkage/output/lookups/populations/projections/HB2014_pop_proj_2016_2041.sav") %>%
+  filter(year >= 2017) %>%
+  group_by(Year, HB2014) %>%
+  summarise(pop = sum(Pop))
 
 ### SECTION 2 - DATA EXTRACTION----
 
