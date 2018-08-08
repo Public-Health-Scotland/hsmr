@@ -137,10 +137,12 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
-  filter(epinum == 1 & cis_marker == last_cis) %>%
-  mutate(drop = ifelse(link_no = lag(link_no) & lag(death30 == 1), 1, 0)) %>%
-  filter(drop == 0)
+  filter(epinum == 1 & cis_marker == last_cis)
 
+cond <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
+            1 == c(0, z_smr01$death30[-length(z_smr01$death30)]))
+
+z_smr01 <- z_smr01[!cond,]
 
 
 ### 5 - Aggregation
