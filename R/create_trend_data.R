@@ -137,7 +137,8 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
-  filter(epinum == 1 & cis_marker == last_cis)
+  mutate(drop = ifelse(link_no = lag(link_no) & lag(death30 == 1), 1, 0)),
+  filter(epinum == 1 & cis_marker == last_cis & drop == 0)
 
 
 ### 5 - Aggregation
