@@ -457,8 +457,8 @@ z_smr01 <- z_smr01[!cond, ]
 # Create subset of data for modelling
 z_data_lr <- z_smr01 %>%
 
-  # Select baseline period rows and those with valid SIMD and admission from group
-  filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
+  # Select baseline period rows
+  filter(quarter <= 12) %>%
 
   # Select required variables for model
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
