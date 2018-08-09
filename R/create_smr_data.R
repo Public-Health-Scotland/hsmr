@@ -438,10 +438,11 @@ z_smr01 <- z_smr01 %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
   filter(epinum == 1 & cis_marker == last_cis) %>%
-  # Remove rows where SIMD and admfgrp are missing as both variables are required
+  # Remove rows where SIMD, admfgrp and ipdc are missing as variables are required
   # for modelling/predicted values
   filter(!is.na(simd)) %>%
-  filter(!is.na(admfgrp))
+  filter(admfgrp %in% 1:6) %>%
+  filter(ipdc %in% 1:2)
 
 # If a patient dies within 30 days of admission in two subsequent quarters then
 # remove the second record to avoid double counting deaths
@@ -472,9 +473,10 @@ z_data_lr <- z_smr01 %>%
   ungroup()
 
 # Run logistic regression
-risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_sum +
-                    age_in_years + factor(sex) + factor(surgmed) + factor(pdiag_grp) +
-                    factor(admfgrp) + factor(admgrp) + factor(ipdc) + factor(simd),
+risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
+                    pmorbs5_sum + age_in_years + factor(sex) + factor(surgmed) +
+                    factor(pdiag_grp) + factor(admfgrp) + factor(admgrp) +
+                    factor(ipdc) + factor(simd),
                   data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
 
 # Delete unnecessary model information using bespoke function in order to retain
