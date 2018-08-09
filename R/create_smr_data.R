@@ -437,7 +437,11 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
-  filter(epinum == 1 & cis_marker == last_cis)
+  filter(epinum == 1 & cis_marker == last_cis) %>%
+  # Remove rows where SIMD and admfgrp are missing as both variables are required
+  # for modelling/predicted values
+  filter(!is.na(simd)) %>%
+  filter(!is.na(admfgrp))
 
 
 
