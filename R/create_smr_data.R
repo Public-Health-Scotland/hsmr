@@ -446,7 +446,7 @@ z_smr01 <- z_smr01 %>%
 
 # If a patient dies within 30 days of admission in two subsequent quarters then
 # remove the second record to avoid double counting deaths
-cond    <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
+z_cond  <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
                c(0, z_smr01$death30[-length(z_smr01$death30)]) == 1)
 
 z_smr01 <- z_smr01[!cond, ]
