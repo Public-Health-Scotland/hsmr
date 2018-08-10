@@ -481,7 +481,7 @@ risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
 
 # Delete unnecessary model information using bespoke function in order to retain
 # special class of object for predicted probabilities below
-risk_model <- clean_model(risk_model)
+z_risk_model <- clean_model(risk_model)
 
 # Calculate predicted probabilities
 z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
@@ -525,20 +525,20 @@ z_hsmr_hosp <- z_smr01 %>%
   ### 3 - Create HB-level aggregation ----
 
 z_hsmr_hb <- z_smr01 %>%
-  group_by(quarter, hbtreat_new) %>%
+  group_by(quarter, hbtreat_currentdate) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
          location_type = "NHS Board") %>%
-  rename(location = hbtreat_new)
+  rename(location = hbtreat_currentdate)
 
 
 ### 4 - Merge dataframes and calculate regression line ----
 
 # Merge data and match on location name
-smr_data <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
+smr_data <- plyr::rbind.fill(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
   join(z_hospitals, by = location)
 
 # Create quarter variable used in linear model - every data point in the first year
@@ -547,7 +547,7 @@ smr_data <- smr_data %>%
   mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
 
 # Run linear regression
-reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
+z_reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
 
 # Create reg variable of predicted values
 smr_data$reg <- predict(reg_line, smr_data, type = "response")
