@@ -449,7 +449,7 @@ z_smr01 <- z_smr01 %>%
 z_cond  <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
                c(0, z_smr01$death30[-length(z_smr01$death30)]) == 1)
 
-z_smr01 <- z_smr01[!cond, ]
+z_smr01 <- z_smr01[!z_cond, ]
 
 
 
@@ -473,11 +473,11 @@ z_data_lr <- z_smr01 %>%
   ungroup()
 
 # Run logistic regression
-risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
-                    pmorbs5_sum + age_in_years + factor(sex) + factor(surgmed) +
-                    factor(pdiag_grp) + factor(admfgrp) + factor(admgrp) +
-                    factor(ipdc) + factor(simd),
-                  data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
+z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
+                      pmorbs5_sum + age_in_years + factor(sex) + factor(surgmed) +
+                      factor(pdiag_grp) + factor(admfgrp) + factor(admgrp) +
+                      factor(ipdc) + factor(simd),
+                    data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
 
 # Delete unnecessary model information using bespoke function in order to retain
 # special class of object for predicted probabilities below
