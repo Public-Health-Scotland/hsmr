@@ -437,7 +437,19 @@ z_smr01 <- z_smr01 %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
-  filter(epinum == 1 & cis_marker == last_cis)
+  filter(epinum == 1 & cis_marker == last_cis) %>%
+  # Remove rows where SIMD, admfgrp and ipdc are missing as variables are required
+  # for modelling/predicted values
+  filter(!is.na(simd)) %>%
+  filter(admfgrp %in% 1:6) %>%
+  filter(ipdc %in% 1:2)
+
+# If a patient dies within 30 days of admission in two subsequent quarters then
+# remove the second record to avoid double counting deaths
+z_cond  <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
+               c(0, z_smr01$death30[-length(z_smr01$death30)]) == 1)
+
+z_smr01 <- z_smr01[!z_cond, ]
 
 
 
@@ -446,8 +458,8 @@ z_smr01 <- z_smr01 %>%
 # Create subset of data for modelling
 z_data_lr <- z_smr01 %>%
 
-  # Select baseline period rows and those with valid SIMD and admission from group
-  filter(quarter <= 12 | is.na(simd) | is.na(admfgrp)) %>%
+  # Select baseline period rows
+  filter(quarter <= 12) %>%
 
   # Select required variables for model
   select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex, surgmed,
@@ -461,14 +473,15 @@ z_data_lr <- z_smr01 %>%
   ungroup()
 
 # Run logistic regression
-risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum + pmorbs5_sum +
-                    age_in_years + factor(sex) + factor(surgmed) + factor(pdiag_grp) +
-                    factor(admfgrp) + factor(admgrp) + factor(ipdc) + factor(simd),
-                  data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
+z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
+                      pmorbs5_sum + age_in_years + factor(sex) + factor(surgmed) +
+                      factor(pdiag_grp) + factor(admfgrp) + factor(admgrp) +
+                      factor(ipdc) + factor(simd),
+                    data = z_data_lr, family = "binomial", model = FALSE, y = FALSE)
 
 # Delete unnecessary model information using bespoke function in order to retain
 # special class of object for predicted probabilities below
-risk_model <- clean_model(risk_model)
+z_risk_model <- clean_model(risk_model)
 
 # Calculate predicted probabilities
 z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
@@ -512,20 +525,20 @@ z_hsmr_hosp <- z_smr01 %>%
   ### 3 - Create HB-level aggregation ----
 
 z_hsmr_hb <- z_smr01 %>%
-  group_by(quarter, hbtreat_new) %>%
+  group_by(quarter, hbtreat_currentdate) %>%
   summarise(deaths = sum(death30),
             pred   = sum(pred_eq),
             pats   = length(death30)) %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
          location_type = "NHS Board") %>%
-  rename(location = hbtreat_new)
+  rename(location = hbtreat_currentdate)
 
 
 ### 4 - Merge dataframes and calculate regression line ----
 
 # Merge data and match on location name
-smr_data <- rbind(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
+smr_data <- plyr::rbind.fill(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
   join(z_hospitals, by = location)
 
 # Create quarter variable used in linear model - every data point in the first year
@@ -534,7 +547,7 @@ smr_data <- smr_data %>%
   mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
 
 # Run linear regression
-reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
+z_reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
 
 # Create reg variable of predicted values
 smr_data$reg <- predict(reg_line, smr_data, type = "response")
