@@ -75,7 +75,7 @@ source("R/data_prep_functions.R")
 ### SECTION 2 - DATA EXTRACTION----
 
 # Source SQL queries
-source("R/sql_queries.R")
+source("R/sql_queries_smr.R")
 
 # Extract deaths and SMR01 data from SMRA databases
 deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
