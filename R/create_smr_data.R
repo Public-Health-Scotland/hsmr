@@ -19,26 +19,42 @@ start <- proc.time()
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
-library("odbc")          # For accessing SMRA databases
-library("dplyr")         # For data manipulation in the "tidy" way
-library("haven")         # For reading in SPSS files
-library("readr")         # For reading in csv files
+library(odbc)          # For accessing SMRA databases
+library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in SPSS files
+library(readr)         # For reading in csv files
+library(janitor)       # For 'cleaning' variable names
+library(magrittr)      # For %<>% operator
+library(lubridate)     # For dates
 
 
 ### 2 - Define the database connection with SMRA ----
 
-suppressWarnings(z_SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
-                                             uid = .rs.askForPassword("SMRA Username:"),
-                                             pwd = .rs.askForPassword("SMRA Password:")))
+z_smra_connect <- suppressWarnings(
+  dbConnect(
+    odbc(),
+    dsn = "SMRA",
+    uid = .rs.askForPassword("SMRA Username:"),
+    pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
 
+
 # Define the dates that the data are extracted from and to
-z_start_date   <- c("'2011-01-01'")     # The beginning of baseline period
-z_start_date_5 <- c("'2006-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
-z_start_date_l <- c("2011-01-01")       # Beginning of the baseline period (pmorbs)
-z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
+
+
+# The beginning of baseline period
+z_start_date   <- dmy(01012011)
+
+# Five years earlier for the five year look-back (pmorbs5)
+z_start_date_5 <- dmy(01012006)
+
+# Beginning of the baseline period (pmorbs)
+z_start_date_l <- dmy(01012011)
+
+# End date for the cut off for data
+z_end_date     <- dmy(31032018)
 
 
 ### 4 - Set filepaths ----
@@ -49,21 +65,33 @@ z_lookups <- "R/reference_files/"
 
 ### 5 - Read in lookup files ----
 
+
 # Primary Diagnosis Groupings
-z_pdiag_grp_data <- read_spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = ""))
-z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
+z_pdiag_grp_data <- read_spss(paste0(
+  z_lookups,
+  'shmi_diag_grps_lookup.sav')) %>%
+  select(diag1_4, SHMI_DIAGNOSIS_GROUP) %>%
+  clean_names()
+
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs          <- read_csv(paste(z_lookups, "morbs.csv", sep = ""))
+z_morbs <- read_csv(paste0(z_lookups, "morbs.csv"))
+
 
 # Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation",
-                                     "/postcode_2018_1.5_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation/",
-                                     "postcode_2016_1_simd2012.sav"))[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2016 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation",
+  "/postcode_2018_1.5_simd2016.sav")) %>%
+  select(pc7, simd2016_sc_quintile)
+
+z_simd_2012 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+  "postcode_2016_1_simd2012.sav")) %>%
+  select(pc7, simd2012_sc_quintile)
+
 
 # Hospital names
-z_hospitals      <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
+z_hospitals <- read_csv(paste0(z_lookups, "location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -78,9 +106,11 @@ source("R/data_prep_functions.R")
 source("R/sql_queries_smr.R")
 
 # Extract deaths and SMR01 data from SMRA databases
-deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
-z_smr01 <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01))
+deaths  <- as_tibble(dbGetQuery(z_smra_connect, z_query_gro)) %>%
+  clean_names()
 
+z_smr01 <- as_tibble(dbGetQuery(z_smra_connect, z_query_smr01)) %>%
+  clean_names()
 
 
 ### SECTION 3 - DATA PREPARATION----
