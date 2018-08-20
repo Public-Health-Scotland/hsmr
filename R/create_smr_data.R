@@ -113,31 +113,28 @@ z_smr01 <- as_tibble(dbGetQuery(z_smra_connect, z_query_smr01)) %>%
   clean_names()
 
 
+
 ### SECTION 3 - DATA PREPARATION----
 
-### 1 - Variable names to lower case ----
-names(z_smr01) <- tolower(names(z_smr01))
-names(deaths)  <- tolower(names(deaths))
-
-
-### 2 - Match deaths data to SMR01 ----
+### 1 - Match deaths data to SMR01 ----
 # Remove duplicate records on link_no
-# The deaths file is matched on to SMR01 by link_no, therefore link_no needs to be unique
-deaths <- deaths %>%
+# The deaths file is matched on to SMR01 by link_no,
+# therefore link_no needs to be unique
+deaths %<>%
   distinct(link_no, .keep_all = TRUE)
 
 # Match deaths data on to SMR01 data
-z_smr01$date_of_death <- deaths$date_of_death[match(z_smr01$link_no,deaths$link_no)]
+z_smr01 %<>%
+  left_join(deaths) %>%
 
-# Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
-z_smr01 <- z_smr01 %>%
+  # Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 # Delete death tibble and remove from memory as no longer required
 rm(deaths);gc()
 
 
-### 3 - Basic SMR01 processing ----
+### 2 - Basic SMR01 processing ----
 
 # Create the following variables:
 # death_inhosp = 1 if the patient died in hospital during that episode of care
@@ -215,7 +212,7 @@ z_smr01 <- z_smr01 %>%
 z_unique_id <- unique(z_smr01$link_no)
 
 
-### 4 - Prior morbidities within previous 1 & 5 years ----
+### 3 - Prior morbidities within previous 1 & 5 years ----
 
 # Extract SMR01 data from SMRA database required for the prior morbidities
 # ("pmorbs") look-back
@@ -443,7 +440,7 @@ z_smr01 <- z_smr01 %>%
 rm(data_pmorbs);gc()
 
 
-### 5 - SIMD ----
+### 4 - SIMD ----
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
