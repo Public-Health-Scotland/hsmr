@@ -151,12 +151,14 @@ rm(deaths);gc()
 #                of the five "other diagnosis" positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
 
-z_smr01 <- z_smr01 %>%
-  mutate(death_inhosp = if_else(discharge_type >= 40 & discharge_type <= 49, 1, 0),
-         dthdays      = (date_of_death - admission_date)/60/60/24,
-         death30      = if_else(dthdays >= 0 & dthdays <= 30, 1, 0),
-         death30      = ifelse(is.na(death30), 0, death30),
-         quarter_name = paste(year, "Q", quarter, sep = ""),
+z_smr01 %<>%
+  mutate(death_inhosp = if_else(between(as.numeric(discharge_type), 40, 49),
+                                1, 0),
+         dthdays = interval(admission_date, date_of_death) / days(1),
+         death30 = case_when(
+           between(dthdays, 0, 30) ~ 1,
+           TRUE ~ 0),
+         quarter_name = paste0(year, "Q", quarter),
          quarter      = as.numeric(as.factor(quarter_name)),
          location     = plyr::mapvalues(location,
                                         c("V102H", "V201H", "C206H", "G207H",
