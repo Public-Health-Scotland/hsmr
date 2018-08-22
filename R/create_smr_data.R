@@ -26,6 +26,8 @@ library(readr)         # For reading in csv files
 library(janitor)       # For 'cleaning' variable names
 library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
+library(tidyr)         # For data manipulation in the "tidy" way
+library(dostats)       # For %contains% function
 
 
 ### 2 - Define the database connection with SMRA ----
@@ -75,7 +77,20 @@ z_pdiag_grp_data <- read_spss(paste0(
 
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs <- read_csv(paste0(z_lookups, "morbs.csv"))
+z_morbs <- read_csv(paste0(z_lookups,
+                           "morbs.csv")) %>%
+
+  # Gather ICD codes into a single column
+  gather(code, diag, diag_3:diag_4) %>%
+  select(-code) %>%
+
+  # Remove all NAs from the ICD-10 column, but add one back in to allocate a
+  # single value to morb and pmorbs in the case of a patient having no code
+  drop_na(diag) %>%
+  tibble::add_row(morb = 0,
+                  wmorbs = 0,
+                  diag = NA)
+
 
 
 # Postcode lookups for SIMD 2016 and 2012
@@ -91,7 +106,8 @@ z_simd_2012 <- read_spss(paste0(
 
 
 # Hospital names
-z_hospitals <- read_csv(paste0(z_lookups, "location_lookups.csv"))
+z_hospitals <- read_csv(paste0(z_lookups,
+                               "location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -169,6 +185,10 @@ z_smr01 %<>%
                            F705H = "F704H",
                            G306H = "G405H",
                            G516H = "G405H"),
+         diag_2 = as.list(strsplit(paste(substr(other_condition_1, 1, 3),
+                                         substr(other_condition_1, 1, 4),
+                                         sep = ","),
+                                   ",")),
          diag1_4 = substr(main_condition, 1, 4),
          diag2_4 = substr(other_condition_1, 1, 4),
          diag3_4 = substr(other_condition_2, 1, 4),
@@ -184,6 +204,9 @@ z_smr01 %<>%
   left_join(z_pdiag_grp_data) %>%
   rename(pdiag_grp = shmi_diagnosis_group) %>%
   mutate(pdiag_grp = as.numeric(pdiag_grp)) %>%
+  # fuzzyjoin::fuzzy_left_join(select(zmorbs, wcomorbs1 = morb, diag),
+  #                            by = c("diag_2" = "diag"),
+  #                            match_fun = list(`%contains%`)) %>%
   mutate(wcomorbs1    = if_else(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
                                 if_else(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
          wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
