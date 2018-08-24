@@ -79,8 +79,8 @@ z_pdiag_grp_data <- read_spss(paste0(
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
 # NOTE - C80 code is duplicated
-z_morbs <- read_csv(paste0(z_lookups,
-                           "morbs.csv")) %>%
+z_morbs2 <- read_csv(paste0(#z_lookups,
+  "morbs.csv")) %>%
 
   # Gather ICD codes into a single column
   gather(code, diag, diag_3:diag_4) %>%
@@ -89,15 +89,15 @@ z_morbs <- read_csv(paste0(z_lookups,
   # Remove all NAs from the ICD-10 column, but add one back in to allocate a
   # single value to morb and pmorbs in the case of a patient having no code
   drop_na(diag) %>%
-  tibble::add_row(morb = 0,
-                  wmorbs = 0,
-                  diag = NA) %>%
+  # tibble::add_row(morb = 0,
+  #                 wmorbs = 0,
+  #                 diag = NA) %>%
   distinct(diag, .keep_all = TRUE)
 
 
-# z_morbs <- read_csv(paste0(#z_lookups,
-#                            "morbs.csv"))
-# z_morbs <- z_morbs[-220, ]
+z_morbs <- read_csv(paste0(#z_lookups,
+  "morbs.csv"))
+z_morbs <- z_morbs[-220, ]
 
 
 
@@ -114,8 +114,8 @@ z_simd_2012 <- read_spss(paste0(
 
 
 # Hospital names
-z_hospitals <- read_csv(paste0(z_lookups,
-                               "location_lookups.csv"))
+z_hospitals <- read_csv(paste0(#z_lookups,
+  "location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -193,35 +193,39 @@ z_smr01 %<>%
                            F705H = "F704H",
                            G306H = "G405H",
                            G516H = "G405H"),
-         diag_2 = paste(substr(other_condition_1, 1, 3),
-                        substr(other_condition_1, 1, 4),
-                        sep = "_"),
          diag1_4 = substr(main_condition, 1, 4),
-         diag2_4 = substr(other_condition_1, 1, 4),
-         diag3_4 = substr(other_condition_2, 1, 4),
-         diag4_4 = substr(other_condition_3, 1, 4),
-         diag5_4 = substr(other_condition_4, 1, 4),
-         diag6_4 = substr(other_condition_5, 1, 4),
-         diag1_3 = substr(main_condition, 1, 3),
-         diag2_3 = substr(other_condition_1, 1, 3),
-         diag3_3 = substr(other_condition_2, 1, 3),
-         diag4_3 = substr(other_condition_3, 1, 3),
-         diag5_3 = substr(other_condition_4, 1, 3),
-         diag6_3 = substr(other_condition_5, 1, 3)) %>%
+         diag2 = paste(substr(other_condition_1, 1, 3),
+                       substr(other_condition_1, 1, 4),
+                       sep = "_"),
+         diag3 = paste(substr(other_condition_2, 1, 3),
+                       substr(other_condition_2, 1, 4),
+                       sep = "_"),
+         diag4 = paste(substr(other_condition_3, 1, 3),
+                       substr(other_condition_3, 1, 4),
+                       sep = "_"),
+         diag5 = paste(substr(other_condition_4, 1, 3),
+                       substr(other_condition_4, 1, 4),
+                       sep = "_"),
+         diag6 = paste(substr(other_condition_5, 1, 3),
+                       substr(other_condition_5, 1, 4),
+                       sep = "_")) %>%
   left_join(select(z_pdiag_grp_data,
                    pdiag_grp = shmi_diagnosis_group,
                    diag1_4),
             by = "diag1_4") %>%
-  mutate(pdiag_grp = as.numeric(pdiag_grp)) %>%
-  fuzzy_left_join(select(z_morbs2, wcomorbs1 = morb, diag),
-                  by = c("diag_2" = "diag"),
+  fuzzy_left_join(select(z_morbs2, wcomorbs1 = morb, diag2_z = diag),
+                  by = c("diag2" = "diag2_z"),
                   match_fun = str_detect) %>%
-  replace_na(list(wcomorbs1 = 0)) %>%
-  # select(-diag, -diag_2) %>%
+  fuzzy_left_join(select(z_morbs2, wcomorbs2 = morb, diag3_z = diag),
+                  by = c("diag3" = "diag3_z"),
+                  match_fun = str_detect) %>%
+  select(-ends_with("_z")) %>%
+  replace_na(list(wcomorbs1 = 0,
+                  wcomorbs2 = 0)) %>%
   mutate(#wcomorbs1    = ifelse(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
     #ifelse(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
-    wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
-                           if_else(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
+    #wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
+    #if_else(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
     wcomorbs3    = if_else(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
                            if_else(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
     wcomorbs4    = if_else(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
