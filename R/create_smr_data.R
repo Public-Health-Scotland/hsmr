@@ -71,7 +71,7 @@ z_lookups <- "R/reference_files/"
 
 # Primary Diagnosis Groupings
 z_pdiag_grp_data <- read_spss(paste0(
-  #z_lookups,
+  z_lookups,
   'shmi_diag_grps_lookup.sav')) %>%
   select(diag1_4, SHMI_DIAGNOSIS_GROUP) %>%
   clean_names()
@@ -79,26 +79,18 @@ z_pdiag_grp_data <- read_spss(paste0(
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
 # NOTE - C80 code is duplicated
-z_morbs2 <- read_csv(paste0(#z_lookups,
-  "morbs.csv")) %>%
+z_morbs <- read_csv(paste0(z_lookups,
+                           "morbs.csv")) %>%
 
   # Gather ICD codes into a single column
   gather(code, diag, diag_3:diag_4) %>%
   select(-code) %>%
 
-  # Remove all NAs from the ICD-10 column, but add one back in to allocate a
-  # single value to morb and pmorbs in the case of a patient having no code
+  # Remove all NAs from the ICD-10 column
   drop_na(diag) %>%
-  # tibble::add_row(morb = 0,
-  #                 wmorbs = 0,
-  #                 diag = NA) %>%
+
+  # Remove the second C80 entry
   distinct(diag, .keep_all = TRUE)
-
-
-z_morbs <- read_csv(paste0(#z_lookups,
-  "morbs.csv"))
-z_morbs <- z_morbs[-220, ]
-
 
 
 # Postcode lookups for SIMD 2016 and 2012
@@ -114,8 +106,8 @@ z_simd_2012 <- read_spss(paste0(
 
 
 # Hospital names
-z_hospitals <- read_csv(paste0(#z_lookups,
-  "location_lookups.csv"))
+z_hospitals <- read_csv(paste0(z_lookups,
+                               "location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -170,9 +162,9 @@ rm(deaths);gc()
 # diagx_4      = ICD-10 code to 4 digits
 # diagx_3      = ICD-10 code to 3 digits
 # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10 code
-# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10 codes
-#                are present in any
-#                of the five "other diagnosis" positions
+# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10
+#                codes are present in any of the five "other diagnosis"
+#                positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
 
 z_smr01 %<>%
@@ -213,49 +205,63 @@ z_smr01 %<>%
                    pdiag_grp = shmi_diagnosis_group,
                    diag1_4),
             by = "diag1_4") %>%
-  fuzzy_left_join(select(z_morbs2, wcomorbs1 = morb, diag2_z = diag),
+  fuzzy_left_join(select(z_morbs, wcomorbs1 = wmorbs, diag2_z = diag),
                   by = c("diag2" = "diag2_z"),
                   match_fun = str_detect) %>%
-  fuzzy_left_join(select(z_morbs2, wcomorbs2 = morb, diag3_z = diag),
+  fuzzy_left_join(select(z_morbs, wcomorbs2 = wmorbs, diag3_z = diag),
                   by = c("diag3" = "diag3_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs3 = wmorbs, diag4_z = diag),
+                  by = c("diag4" = "diag4_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs4 = wmorbs, diag5_z = diag),
+                  by = c("diag5" = "diag5_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs5 = wmorbs, diag6_z = diag),
+                  by = c("diag6" = "diag6_z"),
                   match_fun = str_detect) %>%
   select(-ends_with("_z")) %>%
   replace_na(list(wcomorbs1 = 0,
-                  wcomorbs2 = 0)) %>%
-  mutate(#wcomorbs1    = ifelse(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
-    #ifelse(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
-    #wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
-    #if_else(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
-    wcomorbs3    = if_else(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
-                           if_else(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
-    wcomorbs4    = if_else(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
-                           if_else(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
-    wcomorbs5    = if_else(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
-                           if_else(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
-    wcomorbs1    = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
-    wcomorbs2    = if_else(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
-    wcomorbs3    = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
-    wcomorbs4    = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
-    wcomorbs5    = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
-    comorbs_sum  = wcomorbs1 + wcomorbs2 + wcomorbs3 + wcomorbs4 + wcomorbs5) %>%
+                  wcomorbs2 = 0,
+                  wcomorbs3 = 0,
+                  wcomorbs4 = 0,
+                  wcomorbs5 = 0)) %>%
+  mutate(wcomorbs2 = if_else(wcomorbs2 != wcomorbs1,
+                             wcomorbs2,
+                             0),
+         wcomorbs3 = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)),
+                             wcomorbs3,
+                             0),
+         wcomorbs4 = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2,
+                                                wcomorbs3)),
+                             wcomorbs4,
+                             0),
+         wcomorbs5 = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2,
+                                                wcomorbs3, wcomorbs4)),
+                             wcomorbs5,
+                             0),
+         comorbs_sum = rowSums(select(., starts_with("wcomorbs")))) %>%
 
   # Create two further variables at CIS level:
-  # epinum           = the episode number for each individual episode within the CIS
-  # death_inhosp_max = 1 if the patient died in hospital during any episode of the CIS
-
+  # epinum = the episode number for each individual episode within the CIS
+  # death_inhosp_max = 1 if the patient died in hospital during any episode of
+  # the CIS
   group_by(link_no, cis_marker) %>%
-  mutate(epinum           = row_number(),
+  mutate(epinum = row_number(),
          death_inhosp_max = max(death_inhosp)) %>%
   ungroup() %>%
 
   # Sort data as per guidance and remove variables no longer required
-
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
-  select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
-                   "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
+  select(-one_of(c("main_condition", "other_condition_1", "other_condition_2",
+                   "other_condition_3", "other_condition_4",
+                   "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3",
+                   "wcomorbs4", "wcomorbs5", "quarter_name")))
 
 # Vector of unique link numbers used for filtering below
-z_unique_id <- unique(z_smr01$link_no)
+z_unique_id <- z_smr01 %>%
+  distinct(link_no) %>%
+  pull(link_no)
 
 
 ### 3 - Prior morbidities within previous 1 & 5 years ----
