@@ -268,8 +268,9 @@ z_unique_id <- z_smr01 %>%
 
 # Extract SMR01 data from SMRA database required for the prior morbidities
 # ("pmorbs") look-back
-data_pmorbs        <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01_minus5))
-names(data_pmorbs) <- tolower(names(data_pmorbs))
+data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
+                                    z_query_smr01_minus5)) %>%
+  clean_names()
 
 # Create the following variables:
 # diag1_4 = ICD10 code for main condition to 4 digits
@@ -278,12 +279,16 @@ names(data_pmorbs) <- tolower(names(data_pmorbs))
 # pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
 # n_emerg                 = initialise empty vector for use in loop below
 
-data_pmorbs <- data_pmorbs %>%
-  mutate(diag1_4  = substr(main_condition, 1, 4),
-         diag1_3  = substr(main_condition, 1, 3),
-         pmorbs   = if_else(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
-                            if_else(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
-         pmorbs5_1  = 0,
+data_pmorbs %<>%
+  mutate(diag1 = paste(substr(main_condition, 1, 3),
+                       substr(main_condition, 1, 4),
+                       sep = "_")) %>%
+  fuzzy_left_join(select(z_morbs, pmorbs = morb, diag1_z = diag),
+                  by = c("diag1" = "diag1_z"),
+                  match_fun = str_detect) %>%
+  select(-ends_with("_z")) %>%
+  replace_na(list(pmorbs = 0)) %>%
+  mutate(pmorbs5_1  = 0,
          pmorbs5_2  = 0,
          pmorbs5_3  = 0,
          pmorbs5_4  = 0,
@@ -320,15 +325,18 @@ data_pmorbs <- data_pmorbs %>%
          n_emerg    = 0) %>%
 
   # In order to increase the efficiency of the following for loop:
-  # Only keep records with link numbers which appear in the main extract (z_smr01)
+  # Only keep records with link numbers which appear in the main extract
+  # (z_smr01)
 
   filter(link_no %in% z_unique_id) %>%
 
   # In order to increase the efficiency of the following for loop:
-  # Keep all records after the start date and only keep records before the start date
+  # Keep all records after the start date and only keep records before the
+  # start date
   # which have a valid Charlson Index grouping
 
-  filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
+  filter(admission_date >= z_start_date_l |
+           (admission_date < z_start_date_l & pmorbs != 0))
 
 
 # For every row in the pmorbs extract, look at each of the prior 50 rows and
