@@ -159,8 +159,8 @@ rm(deaths);gc()
 # quarter_name = quarter name in text form
 # quarter      = quarter in number form (quarter 1 = Jan - Mar 2011)
 # location     = recodes some hospital codes for combined sites
-# diagx_4      = ICD-10 code to 4 digits
-# diagx_3      = ICD-10 code to 3 digits
+# diag1_4      = main condition ICD-10 code to 4 digits
+# diagx        = ICD-10 code to 3 and 4 digits, separated by an underscore
 # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10 code
 # wcomorbsx    = matches the charlson index weighting if the relevant ICD-10
 #                codes are present in any of the five "other diagnosis"
@@ -201,10 +201,16 @@ z_smr01 %<>%
          diag6 = paste(substr(other_condition_5, 1, 3),
                        substr(other_condition_5, 1, 4),
                        sep = "_")) %>%
+
+  # Create the pdiag_grp and wcomorbsx variables using joins to the z_morbs
+  # dataset
   left_join(select(z_pdiag_grp_data,
                    pdiag_grp = shmi_diagnosis_group,
                    diag1_4),
             by = "diag1_4") %>%
+
+  # Fuzzy joins add the (in this case, not needed) joining variable by default,
+  # so append these with "_z" so they can be easily removed afterwards
   fuzzy_left_join(select(z_morbs, wcomorbs1 = wmorbs, diag2_z = diag),
                   by = c("diag2" = "diag2_z"),
                   match_fun = str_detect) %>%
@@ -220,7 +226,11 @@ z_smr01 %<>%
   fuzzy_left_join(select(z_morbs, wcomorbs5 = wmorbs, diag6_z = diag),
                   by = c("diag6" = "diag6_z"),
                   match_fun = str_detect) %>%
+
+  # Remove joining variables
   select(-ends_with("_z")) %>%
+
+  # Replace cases with no match with zero
   replace_na(list(wcomorbs1 = 0,
                   wcomorbs2 = 0,
                   wcomorbs3 = 0,
@@ -273,8 +283,8 @@ data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
   clean_names()
 
 # Create the following variables:
-# diag1_4 = ICD10 code for main condition to 4 digits
-# diag1_3 = ICD10 code for main condition to 3 digits
+# diag1   = ICD10 code for main condition to 3 and 4 digits, separated by an
+#           underscore
 # pmorbs  = Charlson Index grouping (1-17) for main condition (0 if none apply)
 # pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
 # n_emerg                 = initialise empty vector for use in loop below
@@ -283,10 +293,16 @@ data_pmorbs %<>%
   mutate(diag1 = paste(substr(main_condition, 1, 3),
                        substr(main_condition, 1, 4),
                        sep = "_")) %>%
+
+  # Create the pmorbs variable using a join to the z_morbs dataset
   fuzzy_left_join(select(z_morbs, pmorbs = morb, diag1_z = diag),
                   by = c("diag1" = "diag1_z"),
                   match_fun = str_detect) %>%
+
+  # Remove the joining variable
   select(-ends_with("_z")) %>%
+
+  # Replace cases with no match with zero
   replace_na(list(pmorbs = 0)) %>%
   mutate(pmorbs5_1  = 0,
          pmorbs5_2  = 0,
