@@ -19,26 +19,45 @@ start <- proc.time()
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
-library("odbc")          # For accessing SMRA databases
-library("dplyr")         # For data manipulation in the "tidy" way
-library("haven")         # For reading in SPSS files
-library("readr")         # For reading in csv files
+library(odbc)          # For accessing SMRA databases
+library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in SPSS files
+library(readr)         # For reading in csv files
+library(janitor)       # For 'cleaning' variable names
+library(magrittr)      # For %<>% operator
+library(lubridate)     # For dates
+library(tidyr)         # For data manipulation in the "tidy" way
+library(fuzzyjoin)     # For fuzzy joins
+library(stringr)       # For string matching
 
 
 ### 2 - Define the database connection with SMRA ----
 
-suppressWarnings(z_SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
-                                             uid = .rs.askForPassword("SMRA Username:"),
-                                             pwd = .rs.askForPassword("SMRA Password:")))
+z_smra_connect <- suppressWarnings(
+  dbConnect(
+    odbc(),
+    dsn = "SMRA",
+    uid = .rs.askForPassword("SMRA Username:"),
+    pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
 
+
 # Define the dates that the data are extracted from and to
-z_start_date   <- c("'2011-01-01'")     # The beginning of baseline period
-z_start_date_5 <- c("'2006-01-01'")     # Five years earlier for the five year look-back (pmorbs5)
-z_start_date_l <- c("2011-01-01")       # Beginning of the baseline period (pmorbs)
-z_end_date     <- c("'2018-03-31'")     # End date for the cut off for data
+
+
+# The beginning of baseline period
+z_start_date   <- dmy(01012011)
+
+# Five years earlier for the five year look-back (pmorbs5)
+z_start_date_5 <- dmy(01012006)
+
+# Beginning of the baseline period (pmorbs)
+z_start_date_l <- dmy(01012011)
+
+# End date for the cut off for data
+z_end_date     <- dmy(31032018)
 
 
 ### 4 - Set filepaths ----
@@ -49,21 +68,46 @@ z_lookups <- "R/reference_files/"
 
 ### 5 - Read in lookup files ----
 
+
 # Primary Diagnosis Groupings
-z_pdiag_grp_data <- read_spss(paste(z_lookups, 'shmi_diag_grps_lookup.sav', sep = ""))
-z_pdiag_grp_data <- z_pdiag_grp_data[ , c("diag1_4", "SHMI_DIAGNOSIS_GROUP")]
+z_pdiag_grp_data <- read_spss(paste0(
+  z_lookups,
+  'shmi_diag_grps_lookup.sav')) %>%
+  select(diag1_4, SHMI_DIAGNOSIS_GROUP) %>%
+  clean_names()
+
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
-z_morbs          <- read_csv(paste(z_lookups, "morbs.csv", sep = ""))
+# NOTE - C80 code is duplicated
+z_morbs <- read_csv(paste0(z_lookups,
+                           "morbs.csv")) %>%
+
+  # Gather ICD codes into a single column
+  gather(code, diag, diag_3:diag_4) %>%
+  select(-code) %>%
+
+  # Remove all NAs from the ICD-10 column
+  drop_na(diag) %>%
+
+  # Remove the second C80 entry
+  distinct(diag, .keep_all = TRUE)
+
 
 # Postcode lookups for SIMD 2016 and 2012
-z_simd_2016      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation",
-                                     "/postcode_2018_1.5_simd2016.sav"))[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012      <- read_spss(paste0("/conf/linkage/output/lookups/Unicode/Deprivation/",
-                                     "postcode_2016_1_simd2012.sav"))[ , c("pc7", "simd2012_sc_quintile")]
+z_simd_2016 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation",
+  "/postcode_2018_1.5_simd2016.sav")) %>%
+  select(pc7, simd2016_sc_quintile)
+
+z_simd_2012 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+  "postcode_2016_1_simd2012.sav")) %>%
+  select(pc7, simd2012_sc_quintile)
+
 
 # Hospital names
-z_hospitals      <- read_csv(paste(z_lookups,"location_lookups.csv", sep = ""))
+z_hospitals <- read_csv(paste0(z_lookups,
+                               "location_lookups.csv"))
 
 
 ### 6 - Source functions ----
@@ -78,36 +122,35 @@ source("R/data_prep_functions.R")
 source("R/sql_queries_smr.R")
 
 # Extract deaths and SMR01 data from SMRA databases
-deaths  <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_gro))
-z_smr01 <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01))
+deaths  <- as_tibble(dbGetQuery(z_smra_connect, z_query_gro)) %>%
+  clean_names()
+
+z_smr01 <- as_tibble(dbGetQuery(z_smra_connect, z_query_smr01)) %>%
+  clean_names()
 
 
 
 ### SECTION 3 - DATA PREPARATION----
 
-### 1 - Variable names to lower case ----
-names(z_smr01) <- tolower(names(z_smr01))
-names(deaths)  <- tolower(names(deaths))
-
-
-### 2 - Match deaths data to SMR01 ----
+### 1 - Match deaths data to SMR01 ----
 # Remove duplicate records on link_no
-# The deaths file is matched on to SMR01 by link_no, therefore link_no needs to be unique
-deaths <- deaths %>%
+# The deaths file is matched on to SMR01 by link_no,
+# therefore link_no needs to be unique
+deaths %<>%
   distinct(link_no, .keep_all = TRUE)
 
 # Match deaths data on to SMR01 data
-z_smr01$date_of_death <- deaths$date_of_death[match(z_smr01$link_no,deaths$link_no)]
+z_smr01 %<>%
+  left_join(deaths, by = "link_no") %>%
 
-# Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
-z_smr01 <- z_smr01 %>%
+  # Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 # Delete death tibble and remove from memory as no longer required
 rm(deaths);gc()
 
 
-### 3 - Basic SMR01 processing ----
+### 2 - Basic SMR01 processing ----
 
 # Create the following variables:
 # death_inhosp = 1 if the patient died in hospital during that episode of care
@@ -116,95 +159,152 @@ rm(deaths);gc()
 # quarter_name = quarter name in text form
 # quarter      = quarter in number form (quarter 1 = Jan - Mar 2011)
 # location     = recodes some hospital codes for combined sites
-# diagx_4      = ICD-10 code to 4 digits
-# diagx_3      = ICD-10 code to 3 digits
+# diag1_4      = main condition ICD-10 code to 4 digits
+# diagx        = ICD-10 code to 3 and 4 digits, separated by an underscore
 # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10 code
-# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10 codes
-#                are present in any
-#                of the five "other diagnosis" positions
+# wcomorbsx    = matches the charlson index weighting if the relevant ICD-10
+#                codes are present in any of the five "other diagnosis"
+#                positions
 # comorbs_sum  = sum of the wcomorbsx values across the episode
 
-z_smr01 <- z_smr01 %>%
-  mutate(death_inhosp = if_else(discharge_type >= 40 & discharge_type <= 49, 1, 0),
-         dthdays      = (date_of_death - admission_date)/60/60/24,
-         death30      = if_else(dthdays >= 0 & dthdays <= 30, 1, 0),
-         death30      = ifelse(is.na(death30), 0, death30),
-         quarter_name = paste(year, "Q", quarter, sep = ""),
-         quarter      = as.numeric(as.factor(quarter_name)),
-         location     = plyr::mapvalues(location,
-                                        c("V102H", "V201H", "C206H", "G207H",
-                                          "F805H", "F705H", "G306H", "G516H"),
-                                        c("V217H", "V217H", "C418H", "G107H",
-                                          "F704H", "F704H", "G405H", "G405H")),
-         diag1_4      = substr(main_condition, 1, 4),
-         diag2_4      = substr(other_condition_1, 1, 4),
-         diag3_4      = substr(other_condition_2, 1, 4),
-         diag4_4      = substr(other_condition_3, 1, 4),
-         diag5_4      = substr(other_condition_4, 1, 4),
-         diag6_4      = substr(other_condition_5, 1, 4),
-         diag1_3      = substr(main_condition, 1, 3),
-         diag2_3      = substr(other_condition_1, 1, 3),
-         diag3_3      = substr(other_condition_2, 1, 3),
-         diag4_3      = substr(other_condition_3, 1, 3),
-         diag5_3      = substr(other_condition_4, 1, 3),
-         diag6_3      = substr(other_condition_5, 1, 3),
-         pdiag_grp    = z_pdiag_grp_data$SHMI_DIAGNOSIS_GROUP[match(diag1_4,z_pdiag_grp_data$diag1_4)],
-         wcomorbs1    = if_else(!is.na(z_morbs$morb[match(diag2_3, z_morbs$diag_3)]),z_morbs$morb[match(diag2_3, z_morbs$diag_3)],
-                                if_else(!is.na(z_morbs$morb[match(diag2_4, z_morbs$diag_4)]), z_morbs$morb[match(diag2_4, z_morbs$diag_4)], 0)),
-         wcomorbs2    = if_else(!is.na(z_morbs$morb[match(diag3_3, z_morbs$diag_3)]),z_morbs$morb[match(diag3_3, z_morbs$diag_3)],
-                                if_else(!is.na(z_morbs$morb[match(diag3_4, z_morbs$diag_4)]), z_morbs$morb[match(diag3_4, z_morbs$diag_4)], 0)),
-         wcomorbs3    = if_else(!is.na(z_morbs$morb[match(diag4_3, z_morbs$diag_3)]),z_morbs$morb[match(diag4_3, z_morbs$diag_3)],
-                                if_else(!is.na(z_morbs$morb[match(diag4_4, z_morbs$diag_4)]), z_morbs$morb[match(diag4_4, z_morbs$diag_4)], 0)),
-         wcomorbs4    = if_else(!is.na(z_morbs$morb[match(diag5_3, z_morbs$diag_3)]),z_morbs$morb[match(diag5_3, z_morbs$diag_3)],
-                                if_else(!is.na(z_morbs$morb[match(diag5_4, z_morbs$diag_4)]), z_morbs$morb[match(diag5_4, z_morbs$diag_4)], 0)),
-         wcomorbs5    = if_else(!is.na(z_morbs$morb[match(diag6_3, z_morbs$diag_3)]),z_morbs$morb[match(diag6_3, z_morbs$diag_3)],
-                                if_else(!is.na(z_morbs$morb[match(diag6_4, z_morbs$diag_4)]), z_morbs$morb[match(diag6_4, z_morbs$diag_4)], 0)),
-         wcomorbs1    = z_morbs$wmorbs[match(wcomorbs1, z_morbs$morb)],
-         wcomorbs2    = if_else(!(wcomorbs2 %in% c(wcomorbs1)), z_morbs$wmorbs[match(wcomorbs2, z_morbs$morb)], 0),
-         wcomorbs3    = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)), z_morbs$wmorbs[match(wcomorbs3, z_morbs$morb)], 0),
-         wcomorbs4    = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2, wcomorbs3)), z_morbs$wmorbs[match(wcomorbs4, z_morbs$morb)], 0),
-         wcomorbs5    = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2, wcomorbs3, wcomorbs4)), z_morbs$wmorbs[match(wcomorbs5, z_morbs$morb)], 0),
-         comorbs_sum  = wcomorbs1 + wcomorbs2 + wcomorbs3 + wcomorbs4 + wcomorbs5) %>%
+z_smr01 %<>%
+  mutate(death_inhosp = if_else(between(as.numeric(discharge_type), 40, 49),
+                                1, 0),
+         dthdays = interval(admission_date, date_of_death) / days(1),
+         death30 = case_when(
+           between(dthdays, 0, 30) ~ 1,
+           TRUE ~ 0),
+         quarter_name = paste0(year, "Q", quarter),
+         quarter = as.numeric(as.factor(quarter_name)),
+         location = recode(location,
+                           V102H = "V217H",
+                           V201H = "V217H",
+                           C206H = "C418H",
+                           G207H = "G107H",
+                           F805H = "F704H",
+                           F705H = "F704H",
+                           G306H = "G405H",
+                           G516H = "G405H"),
+         diag1_4 = substr(main_condition, 1, 4),
+         diag2 = paste(substr(other_condition_1, 1, 3),
+                       substr(other_condition_1, 1, 4),
+                       sep = "_"),
+         diag3 = paste(substr(other_condition_2, 1, 3),
+                       substr(other_condition_2, 1, 4),
+                       sep = "_"),
+         diag4 = paste(substr(other_condition_3, 1, 3),
+                       substr(other_condition_3, 1, 4),
+                       sep = "_"),
+         diag5 = paste(substr(other_condition_4, 1, 3),
+                       substr(other_condition_4, 1, 4),
+                       sep = "_"),
+         diag6 = paste(substr(other_condition_5, 1, 3),
+                       substr(other_condition_5, 1, 4),
+                       sep = "_")) %>%
+
+  # Create the pdiag_grp and wcomorbsx variables using joins to the z_morbs
+  # dataset
+  left_join(select(z_pdiag_grp_data,
+                   pdiag_grp = shmi_diagnosis_group,
+                   diag1_4),
+            by = "diag1_4") %>%
+
+  # Fuzzy joins add the (in this case, not needed) joining variable by default,
+  # so append these with "_z" so they can be easily removed afterwards
+  fuzzy_left_join(select(z_morbs, wcomorbs1 = wmorbs, diag2_z = diag),
+                  by = c("diag2" = "diag2_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs2 = wmorbs, diag3_z = diag),
+                  by = c("diag3" = "diag3_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs3 = wmorbs, diag4_z = diag),
+                  by = c("diag4" = "diag4_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs4 = wmorbs, diag5_z = diag),
+                  by = c("diag5" = "diag5_z"),
+                  match_fun = str_detect) %>%
+  fuzzy_left_join(select(z_morbs, wcomorbs5 = wmorbs, diag6_z = diag),
+                  by = c("diag6" = "diag6_z"),
+                  match_fun = str_detect) %>%
+
+  # Remove joining variables
+  select(-ends_with("_z")) %>%
+
+  # Replace cases with no match with zero
+  replace_na(list(wcomorbs1 = 0,
+                  wcomorbs2 = 0,
+                  wcomorbs3 = 0,
+                  wcomorbs4 = 0,
+                  wcomorbs5 = 0)) %>%
+  mutate(wcomorbs2 = if_else(wcomorbs2 != wcomorbs1,
+                             wcomorbs2,
+                             0),
+         wcomorbs3 = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)),
+                             wcomorbs3,
+                             0),
+         wcomorbs4 = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2,
+                                                wcomorbs3)),
+                             wcomorbs4,
+                             0),
+         wcomorbs5 = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2,
+                                                wcomorbs3, wcomorbs4)),
+                             wcomorbs5,
+                             0),
+         comorbs_sum = rowSums(select(., starts_with("wcomorbs")))) %>%
 
   # Create two further variables at CIS level:
-  # epinum           = the episode number for each individual episode within the CIS
-  # death_inhosp_max = 1 if the patient died in hospital during any episode of the CIS
-
+  # epinum = the episode number for each individual episode within the CIS
+  # death_inhosp_max = 1 if the patient died in hospital during any episode of
+  # the CIS
   group_by(link_no, cis_marker) %>%
-  mutate(epinum           = row_number(),
+  mutate(epinum = row_number(),
          death_inhosp_max = max(death_inhosp)) %>%
   ungroup() %>%
 
   # Sort data as per guidance and remove variables no longer required
-
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
-  select(-one_of(c("main_condition", "other_condition_1", "other_condition_2", "other_condition_3", "other_condition_4",
-                   "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3", "wcomorbs4", "wcomorbs5", "quarter_name")))
+  select(-one_of(c("main_condition", "other_condition_1", "other_condition_2",
+                   "other_condition_3", "other_condition_4",
+                   "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3",
+                   "wcomorbs4", "wcomorbs5", "quarter_name")))
 
 # Vector of unique link numbers used for filtering below
-z_unique_id <- unique(z_smr01$link_no)
+z_unique_id <- z_smr01 %>%
+  distinct(link_no) %>%
+  pull(link_no)
 
 
-### 4 - Prior morbidities within previous 1 & 5 years ----
+### 3 - Prior morbidities within previous 1 & 5 years ----
 
 # Extract SMR01 data from SMRA database required for the prior morbidities
 # ("pmorbs") look-back
-data_pmorbs        <- as_tibble(dbGetQuery(z_SMRA_connect, z_query_smr01_minus5))
-names(data_pmorbs) <- tolower(names(data_pmorbs))
+data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
+                                    z_query_smr01_minus5)) %>%
+  clean_names()
 
 # Create the following variables:
-# diag1_4 = ICD10 code for main condition to 4 digits
-# diag1_3 = ICD10 code for main condition to 3 digits
+# diag1   = ICD10 code for main condition to 3 and 4 digits, separated by an
+#           underscore
 # pmorbs  = Charlson Index grouping (1-17) for main condition (0 if none apply)
 # pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
 # n_emerg                 = initialise empty vector for use in loop below
 
-data_pmorbs <- data_pmorbs %>%
-  mutate(diag1_4  = substr(main_condition, 1, 4),
-         diag1_3  = substr(main_condition, 1, 3),
-         pmorbs   = if_else(!is.na(z_morbs$morb[match(diag1_3, z_morbs$diag_3)]), z_morbs$morb[match(diag1_3, z_morbs$diag_3)],
-                            if_else(!is.na(z_morbs$morb[match(diag1_4, z_morbs$diag_4)]), z_morbs$morb[match(diag1_4, z_morbs$diag_4)], 0)),
-         pmorbs5_1  = 0,
+data_pmorbs %<>%
+  mutate(diag1 = paste(substr(main_condition, 1, 3),
+                       substr(main_condition, 1, 4),
+                       sep = "_")) %>%
+
+  # Create the pmorbs variable using a join to the z_morbs dataset
+  fuzzy_left_join(select(z_morbs, pmorbs = morb, diag1_z = diag),
+                  by = c("diag1" = "diag1_z"),
+                  match_fun = str_detect) %>%
+
+  # Remove the joining variable
+  select(-ends_with("_z")) %>%
+
+  # Replace cases with no match with zero
+  replace_na(list(pmorbs = 0)) %>%
+  mutate(pmorbs5_1  = 0,
          pmorbs5_2  = 0,
          pmorbs5_3  = 0,
          pmorbs5_4  = 0,
@@ -241,15 +341,18 @@ data_pmorbs <- data_pmorbs %>%
          n_emerg    = 0) %>%
 
   # In order to increase the efficiency of the following for loop:
-  # Only keep records with link numbers which appear in the main extract (z_smr01)
+  # Only keep records with link numbers which appear in the main extract
+  # (z_smr01)
 
   filter(link_no %in% z_unique_id) %>%
 
   # In order to increase the efficiency of the following for loop:
-  # Keep all records after the start date and only keep records before the start date
+  # Keep all records after the start date and only keep records before the
+  # start date
   # which have a valid Charlson Index grouping
 
-  filter(admission_date >= z_start_date_l | (admission_date < z_start_date_l & pmorbs != 0))
+  filter(admission_date >= z_start_date_l |
+           (admission_date < z_start_date_l & pmorbs != 0))
 
 
 # For every row in the pmorbs extract, look at each of the prior 50 rows and
@@ -413,7 +516,7 @@ z_smr01 <- z_smr01 %>%
 rm(data_pmorbs);gc()
 
 
-### 5 - SIMD ----
+### 4 - SIMD ----
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
