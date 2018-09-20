@@ -18,51 +18,74 @@
 ### SECTION 1 - HOUSE KEEPING ----
 
 ### 1 - Load packages ----
-library("odbc")          # Accessing SMRA
-library("dplyr")         # For data manipulation in the "tidy" way
-library("foreign")       # For reading in SPSS SAV Files
-library("haven")         # For reading in spss files
+library(odbc)          # Accessing SMRA
+library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in spss files
+library(janitor)       # For 'cleaning' variable names
+library(lubridate)     # For dates
 
 
 ### 2 - Define the database connection with SMRA
-suppressWarnings(SMRA_connect <- dbConnect(odbc(), dsn = "SMRA",
-                                           uid = .rs.askForPassword("SMRA Username:"),
-                                           pwd = .rs.askForPassword("SMRA Password:")))
+smra_connect <- suppressWarnings(
+  dbConnect(
+    odbc(),
+    dsn = "SMRA",
+    uid = .rs.askForPassword("SMRA Username:"),
+    pwd = .rs.askForPassword("SMRA Password:")))
 
 
 ### 3 - Extract dates ----
 # Define the dates that the data are extracted from and to
-z_start_date   <- c("'2008-01-01'")     # The beginning of the ten year trend
-z_end_date     <- c("'2018-03-31'")     # End date for the cut off for z_smr01
+z_start_date   <- dmy(01012008)     # The beginning of the ten year trend
+z_end_date     <- dmy(31032018)     # End date for the cut off for z_smr01
 
 
 # Postcode lookups for SIMD 2016, 2012 and 2009
-z_simd_2016        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2018_1.5_simd2016.sav")[ , c("pc7", "simd2016_sc_quintile")]
-z_simd_2012        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2016_1_simd2012.sav")[ , c("pc7", "simd2012_sc_quintile")]
-z_simd_2009        <- read_spss("/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2012_2_simd2009v2.sav")[ , c("PC7", "simd2009v2_sc_quintile")]
-names(z_simd_2009) <- tolower(names(z_simd_2009))
+z_simd_2016 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation",
+  "/postcode_2018_1.5_simd2016.sav")) %>%
+  select(pc7, simd2016_sc_quintile)
+
+z_simd_2012 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+  "postcode_2016_1_simd2012.sav")) %>%
+  select(pc7, simd2012_sc_quintile)
+
+z_simd_2009 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+  "postcode_2012_2_simd2009v2.sav")) %>%
+  select(PC7, simd2009v2_sc_quintile) %>%
+  clean_names()
+
 
 # Population lookups for 2017
-z_pop_est  <- read_spss("/conf/linkage/output/lookups/populations/estimates/HB2014_pop_est_1981_2016.sav") %>%
-  group_by(Year, HB2014) %>%
-  summarise(pop = sum(Pop))
-z_pop_proj <- read_spss("/conf/linkage/output/lookups/populations/projections/HB2014_pop_proj_2016_2041.sav") %>%
-  filter(Year >= 2017) %>%
-  group_by(Year, HB2014) %>%
-  summarise(pop = sum(Pop))
+z_pop_est  <- read_spss(paste0(
+  "/conf/linkage/output/lookups/populations/estimates/",
+  "HB2014_pop_est_1981_2016.sav")) %>%
+  clean_names() %>%
+  group_by(year, hb2014) %>%
+  summarise(pop = sum(pop)) %>%
+  ungroup()
+
+z_pop_proj <- read_spss(paste0(
+  "/conf/linkage/output/lookups/populations/projections/",
+  "HB2014_pop_proj_2016_2041.sav")) %>%
+  clean_names() %>%
+  filter(year >= 2017) %>%
+  group_by(year, hb2014) %>%
+  summarise(pop = sum(pop)) %>%
+  ungroup()
 
 # Combine population lookups into one lookup
-z_pop <- rbind(z_pop_est, z_pop_proj)
+z_pop <- bind_rows(z_pop_est, z_pop_proj) %>%
 
-# Aggregate lookup to get Scotland population
-z_pop_scot <- z_pop %>%
-  group_by(Year) %>%
-  summarise(pop = sum(pop)) %>%
-  mutate(HB2014 = "Scotland") %>%
-  select(Year, HB2014, pop)
+  # Aggregate lookup to get Scotland population and append to bottom
+  bind_rows(., z_pop %>%
+              group_by(year) %>%
+              summarise(pop = sum(pop)) %>%
+              ungroup() %>%
+              mutate(hb2014 = "Scotland"))
 
-# Append Scotland population on to lookup file
-z_pop <- plyr::rbind.fill(as_tibble(z_pop), as_tibble(z_pop_scot))
 
 ### SECTION 2 - DATA EXTRACTION----
 
