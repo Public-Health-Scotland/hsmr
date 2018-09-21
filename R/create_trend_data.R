@@ -22,6 +22,7 @@ library(odbc)          # Accessing SMRA
 library(dplyr)         # For data manipulation in the "tidy" way
 library(haven)         # For reading in spss files
 library(janitor)       # For 'cleaning' variable names
+library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
 
 
@@ -57,7 +58,6 @@ z_simd_2009 <- read_spss(paste0(
   select(PC7, simd2009v2_sc_quintile) %>%
   clean_names()
 
-
 # Population lookups for 2017
 z_pop_est  <- read_spss(paste0(
   "/conf/linkage/output/lookups/populations/estimates/",
@@ -77,9 +77,11 @@ z_pop_proj <- read_spss(paste0(
   ungroup()
 
 # Combine population lookups into one lookup
-z_pop <- bind_rows(z_pop_est, z_pop_proj) %>%
+# Ignore warning messages about vectorising labelled elements
+z_pop <- bind_rows(z_pop_est, z_pop_proj)
 
-  # Aggregate lookup to get Scotland population and append to bottom
+# Aggregate lookup to get Scotland population and append to bottom
+z_pop %<>%
   bind_rows(., z_pop %>%
               group_by(year) %>%
               summarise(pop = sum(pop)) %>%
@@ -95,8 +97,12 @@ source("R/sql_queries_trends.R")
 
 
 ### 2 - Extract data ----
-z_gro     <- as_tibble(dbGetQuery(SMRA_connect, z_query_gro))
-z_smr01   <- as_tibble(dbGetQuery(SMRA_connect, z_query_smr01_ltt))
+z_gro     <- as_tibble(dbGetQuery(smra_connect, z_query_gro)) %>%
+  clean_names()
+
+z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
+  clean_names()
+
 
 ### SECTION 3 - DATA PREPARATION----
 
