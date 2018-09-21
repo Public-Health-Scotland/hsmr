@@ -106,12 +106,8 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 
 ### SECTION 3 - DATA PREPARATION----
 
-### 1 - Variable names to lower case ----
-names(z_smr01)   <- tolower(names(z_smr01))
-names(z_gro) <- tolower(names(z_gro))
 
-
-### 2 - Deaths Data ----
+### 1 - Deaths Data ----
 # Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
 # link_no needs to be unique
 z_gro <- z_gro %>%
@@ -125,7 +121,7 @@ z_smr01 <- z_smr01 %>%
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 
-### 3 - SIMD ---
+### 2 - SIMD ---
 
 # Fix formatting of postcode variable (remove trailing spaces and any other
 # unnecessary white space)
@@ -145,7 +141,7 @@ z_smr01$simd[which(z_smr01$year < 2014 & z_smr01$year > 2009)]  <- z_simd_2012$s
 names(z_simd_2009)                  <- c("postcode", "simd")
 z_smr01$simd[which(z_smr01$year < 2010)]  <- z_simd_2009$simd[match(z_smr01$postcode, z_simd_2009$postcode)]
 
-### 4 - Manipulations
+### 2 - Manipulations
 
 z_smr01 <- z_smr01 %>%
   mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
@@ -174,7 +170,7 @@ cond <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
 z_smr01 <- z_smr01[!cond,]
 
 
-### 5 - Aggregation
+### 4 - Aggregation
 
 # Crude Rates (Scotland) - All Admissions
 z_scot_all_adm <- z_smr01 %>%
