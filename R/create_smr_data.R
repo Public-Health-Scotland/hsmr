@@ -439,18 +439,11 @@ for(i in 1:50){
 
 # Calculate the sum of the Charlson Index weightings for each CIS, for both 1
 # and 5 years prior to admission
-data_pmorbs <- data_pmorbs %>%
-  group_by(link_no, cis_marker) %>%
-  mutate(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
-           max(pmorbs1_10) + max(pmorbs1_11) + max(pmorbs1_12) + max(pmorbs1_13) + max(pmorbs1_14) + max(pmorbs1_15) + max(pmorbs1_16) + max(pmorbs1_17),
-         pmorbs5_sum = max(pmorbs5_1) + max(pmorbs5_2) + max(pmorbs5_3) + max(pmorbs5_4) + max(pmorbs5_5) + max(pmorbs5_6) + max(pmorbs5_7) + max(pmorbs5_8) + max(pmorbs5_9) +
-           max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17),
-         epinum      = row_number()) %>%
-  ungroup() %>%
-
-  # Select first episode to reduce tibble size (only first episode required for
-  # n_emerg)
-  filter(epinum == 1)
+data_pmorbs[,`:=`(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
+                    max(pmorbs1_10) + max(pmorbs1_11) + max(pmorbs1_12) + max(pmorbs1_13) + max(pmorbs1_14) + max(pmorbs1_15) + max(pmorbs1_16) + max(pmorbs1_17),
+                  pmorbs5_sum = max(pmorbs5_1) + max(pmorbs5_2) + max(pmorbs5_3) + max(pmorbs5_4) + max(pmorbs5_5) + max(pmorbs5_6) + max(pmorbs5_7) + max(pmorbs5_8) + max(pmorbs5_9) +
+                    max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17),
+                  epinum = .I), by = .(link_no, cis_marker)]
 
 
 # For every row in the pmorbs extract, look at each of the prior 50 rows and
