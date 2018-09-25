@@ -442,8 +442,17 @@ for(i in 1:50){
 data_pmorbs[,`:=`(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
                     max(pmorbs1_10) + max(pmorbs1_11) + max(pmorbs1_12) + max(pmorbs1_13) + max(pmorbs1_14) + max(pmorbs1_15) + max(pmorbs1_16) + max(pmorbs1_17),
                   pmorbs5_sum = max(pmorbs5_1) + max(pmorbs5_2) + max(pmorbs5_3) + max(pmorbs5_4) + max(pmorbs5_5) + max(pmorbs5_6) + max(pmorbs5_7) + max(pmorbs5_8) + max(pmorbs5_9) +
-                    max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17),
-                  epinum = .I), by = .(link_no, cis_marker)]
+                    max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17), by = .(link_no, cis_marker)]
+
+#backup <- data_pmorbs
+data_pmorbs <- as_tibble(data_pmorbs) %>%
+  group_by(link_no, cis_marker) %>%
+  mutate(epinum = row_number()) %>%
+  ungroup() %>%
+  filter(epinum == 1) %>%
+  mutate(n_emerg = 0)
+
+data_pmorbs <- data.table(data_pmorbs)
 
 
 # For every row in the pmorbs extract, look at each of the prior 50 rows and
@@ -456,13 +465,16 @@ data_pmorbs[,`:=`(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3)
 for (i in 1:50) {
   # 1:50 because the 95th percentile of episode counts per patient was 51
 
-  data_pmorbs <- data_pmorbs %>%
-    mutate(n_emerg = if_else(!is.na(lag(link_no, i)), if_else(lag(old_smr1_tadm_code, i) >= 4 & link_no == lag(link_no, i) &
-                                                                (admission_date - lag(admission_date, i)) <= 365, n_emerg + 1, n_emerg), n_emerg))
+  data_pmorbs[, `:=`(old_admission = (admission_date - shift(admission_date, i))/60/60/24,
+                     old_tadm = shift(old_smr1_tadm_code, i), old_link = shift(link_no, i))]
+
+  data_pmorbs[admission_date >= z_start_date_l & old_link == link_no &
+                old_tadm >= 4 & old_admission <= 365, n_emerg := n_emerg + 1]
+
 }
 
 # Select required variables from data_pmorbs
-data_pmorbs <- data_pmorbs %>%
+data_pmorbs <- as_tibble(data_pmorbs) %>%
   select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
 
 # Join data_pmorbs on to the main tibble
