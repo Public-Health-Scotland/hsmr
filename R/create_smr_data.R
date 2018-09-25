@@ -29,6 +29,7 @@ library(lubridate)     # For dates
 library(tidyr)         # For data manipulation in the "tidy" way
 library(fuzzyjoin)     # For fuzzy joins
 library(stringr)       # For string matching
+library(data.table)    # For fast data manipulations
 
 
 ### 2 - Define the database connection with SMRA ----
