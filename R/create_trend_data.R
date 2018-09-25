@@ -108,9 +108,9 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 
 
 ### 1 - Deaths Data ----
-# Removing duplicate records on link_no as the deaths file is matched on to SMR01 by link_no
-# link_no needs to be unique
-z_gro <- z_gro %>%
+# Removing duplicate records on link_no as the deaths file is matched on to
+# SMR01 by link_no, and link_no needs to be unique
+z_gro %<>%
   distinct(link_no, .keep_all = TRUE)
 
 # Matching deaths data on to SMR01 data
