@@ -24,9 +24,11 @@ library(haven)         # For reading in spss files
 library(janitor)       # For 'cleaning' variable names
 library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
+library(tidyr)         # For data manipulation in the "tidy" way
+library(stringr)       # For string manipulation and matching
 
 
-### 2 - Define the database connection with SMRA
+### 2 - Define the database connection with SMRA ----
 smra_connect <- suppressWarnings(
   dbConnect(
     odbc(),
@@ -36,27 +38,49 @@ smra_connect <- suppressWarnings(
 
 
 ### 3 - Extract dates ----
+
 # Define the dates that the data are extracted from and to
 z_start_date   <- dmy(01012008)     # The beginning of the ten year trend
 z_end_date     <- dmy(31032018)     # End date for the cut off for z_smr01
 
 
+### 4 - Read in lookup files ----
+
 # Postcode lookups for SIMD 2016, 2012 and 2009
+# These files will be combined, so create a year variable in each one, to allow
+# them to be differentiated from one another
 z_simd_2016 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation",
   "/postcode_2018_1.5_simd2016.sav")) %>%
-  select(pc7, simd2016_sc_quintile)
+  select(pc7, simd2016_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2016_sc_quintile) %>%
+  mutate(year = "simd_2016")
 
 z_simd_2012 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
-  select(pc7, simd2012_sc_quintile)
+  select(pc7, simd2012_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2012_sc_quintile) %>%
+  mutate(year = "simd_2012")
 
 z_simd_2009 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation/",
   "postcode_2012_2_simd2009v2.sav")) %>%
   select(PC7, simd2009v2_sc_quintile) %>%
-  clean_names()
+  rename(postcode = PC7,
+         simd = simd2009v2_sc_quintile) %>%
+  mutate(year = "simd_2009")
+
+# Combine postcode lookups into a single dataset
+# Ignore warning messages about vectorising labelled elements
+z_simd_all <- bind_rows(z_simd_2016, z_simd_2012, z_simd_2009) %>%
+  spread(year, simd)
+
+# Remove year-specific postcode lookups
+rm(z_simd_2016, z_simd_2012, z_simd_2009)
+
 
 # Population lookups for 2017
 z_pop_est  <- read_spss(paste0(
@@ -82,7 +106,7 @@ z_pop <- bind_rows(z_pop_est, z_pop_proj)
 
 # Aggregate lookup to get Scotland population and append to bottom
 z_pop %<>%
-  bind_rows(., z_pop %>%
+  bind_rows(z_pop %>%
               group_by(year) %>%
               summarise(pop = sum(pop)) %>%
               ungroup() %>%
@@ -92,6 +116,7 @@ z_pop %<>%
 ### SECTION 2 - DATA EXTRACTION----
 
 ### 1 - data extraction ----
+
 # Source SQL queries
 source("R/sql_queries_trends.R")
 
@@ -108,38 +133,53 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 
 
 ### 1 - Deaths Data ----
+
 # Removing duplicate records on link_no as the deaths file is matched on to
 # SMR01 by link_no, and link_no needs to be unique
 z_gro %<>%
   distinct(link_no, .keep_all = TRUE)
 
 # Matching deaths data on to SMR01 data
-z_smr01$date_of_death <- z_gro$date_of_death[match(z_smr01$link_no,z_gro$link_no)]
+z_smr01 %<>%
+  left_join(select(z_gro, link_no, date_of_death), by = "link_no") %>%
 
-# Sorting data by link_no, cis_marker, adm_date and dis_date
-z_smr01 <- z_smr01 %>%
+  # Sorting data by link_no, cis_marker, adm_date and dis_date
   arrange(link_no, cis_marker, admission_date, discharge_date)
 
 
 ### 2 - SIMD ----
 
-# Fix formatting of postcode variable (remove trailing spaces and any other
-# unnecessary white space)
-z_smr01$postcode <- sub("  ", " ", z_smr01$postcode)
-z_smr01$postcode <- sub("   ", "  ", z_smr01$postcode)
-z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)] <- sub(" ", "", z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)])
+# Fix formatting of postcode variable
+z_smr01 %<>%
 
-# Match SIMD 2016 onto years beyond 2014
-names(z_simd_2016)                  <- c("postcode", "simd")
-z_smr01$simd[which(z_smr01$year >= 2014)] <- z_simd_2016$simd[match(z_smr01$postcode, z_simd_2016$postcode)]
+  # First remove all spaces from postcode variable
+  mutate(postcode = gsub("\\s", "", postcode),
 
-# Match SIMD 2012 onto years before 2014 and after 2009
-names(z_simd_2012)                  <- c("postcode", "simd")
-z_smr01$simd[which(z_smr01$year < 2014 & z_smr01$year > 2009)]  <- z_simd_2012$simd[match(z_smr01$postcode, z_simd_2012$postcode)]
+         # Then add space (or spaces) at appropriate juncture depending on
+         # the number of characters, to get the postcode into 7-character
+         # format
+         postcode = case_when(
+           is.na(postcode) ~ NA_character_,
+           str_length(postcode) == 3 ~ sub("(.{0})", "\\1 ", postcode),
+           str_length(postcode) == 4 ~ sub("(.{1})", "\\1 ", postcode),
+           str_length(postcode) == 5 ~ sub("(.{2})", "\\1  ", postcode),
+           str_length(postcode) == 6 ~ sub("(.{3})", "\\1 ", postcode),
+           TRUE ~ postcode
+         )) %>%
 
-# Match SIMD 2009 onto years before 2010
-names(z_simd_2009)                  <- c("postcode", "simd")
-z_smr01$simd[which(z_smr01$year < 2010)]  <- z_simd_2009$simd[match(z_smr01$postcode, z_simd_2009$postcode)]
+  # Join to the postcode lookup
+  left_join(z_simd_all, by = "postcode") %>%
+
+  # Assign the appropriate SIMD value to a patient depending on the year they
+  # were admitted
+  mutate(simd = case_when(
+    year >= 2014 ~ simd_2016,
+    year > 2009 & year < 2014 ~ simd_2012,
+    year < 2009 ~ simd_2009
+  )) %>%
+
+  # Remove the not needed year-specific SIMD variables
+  select(-c(simd_2009:simd_2016))
 
 
 ### 3 - Manipulations ----
