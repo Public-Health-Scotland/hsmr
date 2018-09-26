@@ -28,7 +28,7 @@ library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
 library(tidyr)         # For data manipulation in the "tidy" way
 library(fuzzyjoin)     # For fuzzy joins
-library(stringr)       # For string matching
+library(stringr)       # For string manipulation and matching
 
 
 ### 2 - Define the database connection with SMRA ----
