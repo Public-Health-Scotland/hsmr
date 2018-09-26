@@ -160,8 +160,6 @@ z_smr01 %<>%
          # format
          postcode = case_when(
            is.na(postcode) ~ NA_character_,
-           str_length(postcode) == 3 ~ sub("(.{0})", "\\1 ", postcode),
-           str_length(postcode) == 4 ~ sub("(.{1})", "\\1 ", postcode),
            str_length(postcode) == 5 ~ sub("(.{2})", "\\1  ", postcode),
            str_length(postcode) == 6 ~ sub("(.{3})", "\\1 ", postcode),
            TRUE ~ postcode
