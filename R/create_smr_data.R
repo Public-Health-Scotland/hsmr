@@ -355,15 +355,20 @@ data_pmorbs %<>%
 # THEN assign the correct Charlson Index weighting. These weightings are saved in the
 # 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
 
+# NOTE: This section of code uses the data.table package rather than dplyr
 
+# convert tibble to data.table format
 data_pmorbs <- data.table(data_pmorbs)
 
-start1 <- proc.time()
 for(i in 1:50){
 
   # 1:50 because the 95th percentile of episode counts per patient was 51
-  print(i)
 
+  # Pre-calculating several variables so this only has to be done once per iteration
+  # and doesn't have to be repeated for every group
+  # old_admission = number of days between current record and previous ith admission
+  # old_pmorbs    = the pmorbs group the ith previous record is assigned to
+  # old_link      = the link number of the ith previous record
   data_pmorbs[, `:=`(old_admission = (admission_date - shift(admission_date, i))/60/60/24,
                      old_pmorbs = shift(pmorbs, i), old_link = shift(link_no, i))]
 
@@ -437,9 +442,6 @@ for(i in 1:50){
                 old_admission<= 365, pmorbs1_17 := 2, by = link_no]
 
 }
-end1 <- proc.time()
-end1 - start1
-
 
 
 
@@ -451,6 +453,9 @@ data_pmorbs[,`:=`(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3)
                     max(pmorbs5_10) + max(pmorbs5_11) + max(pmorbs5_12) + max(pmorbs5_13) + max(pmorbs5_14) + max(pmorbs5_15) + max(pmorbs5_16) + max(pmorbs5_17), by = .(link_no, cis_marker)]
 
 
+# Converting back to a tibble to carry out some dplyr manipulations
+# Adding epinum to filter down to first peisode within a CIS for the calculation
+# of the number of previous emergency admissions
 data_pmorbs <- as_tibble(data_pmorbs) %>%
   group_by(link_no, cis_marker) %>%
   mutate(epinum = row_number()) %>%
@@ -458,6 +463,8 @@ data_pmorbs <- as_tibble(data_pmorbs) %>%
   filter(epinum == 1) %>%
   mutate(n_emerg = 0)
 
+
+# Converting back to a data.table for the number of previous emergency admissions
 data_pmorbs <- data.table(data_pmorbs)
 
 
