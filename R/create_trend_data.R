@@ -155,8 +155,8 @@ z_smr01 %<>%
   # First remove all spaces from postcode variable
   mutate(postcode = gsub("\\s", "", postcode),
 
-         # Then add space (or spaces) at appropriate juncture depending on
-         # the number of characters, to get the postcode into 7-character
+         # Then add space (or spaces) at appropriate juncture (depending on
+         # the number of characters) to get the postcode into 7-character
          # format
          postcode = case_when(
            is.na(postcode) ~ NA_character_,
@@ -182,21 +182,24 @@ z_smr01 %<>%
 
 ### 3 - Manipulations ----
 
-z_smr01 <- z_smr01 %>%
-  mutate(death_inhosp = ifelse(discharge_type >= 40 & discharge_type <= 49, 1, 0),
-         dthdays      = (date_of_death - admission_date)/60/60/24,
-         death30      = ifelse(dthdays >= 0 & dthdays <= 30, 1, 0),
-         death30      = ifelse(is.na(death30), 0, death30),
-         quarter_name = paste(year, "Q", quarter, sep = ""),
-         quarter      = as.numeric(as.factor(quarter_name))) %>%
+z_smr01 %<>%
+  mutate(death_inhosp = if_else(between(as.numeric(discharge_type), 40, 49),
+                                1, 0),
+         dthdays = interval(admission_date, date_of_death) / days(1),
+         death30 = case_when(
+           between(dthdays, 0, 30) ~ 1,
+           TRUE ~ 0),
+         quarter_name = paste0(year, "Q", quarter),
+         quarter = as.numeric(as.factor(quarter_name))) %>%
   group_by(link_no, cis_marker) %>%
   mutate(epinum             = row_number(),
          death_inhosp_max   = max(death_inhosp),
          discharge_date_cis = max(discharge_date)) %>%
   ungroup() %>%
-  mutate(dthdays_dis        = (date_of_death - discharge_date_cis),
-         death30_dis        = ifelse(dthdays_dis >= 0 & dthdays_dis <= 30, 1, 0),
-         death30_dis        = ifelse(is.na(death30_dis), 0, death30_dis)) %>%
+  mutate(dthdays_dis = interval(discharge_date_cis, date_of_death) / days(1),
+         death30_dis = case_when(
+           between(dthdays_dis, 0, 30) ~ 1,
+           TRUE ~ 0)) %>%
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
   group_by(link_no, quarter) %>%
   mutate(last_cis = max(cis_marker)) %>%
