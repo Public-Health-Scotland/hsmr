@@ -568,7 +568,7 @@ z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
 
 # Delete unnecessary model information using bespoke function in order to retain
 # special class of object for predicted probabilities below
-z_risk_model <- clean_model(risk_model)
+z_risk_model <- clean_model(z_risk_model)
 
 # Calculate predicted probabilities
 z_smr01$pred_eq <- predict.glm(risk_model, z_smr01, type = "response")
@@ -591,8 +591,7 @@ z_hsmr_scot <- z_smr01 %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
          location_type = "Scotland",
-         location      = "Scot",
-         location_name = "Scotland")
+         location      = "Scot")
 
 
 ### 2 - Create Hospital-level aggregation ----
@@ -604,12 +603,12 @@ z_hsmr_hosp <- z_smr01 %>%
             pats   = length(death30)) %>%
   mutate(smr           = deaths/pred,
          crd_rate      = (deaths/pats) * 100,
-         location_type = "hospital") %>%
-  # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
-  #filter(location %in% )
+         location_type = "hospital")# %>%
+# TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
+#filter(location %in% )
 
 
-  ### 3 - Create HB-level aggregation ----
+### 3 - Create HB-level aggregation ----
 
 z_hsmr_hb <- z_smr01 %>%
   group_by(quarter, hbtreat_currentdate) %>%
@@ -626,7 +625,8 @@ z_hsmr_hb <- z_smr01 %>%
 
 # Merge data and match on location name
 smr_data <- plyr::rbind.fill(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
-  join(z_hospitals, by = location)
+  left_join(z_hospitals, by = c("location")) %>%
+  filter(!is.na(location_name))
 
 # Create quarter variable used in linear model - every data point in the first year
 # is considered to come from one time point (baseline period)
@@ -637,7 +637,7 @@ smr_data <- smr_data %>%
 z_reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
 
 # Create reg variable of predicted values
-smr_data$reg <- predict(reg_line, smr_data, type = "response")
+smr_data$reg <- predict(z_reg_line, smr_data, type = "response")
 
 
 ### 5 - Save data ----
