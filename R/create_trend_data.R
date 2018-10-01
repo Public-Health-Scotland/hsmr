@@ -170,7 +170,7 @@ z_smr01 %<>%
   mutate(simd = case_when(
     year >= 2014 ~ simd_2016,
     year > 2009 & year < 2014 ~ simd_2012,
-    year < 2009 ~ simd_2009
+    year <= 2009 ~ simd_2009
   )) %>%
 
   # Remove the not needed year-specific SIMD variables
