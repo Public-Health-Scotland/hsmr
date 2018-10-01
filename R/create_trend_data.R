@@ -78,9 +78,6 @@ z_simd_2009 <- read_spss(paste0(
 z_simd_all <- bind_rows(z_simd_2016, z_simd_2012, z_simd_2009) %>%
   spread(year, simd)
 
-# Remove year-specific postcode lookups
-rm(z_simd_2016, z_simd_2012, z_simd_2009)
-
 
 # Population lookups for 2017
 z_pop_est  <- read_spss(paste0(
@@ -287,9 +284,9 @@ z_scot_dep <- z_smr01 %>%
   select(hbtreat_currentdate, quarter, deaths, pats, label)
 
 # Merge dataframes together
-z_scot_subgroups <- rbind(z_scot_all_adm, z_scot_age,
-                          z_scot_sex, z_scot_specadm,
-                          z_scot_dep) %>%
+z_scot_subgroups <- bind_rows(z_scot_all_adm, z_scot_age,
+                              z_scot_sex, z_scot_specadm,
+                              z_scot_dep) %>%
   mutate(crd_rate = deaths/pats * 100) %>%
   rename(HB2014 = hbtreat_currentdate) %>%
   select(HB2014, quarter, deaths, pats, crd_rate, label)
@@ -309,10 +306,10 @@ z_hb_dis <- z_smr01 %>%
   summarise(deaths = sum(death30_dis),
             pats   = length(death30_dis)) %>%
   ungroup() %>%
-  mutate(label       = "Discharge")
+  mutate(label     = "Discharge")
 
 # Merge dataframes together
-z_dis <- rbind(z_scot_dis, z_hb_dis) %>%
+z_dis <- bind_rows(z_scot_dis, z_hb_dis) %>%
   mutate(crd_rate = deaths/pats * 100) %>%
   rename(HB2014 = hbtreat_currentdate) %>%
   select(HB2014, quarter, deaths, pats, crd_rate, label)
@@ -321,23 +318,26 @@ z_dis <- rbind(z_scot_dis, z_hb_dis) %>%
 z_scot_pop <- z_gro %>%
   group_by(year, quarter) %>%
   summarise(deaths = length(year)) %>%
+  ungroup() %>%
   mutate(hbres_currentdate = "Scotland")
 
 z_hb_pop <- z_gro %>%
   group_by(year, quarter, hbres_currentdate) %>%
-  summarise(deaths = length(year))
+  summarise(deaths = length(year)) %>%
+  ungroup()
 
-z_pop_deaths <- rbind(z_scot_pop, z_hb_pop) %>%
-  ungroup() %>%
-  left_join(z_pop, by = c("year"= "Year", "hbres_currentdate" = "HB2014")) %>%
+z_pop_deaths <- bind_rows(z_scot_pop, z_hb_pop) %>%
+  left_join(z_pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
   mutate(crd_rate     = deaths/pop * 1000,
-         quarter_name = paste(year, "Q", quarter, sep = ""),
+         quarter_name = paste0(year, "Q", quarter),
          quarter      = as.numeric(as.factor(quarter_name)),
          label        = "Population") %>%
   rename(HB2014 = hbres_currentdate,
          pats   = pop) %>%
   select(HB2014, quarter, deaths, pats, crd_rate, label)
 
-long_term_trends <- rbind(z_scot_subgroups, z_dis, z_pop_deaths)
+long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
 
 readr::write_csv(long_term_trends, path = 'long_term_trends.csv')
+
+### END OF SCRIPT ###
