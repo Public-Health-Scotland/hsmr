@@ -1,9 +1,11 @@
 Package: hsmr
-Title: Reproducible Analytical Pipeline of Hospital Standardised Mortality Ratios Quarterly Publication
 Version: 0.0.0.9000
-Authors@R: c(person("David", "Caldwell", email = "first.last@example.com", role = c("aut", "cre")),
-             person("Anna", "Price", email = "anna.price5@nhs.net", role = c("aut", "cre")))
+Date: 2018-09-28
+Title: Reproducible Analytical Pipeline of Hospital Standardised Mortality Ratios Quarterly Publication
+Authors@R: c(person("David", "Caldwell", email = "david.caldwell1@nhs.net", role = c("aut", "cre")),
+             person("Anna", "Price", email = "anna.price5@nhs.net", role = "aut"))
 Description: Extracts, processes and models SMR01 and GRO Deaths data in order to produce the quarterly Hospital Standardised Mortality Ratios publication.
+Maintainer: David Caldwell <david.caldwell1@nhs.net>
 Depends: R (>= 3.4.4)
 License: What license is it under?
 Encoding: UTF-8
