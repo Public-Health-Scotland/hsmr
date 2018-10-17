@@ -20,6 +20,7 @@ start <- proc.time()
 
 ### 1 - Load packages ----
 library(odbc)          # For accessing SMRA databases
+library(data.table)    # For fast data manipulations
 library(dplyr)         # For data manipulation in the "tidy" way
 library(haven)         # For reading in SPSS files
 library(readr)         # For reading in csv files
@@ -28,8 +29,9 @@ library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
 library(tidyr)         # For data manipulation in the "tidy" way
 library(fuzzyjoin)     # For fuzzy joins
-library(stringr)       # For string matching
-library(data.table)    # For fast data manipulations
+library(stringr)       # For string manipulation and matching
+
+
 
 
 ### 2 - Define the database connection with SMRA ----
