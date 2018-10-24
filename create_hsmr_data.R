@@ -93,16 +93,34 @@ z_morbs <- read_csv(paste0(z_lookups,
   distinct(diag, .keep_all = TRUE)
 
 
-# Postcode lookups for SIMD 2016 and 2012
 z_simd_2016 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation",
   "/postcode_2018_1.5_simd2016.sav")) %>%
-  select(pc7, simd2016_sc_quintile)
+  select(pc7, simd2016_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2016_sc_quintile) %>%
+  mutate(year = "simd_2016")
 
 z_simd_2012 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
-  select(pc7, simd2012_sc_quintile)
+  select(pc7, simd2012_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2012_sc_quintile) %>%
+  mutate(year = "simd_2012")
+
+z_simd_2009 <- read_spss(paste0(
+  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+  "postcode_2012_2_simd2009v2.sav")) %>%
+  select(PC7, simd2009v2_sc_quintile) %>%
+  rename(postcode = PC7,
+         simd = simd2009v2_sc_quintile) %>%
+  mutate(year = "simd_2009")
+
+# Combine postcode lookups into a single dataset
+# Ignore warning messages about vectorising labelled elements
+z_simd_all <- bind_rows(z_simd_2016, z_simd_2012, z_simd_2009) %>%
+  spread(year, simd)
 
 
 # Population lookups for 2017
@@ -230,7 +248,7 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 # POSTCODE = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
-trends_data <- function_1(SMR01    = z_smr01,
+trends_data <- create_trends(SMR01    = z_smr01,
                           GRO      = z_gro,
-                          POP      = z_pop,
-                          POSTCODE = z_simd_all)
+                          pop      = z_pop,
+                          dep      = z_simd_all)
