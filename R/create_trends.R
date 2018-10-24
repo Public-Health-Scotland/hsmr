@@ -26,6 +26,54 @@
 
 create_trends <- function(SMR01, GRO, pop, dep){
 
+  if(!("link_no" %in% names(SMR01)) |
+     !("admission_date" %in% names(SMR01)) |
+     !("discharge_date" %in% names(SMR01)) |
+     !("cis_marker" %in% names(SMR01)) |
+     !("postcode" %in% names(SMR01)) |
+     !("specialty" %in% names(SMR01)) |
+     !("discharge_type" %in% names(SMR01)) |
+     !("sex" %in% names(SMR01)) |
+     !("admgrp" %in% names(SMR01)) |
+     !("admfgrp" %in% names(SMR01)) |
+     !("ipdc" %in% names(SMR01)) |
+     !("age_grp" %in% names(SMR01)) |
+     !("quarter" %in% names(SMR01)) |
+     !("year" %in% names(SMR01))){
+
+    stop(paste0("Object SMR01 does not contain the correct variables.",
+         "Must contain:
+         link_no
+         admission_date
+         discharge_data
+         cis_marker
+         postcode
+         specialty
+         discharge_type
+         sex
+         admgrp
+         admfgrp
+         ipdc
+         age_grp
+         quarter
+         year"))
+  }
+
+  if(!("link_no" %in% names(GRO)) |
+     !("date_of_death" %in% names(GRO)) |
+     !("hbres_currentdate" %in% names(GRO)) |
+     !("quarter" %in% names(GRO)) |
+     !("year" %in% names(GRO))){
+
+    stop(paste0("Object GRO does not contain the correct variables.",
+                "Must contain:
+                link_no
+                date_of_death
+                hbres_currentdate
+                quarter
+                year"))
+  }
+
 
   ### 1 - Deaths Data ----
 
