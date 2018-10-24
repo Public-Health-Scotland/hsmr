@@ -244,8 +244,8 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 #            PLUS one extra quarter at the beginning
 # GRO      = The deaths extract used to produce CR data. This should contain
 #            ALL data AFTER the start of the first publication quarter
-# POP      = The population lookup file
-# POSTCODE = The postcode lookup dataframe for SIMD matching
+# pop      = The population lookup file
+# dep      = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
 trends_data <- create_trends(SMR01    = z_smr01,
