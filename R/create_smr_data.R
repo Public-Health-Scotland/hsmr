@@ -448,9 +448,16 @@ for(i in 1:50){
 }
 
 
-
 # Calculate the sum of the Charlson Index weightings for each CIS, for both 1
 # and 5 years prior to admission
+
+# data_pmorbs <- as_tibble(data_pmorbs) %>%
+#   mutate(pmorbs1_sum = rowSums(select(., starts_with("pmorbs1"))),
+#          pmorbs5_sum = rowSums(select(., starts_with("pmorbs5")))) %>%
+#   group_by(link_no, cis_marker) %>%
+#   mutate_at(vars(ends_with("_sum")), max) %>%
+#   ungroup()
+
 data_pmorbs[,`:=`(pmorbs1_sum = max(pmorbs1_1) + max(pmorbs1_2) + max(pmorbs1_3) + max(pmorbs1_4) + max(pmorbs1_5) + max(pmorbs1_6) + max(pmorbs1_7) + max(pmorbs1_8) + max(pmorbs1_9) +
                     max(pmorbs1_10) + max(pmorbs1_11) + max(pmorbs1_12) + max(pmorbs1_13) + max(pmorbs1_14) + max(pmorbs1_15) + max(pmorbs1_16) + max(pmorbs1_17),
                   pmorbs5_sum = max(pmorbs5_1) + max(pmorbs5_2) + max(pmorbs5_3) + max(pmorbs5_4) + max(pmorbs5_5) + max(pmorbs5_6) + max(pmorbs5_7) + max(pmorbs5_8) + max(pmorbs5_9) +
