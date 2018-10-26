@@ -77,6 +77,32 @@ create_trends <- function(smr01, gro, pop, dep){
                 year"))
   }
 
+  if(!is.numeric(smr01$link_no)){
+
+    stop(paste0("Link_no must be a numeric"))
+
+  }
+
+  if(!is.numeric(smr01$cis_marker)){
+
+    stop(paste0("cis_marker must be a numeric"))
+
+  }
+
+  if(!is.POSIXct(smr01$admission_date)){
+
+    stop(paste0("Admission_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!is.POSIXct(smr01$discharge_date)){
+
+    stop(paste0("Discharge_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
 
   ### 1 - Deaths Data ----
 
