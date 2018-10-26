@@ -47,8 +47,11 @@ smra_connect <- suppressWarnings(
 # Define the dates that the data are extracted from and to
 
 
-# The beginning of baseline period
+# The beginning of baseline period (HSMR)
 z_start_date   <- dmy(01012011)
+
+# The beginning of baseline period (trends)
+z_start_date   <- dmy(01012008)
 
 # Five years earlier for the five year look-back (pmorbs5)
 z_start_date_5 <- dmy(01012006)
@@ -56,7 +59,10 @@ z_start_date_5 <- dmy(01012006)
 # Beginning of the baseline period (pmorbs)
 z_start_date_l <- dmy(01012011)
 
-# End date for the cut off for data
+# End date for the cut off for data (HSMR)
+z_end_date     <- dmy(31032018)
+
+# End date for the cut off for data (trends)
 z_end_date     <- dmy(31032018)
 
 
