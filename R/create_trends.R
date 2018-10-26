@@ -17,7 +17,7 @@
 #' @param pop Input tibble for population estimates.
 #' @param dep Input tibble for deprivation lookup.
 #'
-#' @return If the class is not instantiated correctly, nothing is returned.
+#' @return If the class is not initiated correctly, nothing is returned.
 #'
 #' @examples
 #'
