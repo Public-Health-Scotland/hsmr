@@ -33,7 +33,7 @@ library(stringr)       # For string manipulation and matching
 
 ### 2 - Define the database connection with SMRA ----
 
-z_smra_connect <- suppressWarnings(
+smra_connect <- suppressWarnings(
   dbConnect(
     odbc(),
     dsn = "SMRA",
