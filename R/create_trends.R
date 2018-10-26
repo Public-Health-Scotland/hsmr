@@ -26,20 +26,20 @@
 
 create_trends <- function(smr01, gro, pop, dep){
 
-  if(!("link_no" %in% names(smr01)) |
-     !("admission_date" %in% names(smr01)) |
-     !("discharge_date" %in% names(smr01)) |
-     !("cis_marker" %in% names(smr01)) |
-     !("postcode" %in% names(smr01)) |
-     !("specialty" %in% names(smr01)) |
-     !("discharge_type" %in% names(smr01)) |
-     !("sex" %in% names(smr01)) |
-     !("admgrp" %in% names(smr01)) |
-     !("admfgrp" %in% names(smr01)) |
-     !("ipdc" %in% names(smr01)) |
-     !("age_grp" %in% names(smr01)) |
-     !("quarter" %in% names(smr01)) |
-     !("year" %in% names(smr01))){
+  if(("link_no" %!in% names(smr01)) |
+     ("admission_date" %!in% names(smr01)) |
+     ("discharge_date" %!in% names(smr01)) |
+     ("cis_marker" %!in% names(smr01)) |
+     ("postcode" %!in% names(smr01)) |
+     ("specialty" %!in% names(smr01)) |
+     ("discharge_type" %!in% names(smr01)) |
+     ("sex" %!in% names(smr01)) |
+     ("admgrp" %!in% names(smr01)) |
+     ("admfgrp" %!in% names(smr01)) |
+     ("ipdc" %!in% names(smr01)) |
+     ("age_grp" %!in% names(smr01)) |
+     ("quarter" %!in% names(smr01)) |
+     ("year" %!in% names(smr01))){
 
     stop(paste0("Object smr01 does not contain the correct variables.",
          "Must contain:
@@ -59,11 +59,11 @@ create_trends <- function(smr01, gro, pop, dep){
          year"))
   }
 
-  if(!("link_no" %in% names(gro)) |
-     !("date_of_death" %in% names(gro)) |
-     !("hbres_currentdate" %in% names(gro)) |
-     !("quarter" %in% names(gro)) |
-     !("year" %in% names(gro))){
+  if(("link_no" %!in% names(gro)) |
+     ("date_of_death" %!in% names(gro)) |
+     ("hbres_currentdate" %!in% names(gro)) |
+     ("quarter" %!in% names(gro)) |
+     ("year" %!in% names(gro))){
 
     stop(paste0("Object gro does not contain the correct variables.",
                 "Must contain:
