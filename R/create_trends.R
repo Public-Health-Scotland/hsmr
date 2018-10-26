@@ -41,7 +41,7 @@ create_trends <- function(smr01, gro, pop, dep){
      ("quarter" %!in% names(smr01)) |
      ("year" %!in% names(smr01))){
 
-    stop(paste0("Object smr01 does not contain the correct variables.",
+    stop(paste0("Object smr01 does not contain the required variables.",
          "Must contain:
          link_no
          admission_date
@@ -65,7 +65,7 @@ create_trends <- function(smr01, gro, pop, dep){
      ("quarter" %!in% names(gro)) |
      ("year" %!in% names(gro))){
 
-    stop(paste0("Object gro does not contain the correct variables.",
+    stop(paste0("Object gro does not contain the required variables.",
                 "Must contain:
                 link_no
                 date_of_death
