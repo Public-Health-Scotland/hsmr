@@ -26,6 +26,9 @@
 
 create_trends <- function(smr01, gro, pop, dep){
 
+  stopifnot(!is.tibble(smr01) | !is.tibble(gro) |
+              !is.tibble(pop) | !is.tibble(dep))
+
   if(("link_no" %!in% names(smr01)) |
      ("admission_date" %!in% names(smr01)) |
      ("discharge_date" %!in% names(smr01)) |
