@@ -12,8 +12,8 @@
 #' lookup file for deprivation.
 #'
 #'
-#' @param SMR01 Input tibble for admissions, see details.
-#' @param GRO Input tibble for deaths, see details.
+#' @param smr01 Input tibble for admissions, see details.
+#' @param gro Input tibble for deaths, see details.
 #' @param pop Input tibble for population estimates.
 #' @param dep Input tibble for deprivation lookup.
 #'
@@ -24,24 +24,24 @@
 #'
 #' @export
 
-create_trends <- function(SMR01, GRO, pop, dep){
+create_trends <- function(smr01, gro, pop, dep){
 
-  if(!("link_no" %in% names(SMR01)) |
-     !("admission_date" %in% names(SMR01)) |
-     !("discharge_date" %in% names(SMR01)) |
-     !("cis_marker" %in% names(SMR01)) |
-     !("postcode" %in% names(SMR01)) |
-     !("specialty" %in% names(SMR01)) |
-     !("discharge_type" %in% names(SMR01)) |
-     !("sex" %in% names(SMR01)) |
-     !("admgrp" %in% names(SMR01)) |
-     !("admfgrp" %in% names(SMR01)) |
-     !("ipdc" %in% names(SMR01)) |
-     !("age_grp" %in% names(SMR01)) |
-     !("quarter" %in% names(SMR01)) |
-     !("year" %in% names(SMR01))){
+  if(!("link_no" %in% names(smr01)) |
+     !("admission_date" %in% names(smr01)) |
+     !("discharge_date" %in% names(smr01)) |
+     !("cis_marker" %in% names(smr01)) |
+     !("postcode" %in% names(smr01)) |
+     !("specialty" %in% names(smr01)) |
+     !("discharge_type" %in% names(smr01)) |
+     !("sex" %in% names(smr01)) |
+     !("admgrp" %in% names(smr01)) |
+     !("admfgrp" %in% names(smr01)) |
+     !("ipdc" %in% names(smr01)) |
+     !("age_grp" %in% names(smr01)) |
+     !("quarter" %in% names(smr01)) |
+     !("year" %in% names(smr01))){
 
-    stop(paste0("Object SMR01 does not contain the correct variables.",
+    stop(paste0("Object smr01 does not contain the correct variables.",
          "Must contain:
          link_no
          admission_date
@@ -59,13 +59,13 @@ create_trends <- function(SMR01, GRO, pop, dep){
          year"))
   }
 
-  if(!("link_no" %in% names(GRO)) |
-     !("date_of_death" %in% names(GRO)) |
-     !("hbres_currentdate" %in% names(GRO)) |
-     !("quarter" %in% names(GRO)) |
-     !("year" %in% names(GRO))){
+  if(!("link_no" %in% names(gro)) |
+     !("date_of_death" %in% names(gro)) |
+     !("hbres_currentdate" %in% names(gro)) |
+     !("quarter" %in% names(gro)) |
+     !("year" %in% names(gro))){
 
-    stop(paste0("Object GRO does not contain the correct variables.",
+    stop(paste0("Object gro does not contain the correct variables.",
                 "Must contain:
                 link_no
                 date_of_death
@@ -78,13 +78,13 @@ create_trends <- function(SMR01, GRO, pop, dep){
   ### 1 - Deaths Data ----
 
   # Removing duplicate records on link_no as the deaths file is matched on to
-  # SMR01 by link_no, and link_no needs to be unique
-  GRO %<>%
+  # smr01 by link_no, and link_no needs to be unique
+  gro %<>%
     distinct(link_no, .keep_all = TRUE)
 
-  # Matching deaths data on to SMR01 data
-  SMR01 %<>%
-    left_join(select(GRO, link_no, date_of_death), by = "link_no") %>%
+  # Matching deaths data on to smr01 data
+  smr01 %<>%
+    left_join(select(gro, link_no, date_of_death), by = "link_no") %>%
 
     # Sorting data by link_no, cis_marker, adm_date and dis_date
     arrange(link_no, cis_marker, admission_date, discharge_date)
@@ -92,7 +92,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
   ### 2 - SIMD ----
 
   # Fix formatting of postcode variable
-  SMR01 %<>%
+  smr01 %<>%
 
     # First remove all spaces from postcode variable
     mutate(postcode = gsub("\\s", "", postcode),
@@ -124,7 +124,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
 
   ### 3 - Manipulations ----
 
-  SMR01 %<>%
+  smr01 %<>%
     mutate(death_inhosp = if_else(between(as.numeric(discharge_type), 40, 49),
                                   1, 0),
            dthdays = interval(admission_date, date_of_death) / days(1),
@@ -156,7 +156,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
   ### 4 - Aggregation ----
 
   # Crude Rates (Scotland) - All Admissions
-  z_scot_all_adm <- SMR01 %>%
+  z_scot_all_adm <- smr01 %>%
     group_by(quarter) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -165,7 +165,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
            hbtreat_currentdate = "Scotland")
 
   # Crude Rates (Scotland) - Specialty/Admission type
-  z_scot_specadm <- SMR01 %>%
+  z_scot_specadm <- smr01 %>%
     group_by(quarter, surgmed, admgrp) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -181,7 +181,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
 
 
   # Crude Rates (Scotland) - Age group
-  z_scot_age <- SMR01 %>%
+  z_scot_age <- smr01 %>%
     group_by(quarter, age_grp) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -198,7 +198,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
 
 
   # Crude Rates (Scotland) - Sex
-  z_scot_sex <- SMR01 %>%
+  z_scot_sex <- smr01 %>%
     group_by(quarter, sex) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -212,7 +212,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
 
 
   # Crude Rates (Scotland) - Deprivation
-  z_scot_dep <- SMR01 %>%
+  z_scot_dep <- smr01 %>%
     group_by(quarter, simd) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -237,7 +237,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
     select(HB2014, quarter, deaths, pats, crd_rate, label)
 
   # Crude Rate - Date of Discharge (Scotland)
-  z_scot_dis <- SMR01 %>%
+  z_scot_dis <- smr01 %>%
     group_by(quarter) %>%
     summarise(deaths = sum(death30_dis),
               pats   = length(death30_dis)) %>%
@@ -246,7 +246,7 @@ create_trends <- function(SMR01, GRO, pop, dep){
            hbtreat_currentdate = "Scotland")
 
   # Crude Rate - Date of Discharge (NHS Board)
-  z_hb_dis <- SMR01 %>%
+  z_hb_dis <- smr01 %>%
     group_by(quarter, hbtreat_currentdate) %>%
     summarise(deaths = sum(death30_dis),
               pats   = length(death30_dis)) %>%
@@ -260,13 +260,13 @@ create_trends <- function(SMR01, GRO, pop, dep){
     select(HB2014, quarter, deaths, pats, crd_rate, label)
 
   # Population-based mortality
-  z_scot_pop <- GRO %>%
+  z_scot_pop <- gro %>%
     group_by(year, quarter) %>%
     summarise(deaths = length(year)) %>%
     ungroup() %>%
     mutate(hbres_currentdate = "Scotland")
 
-  z_hb_pop <- GRO %>%
+  z_hb_pop <- gro %>%
     group_by(year, quarter, hbres_currentdate) %>%
     summarise(deaths = length(year)) %>%
     ungroup()
