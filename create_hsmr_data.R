@@ -254,7 +254,7 @@ z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
 # dep      = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
-trends_data <- create_trends(SMR01    = z_smr01,
-                          GRO      = z_gro,
-                          pop      = z_pop,
-                          dep      = z_simd_all)
+trends_data <- create_trends(smr01    = z_smr01,
+                             gro      = z_gro,
+                             pop      = z_pop,
+                             dep      = z_simd_all)
