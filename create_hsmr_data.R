@@ -95,7 +95,7 @@ z_morbs <- read_csv(paste0(z_lookups,
 
 z_simd_2016 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation",
-  "/postcode_2018_1.5_simd2016.sav")) %>%
+  "/postcode_2018_2_simd2016.sav")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
