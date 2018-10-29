@@ -97,15 +97,28 @@ z_morbs <- read_csv(paste0(z_lookups,
 
 
 # Postcode lookups for SIMD 2016 and 2012
+# These files will be combined, so create a year variable in each one, to allow
+# them to be differentiated from one another
 z_simd_2016 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation",
   "/postcode_2018_2_simd2016.sav")) %>%
-  select(pc7, simd2016_sc_quintile)
+  select(pc7, simd2016_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2016_sc_quintile) %>%
+  mutate(year = "simd_2016")
 
 z_simd_2012 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
-  select(pc7, simd2012_sc_quintile)
+  select(pc7, simd2012_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2012_sc_quintile) %>%
+  mutate(year = "simd_2012")
+
+# Combine postcode lookups into a single dataset
+# Ignore warning messages about vectorising labelled elements
+z_simd_all <- bind_rows(z_simd_2016, z_simd_2012) %>%
+  spread(year, simd)
 
 
 # Hospital names
@@ -372,7 +385,8 @@ for(i in 1:50){
   # old_pmorbs    = the pmorbs group the ith previous record is assigned to
   # old_link      = the link number of the ith previous record
   data_pmorbs[, `:=`(old_admission = (admission_date - shift(admission_date, i))/60/60/24,
-                     old_pmorbs = shift(pmorbs, i), old_link = shift(link_no, i))]
+                     old_pmorbs = shift(pmorbs, i),
+                     old_link = shift(link_no, i))]
 
   data_pmorbs[admission_date >= z_start_date_l & old_pmorbs == 1  &
                 old_admission <= 1825 & old_link == link_no, pmorbs5_1 := 5]
@@ -478,10 +492,12 @@ data_pmorbs <- data.table(data_pmorbs)
 # vector initiliased above.
 
 for (i in 1:50) {
+
   # 1:50 because the 95th percentile of episode counts per patient was 51
 
   data_pmorbs[, `:=`(old_admission = (admission_date - shift(admission_date, i))/60/60/24,
-                     old_tadm = shift(old_smr1_tadm_code, i), old_link = shift(link_no, i))]
+                     old_tadm = shift(old_smr1_tadm_code, i),
+                     old_link = shift(link_no, i))]
 
   data_pmorbs[admission_date >= z_start_date_l & old_link == link_no &
                 old_tadm >= 4 & old_admission <= 365, n_emerg := n_emerg + 1]
@@ -489,11 +505,11 @@ for (i in 1:50) {
 }
 
 # Select required variables from data_pmorbs
-data_pmorbs <- as_tibble(data_pmorbs) %>%
-  select(c("link_no", "cis_marker", "pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
+data_pmorbs %<>%
+  select(link_no, cis_marker, pmorbs1_sum, pmorbs5_sum, n_emerg)
 
 # Join data_pmorbs on to the main tibble
-z_smr01 <- z_smr01 %>%
+z_smr01 %<>%
   left_join(data_pmorbs, by = c("link_no", "cis_marker"))
 
 # Delete data_pmorbs as no longer required
@@ -502,22 +518,37 @@ rm(data_pmorbs);gc()
 
 ### 4 - SIMD ----
 
-# Fix formatting of postcode variable (remove trailing spaces and any other
-# unnecessary white space)
-z_smr01$postcode <- sub("  ", " ", z_smr01$postcode)
-z_smr01$postcode <- sub("   ", "  ", z_smr01$postcode)
-z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)] <- sub(" ", "", z_smr01$postcode[which(regexpr(" ", z_smr01$postcode) == 5)])
+# Fix formatting of postcode variable
+z_smr01 %<>%
 
-# Match SIMD 2016 onto years beyond 2014
-names(z_simd_2016)                  <- c("postcode", "simd")
-z_smr01$simd[which(z_smr01$year >= 2014)] <- z_simd_2016$simd[match(z_smr01$postcode, z_simd_2016$postcode)]
+  # First remove all spaces from postcode variable
+  mutate(postcode = gsub("\\s", "", postcode),
 
-# Match SIMD 2012 onto years before 2014
-names(z_simd_2012)                  <- c("postcode", "simd")
-z_smr01$simd[which(z_smr01$year < 2014)]  <- z_simd_2012$simd[match(z_smr01$postcode, z_simd_2012$postcode)]
+         # Then add space (or spaces) at appropriate juncture (depending on
+         # the number of characters) to get the postcode into 7-character
+         # format
+         postcode = case_when(
+           is.na(postcode) ~ NA_character_,
+           str_length(postcode) == 5 ~ sub("(.{2})", "\\1  ", postcode),
+           str_length(postcode) == 6 ~ sub("(.{3})", "\\1 ", postcode),
+           TRUE ~ postcode
+         )) %>%
+
+  # Join to the postcode lookup
+  left_join(z_simd_all, by = "postcode") %>%
+
+  # Assign the appropriate SIMD value to a patient depending on the year they
+  # were admitted
+  mutate(simd = case_when(
+    year >= 2014 ~ simd_2016,
+    year < 2014 ~ simd_2012
+  )) %>%
+
+  # Remove the not needed year-specific SIMD variables
+  select(-c(simd_2012, simd_2016))
 
 
-### 6 - Create patient level file
+### 5 - Create patient level file ----
 
 # Select first episode of final CIS for each patient
 z_smr01 <- z_smr01 %>%
