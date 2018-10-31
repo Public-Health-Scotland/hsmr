@@ -556,18 +556,17 @@ z_smr01 <- z_smr01 %>%
   mutate(last_cis = max(cis_marker)) %>%
   ungroup() %>%
   filter(epinum == 1 & cis_marker == last_cis) %>%
+
   # Remove rows where SIMD, admfgrp and ipdc are missing as variables are required
   # for modelling/predicted values
-  filter(!is.na(simd)) %>%
+  drop_na(simd) %>%
   filter(admfgrp %in% 1:6) %>%
-  filter(ipdc %in% 1:2)
+  filter(ipdc %in% 1:2) %>%
 
-# If a patient dies within 30 days of admission in two subsequent quarters then
-# remove the second record to avoid double counting deaths
-z_cond  <- c(z_smr01$link_no == c(0, z_smr01$link_no[-length(z_smr01$link_no)]) &
-               c(0, z_smr01$death30[-length(z_smr01$death30)]) == 1)
-
-z_smr01 <- z_smr01[!z_cond, ]
+  # If a patient dies within 30 days of admission in two subsequent quarters
+  # then remove the second record to avoid double counting deaths
+  filter(!(link_no == c(0, head(link_no, -1)) &
+             1 == c(0, head(death30, -1))))
 
 
 
