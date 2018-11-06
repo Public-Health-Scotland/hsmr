@@ -26,6 +26,16 @@
 
 create_trends <- function(smr01, gro, pop, dep){
 
+  if(!is_tibble(smr01) | !is_tibble(gro) |
+     !is_tibble(pop) | !is_tibble(dep)){
+
+    stop(paste0("All arguments provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the is_tibble() function"))
+
+  }
+
   stopifnot(is_tibble(smr01) | is_tibble(gro) |
               is_tibble(pop) | is_tibble(dep))
 
