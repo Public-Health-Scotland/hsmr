@@ -116,7 +116,9 @@ z_simd_2012 <- read_spss(paste0(
   mutate(year = "simd_2012")
 
 # Combine postcode lookups into a single dataset
-# Ignore warning messages about vectorising labelled elements
+# Both lookups have labelled variables, and bind_rows() drops the labels
+# This produces a warning message that vectorising labelled elements may not
+# preserve their attributes, which can be ignored
 z_simd_all <- bind_rows(z_simd_2016, z_simd_2012) %>%
   spread(year, simd)
 
