@@ -36,8 +36,6 @@ create_trends <- function(smr01, gro, pop, dep){
 
   }
 
-  stopifnot(is_tibble(smr01) | is_tibble(gro) |
-              is_tibble(pop) | is_tibble(dep))
 
   if(("link_no" %!in% names(smr01)) |
      ("admission_date" %!in% names(smr01)) |
@@ -327,8 +325,8 @@ create_trends <- function(smr01, gro, pop, dep){
       df = long_term_trends,
       colnames = colnames(long_term_trends),
       type = colnames(long_term_trends)[!colnames(long_term_trends)
-                                        %in% c('HB2014'	'quarter'	'deaths'
-                                               'pats'	'crd_rate'	'label')],
+                                        %in% c('HB2014',	'quarter',	'deaths',
+                                               'pats',	'crd_rate',	'label')],
     ),
     class = "long_term_trends_data")
 
