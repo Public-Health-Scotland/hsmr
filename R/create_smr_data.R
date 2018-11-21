@@ -245,19 +245,20 @@ z_smr01 %<>%
                   wcomorbs3 = 0,
                   wcomorbs4 = 0,
                   wcomorbs5 = 0)) %>%
-  mutate(wcomorbs2 = if_else(wcomorbs2 != wcomorbs1,
-                             wcomorbs2,
+  mutate(wcomorbs2 = replace(wcomorbs2,
+                             wcomorbs2 == wcomorbs1,
                              0),
-         wcomorbs3 = if_else(!(wcomorbs3 %in% c(wcomorbs1, wcomorbs2)),
-                             wcomorbs3,
+         wcomorbs3 = replace(wcomorbs3,
+                             wcomorbs3 == wcomorbs1 | wcomorbs3 == wcomorbs2,
                              0),
-         wcomorbs4 = if_else(!(wcomorbs4 %in% c(wcomorbs1, wcomorbs2,
-                                                wcomorbs3)),
-                             wcomorbs4,
+         wcomorbs4 = replace(wcomorbs4,
+                             wcomorbs4 == wcomorbs1 | wcomorbs4 == wcomorbs2 |
+                               wcomorbs4 == wcomorbs3,
                              0),
-         wcomorbs5 = if_else(!(wcomorbs5 %in% c(wcomorbs1, wcomorbs2,
-                                                wcomorbs3, wcomorbs4)),
-                             wcomorbs5,
+         wcomorbs5 = replace(wcomorbs5,
+                             wcomorbs5 == wcomorbs1 | wcomorbs5 == wcomorbs2 |
+                               wcomorbs5 == wcomorbs3 |
+                               wcomorbs5 == wcomorbs4,
                              0)) %>%
   mutate(comorbs_sum = rowSums(select(., starts_with("wcomorbs")))) %>%
 
@@ -272,10 +273,7 @@ z_smr01 %<>%
 
   # Sort data as per guidance and remove variables no longer required
   arrange(link_no, cis_marker, admission_date, discharge_date) %>%
-  select(-one_of(c("main_condition", "other_condition_1", "other_condition_2",
-                   "other_condition_3", "other_condition_4",
-                   "other_condition_5", "wcomorbs1", "wcomorbs2", "wcomorbs3",
-                   "wcomorbs4", "wcomorbs5", "quarter_name")))
+  select(-contains("condition"), -starts_with("wcomorbs"), -quarter_name)
 
 # Vector of unique link numbers used for filtering below
 z_unique_id <- z_smr01 %>%
@@ -468,8 +466,8 @@ for(i in 1:50) {
 # and 5 years prior to admission
 # data_pmorbs will be automatically converted back to a tibble here
 data_pmorbs %<>%
-  mutate(pmorbs1_sum = rowSums(select(., starts_with("pmorbs1"))),
-         pmorbs5_sum = rowSums(select(., starts_with("pmorbs5")))) %>%
+  mutate(pmorbs1_sum = rowSums(select(., starts_with("pmorbs1")))) %>%
+  mutate(pmorbs5_sum = rowSums(select(., starts_with("pmorbs5")))) %>%
   group_by(link_no, cis_marker) %>%
   mutate_at(vars(ends_with("_sum")), max) %>%
 
