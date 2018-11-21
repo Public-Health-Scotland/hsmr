@@ -329,7 +329,7 @@ create_trends <- function(smr01, gro, pop, dep){
       colnames = colnames(long_term_trends),
       type = colnames(long_term_trends)[!colnames(long_term_trends)
                                         %in% c('HB2014',	'quarter',	'deaths',
-                                               'pats',	'crd_rate',	'label')],
+                                               'pats',	'crd_rate',	'label')]
     ),
     class = "long_term_trends_data")
 
