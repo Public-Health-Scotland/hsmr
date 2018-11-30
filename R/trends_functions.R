@@ -187,8 +187,9 @@ create_trends <- function(smr01, gro, pop, dep){
 
     # Patients are counted once per quarter and it is possible for a patient
     # to die within 30 days of 2 admissions within different quarters.
-    # In order to only count a death once, the second admission in the subsequent
-    # quarter is removed and only the first death within 30 days is counted
+    # In order to only count a death once, the second admission in the
+    # subsequent quarter is removed and only the first death within 30 days is
+    # counted
     filter(!(link_no == c(0, head(link_no, -1)) &
                1 == c(0, head(death30, -1))))
 
