@@ -24,57 +24,42 @@
 #'
 #' @export
 
-create_trends <- function(smr01, gro, pop, dep){
+create_trends <- function(smr01, gro, pop, dep) {
 
-  if(!is_tibble(smr01) | !is_tibble(gro) |
-     !is_tibble(pop) | !is_tibble(dep)){
+  if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
+     !tibble::is_tibble(pop) | !tibble::is_tibble(dep)) {
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
                 "an object is a tibble or not with ",
-                "the is_tibble() function"))
-
+                "the tibble::is_tibble() function"))
   }
 
-
-  if(("link_no" %!in% names(smr01)) |
-     ("admission_date" %!in% names(smr01)) |
-     ("discharge_date" %!in% names(smr01)) |
-     ("cis_marker" %!in% names(smr01)) |
-     ("postcode" %!in% names(smr01)) |
-     ("specialty" %!in% names(smr01)) |
-     ("discharge_type" %!in% names(smr01)) |
-     ("sex" %!in% names(smr01)) |
-     ("admgrp" %!in% names(smr01)) |
-     ("admfgrp" %!in% names(smr01)) |
-     ("ipdc" %!in% names(smr01)) |
-     ("age_grp" %!in% names(smr01)) |
-     ("quarter" %!in% names(smr01)) |
-     ("year" %!in% names(smr01))){
+  if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
+            "postcode", "specialty", "discharge_type", "sex", "admgrp",
+            "admfgrp", "ipdc", "age_grp", "quarter",
+            "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables.",
-         "Must contain:
-         link_no
-         admission_date
-         discharge_data
-         cis_marker
-         postcode
-         specialty
-         discharge_type
-         sex
-         admgrp
-         admfgrp
-         ipdc
-         age_grp
-         quarter
-         year"))
+                "Must contain:
+                link_no
+                admission_date
+                discharge_data
+                cis_marker
+                postcode
+                specialty
+                discharge_type
+                sex
+                admgrp
+                admfgrp
+                ipdc
+                age_grp
+                quarter
+                year"))
   }
 
-  if(("link_no" %!in% names(gro)) |
-     ("date_of_death" %!in% names(gro)) |
-     ("hbres_currentdate" %!in% names(gro)) |
-     ("quarter" %!in% names(gro)) |
-     ("year" %!in% names(gro))){
+  if(!all(c("link_no", "date_of_death", "hbres_currentdate", "quarter",
+            "year") %in% names(gro))) {
 
     stop(paste0("Object gro does not contain the required variables.",
                 "Must contain:
@@ -335,4 +320,4 @@ create_trends <- function(smr01, gro, pop, dep){
     class = "long_term_trends_data")
 
 
-}
+  }
