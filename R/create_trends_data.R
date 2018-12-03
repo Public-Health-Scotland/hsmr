@@ -40,11 +40,20 @@ smra_connect <- suppressWarnings(
 ### 3 - Extract dates ----
 
 # Define the dates that the data are extracted from and to
-z_start_date   <- dmy(01012008)     # The beginning of the ten year trend
-z_end_date     <- dmy(31032018)     # End date for the cut off for z_smr01
+z_start_date_trends <- dmy(01012008)     # The beginning of the ten year trend
+z_end_date          <- dmy(31032018)     # End date for the cut off for z_smr01
 
 
-### 4 - Read in lookup files ----
+### 4 - Source scripts ----
+
+# SQL queries
+source("R/sql_queries_trends.R")
+
+# Wrangling function
+source("R/trends_functions.R")
+
+
+### 5 - Read in lookup files ----
 
 # Postcode lookups for SIMD 2016, 2012 and 2009
 # These files will be combined, so create a year variable in each one, to allow
@@ -114,24 +123,21 @@ z_pop %<>%
               mutate(hb2014 = "Scotland"))
 
 
-### SECTION 2 - DATA EXTRACTION----
+### SECTION 2 - DATA EXTRACTION AND MANIPULATION----
 
-### 1 - data extraction ----
+### 1 - Extract data ----
 
-# Source SQL queries (and function?)
-source("R/sql_queries_trends.R")
-source("R/trends_functions.R")
-
-
-### 2 - Extract data ----
+# Deaths data
 z_gro     <- as_tibble(dbGetQuery(smra_connect, z_query_gro)) %>%
   clean_names()
 
+# SMR01 data
 z_smr01   <- as_tibble(dbGetQuery(smra_connect, z_query_smr01_ltt)) %>%
   clean_names()
 
 
-### 3 - Pipeline ----
+### 2 - Pipeline ----
+#
 # SMR01    = The SMR01 extract used to produce crude rate data.
 #            This should contain the quarters being published
 #            PLUS one extra quarter at the beginning
@@ -145,3 +151,7 @@ trends_data <- create_trends(smr01    = z_smr01,
                              gro      = z_gro,
                              pop      = z_pop,
                              dep      = z_simd_all)
+
+
+### 3 - Save data ----
+readr::write_csv(trends_data, path = 'long_term_trends.csv')
