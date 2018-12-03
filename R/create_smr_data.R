@@ -60,13 +60,22 @@ z_start_date_l <- dmy(01012011)
 z_end_date     <- dmy(31032018)
 
 
-### 4 - Set filepaths ----
+### 4 - Source scripts ----
+
+# SQL queries
+source("R/sql_queries_smr.R")
+
+# Wrangling functions
+source("R/smr_functions.R")
+
+
+### 5 - Set filepaths ----
 
 # Define lookups directory
 z_lookups <- "R/reference_files/"
 
 
-### 5 - Read in lookup files ----
+### 6 - Read in lookup files ----
 
 
 # Primary Diagnosis Groupings
@@ -143,25 +152,25 @@ z_hospitals <- read_csv(paste0(z_lookups,
                                "location_lookups.csv"))
 
 
-### SECTION 2 - SMR DATA PIPELINE ----
+### SECTION 2 - DATA EXTRACTION AND MANIPULATION ----
 
-# 1 - Source SQL Query ----
-source("sql_queries_smr.R")
+### 1 - Extract data Extract deaths and SMR01 data from SMRA databases ----
 
-
-# 2 - Extract deaths and SMR01 data from SMRA databases ----
+# Deaths data
 deaths  <- as_tibble(dbGetQuery(z_smra_connect, z_query_gro)) %>%
   clean_names()
 
+# SMR01 data
 z_smr01 <- as_tibble(dbGetQuery(z_smra_connect, z_query_smr01)) %>%
   clean_names()
 
+# Prior morbidities within previous 1 & 5 years data
 data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
                                     z_query_smr01_minus5)) %>%
   clean_names()
 
 
-# 3 - Pipeline ----
+# 2 - Pipeline ----
 # SMR01    = The SMR01 extract used to produce SMR data. This should contain
 #            ONLY the quarters being published
 # GRO      = The deaths extract used to produce SMR data. This should contain
@@ -170,10 +179,10 @@ data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
 # POSTCODE = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
-z_smr01 <- function_1(SMR01    = z_smr01,
-                      GRO      = deaths,
-                      PDIAGS   = z_pdiag_grp_data,
-                      POSTCODE = z_simd_all)
+z_smr01 <- function_1(smr01    = z_smr01,
+                      gro      = deaths,
+                      pdiags   = z_pdiag_grp_data,
+                      postcode = z_simd_all)
 
 # SMR01        = The output from function_1
 # SMR01_MINUS5 = The SMR01 extract used to calculate the prior morbidities.
@@ -183,8 +192,8 @@ z_smr01 <- function_1(SMR01    = z_smr01,
 # This function does the final bits of wrangling required for HSMR. These
 # are done separately from the rest because they are quite resource-heavy
 # and prone to crashing
-z_smr01 <- function_2(SMR01        = z_smr01,
-                      SMR01_MINUS5 = data_pmorbs)
+z_smr01 <- function_2(smr01        = z_smr01,
+                      smr01_minus5 = data_pmorbs)
 
 # SMR01      = The output from function_2
 # BASE_START = The beginning of the baseline period
@@ -194,15 +203,15 @@ z_smr01 <- function_2(SMR01        = z_smr01,
 #
 # This function runs the risk model and appends the probability of death on
 # to the SMR01 extract
-z_smr01 <- function_3(SMR01      = z_smr01,
-                      BASE_START = start_of_baseline,
-                      BASE_END   = end_of_baseline,
-                      INDEX      = index)
+z_smr01 <- function_3(smr01      = z_smr01,
+                      base_start = start_of_baseline,
+                      base_end   = end_of_baseline,
+                      index      = index)
 
 # SMR01 = The output from function_3
 # INDEX = Indicating whether the patient indexing is done quarterly
 #         or annually
 #
 # This function aggregates the data down into quarterly/annual SMR figures
-smr_data <- function_4(SMR01 = z_smr01,
-                       INDEX = index)
+smr_data <- function_4(smr01 = z_smr01,
+                       index = index)
