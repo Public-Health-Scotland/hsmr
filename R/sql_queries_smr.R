@@ -1,5 +1,5 @@
 #########################################################################
-# Name of file - sql_queries.R
+# Name of file - sql_queries_smr.R
 # Data release - Quarterly HSMR publication
 # Original Authors - David Caldwell and Anna Price
 # Orginal Date - July 2018
@@ -8,7 +8,7 @@
 # Written/run on - RStudio server
 # Version of R - 3.2.3
 #
-# Description - Defines SQL queries sourced and used in create_hsmr_data
+# Description - Defines SQL queries sourced and used in create_smr_data
 #########################################################################
 
 z_query_smr01 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
