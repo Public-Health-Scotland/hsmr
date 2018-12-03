@@ -83,7 +83,7 @@ z_simd_2009 <- read_spss(paste0(
   mutate(year = "simd_2009")
 
 # Combine postcode lookups into a single dataset
-# Both lookups have labelled variables, and bind_rows() drops the labels
+# All lookups have labelled variables, and bind_rows() drops the labels
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
 z_simd_all <- bind_rows(z_simd_2016, z_simd_2012, z_simd_2009) %>%
@@ -154,4 +154,5 @@ trends_data <- create_trends(smr01    = z_smr01,
 
 
 ### 3 - Save data ----
-readr::write_csv(trends_data, path = 'long_term_trends.csv')
+# temp step - find better way of saving (in new folder?)
+readr::write_csv(trends_data[[1]], path = 'mtd_trends.csv')
