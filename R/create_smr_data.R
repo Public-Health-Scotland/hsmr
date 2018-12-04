@@ -103,48 +103,30 @@ z_morbs <- read_csv(paste0(z_lookups,
 
 
 # Postcode lookups for SIMD 2016 and 2012
+# These files will be combined, so create a year variable in each one, to allow
+# them to be differentiated from one another
 z_simd_2016 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation",
   "/postcode_2018_2_simd2016.sav")) %>%
-  select(pc7, simd2016_sc_quintile)
+  select(pc7, simd2016_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2016_sc_quintile) %>%
+  mutate(year = "simd_2016")
 
 z_simd_2012 <- read_spss(paste0(
   "/conf/linkage/output/lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
-  select(pc7, simd2012_sc_quintile)
+  select(pc7, simd2012_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2012_sc_quintile) %>%
+  mutate(year = "simd_2012")
 
-
-# Population lookups for 2017
-z_pop_est  <- read_spss(paste0(
-  "/conf/linkage/output/lookups/populations/estimates/",
-  "HB2014_pop_est_1981_2016.sav")) %>%
-  clean_names() %>%
-  group_by(year, hb2014) %>%
-  summarise(pop = sum(pop)) %>%
-  ungroup()
-
-z_pop_proj <- read_spss(paste0(
-  "/conf/linkage/output/lookups/populations/projections/",
-  "HB2014_pop_proj_2016_2041.sav")) %>%
-  clean_names() %>%
-  filter(year >= 2017) %>%
-  group_by(year, hb2014) %>%
-  summarise(pop = sum(pop)) %>%
-  ungroup()
-
-# Combine population lookups into one lookup
+# Combine postcode lookups into a single dataset
 # Both lookups have labelled variables, and bind_rows() drops the labels
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
-z_pop <- bind_rows(z_pop_est, z_pop_proj)
-
-# Aggregate lookup to get Scotland population and append to bottom
-z_pop %<>%
-  bind_rows(z_pop %>%
-              group_by(year) %>%
-              summarise(pop = sum(pop)) %>%
-              ungroup() %>%
-              mutate(hb2014 = "Scotland"))
+z_simd_all <- bind_rows(z_simd_2016, z_simd_2012) %>%
+  spread(year, simd)
 
 
 # Hospital names
