@@ -48,7 +48,7 @@ z_smra_connect <- suppressWarnings(
 
 
 # Define the dates that the data are extracted from and to
-
+# Dates are in ddmmyyyy format
 
 # The beginning of baseline period
 z_start_date   <- dmy(01012011)
