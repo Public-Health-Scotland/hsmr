@@ -28,7 +28,20 @@ library(tidyr)         # For data manipulation in the "tidy" way
 library(stringr)       # For string manipulation and matching
 
 
-### 2 - Define the database connection with SMRA ----
+### 2 - Define Whether Running on Server or Locally ----
+# Comment out as appropriate
+#platform <- c("server")
+platform <- c("locally")
+
+
+# Define root directory for cl-out based on whether script is running locally or
+# on server
+plat_filepath <- ifelse(platform == "server",
+                        '/conf/linkage/output/',
+                        '//stats/cl-out/')
+
+
+### 3 - Define the database connection with SMRA ----
 smra_connect <- suppressWarnings(
   dbConnect(
     odbc(),
@@ -37,7 +50,7 @@ smra_connect <- suppressWarnings(
     pwd = .rs.askForPassword("SMRA Password:")))
 
 
-### 3 - Extract dates ----
+### 4 - Extract dates ----
 
 # Define the dates that the data are extracted from and to
 # Dates are in ddmmyyyy format
@@ -49,7 +62,7 @@ z_start_date_trends <- dmy(01012008)
 z_end_date          <- dmy(31032018)
 
 
-### 4 - Source scripts ----
+### 5 - Source scripts ----
 
 # SQL queries
 source("R/sql_queries_trends.R")
@@ -58,29 +71,29 @@ source("R/sql_queries_trends.R")
 source("R/trends_functions.R")
 
 
-### 5 - Read in lookup files ----
+### 6 - Read in lookup files ----
 
 # Postcode lookups for SIMD 2016, 2012 and 2009
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
-z_simd_2016 <- read_spss(paste0(
-  "/conf/linkage/output/lookups/Unicode/Deprivation",
+z_simd_2016 <- read_spss(paste0(plat_filepath,
+  "lookups/Unicode/Deprivation",
   "/postcode_2018_2_simd2016.sav")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
 
-z_simd_2012 <- read_spss(paste0(
-  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+z_simd_2012 <- read_spss(paste0(plat_filepath,
+  "lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2012_sc_quintile) %>%
   mutate(year = "simd_2012")
 
-z_simd_2009 <- read_spss(paste0(
-  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+z_simd_2009 <- read_spss(paste0(plat_filepath,
+  "lookups/Unicode/Deprivation/",
   "postcode_2012_2_simd2009v2.sav")) %>%
   select(PC7, simd2009v2_sc_quintile) %>%
   rename(postcode = PC7,
@@ -96,16 +109,16 @@ z_simd_all <- bind_rows(z_simd_2016, z_simd_2012, z_simd_2009) %>%
 
 
 # Population lookups for 2017
-z_pop_est  <- read_spss(paste0(
-  "/conf/linkage/output/lookups/populations/estimates/",
+z_pop_est  <- read_spss(paste0(plat_filepath,
+  "lookups/populations/estimates/",
   "HB2014_pop_est_1981_2016.sav")) %>%
   clean_names() %>%
   group_by(year, hb2014) %>%
   summarise(pop = sum(pop)) %>%
   ungroup()
 
-z_pop_proj <- read_spss(paste0(
-  "/conf/linkage/output/lookups/populations/projections/",
+z_pop_proj <- read_spss(paste0(plat_filepath,
+  "lookups/populations/projections/",
   "HB2014_pop_proj_2016_2041.sav")) %>%
   clean_names() %>%
   filter(year >= 2017) %>%
