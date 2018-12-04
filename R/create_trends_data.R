@@ -40,8 +40,13 @@ smra_connect <- suppressWarnings(
 ### 3 - Extract dates ----
 
 # Define the dates that the data are extracted from and to
-z_start_date_trends <- dmy(01012008)     # The beginning of the ten year trend
-z_end_date          <- dmy(31032018)     # End date for the cut off for z_smr01
+# Dates are in ddmmyyyy format
+
+# The beginning of the ten year trend
+z_start_date_trends <- dmy(01012008)
+
+# End date for the cut off for z_smr01
+z_end_date          <- dmy(31032018)
 
 
 ### 4 - Source scripts ----
