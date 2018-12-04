@@ -259,8 +259,8 @@ create_trends <- function(smr01, gro, pop, dep) {
                                 z_scot_sex, z_scot_specadm,
                                 z_scot_dep) %>%
     mutate(crd_rate = deaths/pats * 100) %>%
-    rename(HB2014 = hbtreat_currentdate) %>%
-    select(HB2014, quarter, deaths, pats, crd_rate, label)
+    rename(hb2014 = hbtreat_currentdate) %>%
+    select(hb2014, quarter, deaths, pats, crd_rate, label)
 
   # Crude Rate - Date of Discharge (Scotland)
   z_scot_dis <- smr01 %>%
@@ -282,8 +282,8 @@ create_trends <- function(smr01, gro, pop, dep) {
   # Merge dataframes together
   z_dis <- bind_rows(z_scot_dis, z_hb_dis) %>%
     mutate(crd_rate = deaths/pats * 100) %>%
-    rename(HB2014 = hbtreat_currentdate) %>%
-    select(HB2014, quarter, deaths, pats, crd_rate, label)
+    rename(hb2014 = hbtreat_currentdate) %>%
+    select(hb2014, quarter, deaths, pats, crd_rate, label)
 
   # Population-based mortality
   z_scot_pop <- gro %>%
@@ -303,9 +303,9 @@ create_trends <- function(smr01, gro, pop, dep) {
            quarter_name = paste0(year, "Q", quarter),
            quarter      = as.numeric(as.factor(quarter_name)),
            label        = "Population") %>%
-    rename(HB2014 = hbres_currentdate,
+    rename(hb2014 = hbres_currentdate,
            pats   = pop) %>%
-    select(HB2014, quarter, deaths, pats, crd_rate, label)
+    select(hb2014, quarter, deaths, pats, crd_rate, label)
 
   long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
 
@@ -314,7 +314,7 @@ create_trends <- function(smr01, gro, pop, dep) {
       df = long_term_trends,
       colnames = colnames(long_term_trends),
       type = colnames(long_term_trends)[!colnames(long_term_trends)
-                                        %in% c('HB2014',	'quarter',	'deaths',
+                                        %in% c('hb2014',	'quarter',	'deaths',
                                                'pats',	'crd_rate',	'label')]
     ),
     class = "long_term_trends_data")
