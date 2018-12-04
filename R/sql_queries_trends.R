@@ -72,8 +72,8 @@ z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                            "extract(year from admission_date) AS year",
                            "from SMR01_PI",
                            "where ADMISSION_DATE BETWEEN",
-                           "{d", shQuote(z_start_date_trends),"} AND",
-                           "{d", shQuote(z_end_date),"}",
+                           "{d", shQuote(z_start_date_trends, type = 'sh'),"} AND",
+                           "{d", shQuote(z_end_date, type = 'sh'),"}",
                            "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
                            "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
@@ -82,5 +82,5 @@ z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE,",
                      "extract(year from DATE_OF_DEATH) AS year",
                      "from ANALYSIS.GRO_DEATHS_C",
                      "where DATE_OF_DEATH >=",
-                     "{d", shQuote(z_start_date_trends),"}",
+                     "{d", shQuote(z_start_date_trends, type = 'sh'),"}",
                      "ORDER BY LINK_NO")
