@@ -307,7 +307,12 @@ create_trends <- function(smr01, gro, pop, dep) {
            pats   = pop) %>%
     select(hb2014, quarter, deaths, pats, crd_rate, label)
 
-  long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
+
+  # Create minimal tidy dataset
+  long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths) %>%
+
+    # Select latest 40 quarters only
+    filter(between(quarter, max(quarter) - 40, max(quarter)))
 
   structure(
     list(
