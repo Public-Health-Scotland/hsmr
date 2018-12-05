@@ -85,12 +85,13 @@ z_query_smr01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                               "OLD_SMR1_TADM_CODE, CIS_MARKER, SPECIALTY,",
                               "MAIN_CONDITION from SMR01_PI",
                               "where ADMISSION_DATE BETWEEN",
-                              "{d", shQuote(z_start_date_5, type = "sh"),"} AND",
-                              "{d", shQuote(z_end_date, type = "sh"),"}",
+                              "{d", shQuote(z_start_date_5, type = "sh"),"}",
+                              "AND {d", shQuote(z_end_date, type = "sh"),"}",
                               "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
                               "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
 z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH",
                      "from ANALYSIS.GRO_DEATHS_C",
-                     "where DATE_OF_DEATH >= {d", shQuote(z_start_date, type = "sh"),"}",
+                     "where DATE_OF_DEATH >=",
+                     "{d", shQuote(z_start_date, type = "sh"),"}",
                      "ORDER BY LINK_NO")
