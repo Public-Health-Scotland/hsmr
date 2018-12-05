@@ -26,6 +26,39 @@
 
 smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
+  if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
+     !tibble::is_tibble(pop) | !tibble::is_tibble(postcode) |
+     !tibble::is_tibble(morbs)) {
+
+    stop(paste0("All arguments provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
+            "postcode", "specialty", "discharge_type", "sex", "admgrp",
+            "admfgrp", "ipdc", "age_grp", "quarter",
+            "year") %in% names(smr01))) {
+
+    stop(paste0("Object smr01 does not contain the required variables.",
+                "Must contain:
+                link_no
+                admission_date
+                discharge_data
+                cis_marker
+                postcode
+                specialty
+                discharge_type
+                sex
+                admgrp
+                admfgrp
+                ipdc
+                age_grp
+                quarter
+                year"))
+  }
+
   ### 1 - Match deaths data to SMR01 ----
   # Remove duplicate records on link_no
   # The deaths file is matched on to SMR01 by link_no,
