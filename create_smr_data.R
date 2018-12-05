@@ -30,8 +30,20 @@ library(tidyr)         # For data manipulation in the "tidy" way
 library(fuzzyjoin)     # For fuzzy joins
 library(stringr)       # For string manipulation and matching
 
+### 2 - Define Whether Running on Server or Locally ----
+# Comment out as appropriate
+#platform <- c("server")
+platform <- c("locally")
 
-### 2 - Define the database connection with SMRA ----
+
+# Define root directory for cl-out based on whether script is running locally or
+# on server
+plat_filepath <- ifelse(platform == "server",
+                        '/conf/linkage/output/',
+                        '//stats/cl-out/')
+
+
+### 3 - Define the database connection with SMRA ----
 
 z_smra_connect <- suppressWarnings(
   dbConnect(
@@ -41,7 +53,7 @@ z_smra_connect <- suppressWarnings(
     pwd = .rs.askForPassword("SMRA Password:")))
 
 
-### 3 - Extract dates ----
+### 4 - Extract dates ----
 
 
 # Define the dates that the data are extracted from and to
@@ -60,7 +72,7 @@ z_start_date_l <- dmy(01012011)
 z_end_date     <- dmy(31032018)
 
 
-### 4 - Source scripts ----
+### 5 - Source scripts ----
 
 # SQL queries
 source("R/sql_queries_smr.R")
@@ -69,7 +81,7 @@ source("R/sql_queries_smr.R")
 source("R/smr_functions.R")
 
 
-### 5 - Set filepaths ----
+### 6 - Set filepaths ----
 
 # Define lookups directory
 z_lookups <- "R/reference_files/"
@@ -105,16 +117,16 @@ z_morbs <- read_csv(paste0(z_lookups,
 # Postcode lookups for SIMD 2016 and 2012
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
-z_simd_2016 <- read_spss(paste0(
-  "/conf/linkage/output/lookups/Unicode/Deprivation",
+z_simd_2016 <- read_spss(paste0(plat_filepath,
+  "lookups/Unicode/Deprivation",
   "/postcode_2018_2_simd2016.sav")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
 
-z_simd_2012 <- read_spss(paste0(
-  "/conf/linkage/output/lookups/Unicode/Deprivation/",
+z_simd_2012 <- read_spss(paste0(plat_filepath,
+  "lookups/Unicode/Deprivation/",
   "postcode_2016_1_simd2012.sav")) %>%
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
@@ -161,10 +173,11 @@ data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
 # POSTCODE = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
-z_smr01 <- function_1(smr01    = z_smr01,
-                      gro      = deaths,
-                      pdiags   = z_pdiag_grp_data,
-                      postcode = z_simd_all)
+z_smr01 <- smr_wrangling(smr01    = z_smr01,
+                         gro      = deaths,
+                         pdiags   = z_pdiag_grp_data,
+                         postcode = z_simd_all,
+                         morbs    = z_morbs)
 
 # SMR01        = The output from function_1
 # SMR01_MINUS5 = The SMR01 extract used to calculate the prior morbidities.
@@ -174,8 +187,9 @@ z_smr01 <- function_1(smr01    = z_smr01,
 # This function does the final bits of wrangling required for HSMR. These
 # are done separately from the rest because they are quite resource-heavy
 # and prone to crashing
-z_smr01 <- function_2(smr01        = z_smr01,
-                      smr01_minus5 = data_pmorbs)
+z_smr01 <- smr_pmorbs(smr01        = z_smr01,
+                      smr01_minus5 = data_pmorbs,
+                      morbs        = z_morbs)
 
 # SMR01      = The output from function_2
 # BASE_START = The beginning of the baseline period
