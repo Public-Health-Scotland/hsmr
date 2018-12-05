@@ -3,7 +3,7 @@
 #'
 #' @description Returns the minimal tidy data set for long terms trend data
 #' which feeds into the reproducible analytical pipeline of the quarterly
-#' Hospital Standardised Mortality Ratios publicatoin.
+#' Hospital Standardised Mortality Ratios publication.
 #'
 #'
 #' @details \code{create_trends} expects a \code{tibble} with data extracted
