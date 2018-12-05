@@ -1,3 +1,23 @@
+#' @title Clean up logistic regression model
+#'
+#' @description Strips logistic regression model object of extraneous data that
+#' are not required in order to calculate the probability of death within
+#' 30 days of admission. This is a necessary step as the object will likely be
+#' quite large and take up significant amounts of memory when producing the
+#' probabilities.
+#'
+#'
+#' @details \code{clean_model} expects an object of class \code{"glm"}.
+#'
+#'
+#' @param cm Input \code{glm}.
+#'
+#'
+#' @examples
+#'
+#'
+#' @export
+
 clean_model <- function(cm) {
   # just in case we forgot to set
   # y=FALSE and model=FALSE
