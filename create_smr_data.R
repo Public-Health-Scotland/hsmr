@@ -75,7 +75,7 @@ z_end_date     <- dmy(31032018)
 ### 5 - Source scripts ----
 
 # SQL queries
-source("R/sql_queries_smr.R")
+source("sql_queries_smr.R")
 
 # Wrangling functions
 source("R/smr_functions.R")
