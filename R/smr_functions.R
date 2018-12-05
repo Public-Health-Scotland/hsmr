@@ -1,16 +1,20 @@
-#' @title Clean up logistic regression model
+#' @title Initial Wrangling for HSMR data
 #'
-#' @description Strips logistic regression model object of extraneous data that
-#' are not required in order to calculate the probability of death within
-#' 30 days of admission. This is a necessary step as the object will likely be
-#' quite large and take up significant amounts of memory when producing the
-#' probabilities.
+#' @description Creates the majority of necessary variables to be used in the
+#' HSMR model.
 #'
 #'
-#' @details \code{clean_model} expects an object of class \code{"glm"}.
+#' @details \code{smr_wrangling} expects a \code{tibble} of data extracted from
+#' SMR01. It also expects \code{tibbles} of data extracted from the GRO deaths
+#' database and lookups for primary diagnosis, postcode(deprivation) and
+#' morbidities (comorbs_sum).
 #'
 #'
-#' @param cm Input \code{glm}.
+#' @param smr01 Input tibble for admissions, see details.
+#' @param gro Input tibble for deaths, see details.
+#' @param pdiags Input tibble for primary diagnosis groupings lookup.
+#' @param postcode Input tibble for deprivation lookup.
+#' @param morbs Input tibble for the charlson index for comorbidities lookup.
 #'
 #'
 #' @examples
