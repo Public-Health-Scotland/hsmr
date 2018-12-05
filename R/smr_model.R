@@ -1,0 +1,70 @@
+
+smr_model <- function(smr01, base_start, base_end, index){
+
+  ### 1 - Create patient level file ----
+
+  # Select first episode of final CIS for each patient
+  smr01 %<>%
+    group_by(link_no, quarter) %>%
+    mutate(last_cis = max(cis_marker)) %>%
+    ungroup() %>%
+    filter(epinum == 1 & cis_marker == last_cis) %>%
+
+    # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
+    # required for modelling/predicted values
+    drop_na(simd) %>%
+    filter(admfgrp %in% 1:6) %>%
+    filter(ipdc %in% 1:2) %>%
+
+    # If a patient dies within 30 days of admission in two subsequent quarters
+    # then remove the second record to avoid double counting deaths
+    filter(!(link_no == c(0, head(link_no, -1)) &
+               1 == c(0, head(death30, -1))))
+
+
+
+  ### SECTION 4 - MODELLING ----
+
+  # Create subset of data for modelling
+  z_data_lr <- smr01 %>%
+
+    # Select baseline period rows
+    filter(quarter <= 12) %>%
+
+    # Select required variables for model
+    select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
+           surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+
+    # Calculate total number of deaths and total number of patients for each
+    # combination of variables
+    group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
+             surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
+    summarise(x = sum(death30),
+              n = length(death30)) %>%
+    ungroup()
+
+  # Run logistic regression
+  z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
+                        pmorbs5_sum + age_in_years + factor(sex) +
+                        factor(surgmed) + factor(pdiag_grp) + factor(admfgrp) +
+                        factor(admgrp) + factor(ipdc) + factor(simd),
+                      data = z_data_lr,
+                      family = "binomial",
+                      model = FALSE,
+                      y = FALSE)
+
+  # Delete unnecessary model information using bespoke function in order to retain
+  # special class of object for predicted probabilities below
+  z_risk_model <- clean_model(z_risk_model)
+
+  smr01 %<>%
+
+    # Calculate predicted probabilities
+    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
+
+    # Remove rows with no probability calculated
+    drop_na(pred_eq)
+
+
+
+}
