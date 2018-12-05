@@ -1,3 +1,28 @@
+#' @title Logistic Regression model for HSMR
+#'
+#' @description Carries out risk-adjustment for HSMR data.
+#'
+#'
+#' @details \code{smr_model} expects a \code{tibble} of data extracted from
+#' SMR01 that has already been through \code{smr_wrangling} and then
+#' \code{smr_pmorbs}. This is the third step of a four-step process. The final
+#' step is \code{smr_data}. \code{smr_model} returns the SMR01 data with a
+#' probability of death within 30 days of admission appended on to the file.
+#'
+#'
+#' @param smr01 Input tibble for admissions, see details.
+#' @param base_start The beginning of the time period for data that is run
+#' through the logistic regression model.
+#' @param base_end The end of the time period for data that is run
+#' through the logistic regression model.
+#' @param index To define whether data produced are to be quarterly or annual.
+#'
+#'
+#' @examples
+#'
+#'
+#' @export
+
 
 smr_model <- function(smr01, base_start, base_end, index){
 
