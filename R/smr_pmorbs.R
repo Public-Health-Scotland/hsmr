@@ -1,3 +1,30 @@
+#' @title Prior-morbidities Wrangling for HSMR data
+#'
+#' @description Creates the remainder of necessary variables to be used in the
+#' HSMR model.
+#'
+#'
+#' @details \code{smr_pmorbs} expects a \code{tibble} of data extracted from
+#' SMR01 that has already been through \code{smr_wrangling}.
+#' It also expects a \code{tibble} of data extracted from SMR01 covering a
+#' time-period that begins five years prior to that of the data in @param smr01.
+#' This is so that the function is able to calculate the Charlson Index for
+#' Comorbidities weighting for the previous five years.
+#' It also expects a \code{tibble} for the Charlson Index lookups.
+#'
+#'
+#' @param smr01 Input tibble for admissions, see details.
+#' @param smr01_minus5 Input tibble for admissions going back five years, see
+#' details.
+#' @param morbs Input tibble for the charlson index for comorbidities lookup.
+#'
+#'
+#' @examples
+#'
+#'
+#' @export
+
+
 smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   ### 1 - Creating Prior Morbidities
