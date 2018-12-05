@@ -3,7 +3,7 @@
 
 smr_data <- function(smr01, index){
 
-  ### SECTION 5 - CREATE MINIMAL TIDY DATASET ----
+  ### SECTION 1 - CREATE MINIMAL TIDY DATASET ----
 
   ### 1 - Create Scotland-level aggregation ----
 
@@ -56,8 +56,8 @@ smr_data <- function(smr01, index){
     left_join(z_hospitals, by = "location") %>%
     drop_na(location_name) %>%
 
-    # Create quarter variable used in linear model - every data point in the first
-    # year is considered to come from one time point (baseline period)
+    # Create quarter variable used in linear model - every data point in the
+    # first year is considered to come from one time point (baseline period)
     mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
 
   # Run linear regression
