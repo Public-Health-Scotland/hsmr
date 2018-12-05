@@ -2,22 +2,32 @@
 % Please edit documentation in R/smr_functions.R
 \name{smr_wrangling}
 \alias{smr_wrangling}
-\title{Clean up logistic regression model}
+\title{Initial Wrangling for HSMR data}
 \usage{
 smr_wrangling(smr01, gro, pdiags, postcode, morbs)
 }
 \arguments{
-\item{cm}{Input \code{glm}.}
+\item{smr01}{Input tibble for admissions, see details.}
+
+\item{gro}{Input tibble for deaths, see details.}
+
+\item{pdiags}{Input tibble for primary diagnosis groupings lookup.}
+
+\item{postcode}{Input tibble for deprivation lookup.}
+
+\item{morbs}{Input tibble for the charlson index for comorbidities lookup.}
 }
 \description{
-Strips logistic regression model object of extraneous data that
-are not required in order to calculate the probability of death within
-30 days of admission. This is a necessary step as the object will likely be
-quite large and take up significant amounts of memory when producing the
-probabilities.
+Creates the majority of necessary variables to be used in the
+HSMR model.
 }
 \details{
-\code{clean_model} expects an object of class \code{"glm"}.
+\code{smr_wrangling} expects a \code{tibble} of data extracted from
+SMR01. It also expects \code{tibbles} of data extracted from the GRO deaths
+database and lookups for primary diagnosis, postcode(deprivation) and
+morbidities (comorbs_sum). This is the first step in a four-step process. The
+next steps are \code{smr_pmorbs} then \code{smr_model} and finally
+\code{smr_data}.
 }
 \examples{
 
