@@ -3,5 +3,6 @@
 export(clean_model)
 export(create_trends)
 export(smr_data)
+export(smr_model)
 export(smr_pmorbs)
 export(smr_wrangling)
