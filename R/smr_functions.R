@@ -46,7 +46,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
             "surgmed", "ipdc", "age_in_years", "hbtreat_currentdate",
             "year") %in% names(smr01))) {
 
-    stop(paste0("Object smr01 does not contain the required variables.",
+    stop(paste0("Object smr01 does not contain the required variables. ",
                 "Must contain:
                 link_no
                 admission_date
