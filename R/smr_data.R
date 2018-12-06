@@ -22,6 +22,8 @@
 
 smr_data <- function(smr01, index){
 
+  ### 1 - Error handling ----
+
   if(!tibble::is_tibble(smr01)){
 
     stop(paste0("The smr01 argument provided to the function ",
@@ -37,9 +39,7 @@ smr_data <- function(smr01, index){
   }
 
 
-  ### SECTION 1 - CREATE MINIMAL TIDY DATASET ----
-
-  ### 1 - Create Scotland-level aggregation ----
+  ### 2 - Create Scotland-level aggregation ----
 
   z_hsmr_scot <- smr01 %>%
     group_by(quarter) %>%
@@ -53,7 +53,7 @@ smr_data <- function(smr01, index){
     ungroup()
 
 
-  ### 2 - Create Hospital-level aggregation ----
+  ### 3 - Create Hospital-level aggregation ----
 
   z_hsmr_hosp <- smr01 %>%
     group_by(quarter, location) %>%
@@ -69,7 +69,7 @@ smr_data <- function(smr01, index){
   # filter(location %in% )
 
 
-  ### 3 - Create HB-level aggregation ----
+  ### 4 - Create HB-level aggregation ----
 
   z_hsmr_hb <- smr01 %>%
     group_by(quarter, hbtreat_currentdate) %>%
@@ -83,7 +83,7 @@ smr_data <- function(smr01, index){
     rename(location = hbtreat_currentdate)
 
 
-  ### 4 - Merge dataframes and calculate regression line ----
+  ### 5 - Merge dataframes and calculate regression line ----
 
   # Merge data and match on location name
   smr_data <- bind_rows(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
@@ -100,6 +100,8 @@ smr_data <- function(smr01, index){
   # Create reg variable of predicted values
   smr_data %<>%
     mutate(reg = predict(z_reg_line, ., type = "response"))
+
+  ### 6 - Return data class ----
 
   structure(
     list(

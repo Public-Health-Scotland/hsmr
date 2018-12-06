@@ -27,6 +27,8 @@
 
 smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
+  ### 1 - Error handling ----
+
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(smr01_minus5) |
      !tibble::is_tibble(morbs)) {
 
@@ -82,8 +84,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   }
 
-
-  ### 1 - Creating Prior Morbidities
+  ### 2 - Creating Prior Morbidities ----
   # Vector of unique link numbers used for filtering below
   z_unique_id <- smr01 %>%
     distinct(link_no) %>%
@@ -283,6 +284,8 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   smr01_minus5 <- data.table(smr01_minus5)
 
 
+  ### 3 - Previous emergency admissions ----
+
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person
   # AND the time between the two episodes is 1 year
@@ -311,6 +314,8 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   # Join smr01_minus5 on to the main tibble
   smr01 %<>%
     left_join(smr01_minus5, by = c("link_no", "cis_marker"))
+
+  return(smr01)
 
 
 }
