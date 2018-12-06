@@ -26,7 +26,19 @@
 
 smr_model <- function(smr01, base_start, base_end, index){
 
+  if(!tibble::is_tibble(smr01)){
 
+    stop(paste0("The smr01 argument provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all(c("pmorbs1_sum", "pmorbs5_sum", "n_emerg") %in% names(smr01))){
+
+    stop(paste0("smr01 object must be objected returned from smr_pmorbs()",
+                " function."))
+  }
 
   ### 1 - Create patient level file ----
 
