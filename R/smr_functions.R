@@ -26,6 +26,8 @@
 
 smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
+  ### 1 - Error handling ----
+
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
      !tibble::is_tibble(pdiags) | !tibble::is_tibble(postcode) |
      !tibble::is_tibble(morbs)) {
@@ -140,7 +142,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
   }
 
-  ### 1 - Match deaths data to SMR01 ----
+  ### 2 - Match deaths data to SMR01 ----
   # Remove duplicate records on link_no
   # The deaths file is matched on to SMR01 by link_no,
   # therefore link_no needs to be unique
@@ -155,7 +157,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     arrange(link_no, cis_marker, admission_date, discharge_date)
 
 
-  ### 2 - Basic SMR01 processing ----
+  ### 3 - Basic SMR01 processing ----
 
   # Create the following variables:
   # death_inhosp = 1 if the patient died in hospital during that episode of care
