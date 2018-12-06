@@ -89,16 +89,12 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
   }
 
-  if(!all(c("link_no", "date_of_death", "hbres_currentdate", "quarter",
-            "year") %in% names(gro))) {
+  if(!all(c("link_no", "date_of_death") %in% names(gro))) {
 
     stop(paste0("Object gro does not contain the required variables.",
                 "Must contain:
                 link_no
-                date_of_death
-                hbres_currentdate
-                quarter
-                year"))
+                date_of_death"))
   }
 
   if(!is.numeric(smr01$link_no)){
