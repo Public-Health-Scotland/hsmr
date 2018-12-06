@@ -325,4 +325,6 @@ create_trends <- function(smr01, gro, pop, dep) {
     class = "long_term_trends_data")
 
 
-  }
+}
+
+### END OF SCRIPT ###
