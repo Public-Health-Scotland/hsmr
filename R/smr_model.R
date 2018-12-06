@@ -26,6 +26,8 @@
 
 smr_model <- function(smr01, base_start, base_end, index){
 
+  ### 1 - Error handling ----
+
   if(!tibble::is_tibble(smr01)){
 
     stop(paste0("The smr01 argument provided to the function ",
@@ -40,7 +42,7 @@ smr_model <- function(smr01, base_start, base_end, index){
                 " function."))
   }
 
-  ### 1 - Create patient level file ----
+  ### 2 - Create patient level file ----
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
@@ -62,7 +64,7 @@ smr_model <- function(smr01, base_start, base_end, index){
 
 
 
-  ### SECTION 4 - MODELLING ----
+  ### 3 - Logistic Regression ----
 
   # Create subset of data for modelling
   z_data_lr <- smr01 %>%
@@ -104,6 +106,7 @@ smr_model <- function(smr01, base_start, base_end, index){
     # Remove rows with no probability calculated
     drop_na(pred_eq)
 
+  return(smr01)
 
 
 }
