@@ -41,7 +41,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
             "admfgrp", "ipdc", "age_grp", "quarter", "location",
             "main_condition", "other_condition_1", "other_condition_2",
             "other_condition_3", "other_condition_4", "other_condition_5",
-            "surgmed", "ipdc", "quarter", "age_in_years", "hbtreat_currentdate",
+            "surgmed", "ipdc", "age_in_years", "hbtreat_currentdate",
             "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables.",
@@ -57,9 +57,87 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                 admgrp
                 admfgrp
                 ipdc
+                age_in_years
                 age_grp
                 quarter
+                year
+                location
+                hbtreat_currentdate
+                main_condition
+                other_condition_1 to other_condition_5
+                surgmed
+                ipdc"))
+  }
+
+  if(!all(c("diag1_4", "shmi_diagnosis_group") %in% names(pdiags))){
+
+    stop(paste0("Object pdiags does not contain the required variables.",
+                "Must contain:
+                diag1_4
+                shmi_diagnosis_group"))
+
+  }
+
+  if(!all(c("morb", "wmorbs", "diag") %in% names(morbs))){
+
+    stop(paste0("Object morbs does not contain the required variables.",
+                "Must contain:
+                morb
+                wmorbs
+                diag"))
+
+  }
+
+  if(!all(c("link_no", "date_of_death", "hbres_currentdate", "quarter",
+            "year") %in% names(gro))) {
+
+    stop(paste0("Object gro does not contain the required variables.",
+                "Must contain:
+                link_no
+                date_of_death
+                hbres_currentdate
+                quarter
                 year"))
+  }
+
+  if(!is.numeric(smr01$link_no)){
+
+    stop(paste0("Link_no must be a numeric"))
+
+  }
+
+  if(!is.numeric(smr01$cis_marker)){
+
+    stop(paste0("cis_marker must be a numeric"))
+
+  }
+
+  if(!is.POSIXct(smr01$admission_date)){
+
+    stop(paste0("Admission_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!is.POSIXct(smr01$discharge_date)){
+
+    stop(paste0("Discharge_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!all(1:140 %in% pdiags$shmi_diagnosis_group)){
+
+    stop(paste0("Primary diagnosis lookup does not contain all 140 ",
+                "primary diagnosis groupings."))
+
+  }
+
+  if(!all(1:17 %in% morbs$morb)){
+
+    stop(paste0("Co-morbidities lookup does not contain all 17 comorbidity
+                groups."))
+
   }
 
   ### 1 - Match deaths data to SMR01 ----
