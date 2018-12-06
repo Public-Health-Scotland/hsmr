@@ -22,6 +22,21 @@
 
 smr_data <- function(smr01, index){
 
+  if(!tibble::is_tibble(smr01)){
+
+    stop(paste0("The smr01 argument provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all(c("pred_eq") %in% names(smr01))){
+
+    stop(paste0("smr01 object must be objected returned from smr_model()",
+                " function."))
+  }
+
+
   ### SECTION 1 - CREATE MINIMAL TIDY DATASET ----
 
   ### 1 - Create Scotland-level aggregation ----
