@@ -44,7 +44,7 @@ create_trends <- function(smr01, gro, pop, dep) {
                 "Must contain:
                 link_no
                 admission_date
-                discharge_data
+                discharge_date
                 cis_marker
                 postcode
                 specialty

@@ -27,7 +27,7 @@
 smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
-     !tibble::is_tibble(pop) | !tibble::is_tibble(postcode) |
+     !tibble::is_tibble(pdiags) | !tibble::is_tibble(postcode) |
      !tibble::is_tibble(morbs)) {
 
     stop(paste0("All arguments provided to the function ",
@@ -38,14 +38,17 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
   if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
             "postcode", "specialty", "discharge_type", "sex", "admgrp",
-            "admfgrp", "ipdc", "age_grp", "quarter",
+            "admfgrp", "ipdc", "age_grp", "quarter", "location",
+            "main_condition", "other_condition_1", "other_condition_2",
+            "other_condition_3", "other_condition_4", "other_condition_5",
+            "surgmed", "ipdc", "quarter", "age_in_years", "hbtreat_currentdate",
             "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables.",
                 "Must contain:
                 link_no
                 admission_date
-                discharge_data
+                discharge_date
                 cis_marker
                 postcode
                 specialty
