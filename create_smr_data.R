@@ -199,15 +199,17 @@ z_smr01 <- smr_pmorbs(smr01        = z_smr01,
 #
 # This function runs the risk model and appends the probability of death on
 # to the SMR01 extract
-z_smr01 <- function_3(smr01      = z_smr01,
-                      base_start = start_of_baseline,
-                      base_end   = end_of_baseline,
-                      index      = index)
+z_smr01 <- smr_model(smr01      = z_smr01,
+                     base_start = start_of_baseline,
+                     base_end   = end_of_baseline,
+                     index      = index)
 
 # SMR01 = The output from function_3
 # INDEX = Indicating whether the patient indexing is done quarterly
 #         or annually
 #
 # This function aggregates the data down into quarterly/annual SMR figures
-smr_data <- function_4(smr01 = z_smr01,
-                       index = index)
+smr_data <- smr_data(smr01 = z_smr01,
+                     index = index)
+
+### END OF SCRIPT ###
