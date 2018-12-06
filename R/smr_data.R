@@ -101,14 +101,19 @@ smr_data <- function(smr01, index){
   smr_data %<>%
     mutate(reg = predict(z_reg_line, ., type = "response"))
 
+  structure(
+    list(
+      df = smr_data,
+      colnames = colnames(smr_data),
+      type = colnames(smr_data)[!colnames(smr_data)
+                                        %in% c("quarter",	"deaths",	"pred",
+                                               "pats",	"smr",	"crd_rate",
+                                               "location_type",	"location",
+                                               "location_name",	"quarter_reg",
+                                               "reg")]
+    ),
+    class = "smr_data")
+
 }
 
-
-
-
-
-
-
-
-
-
+### END OF SCRIPT ###
