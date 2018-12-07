@@ -24,7 +24,7 @@
 #' @export
 
 
-smr_model <- function(smr01, base_start, base_end, index){
+smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   ### 1 - Error handling ----
 
@@ -40,6 +40,13 @@ smr_model <- function(smr01, base_start, base_end, index){
 
     stop(paste0("smr01 object must be objected returned from smr_pmorbs()",
                 " function."))
+  }
+
+  if(index != "Q" | index != "M" | index != "Y"){
+
+    stop(paste0("Invalid argument for Index. Index argument can only take the",
+                " values Q, M or Y."))
+
   }
 
   ### 2 - Create patient level file ----
