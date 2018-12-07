@@ -49,11 +49,38 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   }
 
+  if(index == "M"){
+
+    smr01 %<>%
+      mutate(month = as.POSIXct(admission_date, format = "%m-%Y")) %>%
+      rename(period = month)
+
+  }
+
+  if(index == "Q"){
+
+    smr01 %<>%
+      rename(period = quarter)
+
+  }
+
+  if(index == "Y"){
+
+    warning(paste0("Annual HSMRs are only to be produced on a rolling basis. ",
+                   "Therefore, data provided to this function MUST cover ",
+                   "a period which can be measured in whole years. E.g. ",
+                   "January 2011 to December 2014 (4 whole years)."))
+
+    #smr01 %<>%
+
+  }
+
+
   ### 2 - Create patient level file ----
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
-    group_by(link_no, quarter) %>%
+    group_by(link_no, period) %>%
     mutate(last_cis = max(cis_marker)) %>%
     ungroup() %>%
     filter(epinum == 1 & cis_marker == last_cis) %>%
@@ -77,7 +104,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   z_data_lr <- smr01 %>%
 
     # Select baseline period rows
-    filter(quarter <= 12) %>%
+    filter(admission_date >= base_start & admission_date <= base_end) %>%
 
     # Select required variables for model
     select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
