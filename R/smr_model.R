@@ -42,7 +42,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                 " function."))
   }
 
-  if(index != "Q" | index != "M" | index != "Y"){
+  if(index != "Q" & index != "M" & index != "Y"){
 
     stop(paste0("Invalid argument for Index. Index argument can only take the",
                 " values Q, M or Y."))
