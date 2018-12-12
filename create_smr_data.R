@@ -69,7 +69,7 @@ z_start_date_5 <- dmy(01012006)
 z_start_date_l <- dmy(01012011)
 
 # End date for the cut off for data
-z_end_date     <- dmy(31032018)
+z_end_date     <- dmy(31092018)
 
 
 ### 5 - Source scripts ----
