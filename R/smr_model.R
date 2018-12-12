@@ -52,7 +52,8 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   if(index == "M"){
 
     smr01 %<>%
-      mutate(month = as.POSIXct(admission_date, format = "%m-%Y")) %>%
+      mutate(month = paste(lubridate::month(admission_date),
+                           lubridate::year(admission_date), sep = "-")) %>%
       rename(period = month)
 
   }
