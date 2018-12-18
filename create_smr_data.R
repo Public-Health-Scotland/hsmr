@@ -29,6 +29,7 @@ library(lubridate)     # For dates
 library(tidyr)         # For data manipulation in the "tidy" way
 library(fuzzyjoin)     # For fuzzy joins
 library(stringr)       # For string manipulation and matching
+library(hsmr)          # For HSMR functions
 
 ### 2 - Define Whether Running on Server or Locally ----
 # Comment out as appropriate
@@ -38,9 +39,9 @@ platform <- c("locally")
 
 # Define root directory for cl-out based on whether script is running locally or
 # on server
-plat_filepath <- ifelse(platform == "server",
-                        '/conf/linkage/output/',
-                        '//stats/cl-out/')
+plat_filepath <- if_else(platform == "server",
+                         '/conf/linkage/output/',
+                         '//stats/cl-out/')
 
 
 ### 3 - Define the database connection with SMRA ----
@@ -69,7 +70,7 @@ z_start_date_5 <- dmy(01012006)
 z_start_date_l <- dmy(01012011)
 
 # End date for the cut off for data
-z_end_date     <- dmy(31092018)
+z_end_date     <- dmy(30092018)
 
 
 ### 5 - Source scripts ----

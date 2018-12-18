@@ -312,7 +312,7 @@ create_trends <- function(smr01, gro, pop, dep) {
   long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths) %>%
 
     # Select latest 40 quarters only
-    filter(between(quarter, max(quarter) - 40, max(quarter)))
+    filter(between(quarter, max(quarter) - 39, max(quarter)))
 
   structure(
     list(
