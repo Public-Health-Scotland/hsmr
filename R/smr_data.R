@@ -38,11 +38,29 @@ smr_data <- function(smr01, index){
                 " function."))
   }
 
+  if(index == "Q"){
+
+    reg_length <- 12
+
+  }
+
+  if(index == "M"){
+
+    reg_length <- 36
+
+  }
+
+  if(index == "Y"){
+
+    reg_length <- 1
+
+  }
+
 
   ### 2 - Create Scotland-level aggregation ----
 
   z_hsmr_scot <- smr01 %>%
-    group_by(quarter) %>%
+    group_by(period) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
               pats   = length(death30)) %>%
@@ -56,7 +74,7 @@ smr_data <- function(smr01, index){
   ### 3 - Create Hospital-level aggregation ----
 
   z_hsmr_hosp <- smr01 %>%
-    group_by(quarter, location) %>%
+    group_by(period, location) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
               pats   = length(death30)) %>%
@@ -72,7 +90,7 @@ smr_data <- function(smr01, index){
   ### 4 - Create HB-level aggregation ----
 
   z_hsmr_hb <- smr01 %>%
-    group_by(quarter, hbtreat_currentdate) %>%
+    group_by(period, hbtreat_currentdate) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
               pats   = length(death30)) %>%
@@ -90,12 +108,12 @@ smr_data <- function(smr01, index){
     left_join(z_hospitals, by = "location") %>%
     drop_na(location_name) %>%
 
-    # Create quarter variable used in linear model - every data point in the
+    # Create period variable used in linear model - every data point in the
     # first year is considered to come from one time point (baseline period)
-    mutate(quarter_reg = if_else(quarter <= 12, 0, quarter - 12))
+    mutate(period_reg = if_else(period <= reg_length, 0, period - reg_length))
 
   # Run linear regression
-  z_reg_line <- lm(smr ~ quarter_reg * location_name, data = smr_data)
+  z_reg_line <- lm(smr ~ period_reg * location_name, data = smr_data)
 
   # Create reg variable of predicted values
   smr_data %<>%
@@ -108,10 +126,10 @@ smr_data <- function(smr01, index){
       df = smr_data,
       colnames = colnames(smr_data),
       type = colnames(smr_data)[!colnames(smr_data)
-                                        %in% c("quarter",	"deaths",	"pred",
+                                        %in% c("period",	"deaths",	"pred",
                                                "pats",	"smr",	"crd_rate",
                                                "location_type",	"location",
-                                               "location_name",	"quarter_reg",
+                                               "location_name",	"period_reg",
                                                "reg")]
     ),
     class = "smr_data")
