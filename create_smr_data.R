@@ -33,8 +33,8 @@ library(hsmr)          # For HSMR functions
 
 ### 2 - Define Whether Running on Server or Locally ----
 # Comment out as appropriate
-#platform <- c("server")
-platform <- c("locally")
+platform <- c("server")
+#platform <- c("locally")
 
 
 # Define root directory for cl-out based on whether script is running locally or
@@ -201,9 +201,9 @@ z_smr01 <- smr_pmorbs(smr01        = z_smr01,
 # This function runs the risk model and appends the probability of death on
 # to the SMR01 extract
 z_smr01 <- smr_model(smr01      = z_smr01,
-                     base_start = start_of_baseline,
-                     base_end   = end_of_baseline,
-                     index      = index)
+                     base_start = dmy(01012011),
+                     base_end   = dmy(31122013),
+                     index      = "Q")
 
 # SMR01 = The output from function_3
 # INDEX = Indicating whether the patient indexing is done quarterly
@@ -211,6 +211,6 @@ z_smr01 <- smr_model(smr01      = z_smr01,
 #
 # This function aggregates the data down into quarterly/annual SMR figures
 smr_data <- smr_data(smr01 = z_smr01,
-                     index = index)
+                     index = "Q")
 
 ### END OF SCRIPT ###
