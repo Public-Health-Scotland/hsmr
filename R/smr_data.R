@@ -56,6 +56,10 @@ smr_data <- function(smr01, index){
 
   }
 
+  smr01 <- smr01 %>%
+    rename(period_name = period) %>%
+    mutate(period = as.numeric(as.factor(period_name)))
+
 
   ### 2 - Create Scotland-level aggregation ----
 

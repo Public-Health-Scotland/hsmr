@@ -203,7 +203,7 @@ z_smr01 <- smr_pmorbs(smr01        = z_smr01,
 z_smr01 <- smr_model(smr01      = z_smr01,
                      base_start = dmy(01012011),
                      base_end   = dmy(31122013),
-                     index      = "Q")
+                     index      = "M")
 
 # SMR01 = The output from function_3
 # INDEX = Indicating whether the patient indexing is done quarterly
@@ -211,6 +211,6 @@ z_smr01 <- smr_model(smr01      = z_smr01,
 #
 # This function aggregates the data down into quarterly/annual SMR figures
 smr_data <- smr_data(smr01 = z_smr01,
-                     index = "Q")
+                     index = "M")
 
 ### END OF SCRIPT ###
