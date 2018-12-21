@@ -58,10 +58,14 @@ z_smra_connect <- suppressWarnings(
 
 
 # Define the dates that the data are extracted from and to
+# Dates are in ddmmyyyy format
 
 
-# The beginning of baseline period
+# The beginning of baseline period/extract window
 z_start_date   <- dmy(01012011)
+
+# The end of the baseline period
+z_base_end     <- dmy(31122013)
 
 # Five years earlier for the five year look-back (pmorbs5)
 z_start_date_5 <- dmy(01012006)
@@ -109,10 +113,7 @@ z_morbs <- read_csv(paste0(z_lookups,
   select(-code) %>%
 
   # Remove all NAs from the ICD-10 column
-  drop_na(diag) %>%
-
-  # Remove the second C80 entry
-  distinct(diag, .keep_all = TRUE)
+  drop_na(diag)
 
 
 # Postcode lookups for SIMD 2016 and 2012
@@ -166,12 +167,12 @@ data_pmorbs <- as_tibble(dbGetQuery(z_smra_connect,
 
 
 # 2 - Pipeline ----
-# SMR01    = The SMR01 extract used to produce SMR data. This should contain
+# smr01    = The SMR01 extract used to produce SMR data. This should contain
 #            ONLY the quarters being published
-# GRO      = The deaths extract used to produce SMR data. This should contain
+# gro      = The deaths extract used to produce SMR data. This should contain
 #            ALL data AFTER the start of the first publication quarter
-# PDIAGS   = The primary diagnosis lookup dataframe/tibble
-# POSTCODE = The postcode lookup dataframe for SIMD matching
+# pdiags   = The primary diagnosis lookup dataframe/tibble
+# postcode = The postcode lookup dataframe for SIMD matching
 #
 # This function does most of the wrangling required for producing HSMR
 z_smr01 <- smr_wrangling(smr01    = z_smr01,
@@ -180,8 +181,8 @@ z_smr01 <- smr_wrangling(smr01    = z_smr01,
                          postcode = z_simd_all,
                          morbs    = z_morbs)
 
-# SMR01        = The output from function_1
-# SMR01_MINUS5 = The SMR01 extract used to calculate the prior morbidities.
+# smr01        = The output from smr_wrangling()
+# smr01_minus5 = The SMR01 extract used to calculate the prior morbidities.
 #                This should contain all publication quarters plus an extra
 #                five years at the start
 #
@@ -192,21 +193,21 @@ z_smr01 <- smr_pmorbs(smr01        = z_smr01,
                       smr01_minus5 = data_pmorbs,
                       morbs        = z_morbs)
 
-# SMR01      = The output from function_2
-# BASE_START = The beginning of the baseline period
-# BASE_END   = The end of the baseline period
-# INDEX      = Indicating whether the patient indexing is done quarterly
+# smr01      = The output from smr_pmorbs()
+# base_start = The beginning of the baseline period
+# base_end   = The end of the baseline period
+# index      = Indicating whether the patient indexing is done quarterly
 #              or annually
 #
 # This function runs the risk model and appends the probability of death on
 # to the SMR01 extract
 z_smr01 <- smr_model(smr01      = z_smr01,
-                     base_start = dmy(01012011),
-                     base_end   = dmy(31122013),
-                     index      = "M")
+                     base_start = z_start_date,
+                     base_end   = z_base_end,
+                     index      = "Q")
 
-# SMR01 = The output from function_3
-# INDEX = Indicating whether the patient indexing is done quarterly
+# smr01 = The output from smr_model()
+# index = Indicating whether the patient indexing is done quarterly
 #         or annually
 #
 # This function aggregates the data down into quarterly/annual SMR figures
