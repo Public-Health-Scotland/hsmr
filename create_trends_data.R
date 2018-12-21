@@ -56,10 +56,10 @@ smra_connect <- suppressWarnings(
 # Dates are in ddmmyyyy format
 
 # The beginning of the ten year trend
-z_start_date_trends <- dmy(01012008)
+z_start_date_trends <- dmy(01072008)
 
 # End date for the cut off for z_smr01
-z_end_date          <- dmy(31032018)
+z_end_date          <- dmy(30092018)
 
 
 ### 5 - Source scripts ----
