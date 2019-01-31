@@ -204,19 +204,24 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
     # Fuzzy joins add the (in this case, not needed) joining variable by default,
     # so append these with "_z" so they can be easily removed afterwards
-    fuzzy_left_join(select(morbs, wcomorbs1 = wmorbs, diag2_z = diag),
+    fuzzy_left_join(select(morbs, wcomorbs1 = wmorbs,
+                           comorbs1 = morb, diag2_z = diag),
                     by = c("diag2" = "diag2_z"),
                     match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs2 = wmorbs, diag3_z = diag),
+    fuzzy_left_join(select(morbs, wcomorbs2 = wmorbs,
+                           comorbs2 = morb, diag3_z = diag),
                     by = c("diag3" = "diag3_z"),
                     match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs3 = wmorbs, diag4_z = diag),
+    fuzzy_left_join(select(morbs, wcomorbs3 = wmorbs,
+                           comorbs3 = morb, diag4_z = diag),
                     by = c("diag4" = "diag4_z"),
                     match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs4 = wmorbs, diag5_z = diag),
+    fuzzy_left_join(select(morbs, wcomorbs4 = wmorbs,
+                           comorbs4 = morb, diag5_z = diag),
                     by = c("diag5" = "diag5_z"),
                     match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs5 = wmorbs, diag6_z = diag),
+    fuzzy_left_join(select(morbs, wcomorbs5 = wmorbs,
+                           comorbs5 = morb, diag6_z = diag),
                     by = c("diag6" = "diag6_z"),
                     match_fun = str_detect) %>%
 
@@ -228,21 +233,26 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                     wcomorbs2 = 0,
                     wcomorbs3 = 0,
                     wcomorbs4 = 0,
-                    wcomorbs5 = 0)) %>%
+                    wcomorbs5 = 0,
+                    comorbs1  = 0,
+                    comorbs2  = 0,
+                    comorbs3  = 0,
+                    comorbs4  = 0,
+                    comorbs5  = 0)) %>%
     mutate(wcomorbs2 = replace(wcomorbs2,
-                               wcomorbs2 == wcomorbs1,
+                               comorbs2 == comorbs1,
                                0),
            wcomorbs3 = replace(wcomorbs3,
-                               wcomorbs3 == wcomorbs1 | wcomorbs3 == wcomorbs2,
+                               comorbs3 == comorbs1 | comorbs3 == comorbs2,
                                0),
            wcomorbs4 = replace(wcomorbs4,
-                               wcomorbs4 == wcomorbs1 | wcomorbs4 == wcomorbs2 |
-                                 wcomorbs4 == wcomorbs3,
+                               comorbs4 == comorbs1 | comorbs4 == comorbs2 |
+                                 comorbs4 == comorbs3,
                                0),
            wcomorbs5 = replace(wcomorbs5,
-                               wcomorbs5 == wcomorbs1 | wcomorbs5 == wcomorbs2 |
-                                 wcomorbs5 == wcomorbs3 |
-                                 wcomorbs5 == wcomorbs4,
+                               comorbs5 == comorbs1 | comorbs5 == comorbs2 |
+                                 comorbs5 == comorbs3 |
+                                 comorbs5 == comorbs4,
                                0)) %>%
     mutate(comorbs_sum = rowSums(select(., starts_with("wcomorbs")))) %>%
 
@@ -257,7 +267,9 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
     # Sort data as per guidance and remove variables no longer required
     arrange(link_no, cis_marker, admission_date, discharge_date) %>%
-    select(-contains("condition"), -starts_with("wcomorbs"), -quarter_name)
+    select(-contains("condition"), -starts_with("wcomorbs"),
+           -c("comorbs1", "comorbs2", "comorbs3", "comorbs4", "comorbs5",
+              -quarter_name)
 
   ### 4 - SIMD ----
 
