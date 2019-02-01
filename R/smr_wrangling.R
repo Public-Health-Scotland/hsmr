@@ -268,7 +268,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     # Sort data as per guidance and remove variables no longer required
     arrange(link_no, cis_marker, admission_date, discharge_date) %>%
     select(-contains("condition"), -starts_with("wcomorbs"),
-           -c("comorbs1", "comorbs2", "comorbs3", "comorbs4", "comorbs5"),
+           -comorbs1, -comorbs2, -comorbs3, -comorbs4, -comorbs5,
               -quarter_name)
 
   ### 4 - SIMD ----
