@@ -275,7 +275,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
     # calculation of the number of previous emergency admissions
     mutate(epinum = row_number()) %>%
     ungroup() %>%
-    filter(epinum == 1) %>%
+    #filter(epinum == 1) %>%
     mutate(n_emerg = 0)
 
 
@@ -309,6 +309,10 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   # Select required variables from smr01_minus5
   smr01_minus5 %<>%
+    group_by(link_no, cis_marker) %>%
+    mutate(n_emerg = first(n_emerg)) %>%
+    ungroup() %>%
+    filter(epinum == 1) %>%
     select(link_no, cis_marker, pmorbs1_sum, pmorbs5_sum, n_emerg)
 
   # Join smr01_minus5 on to the main tibble
