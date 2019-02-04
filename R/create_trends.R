@@ -3,7 +3,7 @@
 #'
 #' @description Returns the minimal tidy data set for long terms trend data
 #' which feeds into the reproducible analytical pipeline of the quarterly
-#' Hospital Standardised Mortality Ratios publicatoin.
+#' Hospital Standardised Mortality Ratios publication.
 #'
 #'
 #' @details \code{create_trends} expects a \code{tibble} with data extracted
@@ -44,7 +44,7 @@ create_trends <- function(smr01, gro, pop, dep) {
                 "Must contain:
                 link_no
                 admission_date
-                discharge_data
+                discharge_date
                 cis_marker
                 postcode
                 specialty
@@ -312,7 +312,7 @@ create_trends <- function(smr01, gro, pop, dep) {
   long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths) %>%
 
     # Select latest 40 quarters only
-    filter(between(quarter, max(quarter) - 40, max(quarter)))
+    filter(between(quarter, max(quarter) - 39, max(quarter)))
 
   structure(
     list(
@@ -325,4 +325,6 @@ create_trends <- function(smr01, gro, pop, dep) {
     class = "long_term_trends_data")
 
 
-  }
+}
+
+### END OF SCRIPT ###

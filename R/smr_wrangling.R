@@ -1,16 +1,22 @@
-#' @title Clean up logistic regression model
+#' @title Initial Wrangling for HSMR data
 #'
-#' @description Strips logistic regression model object of extraneous data that
-#' are not required in order to calculate the probability of death within
-#' 30 days of admission. This is a necessary step as the object will likely be
-#' quite large and take up significant amounts of memory when producing the
-#' probabilities.
+#' @description Creates the majority of necessary variables to be used in the
+#' HSMR model.
 #'
 #'
-#' @details \code{clean_model} expects an object of class \code{"glm"}.
+#' @details \code{smr_wrangling} expects a \code{tibble} of data extracted from
+#' SMR01. It also expects \code{tibbles} of data extracted from the GRO deaths
+#' database and lookups for primary diagnosis, postcode(deprivation) and
+#' morbidities (comorbs_sum). This is the first step in a four-step process. The
+#' next steps are \code{smr_pmorbs} then \code{smr_model} and finally
+#' \code{smr_data}.
 #'
 #'
-#' @param cm Input \code{glm}.
+#' @param smr01 Input tibble for admissions, see details.
+#' @param gro Input tibble for deaths, see details.
+#' @param pdiags Input tibble for primary diagnosis groupings lookup.
+#' @param postcode Input tibble for deprivation lookup.
+#' @param morbs Input tibble for the charlson index for comorbidities lookup.
 #'
 #'
 #' @examples
@@ -20,7 +26,118 @@
 
 smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
 
-  ### 1 - Match deaths data to SMR01 ----
+  ### 1 - Error handling ----
+
+  if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
+     !tibble::is_tibble(pdiags) | !tibble::is_tibble(postcode) |
+     !tibble::is_tibble(morbs)) {
+
+    stop(paste0("All arguments provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
+            "postcode", "discharge_type", "sex", "admgrp",
+            "admfgrp", "ipdc", "age_grp", "quarter", "location",
+            "main_condition", "other_condition_1", "other_condition_2",
+            "other_condition_3", "other_condition_4", "other_condition_5",
+            "surgmed", "ipdc", "age_in_years", "hbtreat_currentdate",
+            "year") %in% names(smr01))) {
+
+    stop(paste0("Object smr01 does not contain the required variables. ",
+                "Must contain:
+                link_no
+                admission_date
+                discharge_date
+                cis_marker
+                postcode
+                discharge_type
+                sex
+                admgrp
+                admfgrp
+                ipdc
+                age_in_years
+                age_grp
+                quarter
+                year
+                location
+                hbtreat_currentdate
+                main_condition
+                other_condition_1 to other_condition_5
+                surgmed
+                ipdc"))
+  }
+
+  if(!all(c("diag1_4", "shmi_diagnosis_group") %in% names(pdiags))){
+
+    stop(paste0("Object pdiags does not contain the required variables.",
+                "Must contain:
+                diag1_4
+                shmi_diagnosis_group"))
+
+  }
+
+  if(!all(c("morb", "wmorbs", "diag") %in% names(morbs))){
+
+    stop(paste0("Object morbs does not contain the required variables.",
+                "Must contain:
+                morb
+                wmorbs
+                diag"))
+
+  }
+
+  if(!all(c("link_no", "date_of_death") %in% names(gro))) {
+
+    stop(paste0("Object gro does not contain the required variables.",
+                "Must contain:
+                link_no
+                date_of_death"))
+  }
+
+  if(!is.numeric(smr01$link_no)){
+
+    stop(paste0("Link_no must be a numeric"))
+
+  }
+
+  if(!is.numeric(smr01$cis_marker)){
+
+    stop(paste0("cis_marker must be a numeric"))
+
+  }
+
+  if(!is.POSIXct(smr01$admission_date)){
+
+    stop(paste0("Admission_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!is.POSIXct(smr01$discharge_date)){
+
+    stop(paste0("Discharge_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!all(1:140 %in% pdiags$shmi_diagnosis_group)){
+
+    stop(paste0("Primary diagnosis lookup does not contain all 140 ",
+                "primary diagnosis groupings."))
+
+  }
+
+  if(!all(1:17 %in% morbs$morb)){
+
+    stop(paste0("Co-morbidities lookup does not contain all 17 comorbidity
+                groups."))
+
+  }
+
+  ### 2 - Match deaths data to SMR01 ----
   # Remove duplicate records on link_no
   # The deaths file is matched on to SMR01 by link_no,
   # therefore link_no needs to be unique
@@ -35,7 +152,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     arrange(link_no, cis_marker, admission_date, discharge_date)
 
 
-  ### 2 - Basic SMR01 processing ----
+  ### 3 - Basic SMR01 processing ----
 
   # Create the following variables:
   # death_inhosp = 1 if the patient died in hospital during that episode of care
