@@ -1,6 +1,90 @@
+#' @title Prior-morbidities Wrangling for HSMR data
+#'
+#' @description Creates the remainder of necessary variables to be used in the
+#' HSMR model.
+#'
+#'
+#' @details \code{smr_pmorbs} expects a \code{tibble} of data extracted from
+#' SMR01 that has already been through \code{smr_wrangling}.
+#' It also expects a \code{tibble} of data extracted from SMR01 covering a
+#' time-period that begins five years prior to that of the data in @param smr01.
+#' This is so that the function is able to calculate the Charlson Index for
+#' Comorbidities weighting for the previous five years.
+#' It also expects a \code{tibble} for the Charlson Index lookups.
+#'
+#'
+#' @param smr01 Input tibble for admissions, see details.
+#' @param smr01_minus5 Input tibble for admissions going back five years, see
+#' details.
+#' @param morbs Input tibble for the charlson index for comorbidities lookup.
+#'
+#'
+#' @examples
+#'
+#'
+#' @export
+
+
 smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
-  ### 1 - Creating Prior Morbidities
+  ### 1 - Error handling ----
+
+  if(!tibble::is_tibble(smr01) | !tibble::is_tibble(smr01_minus5) |
+     !tibble::is_tibble(morbs)) {
+
+    stop(paste0("All arguments provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all(c("date_of_death", "dthdays", "death30", "diag1_4", "diag2",
+            "diag3", "diag4", "diag5", "diag6", "pdiag_grp", "comorbs_sum",
+            "epinum", "death_inhosp_max", "simd") %in% names(smr01))){
+
+    stop(paste0("smr01 object must be objected returned from smr_wrangling()",
+                " function."))
+  }
+
+  if(!all(c("link_no", "admission_date", "discharge_date",
+            "old_smr1_tadm_code", "cis_marker") %in% names(smr01_minus5))){
+
+    stop(paste0("smr01_minus5 object doesn't contain all of the required ",
+                "variables. Must contain:
+                link_no
+                admission_date
+                discharge_date
+                old_smr1_tadm_code
+                cis_marker"))
+  }
+
+  if(!is.numeric(smr01$link_no)){
+
+    stop(paste0("Link_no must be a numeric"))
+
+  }
+
+  if(!is.numeric(smr01$cis_marker)){
+
+    stop(paste0("cis_marker must be a numeric"))
+
+  }
+
+  if(!is.POSIXct(smr01$admission_date)){
+
+    stop(paste0("Admission_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  if(!is.POSIXct(smr01$discharge_date)){
+
+    stop(paste0("Discharge_date variable must be POSIXct of format",
+                " %Y-%m-%d"))
+
+  }
+
+  ### 2 - Creating Prior Morbidities ----
   # Vector of unique link numbers used for filtering below
   z_unique_id <- smr01 %>%
     distinct(link_no) %>%
@@ -200,6 +284,8 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   smr01_minus5 <- data.table(smr01_minus5)
 
 
+  ### 3 - Previous emergency admissions ----
+
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person
   # AND the time between the two episodes is 1 year
@@ -229,5 +315,9 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   smr01 %<>%
     left_join(smr01_minus5, by = c("link_no", "cis_marker"))
 
+  return(smr01)
+
 
 }
+
+### END OF SCRIPT ###
