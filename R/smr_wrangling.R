@@ -228,6 +228,49 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     # Remove joining variables
     select(-ends_with("_z")) %>%
 
+    # Comorbs cleaning
+    mutate(wcomorbs1 = ifelse(comorbs1 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+                                                  comorbs4 != 6 & comorbs5 != 6)
+                              , 2, wcomorbs1),
+           wcomorbs2 = ifelse(comorbs2 == 12 & (comorbs1 != 6 & comorbs3 != 6 &
+                                                  comorbs4 != 6 & comorbs5 != 6)
+                              , 2, wcomorbs2),
+           wcomorbs3 = ifelse(comorbs3 == 12 & (comorbs2 != 6 & comorbs1 != 6 &
+                                                  comorbs4 != 6 & comorbs5 != 6)
+                              , 2, wcomorbs3),
+           wcomorbs4 = ifelse(comorbs4 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+                                                  comorbs1 != 6 & comorbs5 != 6)
+                              , 2, wcomorbs5),
+           wcomorbs5 = ifelse(comorbs5 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+                                                  comorbs4 != 6 & comorbs1 != 6)
+                              , 2, wcomorbs5)) %>%
+    mutate(wcomorbs1 = ifelse(comorbs1 == 11 & (comorbs2 == 15 |
+                                                  comorbs3 == 15 |
+                                                  comorbs4 == 15 |
+                                                  comorbs5 == 15), 0, wcomorbs1)
+           ,
+           wcomorbs2 = ifelse(comorbs2 == 11 & (comorbs1 == 15 |
+                                                  comorbs3 == 15 |
+                                                  comorbs4 == 15 |
+                                                  comorbs5 == 15), 0, wcomorbs2)
+           ,
+           wcomorbs3 = ifelse(comorbs3 == 11 & (comorbs2 == 15 |
+                                                  comorbs1 == 15 |
+                                                  comorbs4 == 15 |
+                                                  comorbs5 == 15), 0, wcomorbs3)
+           ,
+           wcomorbs4 = ifelse(comorbs4 == 11 & (comorbs2 == 15 |
+                                                  comorbs3 == 15 |
+                                                  comorbs1 == 15 |
+                                                  comorbs5 == 15), 0, wcomorbs4)
+           ,
+           wcomorbs5 = ifelse(comorbs5 == 11 & (comorbs2 == 15 |
+                                                  comorbs3 == 15 |
+                                                  comorbs4 == 15 |
+                                                  comorbs1 == 15), 0, wcomorbs5)
+           ) %>%
+
+
     # Replace cases with no match with zero
     replace_na(list(wcomorbs1 = 0,
                     wcomorbs2 = 0,
