@@ -228,6 +228,17 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     # Remove joining variables
     select(-ends_with("_z")) %>%
 
+    # Replace cases with no match with zero
+    replace_na(list(wcomorbs1 = 0,
+                    wcomorbs2 = 0,
+                    wcomorbs3 = 0,
+                    wcomorbs4 = 0,
+                    wcomorbs5 = 0,
+                    comorbs1  = 0,
+                    comorbs2  = 0,
+                    comorbs3  = 0,
+                    comorbs4  = 0,
+                    comorbs5  = 0)) %>%
     # Comorbs cleaning
     mutate(wcomorbs1 = ifelse(comorbs1 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs4 != 6 & comorbs5 != 6)
@@ -268,20 +279,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                                                   comorbs3 == 15 |
                                                   comorbs4 == 15 |
                                                   comorbs1 == 15), 0, wcomorbs5)
-           ) %>%
-
-
-    # Replace cases with no match with zero
-    replace_na(list(wcomorbs1 = 0,
-                    wcomorbs2 = 0,
-                    wcomorbs3 = 0,
-                    wcomorbs4 = 0,
-                    wcomorbs5 = 0,
-                    comorbs1  = 0,
-                    comorbs2  = 0,
-                    comorbs3  = 0,
-                    comorbs4  = 0,
-                    comorbs5  = 0)) %>%
+    ) %>%
     mutate(wcomorbs2 = replace(wcomorbs2,
                                comorbs2 == comorbs1,
                                0),
