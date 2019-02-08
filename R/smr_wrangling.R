@@ -251,7 +251,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                               , 2, wcomorbs3),
            wcomorbs4 = ifelse(comorbs4 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs1 != 6 & comorbs5 != 6)
-                              , 2, wcomorbs5),
+                              , 2, wcomorbs4),
            wcomorbs5 = ifelse(comorbs5 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs4 != 6 & comorbs1 != 6)
                               , 2, wcomorbs5)) %>%
