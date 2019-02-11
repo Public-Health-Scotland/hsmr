@@ -341,7 +341,11 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     )) %>%
 
     # Remove the not needed year-specific SIMD variables
-    select(-c(simd_2012, simd_2016))
+    select(-c(simd_2012, simd_2016)) %>%
+    mutate(simd = case_when(
+      is.na(simd) & postcode == "NK010AA" ~ 6,
+      is.na(simd) & postcode != "NK010AA" ~ 7
+    ))
 
   return(smr01)
 
