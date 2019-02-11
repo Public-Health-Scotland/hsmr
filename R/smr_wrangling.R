@@ -344,7 +344,8 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
     select(-c(simd_2012, simd_2016)) %>%
     mutate(simd = case_when(
       is.na(simd) & postcode == "NK010AA" ~ 6,
-      is.na(simd) & postcode != "NK010AA" ~ 7
+      is.na(simd) & postcode != "NK010AA" ~ 7,
+      TRUE ~ simd
     ))
 
   return(smr01)
