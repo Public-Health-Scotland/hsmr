@@ -140,7 +140,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
     mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) #%>%
 
     # Remove rows with no probability calculated
-    #drop_na(pred_eq)
+    drop_na(pred_eq)
 
   return(smr01)
 
