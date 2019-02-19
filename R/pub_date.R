@@ -37,7 +37,3 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
                                     lubridate::add_with_rollback(p,
                                                                  months(5)))))
 }
-
-format(pub_date(end_date = z_end_date, pub = "previous"), "%d %B %Y")
-
-
