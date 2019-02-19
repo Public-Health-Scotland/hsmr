@@ -18,11 +18,13 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
                       unit = "month") - lubridate::days(1)
   }
 
-  first <- lubridate::as_date(cut(lubridate::add_with_rollback(p,
-                                                               months(5)),
-                                  "month"))
+  first <- lubridate::floor_date(lubridate::add_with_rollback(p,
+                                                              months(5)),
+                                 unit = "month")
 
-  last <- lubridate::as_date(cut(first + 31, "month")) - lubridate::days(1)
+  last <- lubridate::ceiling_date(lubridate::add_with_rollback(p,
+                                                               months(5)),
+                                  unit = "month") - lubridate::days(1)
 
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
 
@@ -36,6 +38,6 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
                                                                  months(5)))))
 }
 
-format(pub_date(end_date = z_end_date, pub = "current"), "%d %B %Y")
+format(pub_date(end_date = z_end_date, pub = "previous"), "%d %B %Y")
 
 
