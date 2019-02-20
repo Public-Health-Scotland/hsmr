@@ -12,6 +12,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
          "September or December")
   }
 
+  # Calculate p; the extract end date for the selected publication
   if (pub == "previous") {
     p <- lubridate::ceiling_date(lubridate::add_with_rollback(end_date,
                                                               -months(3)),
@@ -28,6 +29,9 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
                       unit = "month") - lubridate::days(1)
   }
 
+
+  # The publication date is always the third last Tuesday of the month
+  # Calculate n; the number of Tuesdays in the month of publication
   first <- lubridate::floor_date(lubridate::add_with_rollback(p,
                                                               months(5)),
                                  unit = "month")
@@ -38,6 +42,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
 
+  # Return the date of the third last Tuesday in the month of publication
   return(RcppBDT::getNthDayOfWeek(n - 2,
                                   2,
                                   lubridate::month(
