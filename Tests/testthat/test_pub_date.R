@@ -1,5 +1,3 @@
-# Tests for hsmr publication date function
-
 library(hsmr)
 context("pub_date")
 
