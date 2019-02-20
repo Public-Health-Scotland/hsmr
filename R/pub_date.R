@@ -2,6 +2,16 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   pub <- match.arg(pub)
 
+  if (!lubridate::is.Date(end_date)) {
+    stop("The extract end date must be provided in date format")
+  }
+
+  if(!(format(end_date, "%d %B") %in% c("31 March", "30 June", "30 September",
+                                        "31 December"))) {
+    stop("The extract end date must be the final day of either March, June, ",
+         "September or December")
+  }
+
   if (pub == "previous") {
     p <- lubridate::ceiling_date(lubridate::add_with_rollback(end_date,
                                                               -months(3)),
