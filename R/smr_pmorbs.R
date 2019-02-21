@@ -152,15 +152,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
     # Only keep records with link numbers which appear in the main extract
     # (z_smr01)
 
-    filter(link_no %in% z_unique_id) %>%
-
-    # In order to increase the efficiency of the following for loop:
-    # Keep all records after the start date and only keep records before the
-    # start date
-    # which have a valid Charlson Index grouping
-
-    filter(admission_date >= z_start_date_l |
-             (admission_date < z_start_date_l & pmorbs != 0))
+    filter(link_no %in% z_unique_id)
 
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person
@@ -266,6 +258,14 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   # and 5 years prior to admission
   # smr01_minus5 will be automatically converted back to a tibble here
   smr01_minus5 %<>%
+    mutate(pmorbs1_12 = ifelse(pmorbs1_12 == -1 & pmorbs1_6 == 0, 2,
+                               pmorbs1_12),
+           pmorbs5_12 = ifelse(pmorbs5_12 == -1 & pmorbs5_6 == 0, 2,
+                               pmorbs5_12),
+           pmorbs1_11 = ifelse(pmorbs1_15 == 14 & pmorbs1_11 == 8, 0,
+                               pmorbs1_11),
+           pmorbs5_11 = ifelse(pmorbs5_15 == 14 & pmorbs5_11 == 8, 0,
+                               pmorbs5_11)) %>%
     mutate(pmorbs1_sum = rowSums(select(., starts_with("pmorbs1")))) %>%
     mutate(pmorbs5_sum = rowSums(select(., starts_with("pmorbs5")))) %>%
     group_by(link_no, cis_marker) %>%

@@ -81,6 +81,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
+    filter(!is.na(pdiag_grp)) %>%
     group_by(link_no, period) %>%
     mutate(last_cis = max(cis_marker)) %>%
     ungroup() %>%
@@ -136,7 +137,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
+    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) #%>%
 
     # Remove rows with no probability calculated
     drop_na(pred_eq)
