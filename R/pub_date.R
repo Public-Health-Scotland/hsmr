@@ -2,7 +2,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   pub <- match.arg(pub)
 
-  if (!lubridate::is.Date(end_date)) {
+  if (class(end_date) != "Date") {
     stop("The extract end date must be provided in date format")
   }
 
