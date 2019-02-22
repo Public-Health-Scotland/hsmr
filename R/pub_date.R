@@ -1,3 +1,22 @@
+#' @title Obtain HSMR publication date
+#'
+#' @description \code{pub_date} takes the final date for which SMR data are
+#' included in the current publication. It uses this cut-off date to calculate
+#' the publication dates of the previous, current and next HSMR publications.
+#'
+#' @details \code{pub_date} accepts a single value of \code{Date} class only.
+#' The only dates it accepts are the last day of the month in March, June,
+#' September and December, as these are the only cut-off dates used in the HSMR
+#' publication.
+#'
+#' @param end_date The cut-off date for data to be included in a given HSMR
+#' publication.
+#' @param pub A character string specifying the publication date of interest.
+#' Valid options are `previous`, `current` and `next`.
+#' @export
+#'
+
+
 pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   pub <- match.arg(pub)
