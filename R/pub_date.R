@@ -9,10 +9,10 @@
 #' September and December, as these are the only cut-off dates used in the HSMR
 #' publication.
 #'
-#' @param end_date The cut-off date for data to be included in a given HSMR
+#' @param end_date The cut-off date for data to be included in the current HSMR
 #' publication.
-#' @param pub A character string specifying the publication date of interest.
-#' Valid options are `previous`, `current` and `next`.
+#' @param pub A character string specifying the publication of interest. Valid
+#' options are `previous`, `current` and `next`.
 #'
 #' @examples
 #' extract_end_date <- lubridate::dmy(30092018)
