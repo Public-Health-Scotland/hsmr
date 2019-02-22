@@ -4,7 +4,7 @@
 \alias{smr_model}
 \title{Logistic Regression model for HSMR}
 \usage{
-smr_model(smr01, base_start, base_end, index)
+smr_model(smr01, base_start, base_end, index = "Q")
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
