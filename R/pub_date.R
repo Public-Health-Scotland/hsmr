@@ -13,8 +13,14 @@
 #' publication.
 #' @param pub A character string specifying the publication date of interest.
 #' Valid options are `previous`, `current` and `next`.
-#' @export
 #'
+#' @examples
+#' extract_end_date <- lubridate::dmy(30092018)
+#' pub_date(end_date = extract_end_date, pub = "previous")
+#' pub_date(end_date = extract_end_date, pub = "current")
+#' pub_date(end_date = extract_end_date, pub = "next")
+#'
+#' @export
 
 
 pub_date <- function(end_date, pub = c("previous", "current", "next")) {
@@ -49,8 +55,10 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
   }
 
 
-  # The publication date is always the third last Tuesday of the month
-  # Calculate n; the number of Tuesdays in the month of publication
+  # The publication date is always five months after p and is on the third last
+  # Tuesday of the month
+  # Calculate the first and last day of month p + 5
+  # Then calculate n; the number of Tuesdays in the month of publication
   first <- lubridate::floor_date(lubridate::add_with_rollback(p,
                                                               months(5)),
                                  unit = "month")
