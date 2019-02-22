@@ -1,3 +1,4 @@
+#' @export
 # Needs error handling and documentation
 # Possibly re-name functions to something more informative also
 
@@ -27,11 +28,11 @@ qtr <- function(start, format = c("long", "short")) {
 }
 
 # Tests
-qtr(lubridate::dmy(01012011), format = "short")
-qtr(lubridate::dmy(01102011), format = "long")
+#qtr(lubridate::dmy(01012011), format = "short")
+#qtr(lubridate::dmy(01102011), format = "long")
 
 
-
+#' @export
 # Quarter end
 qtr_end <- function(start, quarter = c("current", "next")) {
 
@@ -48,10 +49,10 @@ qtr_end <- function(start, quarter = c("current", "next")) {
 }
 
 # Tests
-qtr_end(lubridate::dmy(01072011), quarter = "current")
-qtr_end(lubridate::dmy(01042011), quarter = "next")
+#qtr_end(lubridate::dmy(01072011), quarter = "current")
+#qtr_end(lubridate::dmy(01042011), quarter = "next")
 
-
+#' @export
 # Previous quarter
 qtr_prev <- function(start) {
 
@@ -63,5 +64,5 @@ qtr_prev <- function(start) {
 }
 
 # Tests
-qtr_prev(dmy(01012018))
+#qtr_prev(dmy(01012018))
 
