@@ -2,6 +2,10 @@
 
 export(clean_model)
 export(create_trends)
+export(pub_date)
+export(qtr)
+export(qtr_end)
+export(qtr_prev)
 export(smr_data)
 export(smr_model)
 export(smr_pmorbs)
