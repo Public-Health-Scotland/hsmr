@@ -121,7 +121,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
     group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-             surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
+             spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
     summarise(x = sum(death30),
               n = length(death30)) %>%
     ungroup()
@@ -129,7 +129,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   # Run logistic regression
   z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
                         pmorbs5_sum + age_in_years + factor(sex) +
-                        factor(surgmed) + factor(pdiag_grp) + factor(admfgrp) +
+                        factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
                         factor(admgrp) + factor(ipdc) + factor(simd),
                       data = z_data_lr,
                       family = "binomial",
@@ -143,7 +143,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) #%>%
+    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
     drop_na(pred_eq)
