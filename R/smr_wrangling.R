@@ -43,7 +43,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
             "admfgrp", "ipdc", "age_grp", "quarter", "location",
             "main_condition", "other_condition_1", "other_condition_2",
             "other_condition_3", "other_condition_4", "other_condition_5",
-            "surgmed", "ipdc", "age_in_years", "hbtreat_currentdate",
+            "specialty", "ipdc", "age_in_years", "hbtreat_currentdate",
             "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables. ",
@@ -66,7 +66,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                 hbtreat_currentdate
                 main_condition
                 other_condition_1 to other_condition_5
-                surgmed
+                specialty
                 ipdc"))
   }
 
@@ -201,6 +201,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                      pdiag_grp = shmi_diagnosis_group,
                      diag1_4),
               by = "diag1_4") %>%
+    left_join(z_spec) %>%
 
     # Fuzzy joins add the (in this case, not needed) joining variable by default,
     # so append these with "_z" so they can be easily removed afterwards
