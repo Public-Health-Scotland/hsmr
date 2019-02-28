@@ -110,18 +110,21 @@ smr_data <- function(smr01, index){
   # Merge data and match on location name
   smr_data <- bind_rows(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
     left_join(z_hospitals, by = "location") %>%
-    drop_na(location_name) %>%
+    drop_na(location_name)
 
-    # Create period variable used in linear model - every data point in the
-    # first year is considered to come from one time point (baseline period)
-    mutate(period_reg = if_else(period <= reg_length, 0, period - reg_length))
+  if (index == "Y"){
 
-  # Run linear regression
-  z_reg_line <- lm(smr ~ period_reg * location_name, data = smr_data)
+    smr_data %<>%
+      group_by(period) %>%
+      mutate(death_scot = max(deaths),
+             pred_scot = max(pred),
+             pats_scot = max(pats),
+             smr_scot = death_scot/pred_scot) %>%
+      ungroup() %>%
+      mutate(smr = smr/smr_scot,
+             pred = deaths/smr)
 
-  # Create reg variable of predicted values
-  smr_data %<>%
-    mutate(reg = predict(z_reg_line, ., type = "response"))
+  }
 
   ### 6 - Return data class ----
 
@@ -130,11 +133,10 @@ smr_data <- function(smr01, index){
       df = smr_data,
       colnames = colnames(smr_data),
       type = colnames(smr_data)[!colnames(smr_data)
-                                        %in% c("period",	"deaths",	"pred",
-                                               "pats",	"smr",	"crd_rate",
-                                               "location_type",	"location",
-                                               "location_name",	"period_reg",
-                                               "reg")]
+                                %in% c("period",	"deaths",	"pred",
+                                       "pats",	"smr",	"crd_rate",
+                                       "location_type",	"location",
+                                       "location_name")]
     ),
     class = "smr_data")
 
