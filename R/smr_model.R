@@ -72,7 +72,13 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                    "a period which can be measured in whole years. E.g. ",
                    "January 2011 to December 2014 (4 whole years)."))
 
-    #smr01 %<>%
+    smr01 %<>%
+      mutate(period = case_when(
+        admission_date < z_start_date + years(1) ~ 1,
+        admission_date >= z_start_date + years(1) &
+          admission_date <= z_end_date - years(1) ~ 2,
+        admission_date > z_end_date - years(1) ~ 3
+      ))
 
   }
 
@@ -110,7 +116,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
     # Select required variables for model
     select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-           surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+           spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
 
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
