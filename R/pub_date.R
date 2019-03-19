@@ -71,12 +71,12 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
 
   # Return the date of the third last Tuesday in the month of publication
-  return(RcppBDT::getNthDayOfWeek(n - 2,
-                                  2,
-                                  lubridate::month(
-                                    lubridate::add_with_rollback(p,
-                                                                 months(5))),
-                                  lubridate::year(
-                                    lubridate::add_with_rollback(p,
-                                                                 months(5)))))
+  RcppBDT::getNthDayOfWeek(n - 2,
+                           2,
+                           lubridate::month(
+                             lubridate::add_with_rollback(p,
+                                                          months(5))),
+                           lubridate::year(
+                             lubridate::add_with_rollback(p,
+                                                          months(5))))
 }
