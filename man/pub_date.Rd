@@ -26,6 +26,7 @@ publication.
 }
 \examples{
 extract_end_date <- lubridate::dmy(30092018)
+
 pub_date(end_date = extract_end_date, pub = "previous")
 pub_date(end_date = extract_end_date, pub = "current")
 pub_date(end_date = extract_end_date, pub = "next")
