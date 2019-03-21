@@ -153,8 +153,7 @@ create_trends <- function(smr01, gro, pop, dep) {
            death30 = case_when(
              between(dthdays, 0, 30) ~ 1,
              TRUE ~ 0),
-           quarter_name = paste0(year, "Q", quarter),
-           quarter = as.numeric(as.factor(quarter_name))) %>%
+           quarter = paste0(year, "Q", quarter)) %>%
     group_by(link_no, cis_marker) %>%
     mutate(epinum             = row_number(),
            death_inhosp_max   = max(death_inhosp),
@@ -176,7 +175,9 @@ create_trends <- function(smr01, gro, pop, dep) {
     # subsequent quarter is removed and only the first death within 30 days is
     # counted
     filter(!(link_no == c(0, head(link_no, -1)) &
-               1 == c(0, head(death30, -1))))
+               1 == c(0, head(death30, -1)))) %>%
+    filter(admission_date > z_end_date - years(5)) %>%
+    mutate(quarter = as.numeric(as.factor(quarter)))
 
 
   ### 4 - Aggregation ----
@@ -287,12 +288,14 @@ create_trends <- function(smr01, gro, pop, dep) {
 
   # Population-based mortality
   z_scot_pop <- gro %>%
+    filter(date_of_death > z_end_date - years(5)) %>%
     group_by(year, quarter) %>%
     summarise(deaths = length(year)) %>%
     ungroup() %>%
     mutate(hbres_currentdate = "Scotland")
 
   z_hb_pop <- gro %>%
+    filter(date_of_death > z_end_date - years(5)) %>%
     group_by(year, quarter, hbres_currentdate) %>%
     summarise(deaths = length(year)) %>%
     ungroup()
@@ -300,8 +303,7 @@ create_trends <- function(smr01, gro, pop, dep) {
   z_pop_deaths <- bind_rows(z_scot_pop, z_hb_pop) %>%
     left_join(pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
     mutate(crd_rate     = deaths/pop * 1000,
-           quarter_name = paste0(year, "Q", quarter),
-           quarter      = as.numeric(as.factor(quarter_name)),
+           quarter      = as.numeric(as.factor(paste0(year, "Q", quarter))),
            label        = "Population") %>%
     rename(hb2014 = hbres_currentdate,
            pats   = pop) %>%
@@ -309,10 +311,7 @@ create_trends <- function(smr01, gro, pop, dep) {
 
 
   # Create minimal tidy dataset
-  long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths) %>%
-
-    # Select latest 40 quarters only
-    filter(between(quarter, max(quarter) - 39, max(quarter)))
+  long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
 
   structure(
     list(
