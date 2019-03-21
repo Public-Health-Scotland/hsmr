@@ -1,15 +1,19 @@
 #' @title Assign a date to a quarter
 #'
-#' @description The qtr functions take the first day of a quarter (the first of
-#' either January, April, July or October) and calculate the relevant quarter-
-#' related value from it.
+#' @description
 #'
-#' * \code{qtr} returns the current quarter in either short or long format.
+#' The qtr functions take the first day of a quarter (the first of
+#' either January, April, July or October) and calculate the relevant
+#' quarter-related value from it.
 #'
-#' * \code{qtr_end} returns the last month in the quarter, either of the current
-#' or following quarter.
+#' \itemize{
+#' \item \code{qtr} returns the current quarter in either short or long format.
 #'
-#' * \code{qtr_prev} returns the previous quarter in long format.
+#' \item \code{qtr_end} returns the last month in the quarter, either of the
+#' current or following quarter.
+#'
+#' \item \code{qtr_prev} returns the previous quarter in long format.
+#' }
 #'
 #' @param first_day The first day of a quarter, supplied with \code{Date} class.
 #' @param format Should the quarter be provided in short or long format?
@@ -27,6 +31,7 @@
 
 
 #' @export
+#' @rdname qtr
 qtr <- function(first_day, format = c("long", "short")) {
 
   format <- match.arg(format)
@@ -61,6 +66,7 @@ qtr <- function(first_day, format = c("long", "short")) {
 
 
 #' @export
+#' @rdname qtr
 qtr_end <- function(first_day, quarter = c("current", "next")) {
 
   quarter <- match.arg(quarter)
@@ -87,6 +93,7 @@ qtr_end <- function(first_day, quarter = c("current", "next")) {
 
 
 #' @export
+#' @rdname qtr
 qtr_prev <- function(first_day) {
 
   if (class(first_day) != "Date") {
