@@ -1,12 +1,32 @@
 #' @title Assign a date to a quarter
 #'
-#' @description
+#' @description The qtr functions take the first day of a quarter (the first of
+#' either January, April, July or October) and calculate the relevant quarter-
+#' related value from it.
 #'
-# Needs documentation
-# Possibly re-name functions to something more informative also
+#' * \code{qtr} returns the current quarter in either short or long format.
+#'
+#' * \code{qtr_end} returns the last month in the quarter, either of the current
+#' or following quarter.
+#'
+#' * \code{qtr_prev} returns the previous quarter in long format.
+#'
+#' @param first_day The first day of a quarter, supplied with \code{Date} class.
+#' @param format Should the quarter be provided in short or long format?
+#' @param quarter Should the final month of the current or next quarter be
+#' provided?
+#'
+#' @examples
+#' qtr(first_day = lubridate::dmy(01012018), format = "short")
+#' qtr(first_day = lubridate::dmy(01102018), format = "long")
+#'
+#' qtr_end(first_day = lubridate::dmy(01072018), quarter = "current")
+#' qtr_end(first_day = lubridate::dmy(01042018), quarter = "next")
+#'
+#' qtr_prev(first_day = lubridate::dmy(01012018))
 
 
-# Current quarter
+#' @export
 qtr <- function(first_day, format = c("long", "short")) {
 
   format <- match.arg(format)
@@ -39,13 +59,8 @@ qtr <- function(first_day, format = c("long", "short")) {
 
 }
 
-# Tests
-qtr(lubridate::dmy(01012011), format = "short")
-qtr(lubridate::dmy(01102011), format = "long")
-
 
 #' @export
-# Quarter end
 qtr_end <- function(first_day, quarter = c("current", "next")) {
 
   quarter <- match.arg(quarter)
@@ -70,12 +85,8 @@ qtr_end <- function(first_day, quarter = c("current", "next")) {
 
 }
 
-# Tests
-qtr_end(lubridate::dmy(01072011), quarter = "current")
-qtr_end(lubridate::dmy(01042011), quarter = "next")
 
 #' @export
-# Previous quarter
 qtr_prev <- function(first_day) {
 
   if (class(first_day) != "Date") {
@@ -94,7 +105,3 @@ qtr_prev <- function(first_day) {
                 " to ",
                 format(zoo::as.yearmon(first_day - months(1)),"%B %Y")))
 }
-
-# Tests
-qtr_prev(lubridate::dmy(01012018))
-
