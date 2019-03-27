@@ -95,7 +95,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
     # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
     # required for modelling/predicted values
-    drop_na(simd) %>%
+    filter(simd %in% 1:7) %>%
     filter(admfgrp %in% 1:6) %>%
     filter(ipdc %in% 1:2) %>%
 
@@ -146,7 +146,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
     mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
-    drop_na(pred_eq)
+    filter(!is.na(pred_eq))
 
   return(smr01)
 
