@@ -110,7 +110,7 @@ smr_data <- function(smr01, index){
   # Merge data and match on location name
   smr_data <- bind_rows(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
     left_join(z_hospitals, by = "location") %>%
-    drop_na(location_name)
+    filter(!is.na(location_name))
 
   if (index == "Y"){
 
