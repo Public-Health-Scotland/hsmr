@@ -313,15 +313,7 @@ create_trends <- function(smr01, gro, pop, dep) {
   # Create minimal tidy dataset
   long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
 
-  structure(
-    list(
-      df = long_term_trends,
-      colnames = colnames(long_term_trends),
-      type = colnames(long_term_trends)[!colnames(long_term_trends)
-                                        %in% c('hb2014',	'quarter',	'deaths',
-                                               'pats',	'crd_rate',	'label')]
-    ),
-    class = "long_term_trends_data")
+  return(long_term_trends)
 
 
 }
