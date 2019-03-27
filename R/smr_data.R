@@ -126,19 +126,9 @@ smr_data <- function(smr01, index){
 
   }
 
-  ### 6 - Return data class ----
+  ### 6 - Return data ----
 
-  structure(
-    list(
-      df = smr_data,
-      colnames = colnames(smr_data),
-      type = colnames(smr_data)[!colnames(smr_data)
-                                %in% c("period",	"deaths",	"pred",
-                                       "pats",	"smr",	"crd_rate",
-                                       "location_type",	"location",
-                                       "location_name")]
-    ),
-    class = "smr_data")
+  return(smr_data)
 
 }
 
