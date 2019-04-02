@@ -25,3 +25,12 @@ test_that("Returns correct quarter in correct format", {
   expect_equal("October to December 1995",
                qtr_prev(first_day = lubridate::dmy(01011996)))
 })
+
+test_that("Errors if first_day is not in date format", {
+  expect_error(qtr(first_day = "2018-01-01", format = "short"))
+  expect_error(qtr(first_day = as.factor("1995-10-01"), format = "long"))
+  expect_error(qtr_end(first_day = c("2018-07-01"), quarter = "current"))
+  expect_error(qtr_end(first_day = as.numeric(lubridate::dmy(01101995)),
+                       quarter = "next"))
+  expect_error(qtr_prev(first_day = as.integer(lubridate::dmy(01072018))))
+})
