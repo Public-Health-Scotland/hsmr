@@ -41,5 +41,5 @@ test_that("Errors if first_day is not the first day of a quarter", {
   expect_error(qtr_end(first_day = lubridate::dmy(32072018),
                        quarter = "current"))
   expect_error(qtr_end(first_day = lubridate::dmy(01111995), quarter = "next"))
-  expect_error(qtr_prev(first_day = lubridate::dmy(01031996)))
+  expect_error(qtr_prev(first_day = lubridate::dmy(01033096)))
 })
