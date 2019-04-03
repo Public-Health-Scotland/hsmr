@@ -23,7 +23,6 @@
 #'
 #' @export
 
-
 pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   pub <- match.arg(pub)

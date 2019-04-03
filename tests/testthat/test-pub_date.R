@@ -15,6 +15,11 @@ test_that("Publication dates are correct for previous, current and next", {
 
 test_that("Errors if extract end date is not in date format", {
   expect_error(pub_date(end_date = "2019-09-30", pub = "current"))
+  expect_error(pub_date(end_date = as.factor("2019-09-30"), pub = "next"))
+  expect_error(pub_date(end_date = as.numeric(lubridate::dmy(31032018)),
+                        pub = "current"))
+  expect_error(pub_date(end_date = as.integer(lubridate::dmy(31032018)),
+                        pub = "next"))
 })
 
 test_that("Errors if extract end date is not final day of a quarter", {
