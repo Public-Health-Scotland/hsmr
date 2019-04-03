@@ -74,10 +74,10 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
     smr01 %<>%
       mutate(period = case_when(
-        admission_date < z_start_date + years(1) ~ 1,
-        admission_date >= z_start_date + years(1) &
-          admission_date <= z_end_date - years(1) ~ 2,
-        admission_date > z_end_date - years(1) ~ 3
+        admission_date < start_date + years(1) ~ 1,
+        admission_date >= start_date + years(1) &
+          admission_date <= end_date - years(1) ~ 2,
+        admission_date > end_date - years(1) ~ 3
       ))
 
   }
