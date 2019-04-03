@@ -43,7 +43,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
             "admfgrp", "ipdc", "age_grp", "quarter", "location",
             "main_condition", "other_condition_1", "other_condition_2",
             "other_condition_3", "other_condition_4", "other_condition_5",
-            "surgmed", "ipdc", "age_in_years", "hbtreat_currentdate",
+            "specialty", "ipdc", "age_in_years", "hbtreat_currentdate",
             "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables. ",
@@ -66,7 +66,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                 hbtreat_currentdate
                 main_condition
                 other_condition_1 to other_condition_5
-                surgmed
+                specialty
                 ipdc"))
   }
 
@@ -202,6 +202,9 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                      diag1_4),
               by = "diag1_4") %>%
 
+    # Match on specialty grouping by the specialty variable
+    left_join(z_spec, by = "specialty") %>%
+
     # Fuzzy joins add the (in this case, not needed) joining variable by default,
     # so append these with "_z" so they can be easily removed afterwards
     fuzzy_left_join(select(morbs, wcomorbs1 = wmorbs,
@@ -240,45 +243,51 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                     comorbs4  = 0,
                     comorbs5  = 0)) %>%
     # Comorbs cleaning
-    mutate(wcomorbs1 = ifelse(comorbs1 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+    mutate(wcomorbs1 = replace(wcomorbs1,
+                               comorbs1 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs4 != 6 & comorbs5 != 6)
-                              , 2, wcomorbs1),
-           wcomorbs2 = ifelse(comorbs2 == 12 & (comorbs1 != 6 & comorbs3 != 6 &
+                              , 2),
+           wcomorbs2 = replace(wcomorbs2,
+                               comorbs2 == 12 & (comorbs1 != 6 & comorbs3 != 6 &
                                                   comorbs4 != 6 & comorbs5 != 6)
-                              , 2, wcomorbs2),
-           wcomorbs3 = ifelse(comorbs3 == 12 & (comorbs2 != 6 & comorbs1 != 6 &
+                              , 2),
+           wcomorbs3 = replace(wcomorbs3,
+                               comorbs3 == 12 & (comorbs2 != 6 & comorbs1 != 6 &
                                                   comorbs4 != 6 & comorbs5 != 6)
-                              , 2, wcomorbs3),
-           wcomorbs4 = ifelse(comorbs4 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+                              , 2),
+           wcomorbs4 = replace(wcomorbs4,
+                               comorbs4 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs1 != 6 & comorbs5 != 6)
-                              , 2, wcomorbs4),
-           wcomorbs5 = ifelse(comorbs5 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
+                              , 2),
+           wcomorbs5 = replace(wcomorbs5,
+                               comorbs5 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
                                                   comorbs4 != 6 & comorbs1 != 6)
-                              , 2, wcomorbs5)) %>%
-    mutate(wcomorbs1 = ifelse(comorbs1 == 11 & (comorbs2 == 15 |
+                              , 2)) %>%
+    mutate(wcomorbs1 = replace(wcomorbs1, comorbs1 == 11 & (comorbs2 == 15 |
+                                                              comorbs3 == 15 |
+                                                              comorbs4 == 15 |
+                                                              comorbs5 == 15),
+                               0)
+           ,
+           wcomorbs2 = replace(wcomorbs2, comorbs2 == 11 & (comorbs1 == 15 |
                                                   comorbs3 == 15 |
                                                   comorbs4 == 15 |
-                                                  comorbs5 == 15), 0, wcomorbs1)
+                                                  comorbs5 == 15), 0)
            ,
-           wcomorbs2 = ifelse(comorbs2 == 11 & (comorbs1 == 15 |
-                                                  comorbs3 == 15 |
-                                                  comorbs4 == 15 |
-                                                  comorbs5 == 15), 0, wcomorbs2)
-           ,
-           wcomorbs3 = ifelse(comorbs3 == 11 & (comorbs2 == 15 |
+           wcomorbs3 = replace(wcomorbs3, comorbs3 == 11 & (comorbs2 == 15 |
                                                   comorbs1 == 15 |
                                                   comorbs4 == 15 |
-                                                  comorbs5 == 15), 0, wcomorbs3)
+                                                  comorbs5 == 15), 0)
            ,
-           wcomorbs4 = ifelse(comorbs4 == 11 & (comorbs2 == 15 |
+           wcomorbs4 = replace(wcomorbs4, comorbs4 == 11 & (comorbs2 == 15 |
                                                   comorbs3 == 15 |
                                                   comorbs1 == 15 |
-                                                  comorbs5 == 15), 0, wcomorbs4)
+                                                  comorbs5 == 15), 0)
            ,
-           wcomorbs5 = ifelse(comorbs5 == 11 & (comorbs2 == 15 |
+           wcomorbs5 = replace(wcomorbs5, comorbs5 == 11 & (comorbs2 == 15 |
                                                   comorbs3 == 15 |
                                                   comorbs4 == 15 |
-                                                  comorbs1 == 15), 0, wcomorbs5)
+                                                  comorbs1 == 15), 0)
     ) %>%
     mutate(wcomorbs2 = replace(wcomorbs2,
                                comorbs2 == comorbs1,

@@ -72,7 +72,13 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                    "a period which can be measured in whole years. E.g. ",
                    "January 2011 to December 2014 (4 whole years)."))
 
-    #smr01 %<>%
+    smr01 %<>%
+      mutate(period = case_when(
+        admission_date < z_start_date + years(1) ~ 1,
+        admission_date >= z_start_date + years(1) &
+          admission_date <= z_end_date - years(1) ~ 2,
+        admission_date > z_end_date - years(1) ~ 3
+      ))
 
   }
 
@@ -89,7 +95,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
     # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
     # required for modelling/predicted values
-    drop_na(simd) %>%
+    filter(simd %in% 1:7) %>%
     filter(admfgrp %in% 1:6) %>%
     filter(ipdc %in% 1:2) %>%
 
@@ -110,12 +116,12 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
     # Select required variables for model
     select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-           surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+           spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
 
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
     group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-             surgmed, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
+             spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
     summarise(x = sum(death30),
               n = length(death30)) %>%
     ungroup()
@@ -123,7 +129,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   # Run logistic regression
   z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
                         pmorbs5_sum + age_in_years + factor(sex) +
-                        factor(surgmed) + factor(pdiag_grp) + factor(admfgrp) +
+                        factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
                         factor(admgrp) + factor(ipdc) + factor(simd),
                       data = z_data_lr,
                       family = "binomial",
@@ -137,10 +143,10 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) #%>%
+    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
-    drop_na(pred_eq)
+    filter(!is.na(pred_eq))
 
   return(smr01)
 
