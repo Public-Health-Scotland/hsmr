@@ -176,7 +176,7 @@ create_trends <- function(smr01, gro, pop, dep) {
     # counted
     filter(!(link_no == c(0, head(link_no, -1)) &
                1 == c(0, head(death30, -1)))) %>%
-    filter(admission_date > z_end_date - years(5)) %>%
+    filter(admission_date > end_date - years(5)) %>%
     mutate(quarter = as.numeric(as.factor(quarter)))
 
 
@@ -288,14 +288,14 @@ create_trends <- function(smr01, gro, pop, dep) {
 
   # Population-based mortality
   z_scot_pop <- gro %>%
-    filter(date_of_death > z_end_date - years(5)) %>%
+    filter(date_of_death > end_date - years(5)) %>%
     group_by(year, quarter) %>%
     summarise(deaths = length(year)) %>%
     ungroup() %>%
     mutate(hbres_currentdate = "Scotland")
 
   z_hb_pop <- gro %>%
-    filter(date_of_death > z_end_date - years(5)) %>%
+    filter(date_of_death > end_date - years(5)) %>%
     group_by(year, quarter, hbres_currentdate) %>%
     summarise(deaths = length(year)) %>%
     ungroup()
