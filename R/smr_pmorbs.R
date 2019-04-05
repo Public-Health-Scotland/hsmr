@@ -86,7 +86,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   ### 2 - Creating Prior Morbidities ----
   # Vector of unique link numbers used for filtering below
-  z_unique_id <- smr01 %>%
+  unique_id <- smr01 %>%
     distinct(link_no) %>%
     pull(link_no)
 
@@ -102,7 +102,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
                          substr(main_condition, 1, 4),
                          sep = "_")) %>%
 
-    # Create the pmorbs variable using a join to the z_morbs dataset
+    # Create the pmorbs variable using a join to the morbs dataset
     fuzzy_left_join(select(morbs, pmorbs = morb, diag1_z = diag),
                     by = c("diag1" = "diag1_z"),
                     match_fun = str_detect) %>%
@@ -150,9 +150,9 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
     # In order to increase the efficiency of the following for loop:
     # Only keep records with link numbers which appear in the main extract
-    # (z_smr01)
+    # (smr01)
 
-    filter(link_no %in% z_unique_id)
+    filter(link_no %in% unique_id)
 
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person

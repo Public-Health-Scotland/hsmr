@@ -109,7 +109,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   ### 3 - Logistic Regression ----
 
   # Create subset of data for modelling
-  z_data_lr <- smr01 %>%
+  data_lr <- smr01 %>%
 
     # Select baseline period rows
     filter(admission_date >= base_start & admission_date <= base_end) %>%
@@ -127,23 +127,23 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
     ungroup()
 
   # Run logistic regression
-  z_risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
+  risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
                         pmorbs5_sum + age_in_years + factor(sex) +
                         factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
                         factor(admgrp) + factor(ipdc) + factor(simd),
-                      data = z_data_lr,
+                      data = data_lr,
                       family = "binomial",
                       model = FALSE,
                       y = FALSE)
 
   # Delete unnecessary model information using bespoke function in order to retain
   # special class of object for predicted probabilities below
-  z_risk_model <- clean_model(z_risk_model)
+  risk_model <- clean_model(risk_model)
 
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(z_risk_model, ., type = "response")) %>%
+    mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
     filter(!is.na(pred_eq))
