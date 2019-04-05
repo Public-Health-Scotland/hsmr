@@ -11,7 +11,7 @@
 # Description - Defines SQL queries sourced and used in create_trends_data
 #########################################################################
 
-z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
+query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                            "CIS_MARKER, POSTCODE, SPECIALTY, DISCHARGE_TYPE,",
                            "HBTREAT_CURRENTDATE, SEX,",
                            "CASE WHEN ADMISSION_TYPE BETWEEN 20 AND 48 OR",
@@ -72,15 +72,15 @@ z_query_smr01_ltt <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                            "extract(year from admission_date) AS year",
                            "from SMR01_PI",
                            "where ADMISSION_DATE BETWEEN",
-                           "{d", shQuote(z_start_date_trends, type = "sh"),"}",
-                           "AND {d", shQuote(z_end_date, type = "sh"),"}",
+                           "{d", shQuote(start_date_trends, type = "sh"),"}",
+                           "AND {d", shQuote(end_date, type = "sh"),"}",
                            "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
                            "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
-z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE,",
+query_gro <- paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE,",
                      "to_char(DATE_OF_DEATH,'Q') AS quarter,",
                      "extract(year from DATE_OF_DEATH) AS year",
                      "from ANALYSIS.GRO_DEATHS_C",
                      "where DATE_OF_DEATH >=",
-                     "{d", shQuote(z_start_date_trends, type = "sh"),"}",
+                     "{d", shQuote(start_date_trends, type = "sh"),"}",
                      "ORDER BY LINK_NO")

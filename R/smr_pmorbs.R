@@ -86,7 +86,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   ### 2 - Creating Prior Morbidities ----
   # Vector of unique link numbers used for filtering below
-  z_unique_id <- smr01 %>%
+  unique_id <- smr01 %>%
     distinct(link_no) %>%
     pull(link_no)
 
@@ -102,7 +102,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
                          substr(main_condition, 1, 4),
                          sep = "_")) %>%
 
-    # Create the pmorbs variable using a join to the z_morbs dataset
+    # Create the pmorbs variable using a join to the morbs dataset
     fuzzy_left_join(select(morbs, pmorbs = morb, diag1_z = diag),
                     by = c("diag1" = "diag1_z"),
                     match_fun = str_detect) %>%
@@ -150,9 +150,9 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
     # In order to increase the efficiency of the following for loop:
     # Only keep records with link numbers which appear in the main extract
-    # (z_smr01)
+    # (smr01)
 
-    filter(link_no %in% z_unique_id)
+    filter(link_no %in% unique_id)
 
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person
@@ -182,73 +182,73 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
                          old_pmorbs = shift(pmorbs, i),
                          old_link = shift(link_no, i))]
 
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 1  &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 1  &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_1 := 5]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 2 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 2 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_2 := 11]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 3 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 3 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_3 := 13]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 4 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 4 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_4 := 4]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 5 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 5 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_5 := 14]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 6 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 6 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_6 := 3]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 7 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 7 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_7 := 8]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 8 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 8 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_8 := 9]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 9 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 9 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_9 := 6]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 10 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 10 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_10 := 4]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 11 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 11 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_11 := 8]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 12 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 12 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_12 := -1]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 13 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 13 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_13 := 1]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 14 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 14 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_14 := 10]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 15 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 15 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_15 := 14]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 16 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 16 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_16 := 18]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 17 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 17 &
                    old_admission <= 1825 & old_link == link_no, pmorbs5_17 := 2]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 1 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 1 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_1 := 5]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 2 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 2 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_2 := 11]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 3 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 3 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_3 := 13]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 4 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 4 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_4 := 4]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 5 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 5 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_5 := 14]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 6 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 6 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_6 := 3]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 7 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 7 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_7 := 8]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 8 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 8 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_8 := 9]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 9 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 9 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_9 := 6]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 10 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 10 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_10 := 4]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 11 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 11 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_11 := 8]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 12 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 12 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_12 := -1]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 13 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 13 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_13 := 1]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 14 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 14 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_14 := 10]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 15 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 15 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_15 := 14]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 16 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 16 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_16 := 18]
-    smr01_minus5[admission_date >= z_start_date_l & old_pmorbs == 17 &
+    smr01_minus5[admission_date >= start_date & old_pmorbs == 17 &
                    old_admission <= 365 & old_link == link_no, pmorbs1_17 := 2]
 
   }
@@ -302,7 +302,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
                         old_tadm = shift(old_smr1_tadm_code, i),
                         old_link = shift(link_no, i))]
 
-    smr01_minus5[admission_date >= z_start_date_l & old_link == link_no &
+    smr01_minus5[admission_date >= start_date & old_link == link_no &
                    old_tadm >= 4 & old_admission <= 365, n_emerg := n_emerg + 1]
 
   }

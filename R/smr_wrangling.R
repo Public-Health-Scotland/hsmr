@@ -195,7 +195,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
                          substr(other_condition_5, 1, 4),
                          sep = "_")) %>%
 
-    # Create the pdiag_grp and wcomorbsx variables using joins to the z_morbs
+    # Create the pdiag_grp and wcomorbsx variables using joins to the morbs
     # dataset
     left_join(select(pdiags,
                      pdiag_grp = shmi_diagnosis_group,
@@ -203,7 +203,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
               by = "diag1_4") %>%
 
     # Match on specialty grouping by the specialty variable
-    left_join(z_spec, by = "specialty") %>%
+    left_join(spec, by = "specialty") %>%
 
     # Fuzzy joins add the (in this case, not needed) joining variable by default,
     # so append these with "_z" so they can be easily removed afterwards

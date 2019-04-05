@@ -176,14 +176,14 @@ create_trends <- function(smr01, gro, pop, dep) {
     # counted
     filter(!(link_no == c(0, head(link_no, -1)) &
                1 == c(0, head(death30, -1)))) %>%
-    filter(admission_date > z_end_date - years(5)) %>%
+    filter(admission_date > end_date - years(5)) %>%
     mutate(quarter = as.numeric(as.factor(quarter)))
 
 
   ### 4 - Aggregation ----
 
   # Crude Rates (Scotland) - All Admissions
-  z_scot_all_adm <- smr01 %>%
+  scot_all_adm <- smr01 %>%
     group_by(quarter) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -192,7 +192,7 @@ create_trends <- function(smr01, gro, pop, dep) {
            hbtreat_currentdate = "Scotland")
 
   # Crude Rates (Scotland) - Specialty/Admission type
-  z_scot_specadm <- smr01 %>%
+  scot_specadm <- smr01 %>%
     group_by(quarter, surgmed, admgrp) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -208,7 +208,7 @@ create_trends <- function(smr01, gro, pop, dep) {
 
 
   # Crude Rates (Scotland) - Age group
-  z_scot_age <- smr01 %>%
+  scot_age <- smr01 %>%
     group_by(quarter, age_grp) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -225,7 +225,7 @@ create_trends <- function(smr01, gro, pop, dep) {
 
 
   # Crude Rates (Scotland) - Sex
-  z_scot_sex <- smr01 %>%
+  scot_sex <- smr01 %>%
     group_by(quarter, sex) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -239,7 +239,7 @@ create_trends <- function(smr01, gro, pop, dep) {
 
 
   # Crude Rates (Scotland) - Deprivation
-  z_scot_dep <- smr01 %>%
+  scot_dep <- smr01 %>%
     group_by(quarter, simd) %>%
     summarise(deaths = sum(death30),
               pats   = length(death30)) %>%
@@ -256,15 +256,15 @@ create_trends <- function(smr01, gro, pop, dep) {
     select(hbtreat_currentdate, quarter, deaths, pats, label)
 
   # Merge dataframes together
-  z_scot_subgroups <- bind_rows(z_scot_all_adm, z_scot_age,
-                                z_scot_sex, z_scot_specadm,
-                                z_scot_dep) %>%
+  scot_subgroups <- bind_rows(scot_all_adm, scot_age,
+                                scot_sex, scot_specadm,
+                                scot_dep) %>%
     mutate(crd_rate = deaths/pats * 100) %>%
     rename(hb2014 = hbtreat_currentdate) %>%
     select(hb2014, quarter, deaths, pats, crd_rate, label)
 
   # Crude Rate - Date of Discharge (Scotland)
-  z_scot_dis <- smr01 %>%
+  scot_dis <- smr01 %>%
     group_by(quarter) %>%
     summarise(deaths = sum(death30_dis),
               pats   = length(death30_dis)) %>%
@@ -273,7 +273,7 @@ create_trends <- function(smr01, gro, pop, dep) {
            hbtreat_currentdate = "Scotland")
 
   # Crude Rate - Date of Discharge (NHS Board)
-  z_hb_dis <- smr01 %>%
+  hb_dis <- smr01 %>%
     group_by(quarter, hbtreat_currentdate) %>%
     summarise(deaths = sum(death30_dis),
               pats   = length(death30_dis)) %>%
@@ -281,26 +281,26 @@ create_trends <- function(smr01, gro, pop, dep) {
     mutate(label     = "Discharge")
 
   # Merge dataframes together
-  z_dis <- bind_rows(z_scot_dis, z_hb_dis) %>%
+  dis <- bind_rows(scot_dis, hb_dis) %>%
     mutate(crd_rate = deaths/pats * 100) %>%
     rename(hb2014 = hbtreat_currentdate) %>%
     select(hb2014, quarter, deaths, pats, crd_rate, label)
 
   # Population-based mortality
-  z_scot_pop <- gro %>%
-    filter(date_of_death > z_end_date - years(5)) %>%
+  scot_pop <- gro %>%
+    filter(date_of_death > end_date - years(5)) %>%
     group_by(year, quarter) %>%
     summarise(deaths = length(year)) %>%
     ungroup() %>%
     mutate(hbres_currentdate = "Scotland")
 
-  z_hb_pop <- gro %>%
-    filter(date_of_death > z_end_date - years(5)) %>%
+  hb_pop <- gro %>%
+    filter(date_of_death > end_date - years(5)) %>%
     group_by(year, quarter, hbres_currentdate) %>%
     summarise(deaths = length(year)) %>%
     ungroup()
 
-  z_pop_deaths <- bind_rows(z_scot_pop, z_hb_pop) %>%
+  pop_deaths <- bind_rows(scot_pop, hb_pop) %>%
     left_join(pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
     mutate(crd_rate     = deaths/pop * 1000,
            quarter      = as.numeric(as.factor(paste0(year, "Q", quarter))),
@@ -311,7 +311,7 @@ create_trends <- function(smr01, gro, pop, dep) {
 
 
   # Create minimal tidy dataset
-  long_term_trends <- bind_rows(z_scot_subgroups, z_dis, z_pop_deaths)
+  long_term_trends <- bind_rows(scot_subgroups, dis, pop_deaths)
 
   return(long_term_trends)
 

@@ -11,7 +11,7 @@
 # Description - Defines SQL queries sourced and used in create_smr_data
 #########################################################################
 
-z_query_smr01 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
+query_smr01 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                        "CIS_MARKER, SEX, LOCATION, POSTCODE, DISCHARGE_TYPE,",
                        "MAIN_CONDITION, OTHER_CONDITION_1, OTHER_CONDITION_2,",
                        "OTHER_CONDITION_3, OTHER_CONDITION_4,",
@@ -70,22 +70,22 @@ z_query_smr01 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                        "extract(year from admission_date) AS year,",
                        "HBTREAT_CURRENTDATE, AGE_IN_YEARS from SMR01_PI",
                        "where ADMISSION_DATE BETWEEN",
-                       "TO_DATE(", shQuote(z_start_date, type = "sh"),",'yyyy-mm-dd') AND",
-                       "TO_DATE(", shQuote(z_end_date, type = "sh"),",'yyyy-mm-dd')",
+                       "TO_DATE(", shQuote(start_date, type = "sh"),",'yyyy-mm-dd') AND",
+                       "TO_DATE(", shQuote(end_date, type = "sh"),",'yyyy-mm-dd')",
                        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
                        "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
-z_query_smr01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
+query_smr01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
                               "OLD_SMR1_TADM_CODE, CIS_MARKER, SPECIALTY,",
                               "MAIN_CONDITION from SMR01_PI",
                               "where ADMISSION_DATE BETWEEN",
-                              "TO_DATE(", shQuote(z_start_date_5, type = "sh"),",'yyyy-mm-dd')",
-                              "AND TO_DATE(", shQuote(z_end_date, type = "sh"),",'yyyy-mm-dd')",
+                              "TO_DATE(", shQuote(start_date_5, type = "sh"),",'yyyy-mm-dd')",
+                              "AND TO_DATE(", shQuote(end_date, type = "sh"),",'yyyy-mm-dd')",
                               "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
                               "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
-z_query_gro <- paste("select LINK_NO, DATE_OF_DEATH",
+query_gro <- paste("select LINK_NO, DATE_OF_DEATH",
                      "from ANALYSIS.GRO_DEATHS_C",
                      "where DATE_OF_DEATH >=",
-                     "TO_DATE(", shQuote(z_start_date, type = "sh"),",'yyyy-mm-dd')",
+                     "TO_DATE(", shQuote(start_date, type = "sh"),",'yyyy-mm-dd')",
                      "ORDER BY LINK_NO")

@@ -63,7 +63,7 @@ smr_data <- function(smr01, index){
 
   ### 2 - Create Scotland-level aggregation ----
 
-  z_hsmr_scot <- smr01 %>%
+  hsmr_scot <- smr01 %>%
     group_by(period) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
@@ -77,7 +77,7 @@ smr_data <- function(smr01, index){
 
   ### 3 - Create Hospital-level aggregation ----
 
-  z_hsmr_hosp <- smr01 %>%
+  hsmr_hosp <- smr01 %>%
     group_by(period, location) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
@@ -93,7 +93,7 @@ smr_data <- function(smr01, index){
 
   ### 4 - Create HB-level aggregation ----
 
-  z_hsmr_hb <- smr01 %>%
+  hsmr_hb <- smr01 %>%
     group_by(period, hbtreat_currentdate) %>%
     summarise(deaths = sum(death30),
               pred   = sum(pred_eq),
@@ -108,8 +108,8 @@ smr_data <- function(smr01, index){
   ### 5 - Merge dataframes and calculate regression line ----
 
   # Merge data and match on location name
-  smr_data <- bind_rows(z_hsmr_scot, z_hsmr_hosp, z_hsmr_hb) %>%
-    left_join(z_hospitals, by = "location") %>%
+  smr_data <- bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
+    left_join(hospitals, by = "location") %>%
     filter(!is.na(location_name))
 
   if (index == "Y"){
