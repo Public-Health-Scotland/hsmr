@@ -24,6 +24,9 @@
 #' @param extract_end The extract end date, supplied with \code{Date} class.
 #' Must be the final day of either March, June, September or December.
 
+
+#' @export
+#' @rdname sql_smr
 query_smr01 <- function(extract_start, extract_end) {
 
   if (class(extract_start) != "Date" | class(extract_end) != "Date") {
@@ -111,17 +114,61 @@ query_smr01 <- function(extract_start, extract_end) {
         "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 }
 
-query_smr01_minus5 <- paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
-                              "OLD_SMR1_TADM_CODE, CIS_MARKER, SPECIALTY,",
-                              "MAIN_CONDITION from SMR01_PI",
-                              "where ADMISSION_DATE BETWEEN",
-                              "TO_DATE(", shQuote(start_date_5, type = "sh"),",'yyyy-mm-dd')",
-                              "AND TO_DATE(", shQuote(end_date, type = "sh"),",'yyyy-mm-dd')",
-                              "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
-                              "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
 
-query_gro <- paste("select LINK_NO, DATE_OF_DEATH",
-                     "from ANALYSIS.GRO_DEATHS_C",
-                     "where DATE_OF_DEATH >=",
-                     "TO_DATE(", shQuote(start_date, type = "sh"),",'yyyy-mm-dd')",
-                     "ORDER BY LINK_NO")
+#' @export
+#' @rdname sql_smr
+query_smr01_minus5 <- function(extract_start, extract_end) {
+
+  if (class(extract_start) != "Date" | class(extract_end) != "Date") {
+    stop("The extract start and end dates must both be provided in date format")
+  }
+
+  if(!(format(extract_start, "%d %B") %in% c("01 January",
+                                             "01 April",
+                                             "01 July",
+                                             "01 October"))) {
+    stop("The extract start date must be the first day of either January, ",
+         "April, September or December")
+  }
+
+  if(!(format(extract_end, "%d %B") %in% c("31 March",
+                                           "30 June",
+                                           "30 September",
+                                           "31 December"))) {
+    stop("The extract end date must be the final day of either March, June, ",
+         "September or December")
+  }
+
+  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
+        "OLD_SMR1_TADM_CODE, CIS_MARKER, SPECIALTY,",
+        "MAIN_CONDITION from SMR01_PI",
+        "where ADMISSION_DATE BETWEEN",
+        "TO_DATE(", shQuote(extract_start, type = "sh"),",'yyyy-mm-dd')",
+        "AND TO_DATE(", shQuote(extract_end, type = "sh"),",'yyyy-mm-dd')",
+        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
+        "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
+}
+
+
+#' @export
+#' @rdname sql_smr
+query_gro <- function(extract_start) {
+
+  if (class(extract_start) != "Date") {
+    stop("The extract start date must be provided in date format")
+  }
+
+  if(!(format(extract_start, "%d %B") %in% c("01 January",
+                                             "01 April",
+                                             "01 July",
+                                             "01 October"))) {
+    stop("The extract start date must be the first day of either January, ",
+         "April, September or December")
+  }
+
+  paste("select LINK_NO, DATE_OF_DEATH",
+        "from ANALYSIS.GRO_DEATHS_C",
+        "where DATE_OF_DEATH >=",
+        "TO_DATE(", shQuote(extract_start, type = "sh"),",'yyyy-mm-dd')",
+        "ORDER BY LINK_NO")
+}
