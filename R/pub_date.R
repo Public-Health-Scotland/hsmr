@@ -10,7 +10,7 @@
 #' publication.
 #'
 #' @param end_date The cut-off date for data to be included in the current HSMR
-#' publication.
+#' publication, supplied with \code{Date} class.
 #' @param pub A character string specifying the publication of interest. Valid
 #' options are `previous`, `current` and `next`.
 #'
