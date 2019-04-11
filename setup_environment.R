@@ -24,9 +24,9 @@ platform <- c("server")
 
 # Define root directory for cl-out based on whether script is running locally or
 # on server
-plat_filepath <- if_else(platform == "server",
-                         '/conf/linkage/output/',
-                         '//stats/cl-out/')
+plat_filepath <- dplyr::if_else(platform == "server",
+                                '/conf/linkage/output/',
+                                '//stats/cl-out/')
 
 
 ### 2 - Extract dates ----
@@ -37,19 +37,19 @@ plat_filepath <- if_else(platform == "server",
 
 
 # The beginning of baseline period/extract window
-start_date        <- dmy(01012016)
+start_date        <- lubridate::dmy(01012016)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- dmy(01012014)
+start_date_trends <- lubridate::dmy(01012014)
 
 # The end of the baseline period (for model)
-base_end          <- dmy(31122018)
+base_end          <- lubridate::dmy(31122018)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- dmy(01012011)
+start_date_5      <- lubridate::dmy(01012011)
 
 # End date for the cut off for data
-end_date          <- dmy(31122018)
+end_date          <- lubridate::dmy(31122018)
 
 
 ### END OF SCRIPT ###
