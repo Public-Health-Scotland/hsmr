@@ -1,8 +1,8 @@
-#' @title Extract HSMR data using SQL
+#' @title Extract SMR data using SQL
 #'
 #' @description
 #'
-#' The HSMR query functions take an extract start date and, with the exception
+#' The SMR query functions take an extract start date and, with the exception
 #' of \code{query_gro}, an extract end date. They define the SQL queries used
 #' to extract data for the HSMR publication.
 #'
