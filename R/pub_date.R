@@ -31,7 +31,9 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
     stop("The extract end date must be provided in date format")
   }
 
-  if(!(format(end_date, "%d %B") %in% c("31 March", "30 June", "30 September",
+  if(!(format(end_date, "%d %B") %in% c("31 March",
+                                        "30 June",
+                                        "30 September",
                                         "31 December"))) {
     stop("The extract end date must be the final day of either March, June, ",
          "September or December")
