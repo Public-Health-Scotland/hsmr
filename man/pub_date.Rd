@@ -19,11 +19,15 @@ options are `previous`, `current` and `next`.}
 included in the current publication. It uses this cut-off date to calculate
 the publication dates of the previous, current and next HSMR publications.
 }
+\details{
+The publication date for HSMR is always the third last Tuesday of
+the month.
+}
 \examples{
 extract_end_date <- lubridate::dmy(30092018)
 
 pub_date(end_date = extract_end_date, pub = "previous")
-pub_date(end_date = extract_end_date, pub = "current")
-pub_date(end_date = extract_end_date, pub = "next")
+format(pub_date(end_date = extract_end_date, pub = "current"), "\%d \%B \%Y")
+format(pub_date(end_date = extract_end_date, pub = "next"), "\%d/\%m/\%Y")
 
 }

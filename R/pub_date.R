@@ -4,6 +4,9 @@
 #' included in the current publication. It uses this cut-off date to calculate
 #' the publication dates of the previous, current and next HSMR publications.
 #'
+#' @details The publication date for HSMR is always the third last Tuesday of
+#' the month.
+#'
 #' @param end_date The cut-off date for data to be included in the current HSMR
 #' publication, supplied with \code{Date} class. Must be the final day of
 #' either March, June, September or December.
