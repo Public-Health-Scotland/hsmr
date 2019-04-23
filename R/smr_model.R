@@ -52,16 +52,17 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   if(index == "M"){
 
     smr01 %<>%
-      mutate(month = paste(lubridate::month(admission_date),
-                           lubridate::year(admission_date), sep = "-")) %>%
-      rename(period = month)
+      dplyr::mutate(month = paste(lubridate::month(admission_date),
+                                  lubridate::year(admission_date),
+                                  sep = "-")) %>%
+      dplyr::rename(period = month)
 
   }
 
   if(index == "Q"){
 
     smr01 %<>%
-      rename(period = quarter)
+      dplyr::rename(period = quarter)
 
   }
 
@@ -73,11 +74,11 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                    "January 2011 to December 2014 (4 whole years)."))
 
     smr01 %<>%
-      mutate(period = case_when(
-        admission_date < start_date + years(1) ~ 1,
-        admission_date >= start_date + years(1) &
-          admission_date <= end_date - years(1) ~ 2,
-        admission_date > end_date - years(1) ~ 3
+      dplyr::mutate(period = dplyr::case_when(
+        admission_date < start_date + lubridate::years(1) ~ 1,
+        admission_date >= start_date + lubridate::years(1) &
+          admission_date <= end_date - lubridate::years(1) ~ 2,
+        admission_date > end_date - lubridate::years(1) ~ 3
       ))
 
   }
@@ -87,22 +88,22 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
-    filter(!is.na(pdiag_grp)) %>%
-    group_by(link_no, period) %>%
-    mutate(last_cis = max(cis_marker)) %>%
-    ungroup() %>%
-    filter(epinum == 1 & cis_marker == last_cis) %>%
+    dplyr::filter(!is.na(pdiag_grp)) %>%
+    dplyr::group_by(link_no, period) %>%
+    dplyr::mutate(last_cis = max(cis_marker)) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(epinum == 1 & cis_marker == last_cis) %>%
 
     # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
     # required for modelling/predicted values
-    filter(simd %in% 1:7) %>%
-    filter(admfgrp %in% 1:6) %>%
-    filter(ipdc %in% 1:2) %>%
+    dplyr::filter(simd %in% 1:7) %>%
+    dplyr::filter(admfgrp %in% 1:6) %>%
+    dplyr::filter(ipdc %in% 1:2) %>%
 
     # If a patient dies within 30 days of admission in two subsequent quarters
     # then remove the second record to avoid double counting deaths
-    filter(!(link_no == c(0, head(link_no, -1)) &
-               1 == c(0, head(death30, -1))))
+    dplyr::filter(!(link_no == c(0, head(link_no, -1)) &
+                      1 == c(0, head(death30, -1))))
 
 
 
@@ -112,19 +113,21 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   data_lr <- smr01 %>%
 
     # Select baseline period rows
-    filter(admission_date >= base_start & admission_date <= base_end) %>%
+    dplyr::filter(admission_date >= base_start & admission_date <= base_end) %>%
 
     # Select required variables for model
-    select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-           spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+    dplyr::select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years,
+                  sex, spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd,
+                  death30) %>%
 
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
-    group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-             spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
-    summarise(x = sum(death30),
-              n = length(death30)) %>%
-    ungroup()
+    dplyr::group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
+                    age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
+                    ipdc, simd) %>%
+    dplyr::summarise(x = sum(death30),
+                     n = length(death30)) %>%
+    dplyr::ungroup()
 
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
@@ -136,17 +139,17 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                       model = FALSE,
                       y = FALSE)
 
-  # Delete unnecessary model information using bespoke function in order to retain
-  # special class of object for predicted probabilities below
-  risk_model <- clean_model(risk_model)
+  # Delete unnecessary model information using bespoke function in order to
+  # retain special class of object for predicted probabilities below
+  risk_model <- hsmr::clean_model(risk_model)
 
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
+    dplyr::mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
-    filter(!is.na(pred_eq))
+    dplyr::filter(!is.na(pred_eq))
 
   return(smr01)
 
