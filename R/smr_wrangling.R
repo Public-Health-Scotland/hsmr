@@ -142,14 +142,14 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
   # The deaths file is matched on to SMR01 by link_no,
   # therefore link_no needs to be unique
   gro %<>%
-    distinct(link_no, .keep_all = TRUE)
+    dplyr::distinct(link_no, .keep_all = TRUE)
 
   # Match deaths data on to SMR01 data
   smr01 %<>%
-    left_join(gro, by = "link_no") %>%
+    dplyr::left_join(gro, by = "link_no") %>%
 
     # Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
-    arrange(link_no, cis_marker, admission_date, discharge_date)
+    dplyr::arrange(link_no, cis_marker, admission_date, discharge_date)
 
 
   ### 3 - Basic SMR01 processing ----
@@ -163,163 +163,191 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
   # location     = recodes some hospital codes for combined sites
   # diag1_4      = main condition ICD-10 code to 4 digits
   # diagx        = ICD-10 code to 3 and 4 digits, separated by an underscore
-  # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10 code
+  # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10
+  #                code
   # wcomorbsx    = matches the charlson index weighting if the relevant ICD-10
   #                codes are present in any of the five "other diagnosis"
   #                positions
   # comorbs_sum  = sum of the wcomorbsx values across the episode
 
   smr01 %<>%
-    mutate(death_inhosp = if_else(between(as.numeric(discharge_type), 40, 49),
-                                  1, 0),
-           dthdays = interval(admission_date, date_of_death) / days(1),
-           death30 = case_when(
-             between(dthdays, 0, 30) ~ 1,
-             TRUE ~ 0),
-           quarter_name = paste0(year, "Q", quarter),
-           quarter = as.numeric(as.factor(quarter_name)),
-           diag1_4 = substr(main_condition, 1, 4),
-           diag2 = paste(substr(other_condition_1, 1, 3),
-                         substr(other_condition_1, 1, 4),
-                         sep = "_"),
-           diag3 = paste(substr(other_condition_2, 1, 3),
-                         substr(other_condition_2, 1, 4),
-                         sep = "_"),
-           diag4 = paste(substr(other_condition_3, 1, 3),
-                         substr(other_condition_3, 1, 4),
-                         sep = "_"),
-           diag5 = paste(substr(other_condition_4, 1, 3),
-                         substr(other_condition_4, 1, 4),
-                         sep = "_"),
-           diag6 = paste(substr(other_condition_5, 1, 3),
-                         substr(other_condition_5, 1, 4),
-                         sep = "_")) %>%
+    dplyr::mutate(death_inhosp = dplyr::if_else(dplyr::between(
+      as.numeric(discharge_type), 40, 49),
+      1, 0),
+      dthdays = lubridate::interval(admission_date, date_of_death) /
+        lubridate::days(1),
+      death30 = dplyr::case_when(
+        dplyr::between(dthdays, 0, 30) ~ 1,
+        TRUE ~ 0),
+      quarter_name = paste0(year, "Q", quarter),
+      quarter = as.numeric(as.factor(quarter_name)),
+      diag1_4 = substr(main_condition, 1, 4),
+      diag2 = paste(substr(other_condition_1, 1, 3),
+                    substr(other_condition_1, 1, 4),
+                    sep = "_"),
+      diag3 = paste(substr(other_condition_2, 1, 3),
+                    substr(other_condition_2, 1, 4),
+                    sep = "_"),
+      diag4 = paste(substr(other_condition_3, 1, 3),
+                    substr(other_condition_3, 1, 4),
+                    sep = "_"),
+      diag5 = paste(substr(other_condition_4, 1, 3),
+                    substr(other_condition_4, 1, 4),
+                    sep = "_"),
+      diag6 = paste(substr(other_condition_5, 1, 3),
+                    substr(other_condition_5, 1, 4),
+                    sep = "_")) %>%
 
     # Create the pdiag_grp and wcomorbsx variables using joins to the morbs
     # dataset
-    left_join(select(pdiags,
-                     pdiag_grp = shmi_diagnosis_group,
-                     diag1_4),
-              by = "diag1_4") %>%
+    dplyr::left_join(dplyr::select(pdiags,
+                                   pdiag_grp = shmi_diagnosis_group,
+                                   diag1_4),
+                     by = "diag1_4") %>%
 
     # Match on specialty grouping by the specialty variable
-    left_join(spec, by = "specialty") %>%
+    dplyr::left_join(spec, by = "specialty") %>%
 
-    # Fuzzy joins add the (in this case, not needed) joining variable by default,
-    # so append these with "_z" so they can be easily removed afterwards
-    fuzzy_left_join(select(morbs, wcomorbs1 = wmorbs,
-                           comorbs1 = morb, diag2_z = diag),
-                    by = c("diag2" = "diag2_z"),
-                    match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs2 = wmorbs,
-                           comorbs2 = morb, diag3_z = diag),
-                    by = c("diag3" = "diag3_z"),
-                    match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs3 = wmorbs,
-                           comorbs3 = morb, diag4_z = diag),
-                    by = c("diag4" = "diag4_z"),
-                    match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs4 = wmorbs,
-                           comorbs4 = morb, diag5_z = diag),
-                    by = c("diag5" = "diag5_z"),
-                    match_fun = str_detect) %>%
-    fuzzy_left_join(select(morbs, wcomorbs5 = wmorbs,
-                           comorbs5 = morb, diag6_z = diag),
-                    by = c("diag6" = "diag6_z"),
-                    match_fun = str_detect) %>%
+    # Fuzzy joins add the (in this case, not needed) joining variable by
+    # default, so append these with "_z" so they can be easily removed
+    # afterwards
+    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
+                                             wcomorbs1 = wmorbs,
+                                             comorbs1 = morb,
+                                             diag2_z = diag),
+                               by = c("diag2" = "diag2_z"),
+                               match_fun = stringr::str_detect) %>%
+    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
+                                             wcomorbs2 = wmorbs,
+                                             comorbs2 = morb,
+                                             diag3_z = diag),
+                               by = c("diag3" = "diag3_z"),
+                               match_fun = stringr::str_detect) %>%
+    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
+                                             wcomorbs3 = wmorbs,
+                                             comorbs3 = morb,
+                                             diag4_z = diag),
+                               by = c("diag4" = "diag4_z"),
+                               match_fun = stringr::str_detect) %>%
+    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
+                                             wcomorbs4 = wmorbs,
+                                             comorbs4 = morb,
+                                             diag5_z = diag),
+                               by = c("diag5" = "diag5_z"),
+                               match_fun = stringr::str_detect) %>%
+    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
+                                             wcomorbs5 = wmorbs,
+                                             comorbs5 = morb,
+                                             diag6_z = diag),
+                               by = c("diag6" = "diag6_z"),
+                               match_fun = stringr::str_detect) %>%
 
     # Remove joining variables
-    select(-ends_with("_z")) %>%
+    dplyr::select(-dplyr::ends_with("_z")) %>%
 
     # Replace cases with no match with zero
-    replace_na(list(wcomorbs1 = 0,
-                    wcomorbs2 = 0,
-                    wcomorbs3 = 0,
-                    wcomorbs4 = 0,
-                    wcomorbs5 = 0,
-                    comorbs1  = 0,
-                    comorbs2  = 0,
-                    comorbs3  = 0,
-                    comorbs4  = 0,
-                    comorbs5  = 0)) %>%
+    tidyr::replace_na(list(wcomorbs1 = 0,
+                           wcomorbs2 = 0,
+                           wcomorbs3 = 0,
+                           wcomorbs4 = 0,
+                           wcomorbs5 = 0,
+                           comorbs1  = 0,
+                           comorbs2  = 0,
+                           comorbs3  = 0,
+                           comorbs4  = 0,
+                           comorbs5  = 0)) %>%
     # Comorbs cleaning
-    mutate(wcomorbs1 = replace(wcomorbs1,
-                               comorbs1 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
-                                                  comorbs4 != 6 & comorbs5 != 6)
-                              , 2),
-           wcomorbs2 = replace(wcomorbs2,
-                               comorbs2 == 12 & (comorbs1 != 6 & comorbs3 != 6 &
-                                                  comorbs4 != 6 & comorbs5 != 6)
-                              , 2),
-           wcomorbs3 = replace(wcomorbs3,
-                               comorbs3 == 12 & (comorbs2 != 6 & comorbs1 != 6 &
-                                                  comorbs4 != 6 & comorbs5 != 6)
-                              , 2),
-           wcomorbs4 = replace(wcomorbs4,
-                               comorbs4 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
-                                                  comorbs1 != 6 & comorbs5 != 6)
-                              , 2),
-           wcomorbs5 = replace(wcomorbs5,
-                               comorbs5 == 12 & (comorbs2 != 6 & comorbs3 != 6 &
-                                                  comorbs4 != 6 & comorbs1 != 6)
-                              , 2)) %>%
-    mutate(wcomorbs1 = replace(wcomorbs1, comorbs1 == 11 & (comorbs2 == 15 |
-                                                              comorbs3 == 15 |
-                                                              comorbs4 == 15 |
-                                                              comorbs5 == 15),
-                               0)
-           ,
-           wcomorbs2 = replace(wcomorbs2, comorbs2 == 11 & (comorbs1 == 15 |
-                                                  comorbs3 == 15 |
-                                                  comorbs4 == 15 |
-                                                  comorbs5 == 15), 0)
-           ,
-           wcomorbs3 = replace(wcomorbs3, comorbs3 == 11 & (comorbs2 == 15 |
-                                                  comorbs1 == 15 |
-                                                  comorbs4 == 15 |
-                                                  comorbs5 == 15), 0)
-           ,
-           wcomorbs4 = replace(wcomorbs4, comorbs4 == 11 & (comorbs2 == 15 |
-                                                  comorbs3 == 15 |
-                                                  comorbs1 == 15 |
-                                                  comorbs5 == 15), 0)
-           ,
-           wcomorbs5 = replace(wcomorbs5, comorbs5 == 11 & (comorbs2 == 15 |
-                                                  comorbs3 == 15 |
-                                                  comorbs4 == 15 |
-                                                  comorbs1 == 15), 0)
-    ) %>%
-    mutate(wcomorbs2 = replace(wcomorbs2,
-                               comorbs2 == comorbs1,
-                               0),
-           wcomorbs3 = replace(wcomorbs3,
-                               comorbs3 == comorbs1 | comorbs3 == comorbs2,
-                               0),
-           wcomorbs4 = replace(wcomorbs4,
-                               comorbs4 == comorbs1 | comorbs4 == comorbs2 |
-                                 comorbs4 == comorbs3,
-                               0),
-           wcomorbs5 = replace(wcomorbs5,
-                               comorbs5 == comorbs1 | comorbs5 == comorbs2 |
-                                 comorbs5 == comorbs3 |
-                                 comorbs5 == comorbs4,
-                               0)) %>%
-    mutate(comorbs_sum = rowSums(select(., starts_with("wcomorbs")))) %>%
+    dplyr::mutate(wcomorbs1 = replace(wcomorbs1,
+                                      comorbs1 == 12 &
+                                        (comorbs2 != 6 & comorbs3 != 6 &
+                                           comorbs4 != 6 & comorbs5 != 6),
+                                      2),
+                  wcomorbs2 = replace(wcomorbs2,
+                                      comorbs2 == 12 &
+                                        (comorbs1 != 6 & comorbs3 != 6 &
+                                           comorbs4 != 6 & comorbs5 != 6),
+                                      2),
+                  wcomorbs3 = replace(wcomorbs3,
+                                      comorbs3 == 12 &
+                                        (comorbs2 != 6 & comorbs1 != 6 &
+                                           comorbs4 != 6 & comorbs5 != 6),
+                                      2),
+                  wcomorbs4 = replace(wcomorbs4,
+                                      comorbs4 == 12 &
+                                        (comorbs2 != 6 & comorbs3 != 6 &
+                                           comorbs1 != 6 & comorbs5 != 6),
+                                      2),
+                  wcomorbs5 = replace(wcomorbs5,
+                                      comorbs5 == 12 &
+                                        (comorbs2 != 6 & comorbs3 != 6 &
+                                           comorbs4 != 6 & comorbs1 != 6),
+                                      2)) %>%
+    dplyr::mutate(wcomorbs1 = replace(wcomorbs1,
+                                      comorbs1 == 11 & (comorbs2 == 15 |
+                                                          comorbs3 == 15 |
+                                                          comorbs4 == 15 |
+                                                          comorbs5 == 15),
+                                      0),
+                  wcomorbs2 = replace(wcomorbs2,
+                                      comorbs2 == 11 & (comorbs1 == 15 |
+                                                          comorbs3 == 15 |
+                                                          comorbs4 == 15 |
+                                                          comorbs5 == 15),
+                                      0),
+                  wcomorbs3 = replace(wcomorbs3,
+                                      comorbs3 == 11 & (comorbs2 == 15 |
+                                                          comorbs1 == 15 |
+                                                          comorbs4 == 15 |
+                                                          comorbs5 == 15),
+                                      0),
+                  wcomorbs4 = replace(wcomorbs4,
+                                      comorbs4 == 11 & (comorbs2 == 15 |
+                                                          comorbs3 == 15 |
+                                                          comorbs1 == 15 |
+                                                          comorbs5 == 15),
+                                      0),
+                  wcomorbs5 = replace(wcomorbs5,
+                                      comorbs5 == 11 & (comorbs2 == 15 |
+                                                          comorbs3 == 15 |
+                                                          comorbs4 == 15 |
+                                                          comorbs1 == 15),
+                                      0)) %>%
+    dplyr::mutate(wcomorbs2 = replace(wcomorbs2,
+                                      comorbs2 == comorbs1,
+                                      0),
+                  wcomorbs3 = replace(wcomorbs3,
+                                      comorbs3 == comorbs1 |
+                                        comorbs3 == comorbs2,
+                                      0),
+                  wcomorbs4 = replace(wcomorbs4,
+                                      comorbs4 == comorbs1 |
+                                        comorbs4 == comorbs2 |
+                                        comorbs4 == comorbs3,
+                                      0),
+                  wcomorbs5 = replace(wcomorbs5,
+                                      comorbs5 == comorbs1 |
+                                        comorbs5 == comorbs2 |
+                                        comorbs5 == comorbs3 |
+                                        comorbs5 == comorbs4,
+                                      0)) %>%
+    dplyr::mutate(comorbs_sum = rowSums(
+      dplyr::select(., dplyr::starts_with("wcomorbs")))) %>%
 
     # Create two further variables at CIS level:
     # epinum = the episode number for each individual episode within the CIS
-    # death_inhosp_max = 1 if the patient died in hospital during any episode of
-    # the CIS
-    group_by(link_no, cis_marker) %>%
-    mutate(epinum = row_number(),
-           death_inhosp_max = max(death_inhosp)) %>%
-    ungroup() %>%
+    # death_inhosp_max = 1 if the patient died in hospital during any episode
+    # of the CIS
+    dplyr::group_by(link_no, cis_marker) %>%
+    dplyr::mutate(epinum = dplyr::row_number(),
+                  death_inhosp_max = max(death_inhosp)) %>%
+    dplyr::ungroup() %>%
 
     # Sort data as per guidance and remove variables no longer required
-    arrange(link_no, cis_marker, admission_date, discharge_date) %>%
-    select(-contains("condition"), -starts_with("wcomorbs"),
-           -comorbs1, -comorbs2, -comorbs3, -comorbs4, -comorbs5,
-              -quarter_name)
+    dplyr::arrange(link_no, cis_marker, admission_date, discharge_date) %>%
+    dplyr::select(-dplyr::contains("condition"),
+                  -dplyr::starts_with("wcomorbs"),
+                  -dplyr::starts_with("comorbs"),
+                  -quarter_name)
 
   ### 4 - SIMD ----
 
@@ -327,31 +355,35 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
   smr01 %<>%
 
     # First remove all spaces from postcode variable
-    mutate(postcode = gsub("\\s", "", postcode),
+    dplyr::mutate(postcode = gsub("\\s", "", postcode),
 
-           # Then add space (or spaces) at appropriate juncture (depending on
-           # the number of characters) to get the postcode into 7-character
-           # format
-           postcode = case_when(
-             is.na(postcode) ~ NA_character_,
-             str_length(postcode) == 5 ~ sub("(.{2})", "\\1  ", postcode),
-             str_length(postcode) == 6 ~ sub("(.{3})", "\\1 ", postcode),
-             TRUE ~ postcode
-           )) %>%
+                  # Then add space (or spaces) at appropriate juncture
+                  # (depending on the number of characters) to get the postcode
+                  # into 7-character format
+                  postcode = dplyr::case_when(
+                    is.na(postcode)
+                    ~ NA_character_,
+                    stringr::str_length(postcode) == 5
+                    ~ sub("(.{2})", "\\1  ", postcode),
+                    stringr::str_length(postcode) == 6
+                    ~ sub("(.{3})", "\\1 ", postcode),
+                    TRUE
+                    ~ postcode
+                  )) %>%
 
     # Join to the postcode lookup
-    left_join(postcode, by = "postcode") %>%
+    dplyr::left_join(postcode, by = "postcode") %>%
 
     # Assign the appropriate SIMD value to a patient depending on the year they
     # were admitted
-    mutate(simd = case_when(
+    dplyr::mutate(simd = dplyr::case_when(
       year >= 2014 ~ simd_2016,
       year < 2014 ~ simd_2012
     )) %>%
 
     # Remove the not needed year-specific SIMD variables
-    select(-c(simd_2012, simd_2016)) %>%
-    mutate(simd = case_when(
+    dplyr::select(-c(simd_2012, simd_2016)) %>%
+    dplyr::mutate(simd = dplyr::case_when(
       is.na(simd) & postcode == "NK010AA" ~ 6,
       is.na(simd) & postcode != "NK010AA" ~ 7,
       TRUE ~ simd
