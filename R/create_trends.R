@@ -123,12 +123,14 @@ create_trends <- function(smr01, gro, pop, dep) {
                   # (depending on the number of characters) to get the postcode
                   # into 7-character format
                   postcode = dplyr::case_when(
-                    is.na(postcode) ~ NA_character_,
-                    stringr::str_length(postcode) == 5 ~
-                      sub("(.{2})", "\\1  ", postcode),
-                    stringr::str_length(postcode) == 6 ~
-                      sub("(.{3})", "\\1 ", postcode),
-                    TRUE ~ postcode
+                    is.na(postcode)
+                    ~ NA_character_,
+                    stringr::str_length(postcode) == 5
+                    ~ sub("(.{2})", "\\1  ", postcode),
+                    stringr::str_length(postcode) == 6
+                    ~ sub("(.{3})", "\\1 ", postcode),
+                    TRUE
+                    ~ postcode
                   )) %>%
 
     # Join to the postcode lookup
