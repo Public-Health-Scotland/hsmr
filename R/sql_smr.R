@@ -3,8 +3,8 @@
 #' @description
 #'
 #' The SMR query functions take an extract start date and, with the exception
-#' of \code{query_gro}, an extract end date. They define the SQL queries used
-#' to extract data for the HSMR publication.
+#' of \code{query_gro_smr}, an extract end date. They define the SQL queries
+#' used to extract data for the HSMR publication.
 #'
 #' \itemize{
 #' \item \code{query_smr01} extracts the relevant data from SMR01 from the
@@ -15,8 +15,8 @@
 #' years prior to the beginning of the baseline period until the end date cut
 #' off for the current publication.
 #'
-#' \item \code{query_gro} extracts data from SMR Deaths from the beginning of
-#' the baseline period.
+#' \item \code{query_gro_smr} extracts data from SMR Deaths from the beginning
+#' of the baseline period.
 #' }
 #'
 #' @param extract_start The extract start date, supplied with \code{Date}
@@ -152,7 +152,7 @@ query_smr01_minus5 <- function(extract_start, extract_end) {
 
 #' @export
 #' @rdname sql_smr
-query_gro <- function(extract_start) {
+query_gro_smr <- function(extract_start) {
 
   if (class(extract_start) != "Date") {
     stop("The extract start date must be provided in date format")
