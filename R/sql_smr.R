@@ -49,16 +49,13 @@ query_smr01 <- function(extract_start, extract_end) {
          "September or December")
   }
 
-  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
-        "CIS_MARKER, SEX, LOCATION, POSTCODE, DISCHARGE_TYPE,",
-        "MAIN_CONDITION, OTHER_CONDITION_1, OTHER_CONDITION_2,",
-        "OTHER_CONDITION_3, OTHER_CONDITION_4,",
-        "OTHER_CONDITION_5,",
-        "CASE WHEN ADMISSION_TYPE BETWEEN 20 AND 48 OR",
-        "ADMISSION_TYPE = 18",
+  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_MARKER, SEX,",
+        "LOCATION, POSTCODE, DISCHARGE_TYPE, MAIN_CONDITION,",
+        "OTHER_CONDITION_1, OTHER_CONDITION_2, OTHER_CONDITION_3,",
+        "OTHER_CONDITION_4, OTHER_CONDITION_5,",
+        "CASE WHEN ADMISSION_TYPE BETWEEN 20 AND 48 OR ADMISSION_TYPE = 18",
         "THEN '2'",
-        "WHEN ADMISSION_TYPE BETWEEN 10 AND 12 OR",
-        "ADMISSION_TYPE = 19",
+        "WHEN ADMISSION_TYPE BETWEEN 10 AND 12 OR ADMISSION_TYPE = 19",
         "THEN '1'",
         "ELSE 'NULL'",
         "END admgrp,",
@@ -66,8 +63,7 @@ query_smr01 <- function(extract_start, extract_end) {
         "('20','21','22','23','24','25','26','27','28','29')",
         "THEN '1'",
         "WHEN ADMISSION_TRANSFER_FROM IN",
-        "('60','61','62','63','64','65','66','67','68','69',",
-        "'70')",
+        "('60','61','62','63','64','65','66','67','68','69', '70')",
         "THEN '2'",
         "WHEN ADMISSION_TRANSFER_FROM IN",
         "('10','11','12','13','14','15','16','17','18','19')",
@@ -76,12 +72,12 @@ query_smr01 <- function(extract_start, extract_end) {
         "('30','31','32','33','34','35','36','37','38','39')",
         "THEN '4'",
         "WHEN ADMISSION_TRANSFER_FROM IN",
-        "('50','51','52','53','54','55','56','57','58','59',",
-        "'5A','5B','5C', '5D', '5E', '5F', '5G', '5H')",
+        "('50','51','52','53','54','55','56','57','58','59', '5A','5B','5C',",
+        "'5D', '5E', '5F', '5G', '5H')",
         "THEN '5'",
         "WHEN ADMISSION_TRANSFER_FROM IN",
-        "('40','41','42','43','44','45','46','47','48','49',",
-        "'4A','4B','4C', '4D', '4E', '4F', '4G', '4H')",
+        "('40','41','42','43','44','45','46','47','48','49', '4A','4B','4C',",
+        "'4D', '4E', '4F', '4G', '4H')",
         "THEN '6'",
         "ELSE 'NULL'",
         "END admfgrp,",
@@ -110,8 +106,8 @@ query_smr01 <- function(extract_start, extract_end) {
         "where ADMISSION_DATE BETWEEN",
         "TO_DATE(", shQuote(extract_start, type = "sh"),",'yyyy-mm-dd') AND",
         "TO_DATE(", shQuote(extract_end, type = "sh"),",'yyyy-mm-dd')",
-        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
-        "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
+        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE,",
+        "ADMISSION, DISCHARGE, URI")
 }
 
 
@@ -139,14 +135,13 @@ query_smr01_minus5 <- function(extract_start, extract_end) {
          "September or December")
   }
 
-  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE,",
-        "OLD_SMR1_TADM_CODE, CIS_MARKER, SPECIALTY,",
-        "MAIN_CONDITION from SMR01_PI",
+  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, OLD_SMR1_TADM_CODE,",
+        "CIS_MARKER, SPECIALTY, MAIN_CONDITION from SMR01_PI",
         "where ADMISSION_DATE BETWEEN",
         "TO_DATE(", shQuote(extract_start, type = "sh"),",'yyyy-mm-dd')",
         "AND TO_DATE(", shQuote(extract_end, type = "sh"),",'yyyy-mm-dd')",
-        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE,",
-        "DISCHARGE_DATE, ADMISSION, DISCHARGE, URI")
+        "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE,",
+        "ADMISSION, DISCHARGE, URI")
 }
 
 
