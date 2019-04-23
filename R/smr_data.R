@@ -56,36 +56,36 @@ smr_data <- function(smr01, index){
 
   }
 
-  smr01 <- smr01 %>%
-    rename(period_name = period) %>%
-    mutate(period = as.numeric(as.factor(period_name)))
+  smr01 %<>%
+    dplyr::rename(period_name = period) %>%
+    dplyr::mutate(period = as.numeric(as.factor(period_name)))
 
 
   ### 2 - Create Scotland-level aggregation ----
 
   hsmr_scot <- smr01 %>%
-    group_by(period) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "Scotland",
-           location      = "Scot") %>%
-    ungroup()
+    dplyr::group_by(period) %>%
+    dplyr::summarise(deaths = sum(death30),
+                     pred   = sum(pred_eq),
+                     pats   = length(death30)) %>%
+    dplyr::mutate(smr           = deaths/pred,
+                  crd_rate      = (deaths/pats) * 100,
+                  location_type = "Scotland",
+                  location      = "Scot") %>%
+    dplyr::ungroup()
 
 
   ### 3 - Create Hospital-level aggregation ----
 
   hsmr_hosp <- smr01 %>%
-    group_by(period, location) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "hospital") %>%
-    ungroup() #%>%
+    dplyr::group_by(period, location) %>%
+    dplyr::summarise(deaths = sum(death30),
+                     pred   = sum(pred_eq),
+                     pats   = length(death30)) %>%
+    dplyr::mutate(smr           = deaths/pred,
+                  crd_rate      = (deaths/pats) * 100,
+                  location_type = "hospital") %>%
+    dplyr::ungroup() #%>%
 
   # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
   # filter(location %in% )
@@ -94,35 +94,35 @@ smr_data <- function(smr01, index){
   ### 4 - Create HB-level aggregation ----
 
   hsmr_hb <- smr01 %>%
-    group_by(period, hbtreat_currentdate) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "NHS Board") %>%
-    ungroup() %>%
-    rename(location = hbtreat_currentdate)
+    dplyr::group_by(period, hbtreat_currentdate) %>%
+    dplyr::summarise(deaths = sum(death30),
+                     pred   = sum(pred_eq),
+                     pats   = length(death30)) %>%
+    dplyr::mutate(smr           = deaths/pred,
+                  crd_rate      = (deaths/pats) * 100,
+                  location_type = "NHS Board") %>%
+    dplyr::ungroup() %>%
+    dplyr::rename(location = hbtreat_currentdate)
 
 
   ### 5 - Merge dataframes and calculate regression line ----
 
   # Merge data and match on location name
-  smr_data <- bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
-    left_join(hospitals, by = "location") %>%
-    filter(!is.na(location_name))
+  smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
+    dplyr::left_join(hospitals, by = "location") %>%
+    dplyr::filter(!is.na(location_name))
 
   if (index == "Y"){
 
     smr_data %<>%
-      group_by(period) %>%
-      mutate(death_scot = max(deaths),
-             pred_scot = max(pred),
-             pats_scot = max(pats),
-             smr_scot = death_scot/pred_scot) %>%
-      ungroup() %>%
-      mutate(smr = smr/smr_scot,
-             pred = deaths/smr)
+      dplyr::group_by(period) %>%
+      dplyr::mutate(death_scot = max(deaths),
+                    pred_scot = max(pred),
+                    pats_scot = max(pats),
+                    smr_scot = death_scot/pred_scot) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(smr = smr/smr_scot,
+                    pred = deaths/smr)
 
   }
 
