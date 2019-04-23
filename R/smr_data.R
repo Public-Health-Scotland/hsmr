@@ -14,8 +14,8 @@
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
-#' @examples
-#'
+#' @importFrom dplyr %>%
+#' @importFrom magrittr %<>%
 #'
 #' @export
 

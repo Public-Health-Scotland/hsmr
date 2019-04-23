@@ -18,9 +18,9 @@
 #' details.
 #' @param morbs Input tibble for the charlson index for comorbidities lookup.
 #'
-#'
-#' @examples
-#'
+#' @importFrom dplyr %>%
+#' @importFrom magrittr %<>%
+#' @import data.table
 #'
 #' @export
 
