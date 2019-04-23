@@ -107,8 +107,8 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
     fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
                                              pmorbs = morb,
                                              diag1_z = diag),
-                    by = c("diag1" = "diag1_z"),
-                    match_fun = stringr::str_detect) %>%
+                               by = c("diag1" = "diag1_z"),
+                               match_fun = stringr::str_detect) %>%
 
     # Remove the joining variable
     dplyr::select(-dplyr::ends_with("_z")) %>%
@@ -162,8 +162,8 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   # AND the admission date on the episode is after the start date
   # AND the pmorbs value belongs to one of the Charlson index groups
   # AND the time between the two episodes is either 5 or 1 year(s)
-  # THEN assign the correct Charlson Index weighting. These weightings are saved
-  # in the 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
+  # THEN assign the correct Charlson Index weighting. These weightings are
+  # saved in the 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
 
   # NOTE: This section of code uses the data.table package rather than dplyr
 
@@ -317,7 +317,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
     # Add epinum to filter down to first episode within a CIS for the
     # calculation of the number of previous emergency admissions
-    dplyr::mutate(epinum = row_number()) %>%
+    dplyr::mutate(epinum = dplyr::row_number()) %>%
     dplyr::ungroup() %>%
     dplyr::filter(epinum == 1) %>%
     dplyr::mutate(n_emerg = 0)
