@@ -131,13 +131,13 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
-                        pmorbs5_sum + age_in_years + factor(sex) +
-                        factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
-                        factor(admgrp) + factor(ipdc) + factor(simd),
-                      data = data_lr,
-                      family = "binomial",
-                      model = FALSE,
-                      y = FALSE)
+                      pmorbs5_sum + age_in_years + factor(sex) +
+                      factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
+                      factor(admgrp) + factor(ipdc) + factor(simd),
+                    data = data_lr,
+                    family = "binomial",
+                    model = FALSE,
+                    y = FALSE)
 
   # Delete unnecessary model information using bespoke function in order to
   # retain special class of object for predicted probabilities below
