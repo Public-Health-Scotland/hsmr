@@ -7,7 +7,8 @@ Authors@R: c(person("David", "Caldwell", email = "david.caldwell1@nhs.net", role
              person("Jack", "Hannah", email = "jack.hannah1@nhs.net", role = "aut"))
 Description: Extracts, processes and models SMR01 and GRO Deaths data in order to produce the quarterly Hospital Standardised Mortality Ratios publication.
 Maintainer: David Caldwell <david.caldwell1@nhs.net>
-Depends: data.table, R (>= 3.2.3)
+Depends: R (>= 3.2.3)
+Imports: dplyr, magrittr, lubridate, tidyr, fuzzyjoin, stringr, tibble, RcppBDT, data.table
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
