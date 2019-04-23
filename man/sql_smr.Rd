@@ -3,14 +3,14 @@
 \name{query_smr01}
 \alias{query_smr01}
 \alias{query_smr01_minus5}
-\alias{query_gro}
+\alias{query_gro_smr}
 \title{Extract SMR data using SQL}
 \usage{
 query_smr01(extract_start, extract_end)
 
 query_smr01_minus5(extract_start, extract_end)
 
-query_gro(extract_start)
+query_gro_smr(extract_start)
 }
 \arguments{
 \item{extract_start}{The extract start date, supplied with \code{Date}
@@ -21,8 +21,8 @@ Must be the final day of either March, June, September or December.}
 }
 \description{
 The SMR query functions take an extract start date and, with the exception
-of \code{query_gro}, an extract end date. They define the SQL queries used
-to extract data for the HSMR publication.
+of \code{query_gro_smr}, an extract end date. They define the SQL queries
+used to extract data for the HSMR publication.
 
 \itemize{
 \item \code{query_smr01} extracts the relevant data from SMR01 from the
@@ -33,7 +33,7 @@ publication.
 years prior to the beginning of the baseline period until the end date cut
 off for the current publication.
 
-\item \code{query_gro} extracts data from SMR Deaths from the beginning of
-the baseline period.
+\item \code{query_gro_smr} extracts data from SMR Deaths from the beginning
+of the baseline period.
 }
 }

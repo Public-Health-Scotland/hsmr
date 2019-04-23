@@ -24,7 +24,3 @@ from SMR01 which has already been run through \code{smr_wrangling} and then
 these three functions first as \code{smr_data} is the final step of a
 four-step process.
 }
-\examples{
-
-
-}

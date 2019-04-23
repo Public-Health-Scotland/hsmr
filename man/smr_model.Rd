@@ -27,7 +27,3 @@ SMR01 that has already been through \code{smr_wrangling} and then
 step is \code{smr_data}. \code{smr_model} returns the SMR01 data with a
 probability of death within 30 days of admission appended on to the file.
 }
-\examples{
-
-
-}

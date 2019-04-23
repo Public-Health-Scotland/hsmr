@@ -27,7 +27,3 @@ This is so that the function is able to calculate the Charlson Index for
 Comorbidities weighting for the previous five years.
 It also expects a \code{tibble} for the Charlson Index lookups.
 }
-\examples{
-
-
-}

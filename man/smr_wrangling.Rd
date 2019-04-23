@@ -25,11 +25,7 @@ HSMR model.
 \code{smr_wrangling} expects a \code{tibble} of data extracted from
 SMR01. It also expects \code{tibbles} of data extracted from the GRO deaths
 database and lookups for primary diagnosis, postcode(deprivation) and
-morbidities (comorbs_sum). This is the first step in a four-step process. The
-next steps are \code{smr_pmorbs} then \code{smr_model} and finally
+morbidities (comorbs_sum). This is the first step in a four-step process.
+The next steps are \code{smr_pmorbs} then \code{smr_model} and finally
 \code{smr_data}.
-}
-\examples{
-
-
 }

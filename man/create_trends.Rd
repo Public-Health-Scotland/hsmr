@@ -30,7 +30,3 @@ from SMR01, a \code{tibble} with data extracted from NRS deaths records, a
 \code{tibble} with population estimates and a \code{tibble} with a
 lookup file for deprivation.
 }
-\examples{
-
-
-}
