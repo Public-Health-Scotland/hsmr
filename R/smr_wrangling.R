@@ -17,19 +17,20 @@
 #' @param pdiags Input tibble for primary diagnosis groupings lookup.
 #' @param postcode Input tibble for deprivation lookup.
 #' @param morbs Input tibble for the charlson index for comorbidities lookup.
+#' @param spec Input tibble for for specialty groupings lookup.
 #'
 #' @importFrom dplyr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export
 
-smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs){
+smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
 
   ### 1 - Error handling ----
 
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
      !tibble::is_tibble(pdiags) | !tibble::is_tibble(postcode) |
-     !tibble::is_tibble(morbs)) {
+     !tibble::is_tibble(morbs) | !tibble::is_tibble(spec)) {
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
