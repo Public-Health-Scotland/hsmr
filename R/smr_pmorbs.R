@@ -70,14 +70,14 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   }
 
-  if(!is.POSIXct(smr01$admission_date)){
+  if(!lubridate::is.POSIXct(smr01$admission_date)){
 
     stop(paste0("Admission_date variable must be POSIXct of format",
                 " %Y-%m-%d"))
 
   }
 
-  if(!is.POSIXct(smr01$discharge_date)){
+  if(!lubridate::is.POSIXct(smr01$discharge_date)){
 
     stop(paste0("Discharge_date variable must be POSIXct of format",
                 " %Y-%m-%d"))
