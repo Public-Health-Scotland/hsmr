@@ -17,7 +17,7 @@ quite large and take up significant amounts of memory when producing the
 probabilities.
 }
 \details{
-\code{clean_model} expects an object of class \code{"glm"}.
+\code{clean_model} expects an object of class \code{glm}.
 }
 \examples{
 
