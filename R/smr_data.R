@@ -4,10 +4,10 @@
 #'
 #'
 #' @details \code{smr_data} expects a \code{tibble} with data extracted
-#' from SMR01 which has already been run through \code{smr_wrangling} and then
-#' \code{smr_pmorbs} and finally \code{smr_model}. The data MUST be run through
-#' these three functions first as \code{smr_data} is the final step of a
-#' four-step process.
+#' from SMR01 which has already been run through \code{\link{smr_wrangling}},
+#' then \code{\link{smr_pmorbs}} and finally \code{\link{smr_model}}. The data
+#' must be run through these three functions first as \code{smr_data} is the
+#' final step of a four-step process.
 #'
 #' @param smr01 Input tibble for admissions, see details.
 #' @param index To define whether data produced are to be quarterly or annual.
