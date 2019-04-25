@@ -106,7 +106,10 @@ create_trends <- function(smr01, gro, pop, dep) {
 
   # Matching deaths data on to smr01 data
   smr01 %<>%
-    dplyr::left_join(select(gro, link_no, date_of_death), by = "link_no") %>%
+    dplyr::left_join(dplyr::select(gro,
+                                   link_no,
+                                   date_of_death),
+                     by = "link_no") %>%
 
     # Sorting data by link_no, cis_marker, adm_date and dis_date
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date)
