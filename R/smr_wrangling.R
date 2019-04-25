@@ -346,7 +346,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date) %>%
     dplyr::select(-dplyr::contains("condition"),
                   -dplyr::starts_with("wcomorbs"),
-                  -dplyr::starts_with("comorbs"),
+                  -comorbs1, -comorbs2, -comorbs3, -comorbs4, -comorbs5,
                   -quarter_name)
 
   ### 4 - SIMD ----
