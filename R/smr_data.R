@@ -58,49 +58,49 @@ smr_data <- function(smr01, index){
 
   smr01 %<>%
     dplyr::rename(period_name = period) %>%
-    dplyr::mutate(period = as.numeric(as.factor(period_name)))
+    tidylog::mutate(period = as.numeric(as.factor(period_name)))
 
 
   ### 2 - Create Scotland-level aggregation ----
 
   hsmr_scot <- smr01 %>%
-    dplyr::group_by(period) %>%
-    dplyr::summarise(deaths = sum(death30),
-                     pred   = sum(pred_eq),
-                     pats   = length(death30)) %>%
-    dplyr::mutate(smr           = deaths/pred,
-                  crd_rate      = (deaths/pats) * 100,
-                  location_type = "Scotland",
-                  location      = "Scot") %>%
+    tidylog::group_by(period) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "Scotland",
+                    location      = "Scot") %>%
     dplyr::ungroup()
 
 
   ### 3 - Create Hospital-level aggregation ----
 
   hsmr_hosp <- smr01 %>%
-    dplyr::group_by(period, location) %>%
-    dplyr::summarise(deaths = sum(death30),
-                     pred   = sum(pred_eq),
-                     pats   = length(death30)) %>%
-    dplyr::mutate(smr           = deaths/pred,
-                  crd_rate      = (deaths/pats) * 100,
-                  location_type = "hospital") %>%
+    tidylog::group_by(period, location) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "hospital") %>%
     dplyr::ungroup() #%>%
 
   # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
-  # filter(location %in% )
+  # tidylog::filter(location %in% )
 
 
   ### 4 - Create HB-level aggregation ----
 
   hsmr_hb <- smr01 %>%
-    dplyr::group_by(period, hbtreat_currentdate) %>%
-    dplyr::summarise(deaths = sum(death30),
-                     pred   = sum(pred_eq),
-                     pats   = length(death30)) %>%
-    dplyr::mutate(smr           = deaths/pred,
-                  crd_rate      = (deaths/pats) * 100,
-                  location_type = "NHS Board") %>%
+    tidylog::group_by(period, hbtreat_currentdate) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "NHS Board") %>%
     dplyr::ungroup() %>%
     dplyr::rename(location = hbtreat_currentdate)
 
@@ -109,20 +109,20 @@ smr_data <- function(smr01, index){
 
   # Merge data and match on location name
   smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
-    dplyr::left_join(hospitals, by = "location") %>%
-    dplyr::filter(!is.na(location_name))
+    tidylog::left_join(hospitals, by = "location") %>%
+    tidylog::filter(!is.na(location_name))
 
   if (index == "Y"){
 
     smr_data %<>%
-      dplyr::group_by(period) %>%
-      dplyr::mutate(death_scot = max(deaths),
-                    pred_scot = max(pred),
-                    pats_scot = max(pats),
-                    smr_scot = death_scot/pred_scot) %>%
+      tidylog::group_by(period) %>%
+      tidylog::mutate(death_scot = max(deaths),
+                      pred_scot = max(pred),
+                      pats_scot = max(pats),
+                      smr_scot = death_scot/pred_scot) %>%
       dplyr::ungroup() %>%
-      dplyr::mutate(smr = smr/smr_scot,
-                    pred = deaths/smr)
+      tidylog::mutate(smr = smr/smr_scot,
+                      pred = deaths/smr)
 
   }
 
