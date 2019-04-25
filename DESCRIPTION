@@ -9,16 +9,16 @@ Description: Extracts, processes and models SMR01 and GRO Deaths data in order t
 Maintainer: David Caldwell <david.caldwell1@nhs.net>
 Depends: R (>= 3.2.3)
 Imports: 
+    data.table, 
     dplyr, 
-    tidylog, 
-    magrittr, 
-    lubridate, 
-    tidyr, 
     fuzzyjoin, 
+    lubridate, 
+    magrittr, 
+    RcppBDT, 
     stringr, 
     tibble, 
-    RcppBDT, 
-    data.table,
+    tidylog, 
+    tidyr, 
     zoo
 License: What license is it under?
 Encoding: UTF-8
