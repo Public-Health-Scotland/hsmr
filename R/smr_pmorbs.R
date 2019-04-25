@@ -87,7 +87,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   ### 2 - Creating Prior Morbidities ----
   # Vector of unique link numbers used for filtering below
   unique_id <- smr01 %>%
-    dplyr::distinct(link_no) %>%
+    tidylog::distinct(link_no) %>%
     dplyr::pull(link_no)
 
   # Create the following variables:
@@ -99,63 +99,63 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   # n_emerg                 = initialise empty vector for use in loop below
 
   smr01_minus5 %<>%
-    dplyr::mutate(diag1 = paste(substr(main_condition, 1, 3),
-                                substr(main_condition, 1, 4),
-                                sep = "_")) %>%
+    tidylog::mutate(diag1 = paste(substr(main_condition, 1, 3),
+                                  substr(main_condition, 1, 4),
+                                  sep = "_")) %>%
 
     # Create the pmorbs variable using a join to the morbs dataset
-    fuzzyjoin::fuzzy_left_join(dplyr::select(morbs,
-                                             pmorbs = morb,
-                                             diag1_z = diag),
+    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
+                                               pmorbs = morb,
+                                               diag1_z = diag),
                                by = c("diag1" = "diag1_z"),
                                match_fun = stringr::str_detect) %>%
 
     # Remove the joining variable
-    dplyr::select(-dplyr::ends_with("_z")) %>%
+    tidylog::select(-dplyr::ends_with("_z")) %>%
 
     # Replace cases with no match with zero
     tidyr::replace_na(list(pmorbs = 0)) %>%
-    dplyr::mutate(pmorbs5_1  = 0,
-                  pmorbs5_2  = 0,
-                  pmorbs5_3  = 0,
-                  pmorbs5_4  = 0,
-                  pmorbs5_5  = 0,
-                  pmorbs5_6  = 0,
-                  pmorbs5_7  = 0,
-                  pmorbs5_8  = 0,
-                  pmorbs5_9  = 0,
-                  pmorbs5_10 = 0,
-                  pmorbs5_11 = 0,
-                  pmorbs5_12 = 0,
-                  pmorbs5_13 = 0,
-                  pmorbs5_14 = 0,
-                  pmorbs5_15 = 0,
-                  pmorbs5_16 = 0,
-                  pmorbs5_17 = 0,
-                  pmorbs1_1  = 0,
-                  pmorbs1_2  = 0,
-                  pmorbs1_3  = 0,
-                  pmorbs1_4  = 0,
-                  pmorbs1_5  = 0,
-                  pmorbs1_6  = 0,
-                  pmorbs1_7  = 0,
-                  pmorbs1_8  = 0,
-                  pmorbs1_9  = 0,
-                  pmorbs1_10 = 0,
-                  pmorbs1_11 = 0,
-                  pmorbs1_12 = 0,
-                  pmorbs1_13 = 0,
-                  pmorbs1_14 = 0,
-                  pmorbs1_15 = 0,
-                  pmorbs1_16 = 0,
-                  pmorbs1_17 = 0,
-                  n_emerg    = 0) %>%
+    tidylog::mutate(pmorbs5_1  = 0,
+                    pmorbs5_2  = 0,
+                    pmorbs5_3  = 0,
+                    pmorbs5_4  = 0,
+                    pmorbs5_5  = 0,
+                    pmorbs5_6  = 0,
+                    pmorbs5_7  = 0,
+                    pmorbs5_8  = 0,
+                    pmorbs5_9  = 0,
+                    pmorbs5_10 = 0,
+                    pmorbs5_11 = 0,
+                    pmorbs5_12 = 0,
+                    pmorbs5_13 = 0,
+                    pmorbs5_14 = 0,
+                    pmorbs5_15 = 0,
+                    pmorbs5_16 = 0,
+                    pmorbs5_17 = 0,
+                    pmorbs1_1  = 0,
+                    pmorbs1_2  = 0,
+                    pmorbs1_3  = 0,
+                    pmorbs1_4  = 0,
+                    pmorbs1_5  = 0,
+                    pmorbs1_6  = 0,
+                    pmorbs1_7  = 0,
+                    pmorbs1_8  = 0,
+                    pmorbs1_9  = 0,
+                    pmorbs1_10 = 0,
+                    pmorbs1_11 = 0,
+                    pmorbs1_12 = 0,
+                    pmorbs1_13 = 0,
+                    pmorbs1_14 = 0,
+                    pmorbs1_15 = 0,
+                    pmorbs1_16 = 0,
+                    pmorbs1_17 = 0,
+                    n_emerg    = 0) %>%
 
     # In order to increase the efficiency of the following for loop:
     # Only keep records with link numbers which appear in the main extract
     # (smr01)
 
-    dplyr::filter(link_no %in% unique_id)
+    tidylog::filter(link_no %in% unique_id)
 
   # For every row in the pmorbs extract, look at each of the prior 50 rows and
   # IF the previous episode belongs to the same person
@@ -296,31 +296,31 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   # and 5 years prior to admission
   # smr01_minus5 will be automatically converted back to a tibble here
   smr01_minus5 %<>%
-    dplyr::mutate(pmorbs1_12 = replace(pmorbs1_12,
-                                       pmorbs1_12 == -1 & pmorbs1_6 == 0,
-                                       2),
-                  pmorbs5_12 = replace(pmorbs5_12,
-                                       pmorbs5_12 == -1 & pmorbs5_6 == 0,
-                                       2),
-                  pmorbs1_11 = replace(pmorbs1_11,
-                                       pmorbs1_15 == 14 & pmorbs1_11 == 8,
-                                       0),
-                  pmorbs5_11 = replace(pmorbs5_11,
-                                       pmorbs5_15 == 14 & pmorbs5_11 == 8,
-                                       0)) %>%
-    dplyr::mutate(pmorbs1_sum = rowSums(
-      dplyr::select(., dplyr::starts_with("pmorbs1")))) %>%
-    dplyr::mutate(pmorbs5_sum = rowSums(
-      dplyr::select(., dplyr::starts_with("pmorbs5")))) %>%
-    dplyr::group_by(link_no, cis_marker) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::ends_with("_sum")), max) %>%
+    tidylog::mutate(pmorbs1_12 = replace(pmorbs1_12,
+                                         pmorbs1_12 == -1 & pmorbs1_6 == 0,
+                                         2),
+                    pmorbs5_12 = replace(pmorbs5_12,
+                                         pmorbs5_12 == -1 & pmorbs5_6 == 0,
+                                         2),
+                    pmorbs1_11 = replace(pmorbs1_11,
+                                         pmorbs1_15 == 14 & pmorbs1_11 == 8,
+                                         0),
+                    pmorbs5_11 = replace(pmorbs5_11,
+                                         pmorbs5_15 == 14 & pmorbs5_11 == 8,
+                                         0)) %>%
+    tidylog::mutate(pmorbs1_sum = rowSums(
+      tidylog::select(., dplyr::starts_with("pmorbs1")))) %>%
+    tidylog::mutate(pmorbs5_sum = rowSums(
+      tidylog::select(., dplyr::starts_with("pmorbs5")))) %>%
+    tidylog::group_by(link_no, cis_marker) %>%
+    tidylog::mutate_at(dplyr::vars(dplyr::ends_with("_sum")), max) %>%
 
     # Add epinum to filter down to first episode within a CIS for the
     # calculation of the number of previous emergency admissions
-    dplyr::mutate(epinum = dplyr::row_number()) %>%
+    tidylog::mutate(epinum = dplyr::row_number()) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(epinum == 1) %>%
-    dplyr::mutate(n_emerg = 0)
+    tidylog::filter(epinum == 1) %>%
+    tidylog::mutate(n_emerg = 0)
 
 
   # Convert back to a data.table for the number of previous emergency
@@ -355,11 +355,11 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   # Select required variables from smr01_minus5
   smr01_minus5 %<>%
-    dplyr::select(link_no, cis_marker, pmorbs1_sum, pmorbs5_sum, n_emerg)
+    tidylog::select(link_no, cis_marker, pmorbs1_sum, pmorbs5_sum, n_emerg)
 
   # Join smr01_minus5 on to the main tibble
   smr01 %<>%
-    dplyr::left_join(smr01_minus5, by = c("link_no", "cis_marker"))
+    tidylog::left_join(smr01_minus5, by = c("link_no", "cis_marker"))
 
   return(smr01)
 
