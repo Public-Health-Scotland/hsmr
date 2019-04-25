@@ -10,6 +10,7 @@ Maintainer: David Caldwell <david.caldwell1@nhs.net>
 Depends: R (>= 3.2.3)
 Imports: 
     dplyr, 
+    tidylog, 
     magrittr, 
     lubridate, 
     tidyr, 
@@ -17,7 +18,8 @@ Imports:
     stringr, 
     tibble, 
     RcppBDT, 
-    data.table
+    data.table,
+    zoo
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
