@@ -52,9 +52,9 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   if(index == "M"){
 
     smr01 %<>%
-      dplyr::mutate(month = paste(lubridate::month(admission_date),
-                                  lubridate::year(admission_date),
-                                  sep = "-")) %>%
+      tidylog::mutate(month = paste(lubridate::month(admission_date),
+                                    lubridate::year(admission_date),
+                                    sep = "-")) %>%
       dplyr::rename(period = month)
 
   }
@@ -74,7 +74,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                    "January 2011 to December 2014 (4 whole years)."))
 
     smr01 %<>%
-      dplyr::mutate(period = dplyr::case_when(
+      tidylog::mutate(period = dplyr::case_when(
         admission_date < start_date + lubridate::years(1) ~ 1,
         admission_date >= start_date + lubridate::years(1) &
           admission_date <= end_date - lubridate::years(1) ~ 2,
@@ -88,22 +88,22 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
-    dplyr::filter(!is.na(pdiag_grp)) %>%
-    dplyr::group_by(link_no, period) %>%
-    dplyr::mutate(last_cis = max(cis_marker)) %>%
+    tidylog::filter(!is.na(pdiag_grp)) %>%
+    tidylog::group_by(link_no, period) %>%
+    tidylog::mutate(last_cis = max(cis_marker)) %>%
     dplyr::ungroup() %>%
-    dplyr::filter(epinum == 1 & cis_marker == last_cis) %>%
+    tidylog::filter(epinum == 1 & cis_marker == last_cis) %>%
 
     # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
     # required for modelling/predicted values
-    dplyr::filter(simd %in% 1:7) %>%
-    dplyr::filter(admfgrp %in% 1:6) %>%
-    dplyr::filter(ipdc %in% 1:2) %>%
+    tidylog::filter(simd %in% 1:7) %>%
+    tidylog::filter(admfgrp %in% 1:6) %>%
+    tidylog::filter(ipdc %in% 1:2) %>%
 
     # If a patient dies within 30 days of admission in two subsequent quarters
     # then remove the second record to avoid double counting deaths
-    dplyr::filter(!(link_no == c(0, head(link_no, -1)) &
-                      1 == c(0, head(death30, -1))))
+    tidylog::filter(!(link_no == c(0, head(link_no, -1)) &
+                        1 == c(0, head(death30, -1))))
 
 
 
@@ -113,20 +113,21 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   data_lr <- smr01 %>%
 
     # Select baseline period rows
-    dplyr::filter(admission_date >= base_start & admission_date <= base_end) %>%
+    tidylog::filter(admission_date >= base_start &
+                      admission_date <= base_end) %>%
 
     # Select required variables for model
-    dplyr::select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years,
-                  sex, spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd,
-                  death30) %>%
+    tidylog::select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
+                    age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
+                    ipdc, simd, death30) %>%
 
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
-    dplyr::group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
-                    age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
-                    ipdc, simd) %>%
-    dplyr::summarise(x = sum(death30),
-                     n = length(death30)) %>%
+    tidylog::group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
+                      age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
+                      ipdc, simd) %>%
+    tidylog::summarise(x = sum(death30),
+                       n = length(death30)) %>%
     dplyr::ungroup()
 
   # Run logistic regression
@@ -146,10 +147,10 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   smr01 %<>%
 
     # Calculate predicted probabilities
-    dplyr::mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
+    tidylog::mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
-    dplyr::filter(!is.na(pred_eq))
+    tidylog::filter(!is.na(pred_eq))
 
   return(smr01)
 
