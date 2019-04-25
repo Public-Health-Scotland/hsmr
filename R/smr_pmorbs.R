@@ -42,7 +42,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
             "diag3", "diag4", "diag5", "diag6", "pdiag_grp", "comorbs_sum",
             "epinum", "death_inhosp_max", "simd") %in% names(smr01))){
 
-    stop(paste0("smr01 object must be objected returned from smr_wrangling()",
+    stop(paste0("smr01 must be the object returned from the smr_wrangling()",
                 " function."))
   }
 
