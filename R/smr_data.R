@@ -10,8 +10,8 @@
 #' final step of a four-step process.
 #'
 #' @param smr01 Input tibble for admissions, see details.
-#' @param index A character string specifying the time level data are to be
-#' produced at. Valid options are 'month', 'quarter' and 'year'.
+#' @param index A character string specifying whether the data are to be
+#' produced monthly, quarterly or annually. Valid options are 'M', 'Q' and 'Y'.
 #' @param hospital_lookup A lookup tibble containing hospital names and
 #' location codes.
 #'
@@ -102,7 +102,7 @@ smr_data <- function(smr01,
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name))
 
-  if (index == "year"){
+  if (index == "Y"){
 
     smr_data %<>%
       tidylog::group_by(period) %>%
