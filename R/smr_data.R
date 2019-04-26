@@ -11,6 +11,8 @@
 #'
 #' @param smr01 Input tibble for admissions, see details.
 #' @param index To define whether data produced are to be quarterly or annual.
+#' @param hospital_lookup A lookup tibble containing hospital names and
+#' location codes.
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
@@ -20,7 +22,7 @@
 #' @export
 
 
-smr_data <- function(smr01, index){
+smr_data <- function(smr01, index, hospital_lookup){
 
   ### 1 - Error handling ----
 
@@ -109,7 +111,7 @@ smr_data <- function(smr01, index){
 
   # Merge data and match on location name
   smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
-    tidylog::left_join(hospitals, by = "location") %>%
+    tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name))
 
   if (index == "Y"){
