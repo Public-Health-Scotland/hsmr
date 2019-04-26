@@ -10,7 +10,8 @@
 #' final step of a four-step process.
 #'
 #' @param smr01 Input tibble for admissions, see details.
-#' @param index To define whether data produced are to be quarterly or annual.
+#' @param index A character string specifying the time level data are to be
+#' produced at. Valid options are 'month', 'quarter' and 'year'.
 #' @param hospital_lookup A lookup tibble containing hospital names and
 #' location codes.
 #'
@@ -22,7 +23,11 @@
 #' @export
 
 
-smr_data <- function(smr01, index, hospital_lookup){
+smr_data <- function(smr01,
+                     index = c("month", "quarter", "year"),
+                     hospital_lookup) {
+
+  index <- match.arg(index)
 
   ### 1 - Error handling ----
 
@@ -40,23 +45,6 @@ smr_data <- function(smr01, index, hospital_lookup){
                 " function."))
   }
 
-  if(index == "Q"){
-
-    reg_length <- 12
-
-  }
-
-  if(index == "M"){
-
-    reg_length <- 36
-
-  }
-
-  if(index == "Y"){
-
-    reg_length <- 1
-
-  }
 
   smr01 %<>%
     dplyr::rename(period_name = period) %>%
@@ -114,7 +102,7 @@ smr_data <- function(smr01, index, hospital_lookup){
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name))
 
-  if (index == "Y"){
+  if (index == "year"){
 
     smr_data %<>%
       tidylog::group_by(period) %>%
