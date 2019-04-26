@@ -23,9 +23,7 @@
 #' @export
 
 
-smr_data <- function(smr01,
-                     index = c("month", "quarter", "year"),
-                     hospital_lookup) {
+smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
 
   index <- match.arg(index)
 
