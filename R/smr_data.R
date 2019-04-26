@@ -112,7 +112,11 @@ smr_data <- function(smr01,
                       smr_scot = death_scot/pred_scot) %>%
       dplyr::ungroup() %>%
       tidylog::mutate(smr = smr/smr_scot,
-                      pred = deaths/smr)
+                      pred = deaths/smr) %>%
+
+      # Locations with an SMR of zero produce 'NaN' for pred, so replace those
+      # values of pred with zero
+      tidylog::mutate(pred = replace(pred, smr == 0, 0))
 
   }
 
