@@ -1,4 +1,4 @@
-#' @title Extract SMR data using SQL
+#' @title Extract Scottish Morbidity Record (SMR) data using SQL
 #'
 #' @description
 #'

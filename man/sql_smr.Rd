@@ -4,7 +4,7 @@
 \alias{query_smr01}
 \alias{query_smr01_minus5}
 \alias{query_gro_smr}
-\title{Extract SMR data using SQL}
+\title{Extract Scottish Morbidity Record (SMR) data using SQL}
 \usage{
 query_smr01(extract_start, extract_end)
 

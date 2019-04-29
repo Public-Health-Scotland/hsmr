@@ -1,4 +1,5 @@
-#' @title Extract SMR data for long term trends using SQL
+#' @title Extract Scottish Morbidity Record (SMR) data for long term trends
+#' using SQL
 #'
 #' @description
 #'

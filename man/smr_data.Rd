@@ -4,12 +4,16 @@
 \alias{smr_data}
 \title{Produce HSMR dataset}
 \usage{
-smr_data(smr01, index)
+smr_data(smr01, index = c("M", "Q", "Y"), hospital_lookup)
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
 
-\item{index}{To define whether data produced are to be quarterly or annual.}
+\item{index}{A character string specifying whether the data are to be
+produced monthly, quarterly or annually. Valid options are 'M', 'Q' and 'Y'.}
+
+\item{hospital_lookup}{A lookup tibble containing hospital names and
+location codes.}
 }
 \value{
 If the class is not initiated correctly, nothing is returned.

@@ -3,7 +3,8 @@
 \name{query_smr01_ltt}
 \alias{query_smr01_ltt}
 \alias{query_gro_ltt}
-\title{Extract SMR data for long term trends using SQL}
+\title{Extract Scottish Morbidity Record (SMR) data for long term trends
+using SQL}
 \usage{
 query_smr01_ltt(extract_start, extract_end)
 
