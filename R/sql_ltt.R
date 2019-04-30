@@ -9,12 +9,12 @@
 #' publication.
 #'
 #' \itemize{
-#' \item \code{query_smr01_ltt} extracts the relevant data from SMR01 from the
-#' beginning of the baseline period for the long term trend data until the end
-#' date cut off for the current publication.
+#' \item \code{query_smr01_ltt} extracts the relevant data from the SMR01
+#' database from the beginning of the baseline period for the long term trend
+#' data until the end date cut off for the current publication.
 #'
-#' \item \code{query_gro_ltt} extracts data from SMR Deaths from the beginning
-#' of the baseline period for the long term trend data.
+#' \item \code{query_gro_ltt} extracts data from the SMR Deaths database from
+#' the beginning of the baseline period for the long term trend data.
 #' }
 #'
 #' @param extract_start The extract start date, supplied with \code{Date}
