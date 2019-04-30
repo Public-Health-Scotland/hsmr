@@ -25,15 +25,15 @@ of \code{query_gro_smr}, an extract end date. They define the SQL queries
 used to extract data for the HSMR publication.
 
 \itemize{
-\item \code{query_smr01} extracts the relevant data from SMR01 from the
-beginning of the baseline period until the end date cut off for the current
-publication.
+\item \code{query_smr01} extracts the relevant data from the SMR01 database
+from the beginning of the baseline period until the end date cut off for the
+current publication.
 
-\item \code{query_smr01_minus5} extracts data from SMR01 from five
-years prior to the beginning of the baseline period until the end date cut
-off for the current publication.
+\item \code{query_smr01_minus5} extracts data from the SMR01 database from
+five years prior to the beginning of the baseline period until the end date
+cut off for the current publication.
 
-\item \code{query_gro_smr} extracts data from SMR Deaths from the beginning
-of the baseline period.
+\item \code{query_gro_smr} extracts data from the SMR Deaths database from
+the beginning of the baseline period.
 }
 }
