@@ -10,12 +10,13 @@ Maintainer: David Caldwell <david.caldwell1@nhs.net>
 Depends: R (>= 3.2.3)
 Imports: 
     data.table, 
-    dplyr, 
+    dplyr (>= 0.8.0), 
     fuzzyjoin, 
     lubridate, 
     magrittr, 
     RcppBDT, 
-    stringr, 
+    stringr,
+    testthat,
     tibble, 
     tidylog, 
     tidyr, 
