@@ -112,9 +112,9 @@ qtr_prev <- function(first_day) {
          "April, September or December")
   }
 
-  return(paste0(as.character(lubridate::month(first_day - months(3),
-                                              label = TRUE,
-                                              abbr = FALSE)),
-                " to ",
-                format(zoo::as.yearmon(first_day - months(1)),"%B %Y")))
+  paste0(as.character(lubridate::month(first_day - months(3),
+                                       label = TRUE,
+                                       abbr = FALSE)),
+         " to ",
+         format(zoo::as.yearmon(first_day - months(1)),"%B %Y"))
 }
