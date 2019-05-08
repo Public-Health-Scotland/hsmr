@@ -70,7 +70,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
 
-  # Display the date of the third last Tuesday in the month of publication
+  # Return the date of the third last Tuesday in the month of publication
   RcppBDT::getNthDayOfWeek(n - 2,
                            2,
                            lubridate::month(
