@@ -7,7 +7,7 @@
 #' probabilities.
 #'
 #'
-#' @details \code{clean_model} expects an object of class \code{"glm"}.
+#' @details \code{clean_model} expects an object of class \code{glm}.
 #'
 #'
 #' @param cm Input \code{glm}.

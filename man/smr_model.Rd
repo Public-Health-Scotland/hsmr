@@ -22,12 +22,9 @@ Carries out risk-adjustment for HSMR data.
 }
 \details{
 \code{smr_model} expects a \code{tibble} of data extracted from
-SMR01 that has already been through \code{smr_wrangling} and then
-\code{smr_pmorbs}. This is the third step of a four-step process. The final
-step is \code{smr_data}. \code{smr_model} returns the SMR01 data with a
-probability of death within 30 days of admission appended on to the file.
-}
-\examples{
-
-
+SMR01 that has already been through \code{\link{smr_wrangling}} and then
+\code{\link{smr_pmorbs}}. This is the third step of a four-step process. The
+final step is \code{\link{smr_data}}. \code{smr_model} returns the SMR01
+data with a probability of death within 30 days of admission appended on to
+the file.
 }

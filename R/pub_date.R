@@ -4,13 +4,12 @@
 #' included in the current publication. It uses this cut-off date to calculate
 #' the publication dates of the previous, current and next HSMR publications.
 #'
-#' @details \code{pub_date} accepts a single value of \code{Date} class only.
-#' The only dates it accepts are the last day of the month in March, June,
-#' September and December, as these are the only cut-off dates used in the HSMR
-#' publication.
+#' @details The publication date for HSMR is always the third last Tuesday of
+#' the month.
 #'
 #' @param end_date The cut-off date for data to be included in the current HSMR
-#' publication.
+#' publication, supplied with \code{Date} class. Must be the final day of
+#' either March, June, September or December.
 #' @param pub A character string specifying the publication of interest. Valid
 #' options are `previous`, `current` and `next`.
 #'
@@ -18,8 +17,8 @@
 #' extract_end_date <- lubridate::dmy(30092018)
 #'
 #' pub_date(end_date = extract_end_date, pub = "previous")
-#' pub_date(end_date = extract_end_date, pub = "current")
-#' pub_date(end_date = extract_end_date, pub = "next")
+#' format(pub_date(end_date = extract_end_date, pub = "current"), "%d %B %Y")
+#' format(pub_date(end_date = extract_end_date, pub = "next"), "%d/%m/%Y")
 #'
 #' @export
 
@@ -31,7 +30,9 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
     stop("The extract end date must be provided in date format")
   }
 
-  if(!(format(end_date, "%d %B") %in% c("31 March", "30 June", "30 September",
+  if(!(format(end_date, "%d %B") %in% c("31 March",
+                                        "30 June",
+                                        "30 September",
                                         "31 December"))) {
     stop("The extract end date must be the final day of either March, June, ",
          "September or December")
@@ -70,12 +71,12 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
 
   # Return the date of the third last Tuesday in the month of publication
-  return(RcppBDT::getNthDayOfWeek(n - 2,
-                                  2,
-                                  lubridate::month(
-                                    lubridate::add_with_rollback(p,
-                                                                 months(5))),
-                                  lubridate::year(
-                                    lubridate::add_with_rollback(p,
-                                                                 months(5)))))
+  RcppBDT::getNthDayOfWeek(n - 2,
+                           2,
+                           lubridate::month(
+                             lubridate::add_with_rollback(p,
+                                                          months(5))),
+                           lubridate::year(
+                             lubridate::add_with_rollback(p,
+                                                          months(5))))
 }

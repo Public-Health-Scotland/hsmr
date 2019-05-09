@@ -4,23 +4,28 @@
 #'
 #'
 #' @details \code{smr_data} expects a \code{tibble} with data extracted
-#' from SMR01 which has already been run through \code{smr_wrangling} and then
-#' \code{smr_pmorbs} and finally \code{smr_model}. The data MUST be run through
-#' these three functions first as \code{smr_data} is the final step of a
-#' four-step process.
+#' from SMR01 which has already been run through \code{\link{smr_wrangling}},
+#' then \code{\link{smr_pmorbs}} and finally \code{\link{smr_model}}. The data
+#' must be run through these three functions first as \code{smr_data} is the
+#' final step of a four-step process.
 #'
 #' @param smr01 Input tibble for admissions, see details.
-#' @param index To define whether data produced are to be quarterly or annual.
+#' @param index A character string specifying whether the data are to be
+#' produced monthly, quarterly or annually. Valid options are 'M', 'Q' and 'Y'.
+#' @param hospital_lookup A lookup tibble containing hospital names and
+#' location codes.
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
-#' @examples
-#'
+#' @importFrom dplyr %>%
+#' @importFrom magrittr %<>%
 #'
 #' @export
 
 
-smr_data <- function(smr01, index){
+smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
+
+  index <- match.arg(index)
 
   ### 1 - Error handling ----
 
@@ -38,91 +43,78 @@ smr_data <- function(smr01, index){
                 " function."))
   }
 
-  if(index == "Q"){
 
-    reg_length <- 12
-
-  }
-
-  if(index == "M"){
-
-    reg_length <- 36
-
-  }
-
-  if(index == "Y"){
-
-    reg_length <- 1
-
-  }
-
-  smr01 <- smr01 %>%
-    rename(period_name = period) %>%
-    mutate(period = as.numeric(as.factor(period_name)))
+  smr01 %<>%
+    dplyr::rename(period_name = period) %>%
+    tidylog::mutate(period = as.numeric(as.factor(period_name)))
 
 
   ### 2 - Create Scotland-level aggregation ----
 
   hsmr_scot <- smr01 %>%
-    group_by(period) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "Scotland",
-           location      = "Scot") %>%
-    ungroup()
+    tidylog::group_by(period) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "Scotland",
+                    location      = "Scot") %>%
+    dplyr::ungroup()
 
 
   ### 3 - Create Hospital-level aggregation ----
 
   hsmr_hosp <- smr01 %>%
-    group_by(period, location) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "hospital") %>%
-    ungroup() #%>%
+    tidylog::group_by(period, location) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "hospital") %>%
+    dplyr::ungroup() #%>%
 
   # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
-  # filter(location %in% )
+  # tidylog::filter(location %in% )
 
 
   ### 4 - Create HB-level aggregation ----
 
   hsmr_hb <- smr01 %>%
-    group_by(period, hbtreat_currentdate) %>%
-    summarise(deaths = sum(death30),
-              pred   = sum(pred_eq),
-              pats   = length(death30)) %>%
-    mutate(smr           = deaths/pred,
-           crd_rate      = (deaths/pats) * 100,
-           location_type = "NHS Board") %>%
-    ungroup() %>%
-    rename(location = hbtreat_currentdate)
+    tidylog::group_by(period, hbtreat_currentdate) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pred   = sum(pred_eq),
+                       pats   = length(death30)) %>%
+    tidylog::mutate(smr           = deaths/pred,
+                    crd_rate      = (deaths/pats) * 100,
+                    location_type = "NHS Board") %>%
+    dplyr::ungroup() %>%
+    dplyr::rename(location = hbtreat_currentdate)
 
 
   ### 5 - Merge dataframes and calculate regression line ----
 
   # Merge data and match on location name
-  smr_data <- bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
-    left_join(hospitals, by = "location") %>%
-    filter(!is.na(location_name))
+  smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
+    tidylog::left_join(hospital_lookup, by = "location") %>%
+    tidylog::filter(!is.na(location_name))
 
   if (index == "Y"){
 
     smr_data %<>%
-      group_by(period) %>%
-      mutate(death_scot = max(deaths),
-             pred_scot = max(pred),
-             pats_scot = max(pats),
-             smr_scot = death_scot/pred_scot) %>%
-      ungroup() %>%
-      mutate(smr = smr/smr_scot,
-             pred = deaths/smr)
+      tidylog::group_by(period) %>%
+      tidylog::mutate(death_scot = max(deaths),
+                      pred_scot = max(pred),
+                      pats_scot = max(pats),
+                      smr_scot = death_scot/pred_scot) %>%
+      dplyr::ungroup() %>%
+      tidylog::mutate(smr = smr/smr_scot,
+                      pred = deaths/smr) %>%
+
+      # Locations with an SMR of zero produce 'NaN' for pred, so replace those
+      # values of pred with zero
+      tidylog::mutate(pred = replace(pred, smr == 0, 0))
 
   }
 

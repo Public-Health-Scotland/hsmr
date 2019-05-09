@@ -20,14 +20,10 @@ HSMR model.
 }
 \details{
 \code{smr_pmorbs} expects a \code{tibble} of data extracted from
-SMR01 that has already been through \code{smr_wrangling}.
+SMR01 that has already been through \code{\link{smr_wrangling}}.
 It also expects a \code{tibble} of data extracted from SMR01 covering a
-time-period that begins five years prior to that of the data in @param smr01.
+time-period that begins five years prior to that of the data in \code{smr01}.
 This is so that the function is able to calculate the Charlson Index for
 Comorbidities weighting for the previous five years.
 It also expects a \code{tibble} for the Charlson Index lookups.
-}
-\examples{
-
-
 }

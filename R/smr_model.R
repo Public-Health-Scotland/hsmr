@@ -4,10 +4,11 @@
 #'
 #'
 #' @details \code{smr_model} expects a \code{tibble} of data extracted from
-#' SMR01 that has already been through \code{smr_wrangling} and then
-#' \code{smr_pmorbs}. This is the third step of a four-step process. The final
-#' step is \code{smr_data}. \code{smr_model} returns the SMR01 data with a
-#' probability of death within 30 days of admission appended on to the file.
+#' SMR01 that has already been through \code{\link{smr_wrangling}} and then
+#' \code{\link{smr_pmorbs}}. This is the third step of a four-step process. The
+#' final step is \code{\link{smr_data}}. \code{smr_model} returns the SMR01
+#' data with a probability of death within 30 days of admission appended on to
+#' the file.
 #'
 #'
 #' @param smr01 Input tibble for admissions, see details.
@@ -17,9 +18,8 @@
 #' through the logistic regression model.
 #' @param index To define whether data produced are to be quarterly or annual.
 #'
-#'
-#' @examples
-#'
+#' @importFrom dplyr %>%
+#' @importFrom magrittr %<>%
 #'
 #' @export
 
@@ -52,16 +52,17 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   if(index == "M"){
 
     smr01 %<>%
-      mutate(month = paste(lubridate::month(admission_date),
-                           lubridate::year(admission_date), sep = "-")) %>%
-      rename(period = month)
+      tidylog::mutate(month = paste(lubridate::month(admission_date),
+                                    lubridate::year(admission_date),
+                                    sep = "-")) %>%
+      dplyr::rename(period = month)
 
   }
 
   if(index == "Q"){
 
     smr01 %<>%
-      rename(period = quarter)
+      dplyr::rename(period = quarter)
 
   }
 
@@ -73,11 +74,11 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                    "January 2011 to December 2014 (4 whole years)."))
 
     smr01 %<>%
-      mutate(period = case_when(
-        admission_date < start_date + years(1) ~ 1,
-        admission_date >= start_date + years(1) &
-          admission_date <= end_date - years(1) ~ 2,
-        admission_date > end_date - years(1) ~ 3
+      tidylog::mutate(period = dplyr::case_when(
+        admission_date < start_date + lubridate::years(1) ~ 1,
+        admission_date >= start_date + lubridate::years(1) &
+          admission_date <= end_date - lubridate::years(1) ~ 2,
+        admission_date > end_date - lubridate::years(1) ~ 3
       ))
 
   }
@@ -87,22 +88,22 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   # Select first episode of final CIS for each patient
   smr01 %<>%
-    filter(!is.na(pdiag_grp)) %>%
-    group_by(link_no, period) %>%
-    mutate(last_cis = max(cis_marker)) %>%
-    ungroup() %>%
-    filter(epinum == 1 & cis_marker == last_cis) %>%
+    tidylog::filter(!is.na(pdiag_grp)) %>%
+    tidylog::group_by(link_no, period) %>%
+    tidylog::mutate(last_cis = max(cis_marker)) %>%
+    dplyr::ungroup() %>%
+    tidylog::filter(epinum == 1 & cis_marker == last_cis) %>%
 
     # Remove rows where SIMD, admfgrp and ipdc are missing as variables are
     # required for modelling/predicted values
-    filter(simd %in% 1:7) %>%
-    filter(admfgrp %in% 1:6) %>%
-    filter(ipdc %in% 1:2) %>%
+    tidylog::filter(simd %in% 1:7) %>%
+    tidylog::filter(admfgrp %in% 1:6) %>%
+    tidylog::filter(ipdc %in% 1:2) %>%
 
     # If a patient dies within 30 days of admission in two subsequent quarters
     # then remove the second record to avoid double counting deaths
-    filter(!(link_no == c(0, head(link_no, -1)) &
-               1 == c(0, head(death30, -1))))
+    tidylog::filter(!(link_no == c(0, head(link_no, -1)) &
+                        1 == c(0, head(death30, -1))))
 
 
 
@@ -112,41 +113,44 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
   data_lr <- smr01 %>%
 
     # Select baseline period rows
-    filter(admission_date >= base_start & admission_date <= base_end) %>%
+    tidylog::filter(admission_date >= base_start &
+                      admission_date <= base_end) %>%
 
     # Select required variables for model
-    select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-           spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd, death30) %>%
+    tidylog::select(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
+                    age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
+                    ipdc, simd, death30) %>%
 
     # Calculate total number of deaths and total number of patients for each
     # combination of variables
-    group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum, age_in_years, sex,
-             spec_grp, pdiag_grp, admfgrp, admgrp, ipdc, simd) %>%
-    summarise(x = sum(death30),
-              n = length(death30)) %>%
-    ungroup()
+    tidylog::group_by(n_emerg, comorbs_sum, pmorbs1_sum, pmorbs5_sum,
+                      age_in_years, sex, spec_grp, pdiag_grp, admfgrp, admgrp,
+                      ipdc, simd) %>%
+    tidylog::summarise(x = sum(death30),
+                       n = length(death30)) %>%
+    dplyr::ungroup()
 
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
-                        pmorbs5_sum + age_in_years + factor(sex) +
-                        factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
-                        factor(admgrp) + factor(ipdc) + factor(simd),
-                      data = data_lr,
-                      family = "binomial",
-                      model = FALSE,
-                      y = FALSE)
+                      pmorbs5_sum + age_in_years + factor(sex) +
+                      factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
+                      factor(admgrp) + factor(ipdc) + factor(simd),
+                    data = data_lr,
+                    family = "binomial",
+                    model = FALSE,
+                    y = FALSE)
 
-  # Delete unnecessary model information using bespoke function in order to retain
-  # special class of object for predicted probabilities below
-  risk_model <- clean_model(risk_model)
+  # Delete unnecessary model information using bespoke function in order to
+  # retain special class of object for predicted probabilities below
+  risk_model <- hsmr::clean_model(risk_model)
 
   smr01 %<>%
 
     # Calculate predicted probabilities
-    mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
+    tidylog::mutate(pred_eq = predict.glm(risk_model, ., type = "response")) %>%
 
     # Remove rows with no probability calculated
-    filter(!is.na(pred_eq))
+    tidylog::filter(!is.na(pred_eq))
 
   return(smr01)
 

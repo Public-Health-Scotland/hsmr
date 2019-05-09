@@ -4,12 +4,16 @@
 \alias{smr_data}
 \title{Produce HSMR dataset}
 \usage{
-smr_data(smr01, index)
+smr_data(smr01, index = c("M", "Q", "Y"), hospital_lookup)
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
 
-\item{index}{To define whether data produced are to be quarterly or annual.}
+\item{index}{A character string specifying whether the data are to be
+produced monthly, quarterly or annually. Valid options are 'M', 'Q' and 'Y'.}
+
+\item{hospital_lookup}{A lookup tibble containing hospital names and
+location codes.}
 }
 \value{
 If the class is not initiated correctly, nothing is returned.
@@ -19,12 +23,8 @@ Returns the minimal tidy data set for the HSMR dataset.
 }
 \details{
 \code{smr_data} expects a \code{tibble} with data extracted
-from SMR01 which has already been run through \code{smr_wrangling} and then
-\code{smr_pmorbs} and finally \code{smr_model}. The data MUST be run through
-these three functions first as \code{smr_data} is the final step of a
-four-step process.
-}
-\examples{
-
-
+from SMR01 which has already been run through \code{\link{smr_wrangling}},
+then \code{\link{smr_pmorbs}} and finally \code{\link{smr_model}}. The data
+must be run through these three functions first as \code{smr_data} is the
+final step of a four-step process.
 }

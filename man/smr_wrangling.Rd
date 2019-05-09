@@ -4,7 +4,7 @@
 \alias{smr_wrangling}
 \title{Initial Wrangling for HSMR data}
 \usage{
-smr_wrangling(smr01, gro, pdiags, postcode, morbs)
+smr_wrangling(smr01, gro, pdiags, postcode, morbs, spec)
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
@@ -16,6 +16,8 @@ smr_wrangling(smr01, gro, pdiags, postcode, morbs)
 \item{postcode}{Input tibble for deprivation lookup.}
 
 \item{morbs}{Input tibble for the charlson index for comorbidities lookup.}
+
+\item{spec}{Input tibble for for specialty groupings lookup.}
 }
 \description{
 Creates the majority of necessary variables to be used in the
@@ -24,12 +26,8 @@ HSMR model.
 \details{
 \code{smr_wrangling} expects a \code{tibble} of data extracted from
 SMR01. It also expects \code{tibbles} of data extracted from the GRO deaths
-database and lookups for primary diagnosis, postcode(deprivation) and
-morbidities (comorbs_sum). This is the first step in a four-step process. The
-next steps are \code{smr_pmorbs} then \code{smr_model} and finally
-\code{smr_data}.
-}
-\examples{
-
-
+database and lookups for primary diagnosis, postcode (for deprivation) and
+morbidities (comorbs_sum). This is the first step in a four-step process.
+The next steps are \code{\link{smr_pmorbs}}, then \code{\link{smr_model}}
+and finally \code{\link{smr_data}}.
 }
