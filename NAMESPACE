@@ -2,6 +2,7 @@
 
 export(clean_model)
 export(create_trends)
+export(funnel_text)
 export(pub_date)
 export(qtr)
 export(qtr_end)
