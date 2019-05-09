@@ -5,3 +5,12 @@
 
 # 'data' folder #
 data/
+
+# Markdown output
+ISD-NATIONAL-STATS-REPORT.docx
+ISD-NATIONAL-STATS-SUMMARY.docx
+
+# Images
+*.png
+*.jpg
+*.jpeg

@@ -15,8 +15,22 @@
 # Approximate run time - xx minutes
 #########################################################################
 
+### 1 - Load packages ----
+library(odbc)          # For accessing SMRA databases
+library(data.table)    # For fast data manipulations
+library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in SPSS files
+library(readr)         # For reading in csv files
+library(janitor)       # For 'cleaning' variable names
+library(magrittr)      # For %<>% operator
+library(lubridate)     # For dates
+library(tidyr)         # For data manipulation in the "tidy" way
+library(fuzzyjoin)     # For fuzzy joins
+library(stringr)       # For string manipulation and matching
+library(ggplot2)       # For ggplot objects
+library(hsmr)          # For HSMR functions
 
-### 1 - Define Whether Running on Server or Locally ----
+### 2 - Define Whether Running on Server or Locally ----
 # Comment out as appropriate
 platform <- c("server")
 #platform <- c("locally")
@@ -29,7 +43,7 @@ plat_filepath <- dplyr::if_else(platform == "server",
                                 '//stats/cl-out/')
 
 
-### 2 - Extract dates ----
+### 3 - Extract dates ----
 
 
 # Define the dates that the data are extracted from and to
