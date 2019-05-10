@@ -15,10 +15,11 @@ smr_data          <- read_csv(here("data/output",
          uwl = 1 + 1.96 * st_err,
              ucl = 1 + 2.99 * st_err,
              lwl = 1 - 1.96 * st_err,
-             lcl = 1 - 2.99 * st_err)
+             lcl = 1 - 2.99 * st_err) 
 
 trend_data <- read_csv("data/output/mtd_trends.csv") %>%
-  filter(!is.na(label)) 
+  filter(!is.na(label)) %>% 
+  arrange(hb2014, label, quarter) %>% mutate(quarter_full = forcats::fct_reorder(quarter_full, quarter))
 
 completeness_date <- case_when(month(end_date) == 12 & 
                                  year(end_date + days(1)) %% 4 != 0 ~ 
@@ -31,6 +32,16 @@ completeness_date <- case_when(month(end_date) == 12 &
                                                              year(end_date) + 1)
                                )
 
+completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ", 
+                                                              year(end_date +
+                                                                     days(1))),
+                               month(end_date) == 3 ~ paste0("30 June ", 
+                                                             year(end_date)),
+                               month(end_date) == 6 ~ paste0("30 September ",
+                                                             year(end_date)),
+                               month(end_date) == 9 ~ paste0("31 December ",
+                                                             year(end_date)))
+
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes(x = pred, y = smr)) + 
   geom_point() + 
   coord_cartesian(ylim = c(0,2.5)) + 
@@ -38,13 +49,7 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes(x = 
   geom_line(aes(x = pred, y = uwl)) + 
   geom_line(aes(x = pred, y = lwl)) + 
   geom_line(aes(x = pred, y = lcl)) +
-  geom_line(aes(x = pred, y = 1)) +
-  theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
-    panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 12))
+  geom_line(aes(x = pred, y = 1)) + ISD_style()
 
 
 chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"), aes(
@@ -56,7 +61,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"), aes(
     panel.grid.major.y = element_blank(),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 12))
+    axis.text = element_text(size = 12, angle= 90))
 
 chart_3 <- ggplot(trend_data %>% filter(label == "Elective" | label == "Non-Elective"), aes(x = quarter_full, y = crd_rate)) +
   geom_line(aes(group=label)) +
@@ -291,11 +296,11 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "Heading 2_pgbrk">Main Points</div>
 
 `r funnel_text(smr_data)`
-* Over the three year period October 2013 to September 2018, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
+* Over the five year period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission. 
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Almost two-thirds of deaths within 30-days of admission take place in the community with the other third of deaths in-hospital.
-*	The next update, reporting on admissions to 31st December 2018, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
+*	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
 <Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
 During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
