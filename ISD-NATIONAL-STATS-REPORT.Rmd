@@ -15,7 +15,10 @@ smr_data          <- read_csv(here("data/output",
          uwl = 1 + 1.96 * st_err,
              ucl = 1 + 2.99 * st_err,
              lwl = 1 - 1.96 * st_err,
-             lcl = 1 - 2.99 * st_err) 
+             lcl = 1 - 2.99 * st_err) %>% 
+  mutate(flag = case_when(smr > ucl ~ 2,
+                          smr > uwl & smr <= ucl ~ 1,
+                          TRUE ~ 0))
 
 trend_data <- read_csv("data/output/mtd_trends.csv") %>%
   filter(!is.na(label)) %>% 
@@ -654,6 +657,29 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Summary Hospital-level Mortality Indicator (SHMI)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
+
+<Div custom-style = "Heading 2_pgbrk">A2 - Quarterly Process </div>
+Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
+
+There are three key stages to this quarterly process which include other indicators of quality. 
+
+**Stage One: HSMR Management Information Tool**
+
+The initial production of the HSMR Management Information Tool involves the systematic review of the data by representatives from ISD and HIS. The purpose of the review is to identify potential patterns in the data and to initiate a dialogue with NHS Boards where appropriate. As the emphasis remains on local ownership of the data, a guidance document has been prepared jointly by Healthcare Improvement Scotland, the Information Services Division, Scottish Patient Safety Programme, and the Quality Improvement Hub.  
+
+By releasing information via the management tool first, NHS Boards have an opportunity to gain a greater understanding of some of the implications of the fairly complex adjustments that were applied in the model and to reconcile this with their own local data and intelligence.  
+
+**Stage Two: Official Statistics Publication of HSMR for Scotland **
+
+The first Official Statistics release of the information was in June 2010, when a set of abbreviated summary tables were published on a dedicated website and linked to the main ISD site. The timing of the publication has been altered to better synchronise with the availability of death data from National Records of Scotland and to optimise the timeliness of reporting. See the section on Timeliness for further information. 
+The publication has been expanded to include more substantial commentary and context, including a look at stratified patterns of mortality at Scotland level and longer-term trends. There is also more commentary on the evolution of the measure in Scotland; where it came from, where we are now and where we are headed. We also take a more comprehensive look at how the Scottish HSMR compares to similar measures in other parts of the UK.  
+
+**Stage Three: Hospital Scorecard**  
+
+The Hospital Scorecard is a management information product commissioned by the Scottish Government’s Directorate for Health Performance and Delivery. The scorecard incorporates HSMR with a series of other indicators, some of which are already routinely published. The other indicators are readmissions, length of stay, hospital acquired infection rates, A&E waiting times and patient experience. The purpose of the scorecard is to provide an overview with different indicators synchronised to a common point in time. A major benefit of using a scorecard approach is that it addresses concerns raised about governance processes based on the review of HSMR alone.  
+
+A summary of the processes and key dates for the latest quarterly cycle is shown in the table below.
+
 
 <Div custom-style = "Heading 3_pgbrk">Appendix 2 – Publication Metadata</div>
 <br>
