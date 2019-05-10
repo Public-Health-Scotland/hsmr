@@ -194,6 +194,29 @@ glossary2 <- c("Hospital Standardised Mortality Ratio",
 glossary <- data.frame(glossary1, glossary2)
 ```
 
+```{r Table3, echo = FALSE, message = FALSE, warning = FALSE, error =  FALSE}
+
+C1 <- c("**Patients**",
+        "**Deaths**",
+        "**Adjustments**")
+
+C2 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
+        "Deaths within 30 days of admission to an acute hospital (wherever they occur); In-hospital deaths occurring beyond 30-days are excluded.
+",
+        "CCS group (primary diagnosis)/ Specialty (medical or surgical) / age / sex / admitted from / number and severity of prior morbidities in the previous (i) 12 months (ii) 5-years / number and severity of co-morbidities on admitting episode / number of emergency admissions in the previous 12 months / inpatient or day case / type of admission (elective / non-elective)/ deprivation")
+
+C3 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
+        "All deaths occurring in hospital; and deaths within 30 days of discharge from acute hospital (wherever they occur)",
+        "Age/ sex/ admission type/ CCS group (diagnosis) / comorbidity (modified Charlson score) ")
+
+C4 <- c("One patient observation per spell attributed to each acute trust involved in care. Only patients with a diagnosis that falls within 56 diagnosis groups are included (~80% of all activity)",
+        "All inpatient and day case deaths in hospital ",
+        "Age/ sex/ admission type/ CCS group (diagnosis) / comorbidity (modified Charlson score)/ deprivation/ previous emergency admissions / palliative care (specialty code 315; ICD10 code Z515/source of admission) ")
+
+Table3 <- data.frame(C1, C2, C3, C4)
+
+```
+
 ```{r MetaData, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
 Indicator <- c("**Publication title**",
 "**Description**",
@@ -581,6 +604,56 @@ The limits are wider at the left hand side of the graph because the data points 
 An overdispersion factor has been applied to the limits reduce the effect of possibly false outliers. This is discussed in more detail in the Scottish HSMR Technical Document.
 
 
+#### Inter-UK Comparisons: England and Wales 
+
+There is more than one measure routinely produced and used in England and Wales for the measurement of hospital mortality – HSMR and SHMI.  
+
+**HSMR – England and Wales**
+What is now commonly referred to as HSMR indicator, was developed by Imperial College and is now routinely produced by Dr Foster Intelligence for England and Wales. This was a first for the UK in terms of national coverage and the development of the Scottish model was, initially, largely informed by the work done in England for this indicator.  
+
+For England and Wales there is an emphasis on comparisons made between a trust’s HSMR and the national average. This is also similar to the current Scottish approach, although trends in unadjusted mortality still form a significant part of our publication report and commentary.
+
+**Summary Hospital-level Mortality Indicator (SHMI)**
+More recently other alternatives have become available, most notably the Summary Hospital-level Mortality Indicator (SHMI) (Department of Health / NHS Information Centre).  
+
+The SHMI was developed in collaboration with the Department of Health and overseen by an expert reference group. Its development followed publication of the first Francis report into Mid Staffordshire Hospital which included a recommendation for an NHS-owned and produced summary hospital mortality indicator.  
+
+Like the HSMR in Scotland, the SHMI is updated and published quarterly and is based on a statistical model developed from the national hospital dataset (equivalent to the SMR01 in Scotland), which calculates for each hospital how many deaths would be expected to occur if they were like the national average at that point in time. 
+The model takes into account a number of factors such as differences in age, sex, diagnosis, type of admission and other diseases (co-morbidity). This figure is then compared with the number of deaths that did occur in the hospital and the SHMI is the ratio between the two. SHMI acknowledges that there are unaccounted for factors affecting mortality in hospitals and recognition that there is random variation in the number of deaths as we do in Scotland. Chart 8 showed the crude mortality in Scotland over time according to the same definition as SHMI.  
+
+In England the SHMI model is re-calibrated every quarter so comparisons that are made against the average are appropriate and relevant for each point in time. As of August 2019, Scotland moved to a similar approach of re-calibrating every quarter using a rolling three year base period.  
+
+However, the two approaches still differ significantly and therefore, no direct comparison can be made between HSMRs for England and Scotland.
+
+**England and Wales SHMI and HSMR comparison**
+There are three key differences between the SHMI and the Dr Foster HSMR used in England and Wales  
+
+*	The proportion of in-hospital deaths included in the index – this is all deaths in the SHMI but only 80% in the HSMR
+*	The inclusion of deaths outside acute hospitals in the SHMI but not in the HSMR
+*	The factors adjusted for vary between the two indicators
+
+**Comparison with Scotland**
+Regardless of the method, one message holds true for both the Scottish and English / Welsh approaches. That is, a high or higher than expected HSMR/SHMI should be a trigger for further investigation as on its own it cannot be taken to imply a poorly performing hospital or poor quality of care nor can it rule out quality issues or high levels of avoidable mortality.  
+
+A measure of uncertainty is calculated for the SHMI and the NHS Information Centre calculates statistical bands to help decide when the SHMI for any trust exceeds expected limits. There is a scientific debate about how best to calculate these bands, so two different methods have been used.  
+
+In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (run-chart) methodologies. See section on Quarterly Process for more information.  
+
+As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving ISD, HIS and Scottish Government.  
+
+One important difference between the SHMI and other publicly available measures of hospital mortality in England is the inclusion of deaths within 30 days of discharge wherever they occur, not just in the hospital. There are other differences such as the proportion of all in hospital deaths included, and factors taken into account in the statistical model.  
+
+In Scotland, the HSMR has focussed only on deaths within 30-days of admission (but includes deaths in the community). It differs therefore from both SHMI and Dr Fosters HSMR in that respect alone.  Also the adjustment factored into the different models varies, although they are very similar in many respects.  
+
+Table 3 shows a summary of some of the key comparisons between the English and Scottish approaches. 
+
+<Div custom-style = "Heading 3_pgbrk">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
+```{r kable_Table3, echo = FALSE}
+
+knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
+"**England and Wales Summary Hospital-level Mortality Indicator (SHMI)**",
+"**England and Wales Dr Foster (HSMR)**"))
+```
 
 <Div custom-style = "Heading 3_pgbrk">Appendix 2 – Publication Metadata</div>
 <br>
