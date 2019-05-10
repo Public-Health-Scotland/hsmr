@@ -170,7 +170,15 @@ ggsave("Chart_8.png", plot = chart_8, width = 17.49, height = 9.03, units = "cm"
 
 ```
 
+```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
+url_list <- data.frame(a = c(1, 2, 3, 4), 
+             url = c(paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date),"/Table1.xls"), 
+                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date),"/Table2.xls"),
+                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date),"/Table3.xls"),
+                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date),"/Table4.xls")), 
+             stringsAsFactors = FALSE)
 
+```
 
 
 ```{r glossary, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
@@ -302,7 +310,7 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "Heading 2_pgbrk">Main Points</div>
 
 `r funnel_text(smr_data)`
-* Over the five year period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
+* Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission. 
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Almost two-thirds of deaths within 30-days of admission take place in the community with the other third of deaths in-hospital.
@@ -311,7 +319,8 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
 During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
 
-The main changes made to the HSMR methodology at this time were:
+The main changes made to the HSMR methodology at this time were:  
+
 *	Moving to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 *	Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
 *	Use less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
@@ -320,7 +329,8 @@ A **[Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indica
 
 <Div custom-style = "Heading 2_pgbrk">Interpreting HSMR results</div>
 ### Time in point comparison
-The Scottish HSMR is 1.00:
+The Scottish HSMR is 1.00:  
+
 *	If an HSMR value for a hospital is less than one: This means the number of deaths within 30 days of admission for this hospital is fewer than predicted.
 *	If an HSMR value for a hospital is greater than one: This means the number of deaths within 30 days for this hospital is more than predicted. 
 
@@ -357,7 +367,7 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 Chart 1 shows the funnel plot for the latest 12 month period. Individual hospitals can be identified using the key under the graph, which lists the hospitals in the order in which they are plotted along the horizontal axis. This shows that there are no hospitals above the upper control limit which is three standard deviations above the Scottish average. 
 
 <Div custom-style = "Heading 4">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r qtr_end(start_date, "current")`</div>
-The data relating to this chart can be found in TableA1c
+The data relating to this chart can be found in [Table1](`r url_list[1, "url"]`))
 ![Test alt text](Funnel_Plot.png)
 
 <Div custom-style = "Heading 2_pgbrk">2 Trends at Scotland Level</div>
