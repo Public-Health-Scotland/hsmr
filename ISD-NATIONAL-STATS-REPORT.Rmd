@@ -7,7 +7,9 @@ output:
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
 # Load config filepaths
 source("setup_environment.R")
-smr_data          <- read_csv("data/output/SMR_data.csv") %>% 
+smr_data          <- read_csv(here("data/output",
+                          paste0(pub_date(end_date = end_date, pub = "current"),
+                                 "_SMR-data.csv"))) %>% 
   filter(period == 3) %>% 
   mutate(st_err = sqrt(1/pred),
          uwl = 1 + 1.96 * st_err,
@@ -205,34 +207,34 @@ Indicator <- c("**Publication title**",
 "**Date form completed**")
 
 Description <- c("Hospital Standardised Mortality Ratios",
-"",
-"",
-"",
-"",
-"",
-"DD Month YYYY",
-"DD Month YYYY",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
-"",
+"Quarterly release of HSMR trends at Scotland, NHS Board and Hospital levels between Jan-Mar 2011 and Jul-Sep 2018. Also includes analyses of crude mortality trends over the longer term between Oct-Dec 2008 and Jul-Sep 2018.",
+"Health and Social Care, Mortality",
+"Quality Indicators",
+"Web Publication",
+"SMR01/NRS Death Registrations – Linked Database",
+completeness_date,
+format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
+"Quarterly",
+"Quarterly reporting periods from Oct-Dec 2008 to Jul-Sep 2018 (one-quarter reporting lag)",
+"SMR01 has recorded data in current form since April 2007",
+"The publication contains a refresh of previously reported data to reflect additional source data that has been received since last publication. ",
+"This release of HSMR continues to use the updated methodology; it is not comparable to previous releases using the old methodology",
+"Contains sections on Data Source, Methodology and Development",
+"Quality improvement and assurance.",
+"Quality assured by NHS Boards (management information version of reports) and ISD",
+"Approximately 99% for the latest quarter.",
+"Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England. ",
+"It is the policy of ISD Scotland to make its websites and products accessible according to published guidelines.",
+"Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology. ",
+"Ratio of observed over predicted deaths (HSMR); Crude and Standardised Mortality (expressed as percentage of patients that die within 30-days of admission)",
+"The ISD protocol on Statistical Disclosure Protocol is followed",
+"National Statistic",
+"Assessment report published (ref no. 249). Confirmed as National Statistics April 2014",
 format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
 format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
-"DD Month YYYY",
-"",
-"DD Month YYYY")
+"June 2010",
+"NSS.isdQualityIndicators@nhs.net",
+format(Sys.time(), "%d %B %Y"))
 
 MetaData <- data.frame(Indicator, Description)
 ```
