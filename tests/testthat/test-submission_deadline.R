@@ -9,5 +9,11 @@ test_that("Submission deadlines are correct for Nov 18 + Feb and May 19 pubs", {
                submission_deadline(end_date = lubridate::dmy(30092018)))
   expect_equal(lubridate::dmy(11042019),
                submission_deadline(end_date = lubridate::dmy(31122018)))
+})
 
+test_that("Errors if extract end date is not in date format", {
+  expect_error(submission_deadline("2019-09-30"))
+  expect_error(submission_deadline(as.factor("2019-09-30")))
+  expect_error(submission_deadline(as.numeric(lubridate::dmy(31032018))))
+  expect_error(submission_deadline(as.integer(lubridate::dmy(31032018))))
 })
