@@ -1,6 +1,7 @@
 library(hsmr)
 context("qtr")
 
+
 test_that("Returns correct quarter in correct format", {
   expect_equal("Jan-Mar 2018",
                qtr(first_day = lubridate::dmy(01012018), format = "short"))
