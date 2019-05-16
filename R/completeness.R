@@ -66,9 +66,8 @@ completeness <- function(quarter = c("previous", "current"),
       tidyr::unite(var, sep = " ") %>%
       dplyr::pull()
 
-    return(pander::pandoc.list(b,
-                               style = 'bullet',
-                               add.end.of.list = FALSE))
+    return(b)
+
 }
 
   if (level == "scotland") {
