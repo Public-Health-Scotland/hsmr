@@ -57,7 +57,7 @@ completeness <- function(quarter = c("previous", "current"),
     b <- h %>%
       dplyr::slice(-dplyr::n()) %>%
       dplyr::filter_at(dplyr::vars(dplyr::last_col()),
-                       dplyr::any_vars(. < 0.99)) %>%
+                       dplyr::any_vars(. < 0.95)) %>%
       dplyr::mutate_at(dplyr::vars(dplyr::last_col()),
                        function(x) paste0("(",
                                           scales::percent(as.numeric(x),
