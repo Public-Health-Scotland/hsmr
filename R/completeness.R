@@ -1,7 +1,11 @@
-library(magrittr)
+#' @importFrom dplyr %>%
+#' @importFrom magrittr %<>%
+#'
+#' @export
 
 completeness <- function(quarter = c("previous", "current"),
-                         level = c("board", "scotland")) {
+                         level = c("board", "scotland"),
+                         first_day) {
 
   quarter <- match.arg(quarter)
   level <- match.arg(level)
@@ -66,7 +70,27 @@ completeness <- function(quarter = c("previous", "current"),
       tidyr::unite(var, sep = " ") %>%
       dplyr::pull()
 
-    return(b)
+
+    if (length(b) == 0) {
+
+      return(paste0("All NHS Board HSMRs are based on completeness levels of ",
+                    "95% and above for ",
+                    dplyr::if_else(quarter == "previous",
+                                   hsmr::qtr_prev(first_day = first_day),
+                                   hsmr::qtr(first_day = first_day,
+                                             format = "long"))))
+    } else {
+
+      return(cat("All NHS Board HSMRs are based on completeness levels of",
+                 "95% and above for",
+                 dplyr::if_else(quarter == "previous",
+                                hsmr::qtr_prev(first_day = first_day),
+                                hsmr::qtr(first_day = first_day,
+                                          format = "long")),
+                 "with the exception of:",
+                 "\n",
+                 paste("\U2022", b, "\n")))
+    }
 
 }
 
