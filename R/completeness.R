@@ -66,14 +66,10 @@ completeness <- function(quarter = c("previous", "current"),
       tidyr::unite(var, sep = " ") %>%
       dplyr::pull()
 
-    if(length(b) == 0) {
-
-      return(paste0("All NHS Board HSMRs are based on completeness levels of",
-                    "95% and above for October-December2018"))
-    }
-
-    return(pander::pandoc.list(b, style = 'bullet', add.end.of.list = FALSE))
-  }
+    return(pander::pandoc.list(b,
+                               style = 'bullet',
+                               add.end.of.list = FALSE))
+}
 
   if (level == "scotland") {
 
