@@ -44,7 +44,7 @@ completeness <- function(quarter = c("previous", "current"),
                                       nhs_board == "All NHS Boards",
                                       "Scotland"))
 
-  if(quarter == "previous") {
+  if (quarter == "previous") {
 
     h <- comp %>%
       dplyr::select(nhs_board, dplyr::last_col(offset = 1))
