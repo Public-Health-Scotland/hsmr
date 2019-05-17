@@ -73,12 +73,12 @@ completeness <- function(quarter = c("previous", "current"),
 
     if (length(b) == 0) {
 
-      return(paste0("All NHS Board HSMRs are based on completeness levels of ",
-                    "95% and above for ",
-                    dplyr::if_else(quarter == "previous",
-                                   hsmr::qtr_prev(first_day = first_day),
-                                   hsmr::qtr(first_day = first_day,
-                                             format = "long"))))
+      return(cat("All NHS Board HSMRs are based on completeness levels of",
+                 "95% and above for",
+                 dplyr::if_else(quarter == "previous",
+                                hsmr::qtr_prev(first_day = first_day),
+                                hsmr::qtr(first_day = first_day,
+                                          format = "long"))))
     } else {
 
       return(cat("All NHS Board HSMRs are based on completeness levels of",
