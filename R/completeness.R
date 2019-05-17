@@ -7,6 +7,18 @@ completeness <- function(quarter = c("previous", "current"),
                          level = c("board", "scotland"),
                          first_day) {
 
+  if (class(first_day) != "Date") {
+    stop("The first day of the quarter must be provided in date format")
+  }
+
+  if(!(format(first_day, "%d %B") %in% c("01 January",
+                                         "01 April",
+                                         "01 July",
+                                         "01 October"))) {
+    stop("The beginning of a quarter must be the first day of either January, ",
+         "April, September or December")
+  }
+
   quarter <- match.arg(quarter)
   level <- match.arg(level)
 
