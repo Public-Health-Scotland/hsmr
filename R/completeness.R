@@ -56,16 +56,16 @@ completeness <- function(quarter = c("previous", "current"),
                                       nhs_board == "All NHS Boards",
                                       "Scotland"))
 
-  last_months <- colnames(comp)[2:3]
+  last_month <- colnames(comp)[2:3]
 
-  last_months <- unlist(stringr::str_split(last_months, "_"))
+  last_month <- unlist(stringr::str_split(last_month, "_"))
 
-  last_months <- format(zoo::as.yearmon(last_months, "%b%y"), "%B %Y")
+  last_month <- format(zoo::as.yearmon(last_month, "%b%y"), "%B %Y")
 
-  last_months <- dplyr::last(last_months)
+  last_month <- dplyr::last(last_month)
 
   if (!(hsmr::qtr_end(first_day = first_day,
-                      quarter = "current") == last_months)) {
+                      quarter = "current") == last_month)) {
     stop("Only the first day of the current quarter can be supplied")
   }
 
