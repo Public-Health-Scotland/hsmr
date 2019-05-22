@@ -98,27 +98,30 @@ completeness <- function(quarter = c("previous", "current"),
 
     if (length(b) == 0) {
 
-      return(cat("All NHS Board HSMRs are based on completeness levels of",
-                 "95% and above for",
-                 paste0(dplyr::if_else(quarter == "previous",
-                                       hsmr::qtr_prev(first_day = first_day),
-                                       hsmr::qtr(first_day = first_day,
-                                                 format = "long")),
-                        ".")))
+      return(capture.output(
+        cat("All NHS Board HSMRs are based on completeness levels of 95% and",
+            "above for",
+            dplyr::if_else(quarter == "previous",
+                           hsmr::qtr_prev(first_day = first_day),
+                           hsmr::qtr(first_day = first_day,
+                                     format = "long")))))
     } else {
 
-      return(cat("All NHS Board HSMRs are based on completeness levels of",
-                 "95% and above for",
-                 dplyr::if_else(quarter == "previous",
-                                hsmr::qtr_prev(first_day = first_day),
-                                hsmr::qtr(first_day = first_day,
-                                          format = "long")),
-                 "with the exception of:",
-                 "\n",
-                 paste("\U2022", b, "\n")))
+      return(capture.output(
+        cat("All NHS Board HSMRs are based on completeness levels of 95% and",
+            "above for",
+            dplyr::if_else(quarter == "previous",
+                           hsmr::qtr_prev(first_day = first_day),
+                           hsmr::qtr(first_day = first_day,
+                                     format = "long")),
+            "with the exception of",
+            stringi::stri_replace_last_fixed(
+              stringr::str_c(sort(b), collapse = ", "),
+              ", ",
+              " and "))))
     }
 
-}
+  }
 
   if (level == "scotland") {
 
