@@ -26,10 +26,11 @@ completeness <- function(quarter = c("previous", "current"),
 
   httr::GET(url = paste0("https://www.isdscotland.org/products-and-Services/",
                          "Data-Support-and-Monitoring/SMR-Completeness/_docs/",
-                         "SMR-Estimates.xlsx"),
+                         "SMR_Estimates.xlsx"),
             httr::write_disk(tmp))
 
-  comp <- readxl::read_xlsx(tmp, range = "B29:AF47", col_names = FALSE) %>%
+  comp <- suppressMessages(
+    readxl::read_xlsx(tmp, range = "B29:AF47", col_names = FALSE)) %>%
     janitor::clean_names()
 
   comp[1,] <- t(dplyr::select(
@@ -71,19 +72,19 @@ completeness <- function(quarter = c("previous", "current"),
 
   if (quarter == "previous") {
 
-    h <- comp %>%
+    comp %<>%
       dplyr::select(nhs_board, dplyr::last_col(offset = 1))
   }
 
   if (quarter == "current") {
 
-    h <- comp %>%
+    comp %<>%
       dplyr::select(nhs_board, dplyr::last_col())
   }
 
   if (level == "board") {
 
-    b <- h %>%
+    comp %<>%
       dplyr::slice(-dplyr::n()) %>%
       dplyr::filter_at(dplyr::vars(dplyr::last_col()),
                        dplyr::any_vars(. < 0.95)) %>%
@@ -96,7 +97,7 @@ completeness <- function(quarter = c("previous", "current"),
       dplyr::pull()
 
 
-    if (length(b) == 0) {
+    if (length(comp) == 0) {
 
       return(capture.output(
         cat("All NHS Board HSMRs are based on completeness levels of 95% and",
@@ -116,7 +117,7 @@ completeness <- function(quarter = c("previous", "current"),
                                      format = "long")),
             "with the exception of",
             stringi::stri_replace_last_fixed(
-              stringr::str_c(sort(b), collapse = ", "),
+              stringr::str_c(sort(comp), collapse = ", "),
               ", ",
               " and "))))
     }
@@ -125,13 +126,13 @@ completeness <- function(quarter = c("previous", "current"),
 
   if (level == "scotland") {
 
-    b <- h %>%
+    comp %<>%
       dplyr::slice(dplyr::n()) %>%
       dplyr::mutate_at(dplyr::vars(dplyr::last_col()),
                        function(x) scales::percent(as.numeric(x),
                                                    accuracy = 1)) %>%
       dplyr::pull(-1)
 
-    return(b)
+    return(comp)
   }
 }
