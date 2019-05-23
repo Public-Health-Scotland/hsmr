@@ -49,7 +49,7 @@ base_end          <- lubridate::dmy(31122018)
 start_date_5      <- lubridate::dmy(01012011)
 
 # First day of current publication quarter
-first_day         <- lubridate::dmy(01102018)
+first_day         <- lubridate::dmy(01012019)
 
 # End date for the cut off for data
 end_date          <- lubridate::dmy(31122018)
