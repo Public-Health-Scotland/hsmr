@@ -88,8 +88,8 @@ completeness <- function(quarter = c("previous", "current"),
 
   last_month <- dplyr::last(last_month)
 
-  if (!(hsmr::qtr_end(first_day = first_day,
-                      quarter = "current") == last_month)) {
+  if (hsmr::qtr_end(first_day = first_day,
+                    quarter = "current") != last_month) {
     stop("Only the first day of the current quarter can be supplied")
   }
 
