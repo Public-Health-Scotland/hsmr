@@ -45,7 +45,7 @@ contact <- data.frame(contact1, contact2)
 ## Subtitle
 #### A National Statistics publication for Scotland
 
-#### Pulication date: DD Month YYYY
+#### Publication date: DD Month YYYY
 ##### RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy
 
 ### About this release
