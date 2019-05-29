@@ -27,8 +27,9 @@ funnel_text <- function(smr_data){
 
   if(n_hosps == 0){
 
-    output <- c("* There are no hospitals above the upper control limit of 3 ",
-                "standard deviations above the Scottish average.")
+    output <- paste0("* There are no hospitals above the ",
+                     "upper control limit of 3 ",
+                     "standard deviations above the Scottish average.")
 
   }
 

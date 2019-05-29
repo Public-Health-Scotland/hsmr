@@ -5,7 +5,7 @@
 \title{minimal tidy data set for long term trends in crude mortality report
 production.}
 \usage{
-create_trends(smr01, gro, pop, dep)
+create_trends(smr01, gro, pop, dep, spec)
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
