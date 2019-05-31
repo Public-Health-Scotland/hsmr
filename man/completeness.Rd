@@ -11,7 +11,21 @@ completeness(quarter = c("previous", "current"), level = c("board",
 \item{quarter}{Should completeness data be returned for the current quarter,
 or the previous one?}
 
-\item{level}{Should completeness data be returned at board level,}
+\item{level}{Should completeness data be returned at board or Scotland level?}
+
+\item{first_day}{The first_day of the latest quarter. Must be the first day
+of either January, April, July or October. Only one value of \code{first_day}
+is valid at any one time. When the spreadsheet is updated with a new
+quarter's data, the previously valid value of \code{first_day} will now
+return an error, and a new value (the previous value + 3 months) should be
+supplied instead.}
+}
+\value{
+When \code{level} is set equal to \code{board}, \code{completeness}
+returns a sentence listing the boards which had an SMR01 completeness level
+of less than 95 percent for the specified \code{quarter}. When \code{level}
+is set equal to \code{scotland}, \code{completeness} returns Scotland's SMR01
+completeness level for the specified \code{quarter} as a percentage.
 }
 \description{
 \code{completeness} takes the first day of the latest quarter
