@@ -6,8 +6,9 @@ output:
 
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
 # Load config filepaths
-source(here("setup_environment.R"))
-smr_data          <- read_csv(here("data/output",
+source(here::here("setup_environment.R"))
+smr_data          <- read_csv(here("data",
+                                   "output",
                           paste0(pub_date(end_date = end_date, pub = "current"),
                                  "_SMR-data.csv"))) %>% 
   filter(period == 3 & 
@@ -27,7 +28,8 @@ smr_data          <- read_csv(here("data/output",
                           smr > uwl & smr <= ucl ~ "1",
                           TRUE ~ "0"))
 
-trend_data <- read_csv(here("data/output",
+trend_data <- read_csv(here("data",
+                            "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
                                    "_trends-data.csv"))) %>%
