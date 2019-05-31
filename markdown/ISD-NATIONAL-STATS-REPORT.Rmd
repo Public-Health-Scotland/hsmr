@@ -5,8 +5,10 @@ output:
 ---
 
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
-# Load config filepaths
+# Load environment file
 source(here::here("setup_environment.R"))
+
+# Read in SMR data, filtered on latest period/reported hospitals
 smr_data          <- read_csv(here("data",
                                    "output",
                           paste0(pub_date(end_date = end_date, pub = "current"),
@@ -19,15 +21,20 @@ smr_data          <- read_csv(here("data",
              "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
              "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
              "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
+  
+  # Calculate funnel limits for funnel plot
   mutate(st_err = sqrt(1/pred),
          uwl = 1 + 1.96 * st_err,
              ucl = 1 + 2.99 * st_err,
              lwl = 1 - 1.96 * st_err,
              lcl = 1 - 2.99 * st_err) %>% 
+  
+  # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
                           TRUE ~ "0"))
 
+# Read in trends data for charting, filtering out missing data
 trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
@@ -36,12 +43,16 @@ trend_data <- read_csv(here("data",
   filter(!is.na(label)) %>% 
   arrange(hb2014, label, quarter) 
 
+# Extract latest row for all admissions/discharge at Scotland from the trends 
+# data. Could maybe be put into a function but works like this for now
 latest_deaths_admission <- trend_data %>% 
   filter(hb2014 == "Scotland" & label == "All Admissions" & quarter == 20)
   
 latest_deaths_discharge <- trend_data %>% 
   filter(hb2014 == "Scotland" & label == "Discharge" & quarter == 20)
 
+# Calculates completeness date (has been put into a function on another branch
+# so will be obsolete/should be deleted once merged)
 completeness_date <- case_when(month(end_date) == 12 & 
                                  year(end_date + days(1)) %% 4 != 0 ~ 
                                  paste0("11 April ", year(end_date + days(1))),
@@ -53,6 +64,7 @@ completeness_date <- case_when(month(end_date) == 12 &
                                                              year(end_date) + 1)
                                )
 
+# Calculates the end date for a quarter in string format
 completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ", 
                                                               year(end_date +
                                                                      days(1))),
@@ -63,13 +75,15 @@ completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ",
                                month(end_date) == 9 ~ paste0("31 December ",
                                                              year(end_date)))
 
-
+# Loads scales package for ggplot2 (could maybe be added to environment file?)
 library(scales)
 
+# Create custom colour palette for the trend charts
 trend_palette <- scale_color_manual(values = c("#26456E", "#43719F", "#5485B2", 
                                                "#6A9BC3", "#79AACF", "#92C0DF", 
                                                "#B9DDF1"))
 
+## FUNNEL PLOT ##
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
                                 "#ffbc79", "#c85302"), guide = FALSE) +
