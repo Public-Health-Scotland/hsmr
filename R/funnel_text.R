@@ -33,11 +33,22 @@ funnel_text <- function(smr_data){
 
   }
 
+  if(n_hosps == 1){
+
+    output <- paste0("* There is one hospital above the upper control limit ",
+                     "of 3 standard deviations above the Scottish average",
+                     ": ", paste0(smr_data$location_name, " (",
+                                  round(smr_data$smr, 2), ")",
+                                          collapse = ", "))
+
+  }
+
   if(n_hosps > 1){
 
     output <- paste0("* There are ", n_hosps, " above the upper control limit ",
-                     "of 3 standard deviations above the Scottish average. ",
-                     "They are: ", paste0(smr_data$location_name,
+                     "of 3 standard deviations above the Scottish average",
+                     ": ", paste0(smr_data$location_name, " (",
+                                  round(smr_data$smr, 2), ")",
                                           collapse = ", "))
 
   }
