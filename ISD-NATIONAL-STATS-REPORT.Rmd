@@ -521,10 +521,6 @@ HSMR data are provided by ISD to allow an individual hospital to monitor its mor
 ## Combined Institutions
 In order to reflect current service configuration, some hospitals are presented as combined institutions for the purposes of these reports. This applies to the following NHS Boards.  
 
-*	**NHS Fife**: In order to reflect current service configuration, the HSMRs for Queen Margaret Hospital and Victoria Hospital have been combined. This change has been applied to all time points retrospectively back to the initial reporting period. Gynaecology activity from the former Forth Park Hospital has also been retrospectively incorporated within this new NHS Fife combined HSMR; obstetric activity is not included in the definition of the Scottish HSMR. 
-
-*	**NHS Forth Valley**: In order to reflect current service configuration, the HSMRs for the former Falkirk & District Royal Infirmary, Stirling Royal Infirmary and the new Forth Valley Royal Hospital are combined. This change has been applied to all time points retrospectively back to the initial reporting period. 
-
 *	**NHS Greater Glasgow and Clyde**: In order to reflect current service configuration, the HSMRs for Stobhill Hospital and Glasgow Royal Infirmary have been combined as have the activity for Royal Alexandra Hospital and Vale of Leven. These changes have been applied to all time points retrospectively back to the initial reporting period. In addition NHS Greater Glasgow & Clyde combine any activity (historic or current) from Blawarthill Hospital, Drumchapel Hospital, Glasgow Homoeopathic Hospital, Knightswood Hospital, and Beatson Oncology Centre with West Glasgow Hospital data. Please note that the Queen Elizabeth University Hospital opened to patients in April 2015, with services from the Southern General, old Victoria Infirmary and old Western Infirmary/ Gartnavel transferred to this new hospital.  
 Individual hospital level data for any combined sites are available on request.
 
