@@ -19,6 +19,8 @@
 #' submission_deadline(end_date = extract_end_date)
 #' format(submission_deadline(end_date = extract_end_date), "%d %B %Y")
 #' format(submission_deadline(end_date = extract_end_date), "%d/%m/%Y")
+#'
+#' @export
 
 
 submission_deadline <- function(end_date) {
