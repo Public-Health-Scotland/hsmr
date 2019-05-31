@@ -1,3 +1,25 @@
+#' @title SMR01 completeness
+#'
+#' @description \code{completeness} takes the first day of the latest quarter
+#' of data which are included in the current HSMR publication. It extracts
+#' completeness information for the SMR01 dataset from the
+#' \href{https://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring/SMR-Completeness/_docs/SMR_Estimates.xlsx}{SMR Completeness Estimates spreadsheet}
+#' published on the
+#' \href{https://www.isdscotland.org/}{ISD website}. It extracts the
+#' completeness percentages for the two most recent quarters for all health
+#' boards and Scotland.
+#'
+#' @details The \code{completeness} function assumes that the list of health
+#' board names (including Scotland) is contained in cells B31:B47 in the
+#' spreadsheet. Should this change, the function should be edited accordingly.
+#'
+#' The URL of the spreadsheet is occasionally modified. Should this happen, the
+#' function should again be edited accordingly.
+#'
+#' @param quarter Should completeness data be returned for the current quarter,
+#' or the previous one?
+#' @param level Should completeness data be returned at board level,
+#'
 #' @importFrom dplyr %>%
 #' @importFrom magrittr %<>%
 #'
