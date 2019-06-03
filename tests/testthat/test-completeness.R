@@ -12,18 +12,18 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
     tail(
       unlist(
         stringr::str_match_all(
-          hsmr::completeness("current",
-                             "board",
-                             qtr_start),
+          completeness("current",
+                       "board",
+                       qtr_start),
           "[0-9]+")), -2))
 
   numbers_prev <- as.numeric(
     tail(
       unlist(
         stringr::str_match_all(
-          hsmr::completeness("previous",
-                             "board",
-                             qtr_start),
+          completeness("previous",
+                       "board",
+                       qtr_start),
           "[0-9]+")), -2))
 
   # If no boards have SMR01 completeness < 95%, set equal to zero, so the tests
