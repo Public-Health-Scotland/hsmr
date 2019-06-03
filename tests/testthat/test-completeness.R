@@ -93,3 +93,24 @@ test_that("Errors if supplied with date that isn't first day of a quarter", {
                             first_day = lubridate::dmy(30062013)))
 })
 
+test_that("Errors if supplied with first day of a past quarter", {
+
+  # These tests were written for the 2019-08-13 publication, at which point
+  # 2019-01-01 was the first day of the most recent quarter of data included in
+  # the publication
+  # All dates prior to this should produce an error, including those which were
+  # the first day of a quarter
+
+  expect_error(completeness(quarter = "current",
+                            level = "board",
+                            first_day = lubridate::dmy(01102018)))
+  expect_error(completeness(quarter = "current",
+                            level = "scotland",
+                            first_day = lubridate::dmy(01072018)))
+  expect_error(completeness(quarter = "previous",
+                            level = "board",
+                            first_day = lubridate::dmy(01012010)))
+  expect_error(completeness(quarter = "previous",
+                            level = "scotland",
+                            first_day = lubridate::dmy(01041996)))
+})
