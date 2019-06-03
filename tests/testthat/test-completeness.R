@@ -8,22 +8,22 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
   # Extract all percentages from the returned output for both the current and
   # previous quarters
   # Remove the first one as this should always be 95%
-  numbers_current <- as.numeric(
+  numbers_current <- readr::parse_number(
     tail(
       unlist(
         stringr::str_match_all(
-          completeness("current",
-                       "board",
-                       qtr_start),
+          completeness(quarter = "current",
+                       level = "board",
+                       first_day = qtr_start),
           "\\d+\\%")), -1))
 
-  numbers_prev <- as.numeric(
+  numbers_prev <- readr::parse_number(
     tail(
       unlist(
         stringr::str_match_all(
-          completeness("previous",
-                       "board",
-                       qtr_start),
+          completeness(quarter = "previous",
+                       level = "board",
+                       first_day = qtr_start),
           "\\d+\\%")), -1))
 
   # If no boards have SMR01 completeness < 95%, set equal to zero, so the tests
@@ -42,24 +42,38 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
 })
 
 test_that("SMR01 completeness for Scotland is displayed as percentage", {
-  expect_match(completeness("current", "scotland", qtr_start), "%")
-  expect_match(completeness("previous", "scotland", qtr_start), "%")
+  expect_match(completeness(quarter = "current",
+                            level = "scotland",
+                            first_day = qtr_start),
+               "%")
+  expect_match(completeness(quarter = "previous",
+                            level = "scotland",
+                            first_day = qtr_start),
+               "%")
 })
 
 test_that("SMR01 completeness for Scotland never exceeds 100%", {
-  expect_lte(readr::parse_number(completeness("current",
-                                              "scotland",
-                                              qtr_start)),
+  expect_lte(readr::parse_number(completeness(quarter = "current",
+                                              level = "scotland",
+                                              first_day = qtr_start)),
              100)
-  expect_lte(readr::parse_number(completeness("previous",
-                                              "scotland",
-                                              qtr_start)),
+  expect_lte(readr::parse_number(completeness(quarter = "previous",
+                                              level = "scotland",
+                                              first_day = qtr_start)),
              100)
 })
 
 test_that("Errors if first day of latest quarter is not in date format", {
-  expect_error(completeness("current", "board", "2019-01-01"))
-  expect_error(completeness("current", "scotland", as.factor("2017-10-01")))
-  expect_error(completeness("previous", "board", as.numeric("2018-04-01")))
-  expect_error(completeness("previous", "scotland", as.integer("2012-07-01")))
+  expect_error(completeness(quarter = "current",
+                            level = "board",
+                            first_day = "2019-01-01"))
+  expect_error(completeness(quarter = "current",
+                            level = "scotland",
+                            first_day = as.factor("2017-10-01")))
+  expect_error(completeness(quarter = "previous",
+                            level = "board",
+                            first_day = as.numeric(lubridate::dmy(01042018))))
+  expect_error(completeness(quarter = "previous",
+                            level = "scotland",
+                            first_day = as.integer(lubridate::dmy(01072012))))
 })
