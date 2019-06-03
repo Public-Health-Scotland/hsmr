@@ -13,7 +13,7 @@ or the previous one?}
 
 \item{level}{Should completeness data be returned at board or Scotland level?}
 
-\item{first_day}{The first_day of the latest quarter. Must be the first day
+\item{first_day}{The first day of the latest quarter. Must be the first day
 of either January, April, July or October. Only one value of \code{first_day}
 is valid at any one time. When the spreadsheet is updated with a new
 quarter's data, the previously valid value of \code{first_day} will now
