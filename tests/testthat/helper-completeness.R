@@ -65,4 +65,4 @@ first_month <- format(zoo::as.yearmon(first_month, "%b%y"), "%B %Y")
 first_month <- first_month[3]
 
 # Calculate the start date of the most recent quarter
-qtr_start <- lubridate::as_date(zoo::as.yearmon(last_month))
+qtr_start <- lubridate::as_date(zoo::as.yearmon(first_month))
