@@ -24,6 +24,6 @@ test_that("Errors if extract end date is not in date format", {
 
 test_that("Errors if extract end date is not final day of a quarter", {
   expect_error(pub_date(end_date = lubridate::dmy(01072018), pub = "previous"))
-  expect_error(pub_date(end_date = lubridate::dmy(31092018), pub = "current"))
+  expect_error(pub_date(end_date = lubridate::dmy(15092018), pub = "current"))
   expect_error(pub_date(end_date = lubridate::dmy(30122018), pub = "next"))
 })
