@@ -115,11 +115,8 @@ completeness <- function(quarter = c("previous", "current"),
   # Calculate the final month in the most recent quarter, to ensure that the
   # function can only be used on the two most recent quarters
   last_month <- colnames(comp)[2:3]
-
   last_month <- unlist(stringr::str_split(last_month, "_"))
-
   last_month <- format(zoo::as.yearmon(last_month, "%b%y"), "%B %Y")
-
   last_month <- dplyr::last(last_month)
 
   if (hsmr::qtr_end(first_day = first_day,
@@ -159,7 +156,6 @@ completeness <- function(quarter = c("previous", "current"),
       tidyr::unite(var, sep = " ") %>%
       dplyr::pull()
 
-
     if (length(comp) == 0) {
 
       # If all boards have >= 95% completeness, return a sentence saying that
@@ -187,7 +183,6 @@ completeness <- function(quarter = c("previous", "current"),
               ", ",
               " and "))))
     }
-
   }
 
   if (level == "scotland") {
