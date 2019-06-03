@@ -19,7 +19,7 @@
 #' @param quarter Should completeness data be returned for the current quarter,
 #' or the previous one?
 #' @param level Should completeness data be returned at board or Scotland level?
-#' @param first_day The first_day of the latest quarter. Must be the first day
+#' @param first_day The first day of the latest quarter. Must be the first day
 #' of either January, April, July or October. Only one value of \code{first_day}
 #' is valid at any one time. When the spreadsheet is updated with a new
 #' quarter's data, the previously valid value of \code{first_day} will now
