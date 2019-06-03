@@ -40,3 +40,15 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
     expect_lt(numbers_prev[j], 95)
   }
 })
+
+
+test_that("SMR01 completeness for Scotland never exceeds 100%", {
+  expect_lte(readr::parse_number(completeness("current",
+                                              "scotland",
+                                              qtr_start)),
+             100)
+  expect_lte(readr::parse_number(completeness("previous",
+                                              "scotland",
+                                              qtr_start)),
+             100)
+})
