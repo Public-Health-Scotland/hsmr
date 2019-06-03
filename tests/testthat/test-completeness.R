@@ -5,9 +5,9 @@ context("completeness")
 
 test_that("Output returns boards only with SMR01 completeness < 95%", {
 
-  # Extract all numbers from the returned output for both the current and
+  # Extract all percentages from the returned output for both the current and
   # previous quarters
-  # Remove the first two as these should always be '95%' and the year
+  # Remove the first one as this should always be 95%
   numbers_current <- as.numeric(
     tail(
       unlist(
@@ -15,7 +15,7 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
           completeness("current",
                        "board",
                        qtr_start),
-          "[0-9]+")), -2))
+          "\\d+\\%")), -1))
 
   numbers_prev <- as.numeric(
     tail(
@@ -24,7 +24,7 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
           completeness("previous",
                        "board",
                        qtr_start),
-          "[0-9]+")), -2))
+          "\\d+\\%")), -1))
 
   # If no boards have SMR01 completeness < 95%, set equal to zero, so the tests
   # pass
@@ -41,6 +41,10 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
   }
 })
 
+test_that("SMR01 completeness for Scotland is displayed as percentage", {
+  expect_match(completeness("current", "scotland", qtr_start), "%")
+  expect_match(completeness("previous", "scotland", qtr_start), "%")
+})
 
 test_that("SMR01 completeness for Scotland never exceeds 100%", {
   expect_lte(readr::parse_number(completeness("current",
@@ -51,4 +55,11 @@ test_that("SMR01 completeness for Scotland never exceeds 100%", {
                                               "scotland",
                                               qtr_start)),
              100)
+})
+
+test_that("Errors if first day of latest quarter is not in date format", {
+  expect_error(completeness("current", "board", "2019-01-01"))
+  expect_error(completeness("current", "scotland", as.factor("2017-10-01")))
+  expect_error(completeness("previous", "board", as.numeric("2018-04-01")))
+  expect_error(completeness("previous", "scotland", as.integer("2012-07-01")))
 })
