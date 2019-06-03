@@ -77,3 +77,19 @@ test_that("Errors if first day of latest quarter is not in date format", {
                             level = "scotland",
                             first_day = as.integer(lubridate::dmy(01072012))))
 })
+
+test_that("Errors if supplied with date that isn't first day of a quarter", {
+  expect_error(completeness(quarter = "current",
+                            level = "board",
+                            first_day = lubridate::dmy(01112018)))
+  expect_error(completeness(quarter = "current",
+                            level = "scotland",
+                            first_day = lubridate::dmy(13122000)))
+  expect_error(completeness(quarter = "previous",
+                            level = "board",
+                            first_day = lubridate::dmy(02012016)))
+  expect_error(completeness(quarter = "previous",
+                            level = "scotland",
+                            first_day = lubridate::dmy(30062013)))
+})
+
