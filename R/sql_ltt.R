@@ -100,8 +100,8 @@ query_smr01_ltt <- function(extract_start, extract_end) {
         "extract(year from admission_date) AS year",
         "from SMR01_PI",
         "where ADMISSION_DATE BETWEEN",
-        "{d", shQuote(start_date_trends, type = "sh"),"}",
-        "AND {d", shQuote(end_date, type = "sh"),"}",
+        "TO_DATE(", shQuote(start_date_trends, type = "sh"),", 'yyyy-mm-dd')",
+        "AND TO_DATE(", shQuote(end_date, type = "sh"),", 'yyyy-mm-dd')",
         "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE,",
         "ADMISSION, DISCHARGE, URI")
 }
@@ -128,6 +128,6 @@ query_gro_ltt <- function(extract_start) {
         "extract(year from DATE_OF_DEATH) AS year",
         "from ANALYSIS.GRO_DEATHS_C",
         "where DATE_OF_DEATH >=",
-        "{d", shQuote(start_date_trends, type = "sh"),", 'yyyy-mm-dd'}",
+        "TO_DATE(", shQuote(start_date_trends, type = "sh"),", 'yyyy-mm-dd')",
         "ORDER BY LINK_NO")
 }
