@@ -128,6 +128,6 @@ query_gro_ltt <- function(extract_start) {
         "extract(year from DATE_OF_DEATH) AS year",
         "from ANALYSIS.GRO_DEATHS_C",
         "where DATE_OF_DEATH >=",
-        "{d", shQuote(start_date_trends, type = "sh"),"}",
+        "{d", shQuote(start_date_trends, type = "sh"),", 'yyyy-mm-dd'}",
         "ORDER BY LINK_NO")
 }
