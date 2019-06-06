@@ -204,6 +204,23 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::mutate(label = "All Admissions",
            hbtreat_currentdate = "Scotland")
 
+  # Crude Rates (Hosp) - All Admissions
+  hosp_all_adm <- smr01 %>%
+    tidylog::group_by(quarter, location, quarter_full, quarter_short) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(label = "All Admissions") %>%
+    dplyr::rename(hbtreat_currentdate = location)
+
+  # Crude Rates (HB) - All Admissions
+  hb_all_adm <- smr01 %>%
+    tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(label = "All Admissions")
+
   # Crude Rates (Scotland) - Specialty/Admission type
   scot_adm <- smr01 %>%
     tidylog::group_by(quarter, quarter_full, quarter_short, admgrp) %>%
@@ -306,8 +323,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
                     label)
 
   # Merge dataframes together
-  scot_subgroups <- dplyr::bind_rows(scot_all_adm, scot_age,
-                              scot_sex, scot_adm,
+  scot_subgroups <- dplyr::bind_rows(scot_all_adm, hb_all_adm, hosp_all_adm,
+                                     scot_age, scot_sex, scot_adm,
                               scot_dep, scot_spec, scot_place_of_death) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb2014 = hbtreat_currentdate) %>%
