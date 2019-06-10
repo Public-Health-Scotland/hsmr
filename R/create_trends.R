@@ -389,7 +389,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
 
 
   # Create minimal tidy dataset
-  long_term_trends <- dplyr::bind_rows(scot_subgroups, dis, pop_deaths)
+  long_term_trends <- dplyr::bind_rows(scot_subgroups, dis, pop_deaths) %>%
+    mutate(completeness_date = submission_deadline(end_date))
 
   return(long_term_trends)
 
