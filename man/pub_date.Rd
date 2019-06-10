@@ -2,7 +2,7 @@
 % Please edit documentation in R/pub_date.R
 \name{pub_date}
 \alias{pub_date}
-\title{Obtain HSMR publication date}
+\title{HSMR publication date}
 \usage{
 pub_date(end_date, pub = c("previous", "current", "next"))
 }
