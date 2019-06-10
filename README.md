@@ -27,6 +27,7 @@ These folders also contain up-to-date copies of the repository and these are the
 
 The hsmr publication process has been wrapped up inside an R package and so a number of files/folders within the repository are there to facilitate this. 
 
+#### Folders
 * **.git:** This is the folder containing the version control history of the repository. It can be safely ignored.
 * **.Rpoj.user:** Where project-specific temporary filse are saved. This can be safely ignored. 
 * **data:** This is where the output is saved. This folder is not tracked by git and so it is safe to have data stored here. 
@@ -35,6 +36,8 @@ The hsmr publication process has been wrapped up inside an R package and so a nu
 * **R:** Where the functions are stored. 
 * **reference_files:** Reference files/lookups specific to the package and not generic files are stored here e.g. the primary diagnosis groupings lookup.
 * **tests:** Testing files for the package functions are saved here. This can be safely ignored. 
+
+#### Files
 * **.gitignore:** Any files that should not be tracked by git should be added to this file. 
 * **.Rbuildignore::** This can be safely ignored. 
 * **create_smr_data.R:** This is the script which uses the package to produce the SMR data for the publication.
