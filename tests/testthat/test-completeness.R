@@ -32,13 +32,8 @@ test_that("Output returns boards only with SMR01 completeness < 95%", {
   numbers_prev <- replace(numbers_prev, length(numbers_prev) == 0, 0)
 
   # Check that every returned percentage is < 95
-  for (i in 1:length(numbers_current)) {
-    expect_lt(numbers_current[i], 95)
-  }
-
-  for (j in 1:length(numbers_prev)) {
-    expect_lt(numbers_prev[j], 95)
-  }
+  expect_true(all(numbers_current < 95))
+  expect_true(all(numbers_prev < 95))
 })
 
 test_that("SMR01 completeness for Scotland is displayed as percentage", {
