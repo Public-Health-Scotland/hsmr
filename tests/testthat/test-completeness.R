@@ -1,6 +1,7 @@
 library(hsmr)
 context("completeness")
 
+
 # qtr_start is calculated in the helper script
 
 test_that("Output returns boards only with SMR01 completeness < 95%", {
