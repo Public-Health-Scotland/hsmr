@@ -202,6 +202,7 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
               pats   = length(death30)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
+                    sub_grp = "All Admissions",
            hbtreat_currentdate = "Scotland")
 
   # Crude Rates (Hosp) - All Admissions
@@ -210,7 +211,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
     dplyr::ungroup() %>%
-    tidylog::mutate(label = "All Admissions") %>%
+    tidylog::mutate(label = "All Admissions",
+                    sub_grp = "All Admissions") %>%
     dplyr::rename(hbtreat_currentdate = location)
 
   # Crude Rates (HB) - All Admissions
@@ -219,7 +221,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
     dplyr::ungroup() %>%
-    tidylog::mutate(label = "All Admissions")
+    tidylog::mutate(label = "All Admissions",
+                    sub_grp = "All Admissions")
 
   # Crude Rates (Scotland) - Specialty/Admission type
   scot_adm <- smr01 %>%
@@ -231,7 +234,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       admgrp == 1 ~ "Elective",
       admgrp == 2 ~ "Non-Elective"
     ),
-    hbtreat_currentdate = "Scotland") %>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Admission Type") %>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -249,7 +253,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       age_grp == 4 ~ "60-79 years",
       age_grp == 5 ~ "80+ years"
     ),
-    hbtreat_currentdate = "Scotland")%>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Age Group")%>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -264,7 +269,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       sex == 1 ~ "Male",
       sex == 2 ~ "Female"
     ),
-    hbtreat_currentdate = "Scotland")%>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Sex")%>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -278,7 +284,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       death_inhosp_max == 1 ~ "Died in Hospital",
       death_inhosp_max == 0 ~ "Died in Community"
     ),
-    hbtreat_currentdate = "Scotland")%>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Place of Death")%>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -297,7 +304,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       simd == 4   ~ "4",
       simd == 5   ~ "5 - Least Deprived"
     ),
-    hbtreat_currentdate = "Scotland") %>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Deprivation") %>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -318,7 +326,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       spec_grp == 7   ~ "Emergency",
       spec_grp == 8   ~ "Women & Newborn"
     ),
-    hbtreat_currentdate = "Scotland") %>%
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Specialty") %>%
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
                     label)
 
@@ -328,7 +337,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
                               scot_dep, scot_spec, scot_place_of_death) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb2014 = hbtreat_currentdate) %>%
-    tidylog::select(hb2014, quarter, quarter_full, quarter_short, deaths, pats, crd_rate, label)
+    tidylog::select(hb2014, quarter, quarter_full, quarter_short, deaths, pats,
+                    crd_rate, sub_grp, label)
 
   # Crude Rate - Date of Discharge (Scotland)
   scot_dis <- smr01 %>%
