@@ -21,13 +21,29 @@ smr_data          <- read_csv(here("data",
              "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
              "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
              "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
-  
-  # Calculate funnel limits for funnel plot
   mutate(st_err = sqrt(1/pred),
-         uwl = 1 + 1.96 * st_err,
-             ucl = 1 + 2.99 * st_err,
-             lwl = 1 - 1.96 * st_err,
-             lcl = 1 - 2.99 * st_err) %>% 
+       z = if_else(location_type == "hospital",
+                   ((smr - 1)/st_err),
+                   0)) %>%
+  mutate(
+    z_max = max(z),
+    z_min = min(z),
+    z_flag = case_when(z == z_max ~ 1,
+                       z == z_min ~ -1,
+                       TRUE ~ 0),
+    z = if_else(z == z_max | z == z_min, 0, z),
+    z_max = max(z),
+    z_min = min(z),
+    z = case_when(z_flag == 1 ~ z_max,
+                  z_flag == -1 ~ z_min,
+                  TRUE ~ z),
+    z_flag = if_else(z != 0, 1, 0),
+    w_score = sqrt(sum(z * z)/sum(z_flag))) %>%
+  # Calculate funnel limits for funnel plot
+  mutate(    uwl = 1 + 1.96 * st_err * w_score,
+             ucl = 1 + 2.99 * st_err * w_score,
+             lwl = 1 - 1.96 * st_err * w_score,
+             lcl = 1 - 2.99 * st_err * w_score) %>% 
   
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
