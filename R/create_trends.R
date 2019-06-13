@@ -171,7 +171,13 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
                       lubridate::days(1),
            death30_dis = dplyr::case_when(
              dplyr::between(dthdays_dis, 0, 30) ~ 1,
-             TRUE ~ 0)) %>%
+             TRUE ~ 0),
+           depth_of_coding = dplyr::case_when(
+             !is.na(other_condition_3)                            ~ 3,
+             is.na(other_condition_3) & !is.na(other_condition_2) ~ 2,
+             is.na(other_condition_2) & !is.na(other_condition_1) ~ 1,
+             TRUE                                                 ~ 0
+           )) %>%
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date) %>%
     tidylog::group_by(link_no, quarter) %>%
     tidylog::mutate(last_cis = max(cis_marker)) %>%
@@ -274,6 +280,23 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
                     deaths, pats, sub_grp, label)
 
+  # Crude Rates (Scotland) - Depth of Coding
+  scot_depth <- smr01 %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short, depth_of_coding) %>%
+    tidylog::summarise(deaths = sum(death30),
+                       pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(label = dplyr::case_when(
+      depth_of_coding == 0 ~ "0",
+      depth_of_coding == 1 ~ "1",
+      depth_of_coding == 2 ~ "2",
+      depth_of_coding == 3 ~ "3+"
+    ),
+    hbtreat_currentdate = "Scotland",
+    sub_grp = "Depth of Coding")%>%
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
+
   # Crude Rates (Scotland) Place of Death
   scot_place_of_death <- smr01 %>%
     tidylog::group_by(quarter, quarter_full, quarter_short, death_inhosp_max) %>%
@@ -334,7 +357,7 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
 
   # Merge dataframes together
   scot_subgroups <- dplyr::bind_rows(scot_all_adm, hb_all_adm, hosp_all_adm,
-                                     scot_age, scot_sex, scot_adm,
+                                     scot_age, scot_sex, scot_adm, scot_depth,
                               scot_dep, scot_spec, scot_place_of_death) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb2014 = hbtreat_currentdate) %>%
