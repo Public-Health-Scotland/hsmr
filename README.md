@@ -42,8 +42,13 @@ The hsmr publication process has been wrapped up inside an R package and so a nu
 * **.Rbuildignore::** This can be safely ignored. 
 * **create_smr_data.R:** This is the script which uses the package to produce the SMR data for the publication.
 * **create_trends_data.R:** This is the script which uses the package to produce the long term trends data for the publication.
+* **create_excel_tables.R:** This is the script which uses the package to produce the excel tables. 
 * **DESCRIPTION:** This is metadata for the R package. If the package is ever updated, the version number should be updated here.
-*  
+
+
+## Running the publciation 
+
+### Updating the code
 
 The package is designed to require as little human intervention as possible. To update the publication each quarter, the analyst responsible for updating the scripts/running the publication should complete the following steps:
 
@@ -56,4 +61,18 @@ The package is designed to require as little human intervention as possible. To 
 * Once changes have been approved, merge the branch into the master and delete
 * If no more changes are required, pull the updated master branch into the **master folder**
 
+### Running the code
 
+* In the master folder, open up `create_smr_data.R`, highlight the entire script and run
+* Check for any errors and investigate if necessary
+* check the output in [folder] looks as it should
+* In the master folder, open up `create_trends_data.R`, highlight the entire script and run
+* As above, check for any errors and look at the output to see if it looks as it should do
+* Open `create_excel_tables.R`, highglight the entire script and run
+
+Once this step is done, the raw data files and Excel tables for the publication have been produced. The final step is knitting the markdown documents, but that can't be done until the completeness figures are available. Once that is done:
+
+* In master/markdown, open both `.Rmd` scripts and click "knit"
+* Check output
+
+The raw output files from this process also feed into the Tableau dashboard, so once they are ready, they should be moved to the appropriate folder. 
