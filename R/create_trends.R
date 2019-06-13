@@ -236,8 +236,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Admission Type") %>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
 
   # Crude Rates (Scotland) - Age group
@@ -255,8 +255,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Age Group")%>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
 
   # Crude Rates (Scotland) - Sex
@@ -271,8 +271,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Sex")%>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
   # Crude Rates (Scotland) Place of Death
   scot_place_of_death <- smr01 %>%
@@ -286,8 +286,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Place of Death")%>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
 
   # Crude Rates (Scotland) - Deprivation
@@ -306,8 +306,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Deprivation") %>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
   # Crude Rates (Scotland) - Specialty
   scot_spec <- smr01 %>%
@@ -328,8 +328,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Specialty") %>%
-    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short, deaths, pats,
-                    label)
+    tidylog::select(hbtreat_currentdate, quarter, quarter_full, quarter_short,
+                    deaths, pats, sub_grp, label)
 
   # Merge dataframes together
   scot_subgroups <- dplyr::bind_rows(scot_all_adm, hb_all_adm, hosp_all_adm,
@@ -347,7 +347,8 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
               pats   = length(death30_dis)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label      = "Discharge",
-           hbtreat_currentdate = "Scotland")
+           hbtreat_currentdate = "Scotland",
+           sub_grp = "Discharge")
 
   # Crude Rate - Date of Discharge (NHS Board)
   hb_dis <- smr01 %>%
@@ -355,13 +356,15 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::summarise(deaths = sum(death30_dis),
               pats   = length(death30_dis)) %>%
     dplyr::ungroup() %>%
-    tidylog::mutate(label     = "Discharge")
+    tidylog::mutate(label     = "Discharge",
+                    sub_grp   = "Discharge")
 
   # Merge dataframes together
   dis <- dplyr::bind_rows(scot_dis, hb_dis) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb2014 = hbtreat_currentdate) %>%
-    tidylog::select(hb2014, quarter, quarter_full, quarter_short, deaths, pats, crd_rate, label)
+    tidylog::select(hb2014, quarter, quarter_full, quarter_short, deaths, pats,
+                    crd_rate, sub_grp, label)
 
   # Population-based mortality
   scot_pop <- gro %>%
@@ -391,11 +394,12 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
     tidylog::left_join(pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
     tidylog::mutate(crd_rate     = deaths/pop * 1000,
            quarter      = as.numeric(as.factor(paste0(year, "Q", quarter))),
-           label        = "Population") %>%
+           label        = "Population",
+           sub_grp      = "Population") %>%
     dplyr::rename(hb2014 = hbres_currentdate,
            pats   = pop) %>%
     tidylog::select(hb2014, quarter, quarter_full, quarter_short, deaths, pats, crd_rate,
-                    label)
+                    sub_grp, label)
 
 
   # Create minimal tidy dataset
