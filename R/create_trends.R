@@ -319,12 +319,13 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
       is.na(spec_grp) ~ "Unknown",
       spec_grp == 1   ~ "Community",
       spec_grp == 2   ~ "Dental",
-      spec_grp == 3   ~ "Medical",
-      spec_grp == 4   ~ "Other",
-      spec_grp == 5   ~ "Paediatrics",
-      spec_grp == 6   ~ "Surgery",
-      spec_grp == 7   ~ "Emergency",
-      spec_grp == 8   ~ "Women & Newborn"
+      spec_grp == 3   ~ "Emergency",
+      spec_grp == 4   ~ "Medical",
+      spec_grp == 5   ~ "Mental",
+      spec_grp == 6   ~ "Other",
+      spec_grp == 7   ~ "Paediatrics",
+      spec_grp == 8   ~ "Surgery",
+      spec_grp == 9   ~ "Women & Newborn"
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Specialty") %>%
