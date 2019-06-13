@@ -39,10 +39,33 @@ smr_data          <- read_csv(here("data",
 
   # Calculate funnel limits for funnel plot
   mutate(st_err = sqrt(1/pred),
-         uwl = 1 + 1.96 * st_err,
-         ucl = 1 + 2.99 * st_err,
-         lwl = 1 - 1.96 * st_err,
-         lcl = 1 - 2.99 * st_err)
+         z = if_else(location_type == "hospital",
+                             ((smr - 1)/st_err),
+                             0)) %>%
+  group_by(period) %>%
+  mutate(
+         z_max = max(z),
+         z_min = min(z),
+         z_flag = case_when(z == z_max ~ 1,
+                            z == z_min ~ -1,
+                            TRUE ~ 0),
+         z = if_else(z == z_max | z == z_min, 0, z),
+         z_max = max(z),
+         z_min = min(z),
+         z = case_when(z_flag == 1 ~ z_max,
+                       z_flag == -1 ~ z_min,
+                       TRUE ~ z),
+         z_flag = if_else(z != 0, 1, 0),
+         w_score = sqrt(sum(z * z)/sum(z_flag))) %>%
+  ungroup() %>%
+  mutate(
+         uwl = 1 + 1.96 * st_err * w_score,
+         ucl = 1 + 3.09 * st_err * w_score,
+         lwl = 1 - 1.96 * st_err * w_score,
+         lcl = 1 - 3.09 * st_err * w_score) %>%
+  select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
+         "location", "location_name", "death_scot", "pred_scot", "pats_scot",
+         "smr_scot", "st_err",  "uwl", "ucl", "lwl", "lcl")
 
 ### SECTION 2 - CREATE TABLES ----
 
