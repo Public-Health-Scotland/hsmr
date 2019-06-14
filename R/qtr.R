@@ -16,9 +16,11 @@
 #' }
 #'
 #' @param first_day The first day of a quarter, supplied with \code{Date} class.
-#' @param format Should the quarter be provided in short or long format?
-#' @param quarter Should the final month of the current or next quarter be
-#' provided?
+#' @param format A \code{character} string specifying the format the quarter
+#' should be displayed in. Valid options are `short` (Jan-Mar 2018) and `long`
+#' (January to March 2018).
+#' @param quarter A \code{character} string. Specifies which quarter should
+#' have its final month returned. Valid options are `current` and `next`.
 #'
 #' @examples
 #' qtr(first_day = lubridate::dmy(01012018), format = "short")

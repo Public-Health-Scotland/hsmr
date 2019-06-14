@@ -15,10 +15,12 @@ qtr_prev(first_day)
 \arguments{
 \item{first_day}{The first day of a quarter, supplied with \code{Date} class.}
 
-\item{format}{Should the quarter be provided in short or long format?}
+\item{format}{A \code{character} string specifying the format the quarter
+should be displayed in. Valid options are `short` (Jan-Mar 2018) and `long`
+(January to March 2018).}
 
-\item{quarter}{Should the final month of the current or next quarter be
-provided?}
+\item{quarter}{A \code{character} string. Specifies which quarter should
+have its final month returned. Valid options are `current` and `next`.}
 }
 \description{
 The qtr functions take the first day of a quarter (the first of
