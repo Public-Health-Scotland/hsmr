@@ -2,6 +2,11 @@
 
 The Hospital Standardised Mortality Ratios publication is a quarterly publication that has been fully RAP'd. The entire process is contained within this R package and git repository. 
 
+## Resources
+
+* [A Quick Guide to git & GitHub](https://nhs-nss-transforming-publications.github.io/git-guide/index.html)
+* 
+
 ## Folder Structure
 
 All the publication files and folders are stored in the following directory:
@@ -68,11 +73,11 @@ The package is designed to require as little human intervention as possible. To 
 * check the output in [folder] looks as it should
 * In the master folder, open up `create_trends_data.R`, highlight the entire script and run
 * As above, check for any errors and look at the output to see if it looks as it should do
-* Open `create_excel_tables.R`, highglight the entire script and run
+* Open `create_excel_tables.R`, highglight the entire script and run. This script pulls in Excel templates which can be found in the reference_files folder (without data). The output files are saved in the data/output folder. 
 
 Once this step is done, the raw data files and Excel tables for the publication have been produced. The final step is knitting the markdown documents, but that can't be done until the completeness figures are available. Once that is done:
 
-* In master/markdown, open both `.Rmd` scripts and click "knit"
+* In the master/markdown folder, open both `.Rmd` scripts and click "knit"
 * Check output
 
 The raw output files from this process also feed into the Tableau dashboard, so once they are ready, they should be moved to the appropriate folder. 
