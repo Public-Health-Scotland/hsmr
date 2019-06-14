@@ -1,4 +1,4 @@
-#' @title Obtain HSMR publication date
+#' @title HSMR publication date
 #'
 #' @description \code{pub_date} takes the final date for which SMR data are
 #' included in the current publication. It uses this cut-off date to calculate

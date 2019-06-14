@@ -1,6 +1,7 @@
 library(hsmr)
 context("qtr")
 
+
 test_that("Returns correct quarter in correct format", {
   expect_equal("Jan-Mar 2018",
                qtr(first_day = lubridate::dmy(01012018), format = "short"))
@@ -38,7 +39,7 @@ test_that("Errors if first_day is not in date format", {
 test_that("Errors if first_day is not the first day of a quarter", {
   expect_error(qtr(first_day = lubridate::dmy(02012018), format = "short"))
   expect_error(qtr(first_day = lubridate::dmy(31122017), format = "long"))
-  expect_error(qtr_end(first_day = lubridate::dmy(32072018),
+  expect_error(qtr_end(first_day = lubridate::dmy(15072018),
                        quarter = "current"))
   expect_error(qtr_end(first_day = lubridate::dmy(01111995), quarter = "next"))
   expect_error(qtr_prev(first_day = lubridate::dmy(01033096)))
