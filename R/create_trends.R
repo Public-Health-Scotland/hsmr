@@ -39,9 +39,11 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
   }
 
   if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
-            "postcode", "specialty", "discharge_type", "sex", "admgrp",
-            "admfgrp", "ipdc", "age_grp", "quarter",
-            "year") %in% names(smr01))) {
+            "postcode", "specialty", "hbtreat_currentdate", "discharge_type",
+            "sex", "location", "main_condition", "other_condition_1",
+            "other_condition_2", "other_condition_3", "other_condition_4",
+            "other_condition_5", "admgrp", "admfgrp", "ipdc", "age_grp",
+            "quarter", "year") %in% names(smr01))) {
 
     stop(paste0("Object smr01 does not contain the required variables.",
                 "Must contain:
@@ -51,8 +53,10 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
                 cis_marker
                 postcode
                 specialty
+                hbtreat_currentdate
                 discharge_type
                 sex
+                location
                 admgrp
                 admfgrp
                 ipdc
