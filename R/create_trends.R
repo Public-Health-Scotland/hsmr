@@ -16,6 +16,7 @@
 #' @param gro Input tibble for deaths, see details.
 #' @param pop Input tibble for population estimates.
 #' @param dep Input tibble for deprivation lookup.
+#' @param spec Input tibble for the specialty groupings lookup.
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
@@ -28,7 +29,8 @@
 create_trends <- function(smr01, gro, pop, dep, spec) {
 
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
-     !tibble::is_tibble(pop) | !tibble::is_tibble(dep)) {
+     !tibble::is_tibble(pop) | !tibble::is_tibble(dep) |
+     !tibble::is_tibble(spec)) {
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
