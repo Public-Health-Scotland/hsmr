@@ -57,6 +57,12 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
                 discharge_type
                 sex
                 location
+                main_condition
+                other_condition_1
+                other_condition_2
+                other_condition_3
+                other_condition_4
+                other_condition_5
                 admgrp
                 admfgrp
                 ipdc
