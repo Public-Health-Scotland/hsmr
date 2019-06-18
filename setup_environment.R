@@ -17,7 +17,6 @@
 
 ### 1 - Load packages ----
 library(odbc)          # For accessing SMRA databases
-library(data.table)    # For fast data manipulations
 library(dplyr)         # For data manipulation in the "tidy" way
 library(haven)         # For reading in SPSS files
 library(readr)         # For reading in csv files
@@ -26,7 +25,6 @@ library(magrittr)      # For %<>% operator
 library(lubridate)     # For dates
 library(tidylog)       # For printing results of some dplyr functions
 library(tidyr)         # For data manipulation in the "tidy" way
-library(fuzzyjoin)     # For fuzzy joins
 library(stringr)       # For string manipulation and matching
 library(ggplot2)       # For ggplot objects
 library(here)          # For the here() function
