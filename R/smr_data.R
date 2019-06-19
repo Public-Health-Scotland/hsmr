@@ -108,7 +108,11 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::mutate(hbtreat_currentdate = case_when(
       hbtreat_currentdate == "S08000018" ~ "S08000029",
       hbtreat_currentdate == "S08000027" ~ "S08000030",
-      TRUE ~ hbtreat_currentdate)) %>%
+      TRUE ~ hbtreat_currentdate),
+      location_name = case_when(location == "C418H" ~
+                                  "Royal Alexandria/Vale of Leven",
+                                hb == "S08100001" ~ "Golden Jubilee"
+                                TRUE ~ location_name)) %>%
     rename(hb = hbtreat_currentdate)
 
   if (index == "Y"){
