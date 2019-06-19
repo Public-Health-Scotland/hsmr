@@ -215,7 +215,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     tidylog::mutate(location = if_else(location == "Y104H",
                                        "Y146H",
-                                       location))
+                                       location),
+                    hbtreat_currentdate = case_when(
+                      hbtreat_currentdate = "S08000018" ~ "S08000029",
+                      hbtreat_currentdate = "S08000027" ~ "S08000030",
+                      TRUE ~ hbtreat_currentdate
+                    ))
 
 
   ### 4 - Aggregation ----
