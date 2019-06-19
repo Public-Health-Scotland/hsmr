@@ -211,14 +211,6 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::filter(admission_date > end_date - lubridate::years(5)) %>%
     tidylog::mutate(quarter = as.numeric(as.factor(quarter))) %>%
 
-    # Recode location and healthboard codes to new ones
-
-    tidylog::mutate(hbtreat_currentdate = case_when(
-                      hbtreat_currentdate == "S08000018" ~ "S08000029",
-                      hbtreat_currentdate == "S08000027" ~ "S08000030",
-                      TRUE ~ hbtreat_currentdate
-                    )) %>%
-
     # Combine institutions
 
     tidylog::mutate(location = case_when(
@@ -496,7 +488,16 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   long_term_trends <- dplyr::bind_rows(scot_subgroups, dis, pop_deaths) %>%
     mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
-    tidylog::filter(!is.na(location_name))
+    tidylog::filter(!is.na(location_name)) %>%
+
+
+    # Recode location and healthboard codes to new ones
+
+    tidylog::mutate(hb2014 = case_when(
+      hb2014 == "S08000018" ~ "S08000029",
+      hb2014 == "S08000027" ~ "S08000030",
+      TRUE ~ hb2014
+    ))
 
   return(long_term_trends)
 
