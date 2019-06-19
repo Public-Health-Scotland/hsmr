@@ -214,8 +214,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     # Recode location and healthboard codes to new ones
 
     tidylog::mutate(hbtreat_currentdate = case_when(
-                      hbtreat_currentdate = "S08000018" ~ "S08000029",
-                      hbtreat_currentdate = "S08000027" ~ "S08000030",
+                      hbtreat_currentdate == "S08000018" ~ "S08000029",
+                      hbtreat_currentdate == "S08000027" ~ "S08000030",
                       TRUE ~ hbtreat_currentdate
                     )) %>%
 
