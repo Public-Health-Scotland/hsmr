@@ -74,7 +74,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   ### 3 - Create Hospital-level aggregation ----
 
   hsmr_hosp <- smr01 %>%
-    tidylog::group_by(period, location) %>%
+    tidylog::group_by(period, hbtreat_currentdate, location) %>%
     tidylog::summarise(deaths = sum(death30),
                        pred   = sum(pred_eq),
                        pats   = length(death30)) %>%
@@ -93,9 +93,10 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
                        pats   = length(death30)) %>%
     tidylog::mutate(smr           = deaths/pred,
                     crd_rate      = (deaths/pats) * 100,
-                    location_type = "NHS Board") %>%
+                    location_type = "NHS Board",
+                    location      = hbtreat_currentdate) %>%
     dplyr::ungroup() %>%
-    dplyr::rename(location = hbtreat_currentdate)
+    dplyr::rename(hb2014 = hbtreat_currentdate)
 
 
   ### 5 - Merge dataframes and calculate regression line ----
