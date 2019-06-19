@@ -497,7 +497,11 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       hb == "S08000018" ~ "S08000029",
       hb == "S08000027" ~ "S08000030",
       TRUE ~ hb
-    ))
+    ),
+    location_name = case_when(location == "C418H" ~
+                                "Royal Alexandria/Vale of Leven",
+                              hb == "S08100001" ~ "Golden Jubilee"
+                              TRUE ~ location_name))
 
   return(long_term_trends)
 
