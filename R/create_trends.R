@@ -426,7 +426,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     dplyr::ungroup() %>%
     tidylog::mutate(label      = "Discharge",
                     hbtreat_currentdate = "Scotland",
-                    location - "Scotland",
+                    location = "Scotland",
                     sub_grp = "Discharge",
                     agg_label = "Scotland")
 
