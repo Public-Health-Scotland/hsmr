@@ -209,7 +209,13 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::filter(!(link_no == c(0, head(link_no, -1)) &
                         1 == c(0, head(death30, -1)))) %>%
     tidylog::filter(admission_date > end_date - lubridate::years(5)) %>%
-    tidylog::mutate(quarter = as.numeric(as.factor(quarter)))
+    tidylog::mutate(quarter = as.numeric(as.factor(quarter))) %>%
+
+    # Recode location and healthboard codes to new ones
+
+    tidylog::mutate(location = if_else(location == "Y104H",
+                                       "Y146H",
+                                       location))
 
 
   ### 4 - Aggregation ----
