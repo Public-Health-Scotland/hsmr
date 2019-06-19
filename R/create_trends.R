@@ -406,8 +406,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                                      scot_dep, scot_spec,
                                      scot_place_of_death) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
-    dplyr::rename(hb2014 = hbtreat_currentdate) %>%
-    tidylog::select(hb2014, location, quarter, quarter_full, quarter_short,
+    dplyr::rename(hb = hbtreat_currentdate) %>%
+    tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, crd_rate, sub_grp, label, agg_label)
 
   # Crude Rate - Date of Discharge (Scotland)
@@ -437,8 +437,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Merge dataframes together
   dis <- dplyr::bind_rows(scot_dis, hb_dis) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
-    dplyr::rename(hb2014 = hbtreat_currentdate) %>%
-    tidylog::select(hb2014, location, quarter, quarter_full, quarter_short,
+    dplyr::rename(hb = hbtreat_currentdate) %>%
+    tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, crd_rate, sub_grp, label, agg_label)
 
   # Population-based mortality
@@ -471,16 +471,16 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     location  = hbres_currentdate)
 
   pop_deaths <- dplyr::bind_rows(scot_pop, hb_pop) %>%
-    tidylog::left_join(pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
+    tidylog::left_join(pop, by = c("year", "hbres_currentdate" = "hb")) %>%
     tidylog::mutate(crd_rate     = deaths/pop * 1000,
                     quarter      = as.numeric(as.factor(paste0(year,
                                                                "Q",
                                                                quarter))),
                     label        = "Population",
                     sub_grp      = "Population") %>%
-    dplyr::rename(hb2014 = hbres_currentdate,
+    dplyr::rename(hb = hbres_currentdate,
                   pats   = pop) %>%
-    tidylog::select(hb2014, location, quarter, quarter_full, quarter_short,
+    tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, crd_rate, sub_grp, label, agg_label)
 
 
@@ -493,10 +493,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     # Recode location and healthboard codes to new ones
 
-    tidylog::mutate(hb2014 = case_when(
-      hb2014 == "S08000018" ~ "S08000029",
-      hb2014 == "S08000027" ~ "S08000030",
-      TRUE ~ hb2014
+    tidylog::mutate(hb = case_when(
+      hb == "S08000018" ~ "S08000029",
+      hb == "S08000027" ~ "S08000030",
+      TRUE ~ hb
     ))
 
   return(long_term_trends)
