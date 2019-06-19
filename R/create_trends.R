@@ -228,8 +228,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Crude Rates (Scotland) - All Admissions
   scot_all_adm <- smr01 %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
+    tidylog::summarise(deaths      = sum(death30),
+                       scot_deaths = sum(death30),
+                       pats        = length(death30),
+                       scot_pats   = length(death30)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
                     sub_grp = "All Admissions",
@@ -243,6 +245,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       quarter_full, quarter_short) %>%
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
+    tidylog::group_by(quarter,
+                      quarter_full, quarter_short) %>%
+    tidylog::summarise(scot_deaths = sum(death30),
+                       scot_pats   = sum(pats)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
                     sub_grp = "All Admissions",
@@ -254,6 +260,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       quarter_short) %>%
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
+    tidylog::group_by(quarter,
+                      quarter_full, quarter_short) %>%
+    tidylog::summarise(scot_deaths = sum(death30),
+                       scot_pats   = sum(pats)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
                     sub_grp = "All Admissions",
@@ -273,9 +283,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     location = "Scot",
     sub_grp = "Admission Type",
-    agg_label = "Scotland") %>%
-    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full, quarter_short,
-                    deaths, pats, sub_grp, label, agg_label)
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
+    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
+                    quarter_short,deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
 
   # Crude Rates (Scotland) - Age group
@@ -294,9 +307,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     sub_grp = "Age Group",
     location = "Scot",
-    agg_label = "Scotland") %>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
 
   # Crude Rates (Scotland) - Sex
@@ -312,9 +328,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     sub_grp = "Sex",
     location = "Scot",
-    agg_label = "Scotland") %>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
   # Crude Rates (Scotland) - Depth of Coding
   scot_depth <- smr01 %>%
@@ -331,9 +350,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     location = "Scot",
     sub_grp = "Depth of Coding",
-    agg_label = "Scotland")%>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
   # Crude Rates (Scotland) Place of Death
   scot_place_of_death <- smr01 %>%
@@ -349,9 +371,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     location = "Scot",
     sub_grp = "Place of Death",
-    agg_label = "Scotland") %>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
 
   # Crude Rates (Scotland) - Deprivation
@@ -371,9 +396,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     location = "Scot",
     sub_grp = "Deprivation",
-    agg_label = "Scotland") %>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
   # Crude Rates (Scotland) - Specialty
   scot_spec <- smr01 %>%
@@ -396,9 +424,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     hbtreat_currentdate = "Scotland",
     location = "Scot",
     sub_grp = "Specialty",
-    agg_label = "Scotland") %>%
+    agg_label = "Scotland",
+    scot_deaths = deaths,
+    scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, sub_grp, label, agg_label)
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
 
   # Merge dataframes together
   scot_subgroups <- dplyr::bind_rows(scot_all_adm, hb_all_adm, hosp_all_adm,
@@ -408,7 +439,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb = hbtreat_currentdate) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
-                    deaths, pats, crd_rate, sub_grp, label, agg_label)
+                    deaths, pats, scot_deaths, scot_pats, crd_rate, sub_grp,
+                    label, agg_label)
 
   # Crude Rate - Date of Discharge (Scotland)
   scot_dis <- smr01 %>%
@@ -420,7 +452,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     hbtreat_currentdate = "Scotland",
                     location = "Scot",
                     sub_grp = "Discharge",
-                    agg_label = "Scotland")
+                    agg_label = "Scotland",
+                    scot_deaths = deaths,
+                    scot_pats   = pats)
 
   # Crude Rate - Date of Discharge (NHS Board)
   hb_dis <- smr01 %>%
@@ -428,7 +462,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       hbtreat_currentdate) %>%
     tidylog::summarise(deaths = sum(death30_dis),
                        pats   = length(death30_dis)) %>%
-    dplyr::ungroup() %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short) %>%
+    tidylog::summarise(scot_deaths = sum(death30_dis),
+                       scot_pats   = length(death30_dis)) %>%
     tidylog::mutate(label     = "Discharge",
                     location  = hbtreat_currentdate,
                     sub_grp   = "Discharge",
@@ -439,7 +475,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb = hbtreat_currentdate) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
-                    deaths, pats, crd_rate, sub_grp, label, agg_label)
+                    deaths, pats, scot_deaths, scot_pats, crd_rate, sub_grp,
+                    label, agg_label)
 
   # Population-based mortality
   scot_pop <- gro %>%
@@ -450,7 +487,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     dplyr::ungroup() %>%
     tidylog::filter(date_of_death > end_date - years(5)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
-    tidylog::summarise(deaths = length(year)) %>%
+    tidylog::summarise(deaths = length(year),
+                       scot_deaths = length(year),
+                       scot_pop    = pop) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(hbres_currentdate = "Scotland",
                     location = "Scot",
@@ -466,7 +505,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::group_by(year, quarter, quarter_full, quarter_short,
                       hbres_currentdate) %>%
     tidylog::summarise(deaths = length(year)) %>%
-    dplyr::ungroup() %>%
+    tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
+    tidylog::summarise(scot_deaths = length(year),
+                       scot_pop    = sum(pop))
     tidylog::mutate(agg_label = "Board",
                     location  = hbres_currentdate)
 
@@ -500,7 +541,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     ),
     location_name = case_when(location == "C418H" ~
                                 "Royal Alexandria/Vale of Leven",
-                              hb == "S08100001" ~ "Golden Jubilee"
+                              hb == "S08100001" ~ "Golden Jubilee",
                               TRUE ~ location_name))
 
   return(long_term_trends)
