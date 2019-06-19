@@ -446,7 +446,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   dis <- dplyr::bind_rows(scot_dis, hb_dis) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb2014 = hbtreat_currentdate) %>%
-    tidylog::select(hb2014, lcoation, quarter, quarter_full, quarter_short,
+    tidylog::select(hb2014, location, quarter, quarter_full, quarter_short,
                     deaths, pats, crd_rate, sub_grp, label, agg_label)
 
   # Population-based mortality
