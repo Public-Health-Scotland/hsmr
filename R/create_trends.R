@@ -495,7 +495,6 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Create minimal tidy dataset
   long_term_trends <- dplyr::bind_rows(scot_subgroups, dis, pop_deaths) %>%
     mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
-    rename(location = hb2014) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name))
 
