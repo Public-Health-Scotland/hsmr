@@ -96,8 +96,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
                     crd_rate      = (deaths/pats) * 100,
                     location_type = "NHS Board",
                     location      = hbtreat_currentdate) %>%
-    dplyr::ungroup() %>%
-    dplyr::rename(hb2014 = hbtreat_currentdate)
+    dplyr::ungroup()
 
 
   ### 5 - Merge dataframes and calculate regression line ----
@@ -105,7 +104,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   # Merge data and match on location name
   smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
-    tidylog::filter(!is.na(location_name))
+    tidylog::filter(!is.na(location_name)) %>%
+    rename(hb2014 = hbtreat_currentdate)
 
   if (index == "Y"){
 
