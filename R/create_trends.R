@@ -17,6 +17,7 @@
 #' @param pop Input tibble for population estimates.
 #' @param dep Input tibble for deprivation lookup.
 #' @param spec Input tibble for the specialty groupings lookup.
+#' @param hospital_lookup Input tibble for the hospital name lookup.
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
@@ -26,11 +27,11 @@
 #'
 #' @export
 
-create_trends <- function(smr01, gro, pop, dep, spec) {
+create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
      !tibble::is_tibble(pop) | !tibble::is_tibble(dep) |
-     !tibble::is_tibble(spec)) {
+     !tibble::is_tibble(spec) | !tibble:is_tibble(hospital_lookup)) {
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
@@ -447,7 +448,10 @@ create_trends <- function(smr01, gro, pop, dep, spec) {
 
   # Create minimal tidy dataset
   long_term_trends <- dplyr::bind_rows(scot_subgroups, dis, pop_deaths) %>%
-    mutate(completeness_date = hsmr::submission_deadline(end_date))
+    mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
+    rename(location = hb2014)
+    tidylog::left_join(hospital_lookup, by = "location") %>%
+    tidylog::filter(!is.na(location_name))
 
   return(long_term_trends)
 
