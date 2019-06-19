@@ -213,14 +213,22 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     # Recode location and healthboard codes to new ones
 
-    tidylog::mutate(location = if_else(location == "Y104H",
-                                       "Y146H",
-                                       location),
-                    hbtreat_currentdate = case_when(
+    tidylog::mutate(hbtreat_currentdate = case_when(
                       hbtreat_currentdate = "S08000018" ~ "S08000029",
                       hbtreat_currentdate = "S08000027" ~ "S08000030",
                       TRUE ~ hbtreat_currentdate
-                    ))
+                    )) %>%
+
+    # Combine institutions
+
+    tidylog::mutate(location = case_when(
+      location == "C206H" ~ "C418H",
+      location == "G207H" ~ "G107H",
+      location == "G306H" ~ "G405H",
+      location == "G516H" ~ "G405H",
+      location == "Y104H" ~ "Y146H",
+      TRUE ~ location
+    ))
 
 
   ### 4 - Aggregation ----
