@@ -56,10 +56,11 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::summarise(deaths = sum(death30),
                        pred   = sum(pred_eq),
                        pats   = length(death30)) %>%
-    tidylog::mutate(smr           = deaths/pred,
-                    crd_rate      = (deaths/pats) * 100,
-                    location_type = "Scotland",
-                    location      = "Scot") %>%
+    tidylog::mutate(smr                 = deaths/pred,
+                    crd_rate            = (deaths/pats) * 100,
+                    location_type       = "Scotland",
+                    location            = "Scot",
+                    hbtreat_currentdate = "Scotland") %>%
     dplyr::ungroup()
 
 
