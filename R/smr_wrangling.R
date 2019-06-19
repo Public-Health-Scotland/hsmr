@@ -39,7 +39,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
   }
 
   if(!all(c("link_no", "admission_date", "discharge_date", "cis_marker",
-            "postcode", "discharge_type", "sex", "admgrp",
+            "postcode", "discharge_type", "sex", "admgrp", "ci_chi_number",
             "admfgrp", "ipdc", "age_grp", "quarter", "location",
             "main_condition", "other_condition_1", "other_condition_2",
             "other_condition_3", "other_condition_4", "other_condition_5",
@@ -56,6 +56,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
                 discharge_type
                 sex
                 admgrp
+                ci_chi_number
                 admfgrp
                 ipdc
                 age_in_years
