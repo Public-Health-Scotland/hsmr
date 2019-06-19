@@ -109,7 +109,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
       hbtreat_currentdate == "S08000018" ~ "S08000029",
       hbtreat_currentdate == "S08000027" ~ "S08000030",
       TRUE ~ hbtreat_currentdate)) %>%
-    rename(hb2014 = hbtreat_currentdate)
+    rename(hb = hbtreat_currentdate)
 
   if (index == "Y"){
 
