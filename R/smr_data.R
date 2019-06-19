@@ -105,6 +105,10 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name)) %>%
+    tidylog::mutate(hbtreat_currentdate = case_when(
+      hbtreat_currentdate == "S08000018" ~ "S08000029",
+      hbtreat_currentdate == "S08000027" ~ "S08000030",
+      TRUE ~ hbtreat_currentdate)) %>%
     rename(hb2014 = hbtreat_currentdate)
 
   if (index == "Y"){
