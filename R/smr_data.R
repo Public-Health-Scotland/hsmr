@@ -52,14 +52,6 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   ### 2 - Create Scotland-level aggregation ----
 
   hsmr_scot <- smr01 %>%
-    tidylog::mutate(location = case_when(
-      location == "C206H" ~ "C418H",
-      location == "G207H" ~ "G107H",
-      location == "G306H" ~ "G405H",
-      location == "G516H" ~ "G405H",
-      location == "Y104H" ~ "Y146H",
-      TRUE ~ location
-    )) %>%
     tidylog::group_by(period) %>%
     tidylog::summarise(deaths = sum(death30),
                        pred   = sum(pred_eq),
@@ -74,6 +66,14 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   ### 3 - Create Hospital-level aggregation ----
 
   hsmr_hosp <- smr01 %>%
+    tidylog::mutate(location = case_when(
+      location == "C206H" ~ "C418H",
+      location == "G207H" ~ "G107H",
+      location == "G306H" ~ "G405H",
+      location == "G516H" ~ "G405H",
+      location == "Y104H" ~ "Y146H",
+      TRUE ~ location
+    )) %>%
     tidylog::group_by(period, hbtreat_currentdate, location) %>%
     tidylog::summarise(deaths = sum(death30),
                        pred   = sum(pred_eq),
