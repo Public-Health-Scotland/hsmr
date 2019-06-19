@@ -234,7 +234,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(label = "All Admissions",
                     sub_grp = "All Admissions",
                     hbtreat_currentdate = "Scotland",
-                    location = "Scotland",
+                    location = "Scot",
                     agg_label = "Scotland")
 
   # Crude Rates (Hosp) - All Admissions
@@ -271,7 +271,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       admgrp == 2 ~ "Non-Elective"
     ),
     hbtreat_currentdate = "Scotland",
-    location = "Scotland",
+    location = "Scot",
     sub_grp = "Admission Type",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full, quarter_short,
@@ -293,7 +293,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Age Group",
-    location = "Scotland",
+    location = "Scot",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, sub_grp, label, agg_label)
@@ -311,7 +311,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     ),
     hbtreat_currentdate = "Scotland",
     sub_grp = "Sex",
-    location = "Scotland",
+    location = "Scot",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, sub_grp, label, agg_label)
@@ -329,7 +329,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       depth_of_coding == 3 ~ "3+"
     ),
     hbtreat_currentdate = "Scotland",
-    location = "Scotland",
+    location = "Scot",
     sub_grp = "Depth of Coding",
     agg_label = "Scotland")%>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
@@ -347,7 +347,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       death_inhosp_max == 0 ~ "Died in Community"
     ),
     hbtreat_currentdate = "Scotland",
-    location = "Scotland",
+    location = "Scot",
     sub_grp = "Place of Death",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
@@ -369,7 +369,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       simd == 5   ~ "5 - Least Deprived"
     ),
     hbtreat_currentdate = "Scotland",
-    location = "Scotland",
+    location = "Scot",
     sub_grp = "Deprivation",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
@@ -394,7 +394,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       spec_grp == 9   ~ "Women & Newborn"
     ),
     hbtreat_currentdate = "Scotland",
-    location = "Scotland",
+    location = "Scot",
     sub_grp = "Specialty",
     agg_label = "Scotland") %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
@@ -418,7 +418,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     dplyr::ungroup() %>%
     tidylog::mutate(label      = "Discharge",
                     hbtreat_currentdate = "Scotland",
-                    location = "Scotland",
+                    location = "Scot",
                     sub_grp = "Discharge",
                     agg_label = "Scotland")
 
@@ -453,7 +453,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::summarise(deaths = length(year)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(hbres_currentdate = "Scotland",
-                    location = "Scotland",
+                    location = "Scot",
                     agg_label = "Scotland")
 
   hb_pop <- gro %>%
