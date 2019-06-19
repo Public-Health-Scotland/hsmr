@@ -81,10 +81,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::mutate(smr           = deaths/pred,
                     crd_rate      = (deaths/pats) * 100,
                     location_type = "hospital") %>%
-    dplyr::ungroup() #%>%
-
-  # TO DO: NEED TO FILTER ON PUBLISHED HOSPITALS
-  # tidylog::filter(location %in% )
+    dplyr::ungroup()
 
 
   ### 4 - Create HB-level aggregation ----
