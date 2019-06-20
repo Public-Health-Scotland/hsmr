@@ -247,7 +247,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                        pats   = length(death30)) %>%
     tidylog::group_by(quarter,
                       quarter_full, quarter_short) %>%
-    tidylog::summarise(scot_deaths = sum(deaths),
+    tidylog::mutate(scot_deaths = sum(deaths),
                        scot_pats   = sum(pats)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
@@ -262,8 +262,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                        pats   = length(death30)) %>%
     tidylog::group_by(quarter,
                       quarter_full, quarter_short) %>%
-    tidylog::summarise(scot_deaths = sum(deaths),
-                       scot_pats   = sum(pats)) %>%
+    tidylog::mutate(scot_deaths = sum(deaths),
+                    scot_pats   = sum(pats)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = "All Admissions",
                     sub_grp = "All Admissions",
