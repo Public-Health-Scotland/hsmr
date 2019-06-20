@@ -645,6 +645,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     sub_grp      = "Population") %>%
     dplyr::rename(hb = hbres_currentdate,
                   pats   = pop) %>%
+    tidylog::filter(!is.na(pats)) %>%
     tidylog::group_by(quarter) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
