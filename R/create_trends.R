@@ -487,7 +487,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Combine Depth of Coding tibbles together
   depth_of_coding <- dplyr::bind_rows(scot_depth, hb_depth, hosp_depth) %>%
-    tidylog::group_by(quarter, depth_of_coding) %>%
+    tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats))
 
@@ -547,7 +547,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Combine Depth of Coding tibbles together
   symptom_coding <- dplyr::bind_rows(scot_symptoms, hb_symptoms,
                                      hosp_symptoms) %>%
-    tidylog::group_by(quarter, depth_of_coding) %>%
+    tidylog::group_by(quarter) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats))
 
