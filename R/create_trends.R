@@ -523,7 +523,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                   pats   = pop) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, scot_deaths,
-                    crd_rate, sub_grp, label, agg_label)
+                    crd_rate, sub_grp, label, agg_label) %>%
+    group_by(quarter) %>%
+    mutate(scot_deaths = max(deaths),
+           scot_pats   = max(pats))
 
 
   # Create minimal tidy dataset
