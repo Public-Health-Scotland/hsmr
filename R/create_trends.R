@@ -463,7 +463,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::summarise(deaths = sum(death30_dis),
                        pats   = length(death30_dis)) %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
-    tidylog::summarise(scot_deaths = sum(deaths),
+    tidylog::mutate(scot_deaths = sum(deaths),
                        scot_pats   = length(pats)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label     = "Discharge",
@@ -507,7 +507,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       hbres_currentdate) %>%
     tidylog::summarise(deaths = length(year)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
-    tidylog::summarise(scot_deaths = length(year),
+    tidylog::mutate(scot_deaths = length(year),
                        scot_pop    = sum(pop)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(agg_label = "Board",
