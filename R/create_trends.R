@@ -453,7 +453,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     ),
     location = hbtreat_currentdate,
     sub_grp = "Depth of Coding",
-    agg_label = "Scotland",
+    agg_label = "Board",
     scot_deaths = deaths,
     scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
@@ -478,7 +478,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       depth_of_coding == 3 ~ "3+"
     ),
     sub_grp = "Depth of Coding",
-    agg_label = "Scotland",
+    agg_label = "Hospital",
     scot_deaths = deaths,
     scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
@@ -493,6 +493,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Symptom Coding - Scotland ----
   scot_symptoms <- smr01 %>%
+    tidylog::filter(!is.na(main_condition)) %>%
     tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
                                            1, 0)) %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
@@ -512,6 +513,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Symptom Coding - Health Board ----
   hb_symptoms <- smr01 %>%
+    tidylog::filter(!is.na(main_condition)) %>%
     tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
                                            1, 0)) %>%
     tidylog::group_by(quarter, quarter_full, quarter_short,
@@ -522,7 +524,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(location = hbtreat_currentdate,
                     sub_grp = "Symptom Coding",
                     label   = "Symptom Coding",
-                    agg_label = "Scotland",
+                    agg_label = "Board",
                     scot_deaths = deaths,
                     scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
@@ -531,6 +533,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Symptom Coding - Hospital ----
   hosp_symptoms <- smr01 %>%
+    tidylog::filter(!is.na(main_condition)) %>%
     tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
                                            1, 0)) %>%
     tidylog::group_by(quarter, quarter_full, quarter_short,
@@ -540,7 +543,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     dplyr::ungroup() %>%
     tidylog::mutate(sub_grp = "Symptom Coding",
                     label   = "Symptom Coding",
-                    agg_label = "Scotland",
+                    agg_label = "Hospital",
                     scot_deaths = deaths,
                     scot_pats   = pats) %>%
     tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
