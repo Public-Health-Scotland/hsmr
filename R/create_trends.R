@@ -487,11 +487,70 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats))
 
+  # Symptom Coding
+  scot_symptoms <- smr01 %>%
+    tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
+                                           1, 0)) %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short) %>%
+    tidylog::mutate(deaths = sum(symptom_flag),
+                    pats   = length(death30),
+                    hbtreat_currentdate = "Scotland",
+                    location = "Scot",
+                    sub_grp = "Symptom Coding",
+                    label   = "Symptom Coding",
+                    agg_label = "Scotland",
+                    scot_deaths = deaths,
+                    scot_pats   = pats) %>%
+    tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
+
+  hb_symptoms <- smr01 %>%
+    tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
+                                           1, 0)) %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short,
+                      hbtreat_currentdate) %>%
+    tidylog::mutate(deaths = sum(symptom_flag),
+                    pats   = length(death30),
+                    location = hbtreat_currentdate,
+                    sub_grp = "Symptom Coding",
+                    label   = "Symptom Coding",
+                    agg_label = "Scotland",
+                    scot_deaths = deaths,
+                    scot_pats   = pats) %>%
+    tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
+
+  hosp_symptoms <- smr01 %>%
+    tidylog::mutate(symptom_flag = if_else(substr(main_condition, 1, 1) == "R",
+                                           1, 0)) %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short,
+                      hbtreat_currentdate, location) %>%
+    tidylog::mutate(deaths = sum(symptom_flag),
+                    pats   = length(death30),
+                    sub_grp = "Symptom Coding",
+                    label   = "Symptom Coding",
+                    agg_label = "Scotland",
+                    scot_deaths = deaths,
+                    scot_pats   = pats) %>%
+    tidylog::select(hbtreat_currentdate, location,  quarter, quarter_full,
+                    quarter_short, deaths, pats, scot_deaths, scot_pats,
+                    sub_grp, label, agg_label)
+
+  # Combine Depth of Coding tibbles together
+  symptom_coding <- dplyr::bind_rows(scot_symptoms, hb_symptoms,
+                                     hosp_symptoms) %>%
+    tidylog::group_by(quarter, depth_of_coding) %>%
+    tidylog::mutate(scot_deaths = max(deaths),
+                    scot_pats   = max(pats))
+
+
   # Merge dataframes together
   scot_subgroups <- dplyr::bind_rows(scot_all_adm, hb_all_adm, hosp_all_adm,
                                      scot_age, scot_sex, scot_adm, scot_dep,
                                      scot_spec, scot_place_of_death,
-                                     depth_of_coding) %>%
+                                     depth_of_coding, symptom_coding) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb = hbtreat_currentdate) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
