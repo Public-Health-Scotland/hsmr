@@ -512,7 +512,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     location  = hbres_currentdate)
 
   pop_deaths <- dplyr::bind_rows(scot_pop, hb_pop) %>%
-    tidylog::left_join(pop, by = c("year", "hbres_currentdate" = "hb")) %>%
+    tidylog::left_join(pop, by = c("year", "hbres_currentdate" = "hb2014")) %>%
     tidylog::mutate(crd_rate     = deaths/pop * 1000,
                     quarter      = as.numeric(as.factor(paste0(year,
                                                                "Q",
