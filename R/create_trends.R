@@ -338,8 +338,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Crude Rates (Scotland) - Depth of Coding
   scot_depth <- smr01 %>%
     tidylog::group_by(quarter, quarter_full, quarter_short, depth_of_coding) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
+    tidylog::summarise(deaths = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short) %>%
+    tidylog::mutate(pats = sum(deaths)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(label = dplyr::case_when(
       depth_of_coding == 0 ~ "0",
@@ -521,12 +523,13 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     sub_grp      = "Population") %>%
     dplyr::rename(hb = hbres_currentdate,
                   pats   = pop) %>%
+    tidylog::group_by(quarter) %>%
+    tidylog::mutate(scot_deaths = max(deaths),
+                    scot_pats   = max(pats)) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
-                    deaths, pats, scot_deaths,
+                    deaths, pats, scot_deaths, scot_pats,
                     crd_rate, sub_grp, label, agg_label) %>%
-    group_by(quarter) %>%
-    mutate(scot_deaths = max(deaths),
-           scot_pats   = max(pats))
+
 
 
   # Create minimal tidy dataset
