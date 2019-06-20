@@ -522,7 +522,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     label        = "Population",
                     sub_grp      = "Population") %>%
     dplyr::rename(hb = hbres_currentdate,
-                  pats   = pop) %>%
+                  pats   = pop,
+                  pats   = scot_popn) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, scot_pats, scot_deaths,
                     crd_rate, sub_grp, label, agg_label)
