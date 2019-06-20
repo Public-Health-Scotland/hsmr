@@ -111,7 +111,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
       TRUE ~ hbtreat_currentdate),
       location_name = case_when(location == "C418H" ~
                                   "Royal Alexandria/Vale of Leven",
-                                hb == "S08100001" ~ "Golden Jubilee",
+                                hbtreat_currentdate == "S08100001" ~
+                                  "Golden Jubilee",
                                 TRUE ~ location_name),
       completeness_date = hsmr::submission_deadline(end_date)) %>%
     rename(hb = hbtreat_currentdate)
