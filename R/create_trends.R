@@ -497,8 +497,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                                            1, 0)) %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
     tidylog::mutate(deaths = sum(symptom_flag),
-                    pats   = length(death30),
-                    hbtreat_currentdate = "Scotland",
+                    pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(hbtreat_currentdate = "Scotland",
                     location = "Scot",
                     sub_grp = "Symptom Coding",
                     label   = "Symptom Coding",
@@ -516,8 +517,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::group_by(quarter, quarter_full, quarter_short,
                       hbtreat_currentdate) %>%
     tidylog::mutate(deaths = sum(symptom_flag),
-                    pats   = length(death30),
-                    location = hbtreat_currentdate,
+                    pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(location = hbtreat_currentdate,
                     sub_grp = "Symptom Coding",
                     label   = "Symptom Coding",
                     agg_label = "Scotland",
@@ -534,8 +536,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::group_by(quarter, quarter_full, quarter_short,
                       hbtreat_currentdate, location) %>%
     tidylog::mutate(deaths = sum(symptom_flag),
-                    pats   = length(death30),
-                    sub_grp = "Symptom Coding",
+                    pats   = length(death30)) %>%
+    dplyr::ungroup() %>%
+    tidylog::mutate(sub_grp = "Symptom Coding",
                     label   = "Symptom Coding",
                     agg_label = "Scotland",
                     scot_deaths = deaths,
