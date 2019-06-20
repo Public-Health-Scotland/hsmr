@@ -489,8 +489,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::filter(date_of_death > end_date - years(5)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
     tidylog::summarise(deaths = length(year),
-                       scot_deaths = length(year),
-                       scot_popn    = pop) %>%
+                       scot_deaths = length(year)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(hbres_currentdate = "Scotland",
                     location = "Scot",
@@ -507,8 +506,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       hbres_currentdate) %>%
     tidylog::summarise(deaths = length(year)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
-    tidylog::mutate(scot_deaths = length(year),
-                       scot_popn    = sum(pop)) %>%
+    tidylog::mutate(scot_deaths = length(year)) %>%
     dplyr::ungroup() %>%
     tidylog::mutate(agg_label = "Board",
                     location  = hbres_currentdate)
@@ -522,8 +520,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     label        = "Population",
                     sub_grp      = "Population") %>%
     dplyr::rename(hb = hbres_currentdate,
-                  pats   = pop,
-                  pats   = scot_popn) %>%
+                  pats   = pop) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, scot_pats, scot_deaths,
                     crd_rate, sub_grp, label, agg_label)
