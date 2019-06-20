@@ -647,7 +647,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     scot_pats   = max(pats)) %>%
     tidylog::select(hb, location, quarter, quarter_full, quarter_short,
                     deaths, pats, scot_deaths, scot_pats,
-                    crd_rate, sub_grp, label, agg_label) %>%
+                    crd_rate, sub_grp, label, agg_label)
 
 
 
