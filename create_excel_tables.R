@@ -16,6 +16,7 @@
 
 ### SECTION 1 - HOUSE KEEPING ----
 source("setup_environment.R")
+library(openxlsx)
 
 
 # Read in SMR data, filtered on latest period/reported hospitals
@@ -64,8 +65,9 @@ smr_data          <- read_csv(here("data",
          lwl = 1 - 1.96 * st_err * w_score,
          lcl = 1 - 3.09 * st_err * w_score) %>%
   select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
-         "location", "location_name", "death_scot", "pred_scot", "pats_scot",
-         "smr_scot", "st_err",  "uwl", "ucl", "lwl", "lcl")
+         "hb", "location", "location_name", "completeness_date", "death_scot",
+         "pred_scot", "pats_scot", "smr_scot", "st_err",  "uwl", "ucl", "lwl",
+         "lcl")
 
 ### SECTION 2 - CREATE TABLES ----
 
