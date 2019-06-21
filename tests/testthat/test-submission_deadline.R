@@ -20,6 +20,6 @@ test_that("Errors if extract end date is not in date format", {
 
 test_that("Errors if extract end date is not final day of a quarter", {
   expect_error(submission_deadline(lubridate::dmy(01072018)))
-  expect_error(submission_deadline(lubridate::dmy(31092018)))
+  expect_error(submission_deadline(lubridate::dmy(15092018)))
   expect_error(submission_deadline(lubridate::dmy(30122018)))
 })

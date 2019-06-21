@@ -48,7 +48,9 @@ query_smr01_ltt <- function(extract_start, extract_end) {
   }
 
   paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, CIS_MARKER, POSTCODE,",
-        "SPECIALTY, DISCHARGE_TYPE, HBTREAT_CURRENTDATE, SEX,",
+        "SPECIALTY, DISCHARGE_TYPE, HBTREAT_CURRENTDATE, SEX, LOCATION,",
+        "MAIN_CONDITION, OTHER_CONDITION_1, OTHER_CONDITION_2,",
+        "OTHER_CONDITION_3, OTHER_CONDITION_4, OTHER_CONDITION_5,",
         "CASE WHEN ADMISSION_TYPE BETWEEN 20 AND 48 OR ADMISSION_TYPE = 18",
         "THEN '2'",
         "WHEN ADMISSION_TYPE BETWEEN 10 AND 12 OR ADMISSION_TYPE = 19",
@@ -100,8 +102,8 @@ query_smr01_ltt <- function(extract_start, extract_end) {
         "extract(year from admission_date) AS year",
         "from SMR01_PI",
         "where ADMISSION_DATE BETWEEN",
-        "{d", shQuote(start_date_trends, type = "sh"),"}",
-        "AND {d", shQuote(end_date, type = "sh"),"}",
+        "TO_DATE(", shQuote(extract_start, type = "sh"),", 'yyyy-mm-dd')",
+        "AND TO_DATE(", shQuote(extract_end, type = "sh"),", 'yyyy-mm-dd')",
         "ORDER BY LINK_NO, ADMISSION_DATE, RECORD_TYPE, DISCHARGE_DATE,",
         "ADMISSION, DISCHARGE, URI")
 }
@@ -128,6 +130,6 @@ query_gro_ltt <- function(extract_start) {
         "extract(year from DATE_OF_DEATH) AS year",
         "from ANALYSIS.GRO_DEATHS_C",
         "where DATE_OF_DEATH >=",
-        "{d", shQuote(start_date_trends, type = "sh"),"}",
+        "TO_DATE(", shQuote(extract_start, type = "sh"),", 'yyyy-mm-dd')",
         "ORDER BY LINK_NO")
 }

@@ -1,4 +1,4 @@
-#' @title Obtain HSMR publication date
+#' @title HSMR publication date
 #'
 #' @description \code{pub_date} takes the final date for which SMR data are
 #' included in the current publication. It uses this cut-off date to calculate
@@ -10,8 +10,8 @@
 #' @param end_date The cut-off date for data to be included in the current HSMR
 #' publication, supplied with \code{Date} class. Must be the final day of
 #' either March, June, September or December.
-#' @param pub A character string specifying the publication of interest. Valid
-#' options are `previous`, `current` and `next`.
+#' @param pub A \code{character} string specifying the publication of interest.
+#' Valid options are `previous`, `current` and `next`.
 #'
 #' @examples
 #' extract_end_date <- lubridate::dmy(30092018)
