@@ -16,7 +16,6 @@
 
 ### SECTION 1 - HOUSE KEEPING ----
 source("setup_environment.R")
-library(openxlsx)
 
 
 # Read in SMR data, filtered on latest period/reported hospitals
