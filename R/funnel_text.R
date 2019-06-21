@@ -38,7 +38,7 @@ funnel_text <- function(smr_data){
   }
 
   smr_data %<>%
-    filter(period == 3 & smr > ucl)
+    dplyr::filter(period == 3 & smr > ucl)
 
   n_hosps <- nrow(smr_data)
 
