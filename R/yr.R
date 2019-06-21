@@ -32,7 +32,7 @@
 #' @rdname yr
 yr <- function(end_date){
 
-  paste0(month(end_date - lubridate::years(1) + lubridate::days(1),
+  paste0(lubridate::month(end_date - lubridate::years(1) + lubridate::days(1),
                label = TRUE, abbr = FALSE),
          " ",
          format(zoo::as.yearmon(end_date - lubridate::years(1) +
