@@ -73,6 +73,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
       location == "G306H" ~ "G405H",
       location == "G516H" ~ "G405H",
       location == "Y104H" ~ "Y146H",
+      location == "S08000018" ~ "S08000029",
+      location == "S08000027" ~ "S08000030",
       TRUE ~ location
     )) %>%
     tidylog::group_by(period, hbtreat_currentdate, location) %>%
