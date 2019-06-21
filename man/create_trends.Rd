@@ -5,7 +5,7 @@
 \title{minimal tidy data set for long term trends in crude mortality report
 production.}
 \usage{
-create_trends(smr01, gro, pop, dep, spec)
+create_trends(smr01, gro, pop, dep, spec, hospital_lookup)
 }
 \arguments{
 \item{smr01}{Input tibble for admissions, see details.}
@@ -15,6 +15,10 @@ create_trends(smr01, gro, pop, dep, spec)
 \item{pop}{Input tibble for population estimates.}
 
 \item{dep}{Input tibble for deprivation lookup.}
+
+\item{spec}{Input tibble for the specialty groupings lookup.}
+
+\item{hospital_lookup}{Input tibble for the hospital name lookup.}
 }
 \value{
 If the class is not initiated correctly, nothing is returned.

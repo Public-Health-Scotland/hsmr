@@ -2,38 +2,20 @@
 % Please edit documentation in R/yr.R
 \name{yr}
 \alias{yr}
-\title{Assign a date to a quarter}
+\title{Assign a date to a year}
 \usage{
 yr(end_date)
 }
 \arguments{
-\item{first_day}{The first day of a quarter, supplied with \code{Date} class.}
-
-\item{format}{Should the quarter be provided in short or long format?}
-
-\item{quarter}{Should the final month of the current or next quarter be
-provided?}
+\item{end_date}{The cut-off date for data to be included in the current HSMR
+publication, supplied with \code{Date} class. Must be the final day of
+either March, June, September or December.}
 }
 \description{
-The qtr functions take the first day of a quarter (the first of
-either January, April, July or October) and calculate the relevant
-quarter-related value from it.
-
-\itemize{
-\item \code{qtr} returns the current quarter in either short or long format.
-
-\item \code{qtr_end} returns the last month in the quarter, either of the
-current or following quarter.
-
-\item \code{qtr_prev} returns the previous quarter in long format.
-}
+The \code{yr} functions take the end date of the extract period for the
+Hospital Standardised Mortality Ratios Publication and returns the latest
+year in text form.
 }
 \examples{
-qtr(first_day = lubridate::dmy(01012018), format = "short")
-qtr(first_day = lubridate::dmy(01102018), format = "long")
-
-qtr_end(first_day = lubridate::dmy(01072018), quarter = "current")
-qtr_end(first_day = lubridate::dmy(01042018), quarter = "next")
-
-qtr_prev(first_day = lubridate::dmy(01012018))
+yr(end_date = lubridate::dmy(31032019))
 }
