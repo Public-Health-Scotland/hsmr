@@ -114,7 +114,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
                                 hbtreat_currentdate == "S08100001" ~
                                   "Golden Jubilee",
                                 TRUE ~ location_name),
-      completeness_date = hsmr::submission_deadline(end_date)) %>%
+      completeness_date = hsmr::submission_deadline(end_date),
+      period_label = yr(end_date)) %>%
     rename(hb = hbtreat_currentdate)
 
   if (index == "Y"){
