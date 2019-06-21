@@ -6,8 +6,9 @@
 #' Hospital Standardised Mortality Ratios Publication and returns the latest
 #' year in text form.
 #'
-#' @param end_date The end date of the extract period, supplied with \code{Date}
-#'  class.
+#' @param end_date The cut-off date for data to be included in the current HSMR
+#' publication, supplied with \code{Date} class. Must be the final day of
+#' either March, June, September or December.
 #'
 #' @examples
 #' yr(end_date = lubridate::dmy(31032019))
