@@ -18,6 +18,25 @@
 #' @export
 funnel_text <- function(smr_data){
 
+  ### 1 - Error Handling ----
+  if(!tibble::is_tibble(smr_data)){
+
+    stop(paste0("The smr_data argument provided to the function ",
+                "must be in tibble format. Verify whether ",
+                "an object is a tibble or not with ",
+                "the tibble::is_tibble() function"))
+  }
+
+  if(!all("period", "deaths", "pred", "pats", "smr", "crd_rate",
+          "location_type", "location", "hb", "location_name",
+          "completeness_date", "period_label", "death_scot", "pred_scot",
+          "pats_scot", "smr_scot")){
+
+    stop(paste0("smr_data object must be objected returned from smr_data()",
+                " function."))
+
+  }
+
   smr_data %<>%
     filter(period == 3 & smr > ucl)
 
