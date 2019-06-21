@@ -15,8 +15,22 @@
 # Approximate run time - xx minutes
 #########################################################################
 
+### 1 - Load packages ----
+library(odbc)          # For accessing SMRA databases
+library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in SPSS files
+library(readr)         # For reading in csv files
+library(janitor)       # For 'cleaning' variable names
+library(magrittr)      # For %<>% operator
+library(lubridate)     # For dates
+library(tidylog)       # For printing results of some dplyr functions
+library(tidyr)         # For data manipulation in the "tidy" way
+library(stringr)       # For string manipulation and matching
+library(ggplot2)       # For ggplot objects
+library(here)          # For the here() function
+library(hsmr)          # For HSMR functions
 
-### 1 - Define Whether Running on Server or Locally ----
+### 2 - Define Whether Running on Server or Locally ----
 # Comment out as appropriate
 platform <- c("server")
 #platform <- c("locally")
@@ -29,7 +43,7 @@ plat_filepath <- dplyr::if_else(platform == "server",
                                 '//stats/cl-out/')
 
 
-### 2 - Extract dates ----
+### 3 - Extract dates ----
 
 
 # Define the dates that the data are extracted from and to
@@ -37,19 +51,22 @@ plat_filepath <- dplyr::if_else(platform == "server",
 
 
 # The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01012016)
+start_date        <- lubridate::dmy(01042016)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01012014)
+start_date_trends <- lubridate::dmy(01042014)
 
 # The end of the baseline period (for model)
-base_end          <- lubridate::dmy(31122018)
+base_end          <- lubridate::dmy(31032019)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01012011)
+start_date_5      <- lubridate::dmy(01042011)
+
+# First day of latest quarter in current publication
+qtr_start         <- lubridate::dmy(01012019)
 
 # End date for the cut off for data
-end_date          <- lubridate::dmy(31122018)
+end_date          <- lubridate::dmy(31032019)
 
 
 ### END OF SCRIPT ###
