@@ -2,7 +2,7 @@
 % Please edit documentation in R/pub_date.R
 \name{pub_date}
 \alias{pub_date}
-\title{Obtain HSMR publication date}
+\title{HSMR publication date}
 \usage{
 pub_date(end_date, pub = c("previous", "current", "next"))
 }
@@ -11,8 +11,8 @@ pub_date(end_date, pub = c("previous", "current", "next"))
 publication, supplied with \code{Date} class. Must be the final day of
 either March, June, September or December.}
 
-\item{pub}{A character string specifying the publication of interest. Valid
-options are `previous`, `current` and `next`.}
+\item{pub}{A \code{character} string specifying the publication of interest.
+Valid options are `previous`, `current` and `next`.}
 }
 \description{
 \code{pub_date} takes the final date for which SMR data are
