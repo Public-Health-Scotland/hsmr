@@ -28,6 +28,7 @@ library(tidyr)         # For data manipulation in the "tidy" way
 library(stringr)       # For string manipulation and matching
 library(ggplot2)       # For ggplot objects
 library(here)          # For the here() function
+library(openxlsx)      # For manipulating Excel files
 library(hsmr)          # For HSMR functions
 
 ### 2 - Define Whether Running on Server or Locally ----
