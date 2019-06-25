@@ -1,0 +1,9 @@
+library(hsmr)
+context("mit_available")
+
+test_that("Returns date of last Friday in the month before publication", {
+  expect_equal(lubridate::dmy(26072019),
+               mit_available(end_date = lubridate::dmy(31032019)))
+  expect_equal(lubridate::dmy(26042019),
+               mit_available(end_date = lubridate::dmy(31122018)))
+})
