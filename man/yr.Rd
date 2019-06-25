@@ -2,7 +2,7 @@
 % Please edit documentation in R/yr.R
 \name{yr}
 \alias{yr}
-\title{Assign a date to a year}
+\title{Assign a year to a date}
 \usage{
 yr(end_date)
 }
