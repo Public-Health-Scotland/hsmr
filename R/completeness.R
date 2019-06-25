@@ -11,7 +11,8 @@
 #'
 #' @details The \code{completeness} function assumes that the list of health
 #' board names (including Scotland) is contained in cells B31:B47 in the
-#' spreadsheet. Should this change, the function should be edited accordingly.
+#' spreadsheet, where B29 is `NHS Board` and B47 is `All NHS Boards`. Should
+#' this change, the function should be edited accordingly.
 #'
 #' The URL of the spreadsheet is occasionally modified. Should this happen, the
 #' function should again be edited accordingly.
