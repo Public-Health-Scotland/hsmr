@@ -7,19 +7,16 @@
 funnel_text(smr_data)
 }
 \arguments{
-\item{quarter}{Should the final month of the current or next quarter be
-provided?}
+\item{smr_data}{Should the final\code{tibble} output from the \code{smr_data}
+function.}
 }
 \description{
-test
+The publication summary documents for the HSMR publication has main points
+relating to outliers on the funnel plot. The \code{funnel_text} function
+identifies outlying hospitals and returns the text for the publication
+document.
 }
 \examples{
-qtr(first_day = lubridate::dmy(01012018), format = "short")
-qtr(first_day = lubridate::dmy(01102018), format = "long")
-
-qtr_end(first_day = lubridate::dmy(01072018), quarter = "current")
-qtr_end(first_day = lubridate::dmy(01042018), quarter = "next")
-
-qtr_prev(first_day = lubridate::dmy(01012018))
+funnel_text(smr_data)
 
 }
