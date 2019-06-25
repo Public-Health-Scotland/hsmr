@@ -1,3 +1,6 @@
+
+#' @export
+
 mit_available <- function(end_date) {
 
   if (class(end_date) != "Date") {
@@ -12,16 +15,18 @@ mit_available <- function(end_date) {
          "September or December")
   }
 
+  # Calculate the first day of the month, the month before publication
   first <- lubridate::floor_date(hsmr::pub_date(end_date = end_date,
                                                 pub = "current"),
                                  unit = "month") - months(1)
 
-  last <- lubridate::floor_date(hsmr::pub_date(end_date = end_date,
-                                               pub = "current"),
-                                unit = "month") - lubridate::days(1)
+  # Calculate the last day of the month, the month before publication
+  last <- lubridate::ceiling_date(first, unit = "month") - lubridate::days(1)
 
+  # Calculate the number of Fridays in the month before publication
   n <- sum(format(seq(first, last, "day"), "%w") == 5)
 
+  # Return the date of the last Friday in the month before publication
   RcppBDT::getNthDayOfWeek(n,
                            5,
                            lubridate::month(hsmr::pub_date(end_date = end_date,
@@ -30,9 +35,3 @@ mit_available <- function(end_date) {
                            lubridate::year(hsmr::pub_date(end_date = end_date,
                                                           pub = "current")))
 }
-
-mit_available(end_date)
-pub_date(end_date, "previous")
-
-mit_available(end_date = lubridate::dmy(31122018))
-
