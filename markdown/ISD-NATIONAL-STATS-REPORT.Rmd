@@ -68,6 +68,18 @@ latest_deaths_discharge <- trend_data %>%
   filter(hb == "Scotland" & label == "Discharge" & quarter == 20)
 
 
+# Calculates the end date for a quarter in string format
+completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ", 
+                                                              year(end_date +
+                                                                     days(1))),
+                               month(end_date) == 3 ~ paste0("30 June ", 
+                                                             year(end_date)),
+                               month(end_date) == 6 ~ paste0("30 September ",
+                                                             year(end_date)),
+                               month(end_date) == 9 ~ paste0("31 December ",
+                                                             year(end_date)))
+
+
 # Loads scales package for ggplot2 (could maybe be added to environment file?)
 library(scales)
 
