@@ -18,3 +18,9 @@ test_that("Errors if extract end date is not in date format", {
   expect_error(mit_available(end_date = as.numeric(lubridate::dmy(31032018))))
   expect_error(mit_available(end_date = as.integer(lubridate::dmy(31032018))))
 })
+
+test_that("Errors if extract end date is not final day of a quarter", {
+  expect_error(mit_available(end_date = lubridate::dmy(01072018)))
+  expect_error(mit_available(end_date = lubridate::dmy(15092018)))
+  expect_error(mit_available(end_date = lubridate::dmy(30122018)))
+})
