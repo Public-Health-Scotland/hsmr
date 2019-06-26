@@ -630,7 +630,7 @@ More details of the review work and recommendations are available in the HSMR Re
 
 
 <Div custom-style = "Heading 2">Next Update</div>
-The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"). 
+The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
 
 
 ####### Glossary
