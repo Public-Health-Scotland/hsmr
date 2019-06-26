@@ -57,39 +57,16 @@ trend_data <- read_csv(here("data",
                                             pub = "current"),
                                    "_trends-data.csv"))) %>%
   filter(!is.na(label)) %>% 
-  arrange(hb2014, label, quarter) 
+  arrange(hb, label, quarter) 
 
 # Extract latest row for all admissions/discharge at Scotland from the trends 
 # data. Could maybe be put into a function but works like this for now
 latest_deaths_admission <- trend_data %>% 
-  filter(hb2014 == "Scotland" & label == "All Admissions" & quarter == 20)
+  filter(hb == "Scotland" & label == "All Admissions" & quarter == 20)
   
 latest_deaths_discharge <- trend_data %>% 
-  filter(hb2014 == "Scotland" & label == "Discharge" & quarter == 20)
+  filter(hb == "Scotland" & label == "Discharge" & quarter == 20)
 
-# Calculates completeness date (has been put into a function on another branch
-# so will be obsolete/should be deleted once merged)
-completeness_date <- case_when(month(end_date) == 12 & 
-                                 year(end_date + days(1)) %% 4 != 0 ~ 
-                                 paste0("11 April ", year(end_date + days(1))),
-                               month(end_date) == 3 ~ paste0("12 July ",
-                                                             year(end_date)),
-                               month(end_date) == 6 ~ paste0("12 October ",
-                                                             year(end_date)),
-                               month(end_date) == 9 ~ paste0("11 January ",
-                                                             year(end_date) + 1)
-                               )
-
-# Calculates the end date for a quarter in string format
-completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ", 
-                                                              year(end_date +
-                                                                     days(1))),
-                               month(end_date) == 3 ~ paste0("30 June ", 
-                                                             year(end_date)),
-                               month(end_date) == 6 ~ paste0("30 September ",
-                                                             year(end_date)),
-                               month(end_date) == 9 ~ paste0("31 December ",
-                                                             year(end_date)))
 
 # Loads scales package for ggplot2 (could maybe be added to environment file?)
 library(scales)
@@ -223,7 +200,7 @@ chart_7 <- ggplot(trend_data %>% filter(label == "1 - Most Deprived"
     axis.text = element_text(size = 12, angle= 90, hjust = 0, vjust = 0.5))
 
 chart_8 <- ggplot(trend_data %>% filter(label == "Discharge" 
-                                        & hb2014 == "Scotland"), 
+                                        & hb == "Scotland"), 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
@@ -240,7 +217,7 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
 
 
 chart_9 <- ggplot(trend_data %>% filter(label == "Population" 
-                                        & hb2014 == "Scotland"), aes(x = forcats::fct_reorder(quarter_short,
+                                        & hb == "Scotland"), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
   geom_line(aes(colour = label, group=label)) +
@@ -369,7 +346,7 @@ Description <- c("Hospital Standardised Mortality Ratios",
 "Quality Indicators",
 "Web Publication",
 "SMR01/NRS Death Registrations – Linked Database",
-completeness_date,
+submission_deadline(end_date),
 format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
 "Quarterly",
 "Quarterly reporting periods from Oct-Dec 2008 to Jul-Sep 2018 (one-quarter reporting lag)",
@@ -426,7 +403,7 @@ The end of this phase of the Scottish Patient Safety Programme provided the oppo
 
 **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology. **
 
-These latest statistics reflect completeness of validated hospital SMR01 returns as at `r completeness_date`. This information has previously been released to NHS Boards as management information.
+These latest statistics reflect completeness of validated hospital SMR01 returns as at `r submission_deadline(end_date)`. This information has previously been released to NHS Boards as management information.
 
 <Div custom-style = "Heading 2_pgbrk">Hospital Standardised Mortality Ratios</div>
 Hospital Standardised Mortality Ratios (HSMRs) adjust death data (referred to in this report as mortality data) to take account of some of the factors known to affect the underlying risk of death. 
