@@ -665,7 +665,7 @@ Email:  Lucinda.Lawrie1@nhs.net
 ## Further Information
 Further Information can be found on the [ISD website](http://www.isdscotland.org/).  
 For more information on XXX see the [XXX section of our website](http://www.isdscotland.org/). For related topics, please see the [XXX](http://www.isdscotland.org/) pages.  
-The next release of this publication will be DD Month YYYY.  
+The next release of this publication will be `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.  
 
 <br>
 
