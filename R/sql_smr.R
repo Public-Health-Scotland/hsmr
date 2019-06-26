@@ -135,7 +135,7 @@ query_smr01_minus5 <- function(extract_start, extract_end) {
          "September or December")
   }
 
-  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, OLD_SMR1_TADM_CODE,",
+  paste("select LINK_NO, ADMISSION_DATE, DISCHARGE_DATE, ADMISSION_TYPE,",
         "CIS_MARKER, SPECIALTY, MAIN_CONDITION from SMR01_PI",
         "where ADMISSION_DATE BETWEEN",
         "TO_DATE(", shQuote(extract_start, type = "sh"),",'yyyy-mm-dd')",

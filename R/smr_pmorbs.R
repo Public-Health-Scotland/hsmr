@@ -47,14 +47,14 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
   }
 
   if(!all(c("link_no", "admission_date", "discharge_date",
-            "old_smr1_tadm_code", "cis_marker") %in% names(smr01_minus5))){
+            "admission_type", "cis_marker") %in% names(smr01_minus5))){
 
     stop(paste0("smr01_minus5 object doesn't contain all of the required ",
                 "variables. Must contain:
                 link_no
                 admission_date
                 discharge_date
-                old_smr1_tadm_code
+                admission_type
                 cis_marker"))
   }
 
@@ -344,11 +344,11 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
     smr01_minus5[, `:=`(old_admission =
                           (admission_date - data.table::shift(admission_date,
                                                               i))/60/60/24,
-                        old_tadm = data.table::shift(old_smr1_tadm_code, i),
+                        admtype = data.table::shift(admission_type, i),
                         old_link = data.table::shift(link_no, i))]
 
     smr01_minus5[admission_date >= start_date & old_link == link_no &
-                   old_tadm >= 4 & old_admission <= 365,
+                   (admtype = 18 | (admtype >= 20 & admtype <=48))  & old_admission <= 365,
                  n_emerg := n_emerg + 1]
 
   }
