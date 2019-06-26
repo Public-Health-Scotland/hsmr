@@ -599,9 +599,6 @@ The data within Table 4 contains a ‘drop-down’ selection option for NHSScotl
 * Crude population mortality rates (%).
 
 
-**These tables contain macros and can be viewed using Microsoft EXCEL. Users should ensure that their macro security settings are set to enable this content to be viewed. **
-
-
 These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the HSMR webpage.
 
 
@@ -621,7 +618,7 @@ More details of the review work and recommendations are available in the HSMR Re
 
 
 <Div custom-style = "Heading 2">Next Update</div>
-The next update, reporting on admissions to 31st December 2018, will be published on Tuesday 14 May 2019. 
+The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"). 
 
 
 ####### Glossary
