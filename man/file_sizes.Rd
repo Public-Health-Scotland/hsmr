@@ -24,8 +24,8 @@ There are three HSMR Excel tables: tables 1, 2 and 3. If fewer or
 more Excel tables which follow the same naming conventions as tables 1, 2
 and 3 are found in the filepath, the function will return an error.
 
-File sizes are returned in Kilobytes (KB) or Megabytes (MB). A Kilobyte is
-taken to be 1024 bytes, and a Megabyte to be 1024 Kilobytes.
+File sizes are returned in kilobytes (KB) or megabytes (MB). A kilobyte is
+taken to be 1,024 bytes, and a megabyte to be 1,024 kilobytes.
 }
 \examples{
 file_sizes()
