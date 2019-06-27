@@ -106,7 +106,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name)) %>%
     tidylog::mutate(location_name = case_when(location == "C418H" ~
-                                  "Royal Alexandria/Vale of Leven",
+                                  "Royal Alexandra/Vale of Leven",
                                 hbtreat_currentdate == "S08100001" ~
                                   "Golden Jubilee",
                                 TRUE ~ location_name),
