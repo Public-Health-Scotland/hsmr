@@ -8,8 +8,8 @@
 #' more Excel tables which follow the same naming conventions as tables 1, 2
 #' and 3 are found in the filepath, the function will return an error.
 #'
-#' File sizes are returned in Kilobytes (KB) or Megabytes (MB). A Kilobyte is
-#' taken to be 1024 bytes, and a Megabyte to be 1024 Kilobytes.
+#' File sizes are returned in kilobytes (KB) or megabytes (MB). A kilobyte is
+#' taken to be 1,024 bytes, and a megabyte to be 1,024 kilobytes.
 #'
 #' @param filepath A \code{character} string containing the filepath to the
 #' location of the HSMR Excel tables. Errors if not provided with a valid
@@ -41,6 +41,12 @@ file_sizes <- function(filepath = here::here("data", "output")) {
   x %>%
     purrr::map(~file.info(paste0(filepath, "/", .))$size) %>%
     unlist() %>%
+
+    # The gdata package defines a kilobyte as 1,000 bytes, and a kibibyte as
+    # 1,024 bytes
+    # We wish to take a kilobyte as 1,024 bytes
+    # As a workaround, calculate file sizes in kibibytes or mebibytes, then
+    # drop the `i` from the output, so the final result is displayed as KB or MB
     gdata::humanReadable(standard = "IEC", digits = 0) %>%
     gsub("i", "", .) %>%
     trimws() %>%
