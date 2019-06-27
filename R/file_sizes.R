@@ -21,6 +21,8 @@
 #' file_sizes()
 #' file_sizes(getwd())[1]
 #'
+#' @importFrom dplyr %>%
+#'
 #' @export
 
 file_sizes <- function(filepath = here::here("data", "output")) {
