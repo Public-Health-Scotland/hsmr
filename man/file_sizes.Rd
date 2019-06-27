@@ -29,6 +29,6 @@ taken to be 1,024 bytes, and a megabyte to be 1,024 kilobytes.
 }
 \examples{
 file_sizes()
-file_sizes(getwd())[1]
+file_sizes(filepath = getwd())[1]
 
 }

@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' file_sizes()
-#' file_sizes(getwd())[1]
+#' file_sizes(filepath = getwd())[1]
 #'
 #' @importFrom dplyr %>%
 #'
