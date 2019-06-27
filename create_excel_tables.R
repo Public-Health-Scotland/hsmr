@@ -24,6 +24,18 @@ smr_data          <- read_csv(here("data",
                                    paste0(pub_date(end_date = end_date,
                                                    pub = "current"),
                                           "_SMR-data.csv"))) %>%
+  mutate(location      = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE                    ~ location),
+    hb = case_when(
+      hb == "S08000018" ~ "S08000029",
+      hb == "S08000027" ~ "S08000030",
+      hb == "S08000021" ~ "S08000031",
+      hb == "S08000023" ~ "S08000032",
+      TRUE ~ hbtreat_currentdate)) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
@@ -75,6 +87,20 @@ trend_data <- read_csv(here("data",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
                                    "_trends-data.csv"))) %>%
+  mutate(hb = case_when(
+    hb == "S08000018" ~ "S08000029",
+    hb == "S08000027" ~ "S08000030",
+    hb == "S08000021" ~ "S08000031",
+    hb == "S08000023" ~ "S08000032",
+    TRUE ~ hb
+  ),
+  location = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE ~ location
+  )) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',

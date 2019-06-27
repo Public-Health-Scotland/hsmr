@@ -667,20 +667,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     # Recode location and healthboard codes to new ones
 
-    tidylog::mutate(hb = case_when(
-      hb == "S08000018" ~ "S08000029",
-      hb == "S08000027" ~ "S08000030",
-      hb == "S08000021" ~ "S08000031",
-      hb == "S08000023" ~ "S08000032",
-      TRUE ~ hb
-    ),
-    location = case_when(
-      location == "S08000018" ~ "S08000029",
-      location == "S08000027" ~ "S08000030",
-      location == "S08000021" ~ "S08000031",
-      location == "S08000023" ~ "S08000032",
-      TRUE ~ location
-    ),
+    tidylog::mutate(
     location_name = case_when(location == "C418H" ~
                                 "Royal Alexandria/Vale of Leven",
                               hb == "S08100001" ~ "Golden Jubilee",
