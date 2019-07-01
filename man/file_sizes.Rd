@@ -32,3 +32,11 @@ file_sizes()
 file_sizes(filepath = getwd())[1]
 
 }
+\seealso{
+The code which creates this function uses regular expressions. For
+more information on using regular expressions, see this
+\href{https://www.jumpingrivers.com/blog/regular-expressions-every-r-programmer-should-know/}{Jumping Rivers blog post}
+and this
+\href{https://stringr.tidyverse.org/articles/regular-expressions.html}{vignette}
+from the \href{https://stringr.tidyverse.org/}{stringr} package.
+}

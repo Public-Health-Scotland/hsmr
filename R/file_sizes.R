@@ -17,6 +17,13 @@
 #'
 #' @return A \code{character} vector.
 #'
+#' @seealso The code which creates this function uses regular expressions. For
+#' more information on using regular expressions, see this
+#' \href{https://www.jumpingrivers.com/blog/regular-expressions-every-r-programmer-should-know/}{Jumping Rivers blog post}
+#' and this
+#' \href{https://stringr.tidyverse.org/articles/regular-expressions.html}{vignette}
+#' from the \href{https://stringr.tidyverse.org/}{stringr} package.
+#'
 #' @examples
 #' file_sizes()
 #' file_sizes(filepath = getwd())[1]
@@ -48,7 +55,7 @@ file_sizes <- function(filepath = here::here("data", "output")) {
 
   if (length(x) != 3) {
     stop(paste0("Exactly three HSMR Excel tables should be present in the ",
-                "folder: Tables 1, 2 and 3"))
+                "folder: tables 1, 2 and 3"))
   }
 
   x %>%
