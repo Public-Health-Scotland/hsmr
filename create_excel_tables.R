@@ -98,7 +98,7 @@ writeData(table1, "funnel_data", smr_data, startCol = 2)
 saveWorkbook(table1,
              here("data",
                   "output",
-                  paste0(pub_date(end_date, pub = "current"),"Table-1HSMR.xlsx")
+                  paste0(pub_date(end_date, pub = "current"),"-Table-1HSMR.xlsx")
                   ), overwrite = TRUE)
 
 # Load in Table 2 template
@@ -117,7 +117,7 @@ saveWorkbook(table2,
                   "output",
                   paste0(pub_date(end_date,
                                   pub = "current"),
-                         "Table2-Crude-Mortality-subgroups.xlsx")),
+                         "-Table2-Crude-Mortality-subgroups.xlsx")),
              overwrite = TRUE)
 
 # Load in Table 3 template
@@ -135,7 +135,7 @@ saveWorkbook(table3,
                   "output",
                   paste0(pub_date(end_date,
                                   pub = "current"),
-                              paste0("Table3-Crude-Mortality-population-based",
+                              paste0("-Table3-Crude-Mortality-population-based",
                                    "-and-30-day-from-discharge.xlsx"))),
              overwrite = TRUE)
 
