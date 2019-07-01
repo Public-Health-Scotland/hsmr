@@ -24,7 +24,7 @@ comp <- janitor::clean_names(comp)
 # however it only adds the dataset name to the column containing the first
 # quarter of data, and gives all subsuquent quarters NA
 #
-# This step replace those NAs in the first row with the nearest non-NA value
+# This step replaces those NAs in the first row with the nearest non-NA value
 # to the left, which should be the name of the relevant dataset
 comp[1,] <- t(dplyr::select(
   tidyr::fill(
