@@ -17,7 +17,8 @@
 #' either March, June, September or December. Must not be prior to
 #' \code{2019-03-31}, as this is the extract end date for the \code{2019-08-13}
 #' publication. The current format of the HSMR Excel tables was first created
-#' for this publication.
+#' for this publication. If an extract end date later than that of the current
+#' publication is supplied, the function will return an error.
 #' @param filepath A \code{character} string containing the filepath to the
 #' location of the HSMR Excel tables. Errors if not provided with a valid
 #' filepath. Defaults to \code{here::here("data", "output")}.
