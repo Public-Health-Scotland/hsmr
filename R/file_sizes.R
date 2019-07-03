@@ -61,7 +61,6 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
   # Regex works as follows:
   # ^ = starts with
   # \\ = escape special behaviour (to match a literal `\`, write `\\\\`)
-  # \\d{4}-\\d{2}-\\d{2} = yyyy-mm-dd
   # (T|t)able = Table or table
   # * = zero or more pattern matches
   # [a-zA-Z0-9\\_\\-]* = zero or more lower case, uppercase, numeric,
@@ -69,7 +68,9 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
   # $ = ends with
   # \\.xlsx$ = has .xlsx file extension
   x <- dir(path = filepath,
-           pattern = "^\\d{4}-\\d{2}-\\d{2}(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$")
+           pattern = paste0("^",
+                            hsmr::pub_date(end_date, "current"),
+                            "(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$"))
 
   if (length(x) != 3) {
     stop(paste0("Exactly three HSMR Excel tables should be present in the ",
