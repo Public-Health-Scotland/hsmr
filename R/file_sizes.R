@@ -14,7 +14,10 @@
 #'
 #' @param end_date The cut-off date for data to be included in the current HSMR
 #' publication, supplied with \code{Date} class. Must be the final day of
-#' either March, June, September or December.
+#' either March, June, September or December. Must not be prior to
+#' \code{2019-03-31}, as this is the extract end date for the \code{2019-08-13}
+#' publication. The current format of the HSMR Excel tables was first created
+#' for this publication.
 #' @param filepath A \code{character} string containing the filepath to the
 #' location of the HSMR Excel tables. Errors if not provided with a valid
 #' filepath. Defaults to \code{here::here("data", "output")}.
@@ -54,8 +57,8 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
 
   if(end_date < lubridate::dmy(31032019)) {
     stop(paste0("The extract end date must not be prior to 2019-03-31, as ",
-                "these files were first created for the 2019-08-13 ",
-                "publication"))
+                "the current format of the HSMR Excel tables files was first ",
+                "created for the 2019-08-13 publication"))
   }
 
   if (!file.exists(filepath)) {
