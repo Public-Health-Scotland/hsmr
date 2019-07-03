@@ -4,9 +4,17 @@
 \alias{file_sizes}
 \title{Extract file sizes for HSMR Excel tables}
 \usage{
-file_sizes(filepath = here::here("data", "output"))
+file_sizes(end_date, filepath = here::here("data", "output"))
 }
 \arguments{
+\item{end_date}{The cut-off date for data to be included in the current HSMR
+publication, supplied with \code{Date} class. Must be the final day of
+either March, June, September or December. Must not be prior to
+\code{2019-03-31}, as this is the extract end date for the \code{2019-08-13}
+publication. The current format of the HSMR Excel tables was first created
+for this publication. If an extract end date later than that of the current
+publication is supplied, the function will return an error.}
+
 \item{filepath}{A \code{character} string containing the filepath to the
 location of the HSMR Excel tables. Errors if not provided with a valid
 filepath. Defaults to \code{here::here("data", "output")}.}
@@ -15,9 +23,10 @@ filepath. Defaults to \code{here::here("data", "output")}.}
 A \code{character} vector.
 }
 \description{
-\code{file_sizes} takes the filepath to the location of the
+\code{file_sizes} takes the final date for which SMR data are
+included in the current publication and the filepath to the location of the
 HSMR Excel tables. It returns a \code{character} vector containing the size
-of each file.
+of each table.
 }
 \details{
 There are three HSMR Excel tables: tables 1, 2 and 3. If fewer or
@@ -28,8 +37,10 @@ File sizes are returned in kilobytes (KB) or megabytes (MB). A kilobyte is
 taken to be 1,024 bytes, and a megabyte to be 1,024 kilobytes.
 }
 \examples{
-file_sizes()
-file_sizes(filepath = getwd())[1]
+extract_end_date <- lubridate::dmy(31032019)
+
+file_sizes(end_date = extract_end_date)
+file_sizes(end_date = extract_end_date, filepath = getwd())[1]
 
 }
 \seealso{
