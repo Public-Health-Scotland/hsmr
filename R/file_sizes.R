@@ -1,8 +1,9 @@
 #' @title Extract file sizes for HSMR Excel tables
 #'
-#' @description \code{file_sizes} takes the filepath to the location of the
-#' HSMR Excel tables. It returns a \code{character} vector containing the size
-#' of each file.
+#' @description \code{file_sizes} takes takes the final date for which SMR data
+#' are included in the current publication and the filepath to the location of
+#' the HSMR Excel tables. It returns a \code{character} vector containing the
+#' size of each file.
 #'
 #' @details There are three HSMR Excel tables: tables 1, 2 and 3. If fewer or
 #' more Excel tables which follow the same naming conventions as tables 1, 2
@@ -11,6 +12,9 @@
 #' File sizes are returned in kilobytes (KB) or megabytes (MB). A kilobyte is
 #' taken to be 1,024 bytes, and a megabyte to be 1,024 kilobytes.
 #'
+#' @param end_date The cut-off date for data to be included in the current HSMR
+#' publication, supplied with \code{Date} class. Must be the final day of
+#' either March, June, September or December.
 #' @param filepath A \code{character} string containing the filepath to the
 #' location of the HSMR Excel tables. Errors if not provided with a valid
 #' filepath. Defaults to \code{here::here("data", "output")}.
@@ -32,7 +36,7 @@
 #'
 #' @export
 
-file_sizes <- function(filepath = here::here("data", "output")) {
+file_sizes <- function(end_date, filepath = here::here("data", "output")) {
 
   if (!file.exists(filepath)) {
     stop(paste0("A valid filepath to the folder containing the HSMR Excel ",
