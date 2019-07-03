@@ -1,9 +1,9 @@
 #' @title Extract file sizes for HSMR Excel tables
 #'
-#' @description \code{file_sizes} takes takes the final date for which SMR data
-#' are included in the current publication and the filepath to the location of
-#' the HSMR Excel tables. It returns a \code{character} vector containing the
-#' size of each file.
+#' @description \code{file_sizes} takes the final date for which SMR data are
+#' included in the current publication and the filepath to the location of the
+#' HSMR Excel tables. It returns a \code{character} vector containing the size
+#' of each table.
 #'
 #' @details There are three HSMR Excel tables: tables 1, 2 and 3. If fewer or
 #' more Excel tables which follow the same naming conventions as tables 1, 2
@@ -32,7 +32,7 @@
 #' from the \href{https://stringr.tidyverse.org/}{stringr} package.
 #'
 #' @examples
-#' extract_end_date <- lubridate::dmy(30092018)
+#' extract_end_date <- lubridate::dmy(31032019)
 #'
 #' file_sizes(end_date = extract_end_date)
 #' file_sizes(end_date = extract_end_date, filepath = getwd())[1]
