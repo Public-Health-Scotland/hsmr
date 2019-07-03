@@ -52,6 +52,12 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
          "September or December")
   }
 
+  if(end_date < lubridate::dmy(31032019)) {
+    stop(paste0("The extract end date must not be prior to 2019-03-31, as ",
+                "these files were first created for the 2019-08-13 ",
+                "publication"))
+  }
+
   if (!file.exists(filepath)) {
     stop(paste0("A valid filepath to the folder containing the HSMR Excel ",
                 "tables must be supplied"))
