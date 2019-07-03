@@ -6,7 +6,7 @@
 #
 # Type - data extraction/preparation/modelling
 # Written/run on - RStudio server
-# Version of R - 3.2.3
+# Version of R - 3.5.1
 #
 # Description - Populates Excel Tables for quarterly HSMR publication
 #
