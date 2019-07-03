@@ -38,6 +38,18 @@
 
 file_sizes <- function(end_date, filepath = here::here("data", "output")) {
 
+  if (class(end_date) != "Date") {
+    stop("The extract end date must be provided in date format")
+  }
+
+  if(!(format(end_date, "%d %B") %in% c("31 March",
+                                        "30 June",
+                                        "30 September",
+                                        "31 December"))) {
+    stop("The extract end date must be the final day of either March, June, ",
+         "September or December")
+  }
+
   if (!file.exists(filepath)) {
     stop(paste0("A valid filepath to the folder containing the HSMR Excel ",
                 "tables must be supplied"))
