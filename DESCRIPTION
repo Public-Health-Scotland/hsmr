@@ -22,7 +22,7 @@ Imports:
     RcppBDT,
     readr,
     readxl, 
-    scales, 
+    scales (>= 1.0.0), 
     stringi, 
     stringr,
     testthat,
