@@ -29,8 +29,10 @@
 #' from the \href{https://stringr.tidyverse.org/}{stringr} package.
 #'
 #' @examples
-#' file_sizes()
-#' file_sizes(filepath = getwd())[1]
+#' extract_end_date <- lubridate::dmy(30092018)
+#'
+#' file_sizes(end_date = extract_end_date)
+#' file_sizes(end_date = extract_end_date, filepath = getwd())[1]
 #'
 #' @importFrom dplyr %>%
 #'
