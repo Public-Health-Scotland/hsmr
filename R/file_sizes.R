@@ -82,8 +82,8 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
                             "(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$"))
 
   if (length(x) != 3) {
-    stop(paste0("Exactly three HSMR Excel tables should be present in the ",
-                "folder: tables 1, 2 and 3"))
+    stop(paste0("Exactly three HSMR Excel tables for the current publication ",
+                "should be present in the folder: tables 1, 2 and 3"))
   }
 
   x %>%
