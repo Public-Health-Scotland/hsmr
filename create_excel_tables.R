@@ -82,11 +82,11 @@ smr_data          <- read_csv(here("data",
 ### SECTION 2 - CREATE TABLES ----
 
 # Read in trend data
-trends_data <- read_csv(here("data",
+trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data.csv"))) %>%
+                                   "_trends-data-level2.csv"))) %>%
   mutate(hb = case_when(
     hb == "S08000018" ~ "S08000029",
     hb == "S08000027" ~ "S08000030",
@@ -124,7 +124,7 @@ writeData(table1, "funnel_data", smr_data, startCol = 2)
 saveWorkbook(table1,
              here("data",
                   "output",
-                  paste0(pub_date(end_date, pub = "current"),"Table-1HSMR.xlsx")
+                  paste0(pub_date(end_date, pub = "current"),"Table1-HSMR.xlsx")
                   ), overwrite = TRUE)
 
 # Load in Table 2 template
@@ -132,7 +132,7 @@ table2 <- loadWorkbook(here("reference_files",
                             "Table2-Crude-Mortality-subgroups.xlsx"))
 
 # Write data to data tab in Table 2
-writeData(table2, "table_data", trends_data %>%
+writeData(table2, "table_data", trend_data %>%
             filter((sub_grp == "All Admissions" &
                       (agg_label == "Hospital" | agg_label == "Board")) |
                      (agg_label == "Scotland" & !(sub_grp %in% c("Discharge", "Population",
@@ -154,7 +154,7 @@ table3 <- loadWorkbook(here("reference_files",
                                    "-and-30-day-from-discharge.xlsx")))
 
 # Write data to data tab in Table 3
-writeData(table3, "data", trends_data %>%
+writeData(table3, "data", trend_data %>%
             filter(sub_grp %in% c("Discharge", "Population")), startCol = 2)
 
 # Output Table 3
