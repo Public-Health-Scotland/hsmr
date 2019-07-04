@@ -82,7 +82,7 @@ smr_data          <- read_csv(here("data",
 ### SECTION 2 - CREATE TABLES ----
 
 # Read in trend data
-trend_data <- read_csv(here("data",
+trends_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
@@ -132,9 +132,11 @@ table2 <- loadWorkbook(here("reference_files",
                             "Table2-Crude-Mortality-subgroups.xlsx"))
 
 # Write data to data tab in Table 2
-writeData(table2, "table_data", trend_data %>%
-            filter(!(sub_grp %in% c("Discharge", "Population",
-                                    "Symptom Coding", "Depth of Coding"))),
+writeData(table2, "table_data", trends_data %>%
+            filter((sub_grp == "All Admissions" &
+                      (agg_label == "Hospital" | agg_label == "Board")) |
+                     (agg_label == "Scotland" & !(sub_grp %in% c("Discharge", "Population",
+                                    "Symptom Coding", "Depth of Coding")))),
           startCol = 2)
 
 # Output Table 2
@@ -152,7 +154,7 @@ table3 <- loadWorkbook(here("reference_files",
                                    "-and-30-day-from-discharge.xlsx")))
 
 # Write data to data tab in Table 3
-writeData(table3, "data", trend_data %>%
+writeData(table3, "data", trends_data %>%
             filter(sub_grp %in% c("Discharge", "Population")), startCol = 2)
 
 # Output Table 3
