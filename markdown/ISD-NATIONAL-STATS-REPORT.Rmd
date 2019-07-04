@@ -278,9 +278,9 @@ ggsave("Chart_9.png", plot = chart_9, width = 17.49, height = 9.03,
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table1.xls"), 
-                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table2.xls"),
-                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table3.xls"),
+             url = c(paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"Table1-HSMR.xlsx"), 
+                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"Table2-Crude-Mortality-Subgroups.xlsx"), 
+                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx"), 
                      paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table4.xls")), 
              stringsAsFactors = FALSE)
 
