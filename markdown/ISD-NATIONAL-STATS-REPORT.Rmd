@@ -286,6 +286,32 @@ url_list <- data.frame(a = c(1, 2, 3, 4),
 
 ```
 
+```{r Table list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
+c1 <- c(paste0("[Table 1 (Hospital Standardised Mortality Ratios)](",
+               url_list[1, "url"], ")"),
+        paste0("[Table 2 (NHSScotland, NHS Board and hospital overall crude mortality trends and NHSScotland crude mortality trends by demographics and quarter)](",
+               url_list[2, "url"], ")"),
+        paste0("[Table 3 (Crude 30-day mortality from discharge and Overall population crude mortality rates by NHS Board and quarter)](", 
+               url_list[3, "url"],")"))
+
+c2 <- c("tba", "tba", "tba")
+
+table_list <- data.frame(c1, c2)
+```
+
+```{r quarterly process, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
+c1 <- c(months(pub_date(end_date, "current") - months(1)),
+        months(pub_date(end_date, "current")),
+        months(pub_date(end_date, "current") + months(1)))
+
+c2 <- c(paste0("Source database refreshed (", submission_deadline(end_date),");	Analytical work begins, involving extraction of quarterly patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (25 January 2019)"),
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (5 February 2019);	ISD briefs Scottish Government on content of report (", pub_date(end_date, "current") - days(7),"); Report published on ISD website at 09:30 on Tuesday ", pub_date(end_date, "current"),"."),
+"Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by ISD on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
+
+q_process <- data.frame(c1, c2)
+
+```
+
 
 ```{r glossary, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
 glossary1 <- c("HSMR", "NRS", "SHMI", "SIMD", "SMR", "SMR(01)", "SPSP")
@@ -527,20 +553,20 @@ Chart 3 shows the mortality trend according to admission type (i.e. whether the 
 It shows that non-elective patients consistently account for the largest proportion of deaths within 30-days of admission. 
 <Div custom-style = "Heading 4_centre">Chart 3: Crude mortality rates (%) for deaths within 30-days of admission by type of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Test Alt Text](Chart_3.png)</div>
+![Trend chart showing crude mortality by type of admission for the last five years](Chart_3.png)</div>
 
 <Div custom-style = "Heading 3_pgbrk">Scotland – by specialty</div>
 Chart 4 shows the mortality trend according to five distinct specialty groups. Specialty group is classified according to the specialty of the consultant/GP/HCP who is in charge of the patient episode. 
 It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by medical and then surgical. Those recorded under Dental or Women and Newborn specialty having the lowest rate.  
 <Div custom-style = "Heading 4_centre">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Test Alt Text](Chart_4.png)</div>
+![Trend chart showing crude mortality by specialty group for the last five years](Chart_4.png)</div>
 
 <Div custom-style = "Heading 3_pgbrk">Scotland – by age </div>
 Chart 5 shows that mortality within 30-days of admission increases with age.
 <Div custom-style = "Heading 4_centre">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Test Alt Text](Chart_5.png)</div>
+![Trend chart showing crude mortality by age group for the last five years](Chart_5.png)</div>
 
 
 <Div custom-style = "Heading 3_pgbrk">Scotland – by Gender</div>
@@ -548,7 +574,7 @@ Chart 6 shows that mortality rates are consistently higher for males throughout 
 
 <Div custom-style = "Heading 4_centre">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by gender; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Test Alt Text](Chart_6.png)</div>
+![Trend chart showing crude mortality by gender for the last five years](Chart_6.png)</div>
 
 <Div custom-style = "Heading 3_pgbrk">Scotland – by Scottish Index of Multiple Deprivation</div>
 The Scottish Index of Multiple Deprivation presents a picture of multiple deprivation across Scotland. It identifies small area concentrations of multiple deprivation across all of Scotland in a fair way based on six domains - employment, income, health, education, access and crime. 
@@ -557,12 +583,12 @@ Chart 7 shows that patients from the least deprived areas of Scotland consistent
 
 <Div custom-style = "Heading 4_centre">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Test Alt Text](Chart_7.png)</div>
+![Trend chart showing crude mortality by deprivation for the last five years](Chart_7.png)</div>
 
-<Div custom-style = "Heading 3_pgbrk">Hospital and NHS Board Level</div>
+<Div custom-style = "Heading 2_pgbrk">Hospital and NHS Board Level</div>
 HSMR data are provided by ISD to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time.  
 
-## Combined Institutions
+### Combined Institutions
 In order to reflect current service configuration, some hospitals are presented as combined institutions for the purposes of these reports. This applies to the following NHS Boards.  
 
 *	**NHS Greater Glasgow and Clyde**: In order to reflect current service configuration, the HSMRs for Stobhill Hospital and Glasgow Royal Infirmary have been combined as have the activity for Royal Alexandra Hospital and Vale of Leven. These changes have been applied to all time points retrospectively back to the initial reporting period. In addition NHS Greater Glasgow & Clyde combine any activity (historic or current) from Blawarthill Hospital, Drumchapel Hospital, Glasgow Homoeopathic Hospital, Knightswood Hospital, and Beatson Oncology Centre with West Glasgow Hospital data. Please note that the Queen Elizabeth University Hospital opened to patients in April 2015, with services from the Southern General, old Victoria Infirmary and old Western Infirmary/ Gartnavel transferred to this new hospital.  
@@ -577,7 +603,7 @@ For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there w
 <Div custom-style = "Heading 4_centre">Chart 8: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
-![Test Alt Text](Chart_8.png)</div>
+![Trend chart showing crude mortality for deaths within 30 days of discharge for the last five years](Chart_8.png)</div>
 
 [Table 3](`r url_list[3, "url"]`) provides a chart similar to Chart 8 containing the trend for each NHS Board of treatment plotted against Scotland. 
 
@@ -592,7 +618,7 @@ Chart 9 shows the trend in overall population mortality for Scotland between `r 
 <Div custom-style = "Heading 4_centre">Chart 9: Underlying Population Death Rates (crude rates per 1,000 population);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
-![Test Alt Text](Chart_9.png)</div>
+![Trend chart showing crude population mortality for the last five years](Chart_9.png)</div>
 
 [Table 3](`r url_list[3, "url"]`) provides a series of mortality charts for the resident populations of each NHS Board area. 
 
@@ -654,6 +680,8 @@ The next update, reporting on admissions to `r completeness_next`, will be publi
 <br>
 ```{r kable_ListOfTables, echo = FALSE}
 
+  knitr::kable(table_list, col.names = c("**File Name**","**File and Size**"))
+
 ```
 
 <Div custom-style = "Heading 2_pgbrk">Contact</div>
@@ -705,6 +733,9 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 
 The Chart below provides an illustration of a funnel plot. The rate of the process, the HSMR, is plotted on the vertical axis. The denominator, predicted deaths, is plotted on the horizontal axis.
 
+<Div custom-style = "centre_justify>
+![Example Funnel Plot](Funnel_Plot_Example.png)</div>
+
 There are three lines in the funnel plots in this report.
 
 The first line in dark blue is the average for Scotland. Plotted on either side of the average are two sets of curved lines called control limits (red). The red control limits are plotted at three standard deviations from the average. Orange warning limits have also been plotted on the charts presented here, at two standard deviations from the average. In the example below data points presented as circles represent hospitals. 
@@ -712,6 +743,10 @@ The limits are wider at the left hand side of the graph because the data points 
 
 #### Overdispersion
 An overdispersion factor has been applied to the limits reduce the effect of possibly false outliers. This is discussed in more detail in the Scottish HSMR Technical Document.
+
+
+#### How to Interpret a Funnel Plot
+Data points out with the control limits (referred to here as ‘outliers’) are said to exhibit ‘special cause variation’. Variations may reflect a number of factors, such as characteristics of the patients being cared for (case-mix), the quality of clinical care, errors in the data submitted by hospitals or even variation by chance. A single apparently high value of the HSMR is not sufficient evidence on which to conclude that a poor quality or unsafe service is being provided. This is why it is important not to focus solely on ‘outliers’ when making reliable judgements about the quality of patient care.  
 
 
 #### Inter-UK Comparisons: England and Wales 
@@ -787,6 +822,10 @@ The Hospital Scorecard is a management information product commissioned by the S
 
 A summary of the processes and key dates for the latest quarterly cycle is shown in the table below.
 
+```{r kable_Quarterly_process, echo = FALSE}
+knitr::kable(q_process, col.names = c("**Month**", "**Process and Key Dates**"), align = c('l','l'))
+```
+
 <Div custom-style = "Heading 3_pgbrk">A3 - Data Quality and Timeliness</div>
 HSMR is being used extensively across Scotland as one of a number of indicators of quality and safety. The credibility of the HSMR is dependent on robust data quality, particularly around the accuracy and consistency of the recording of main diagnosis.  
 
@@ -818,7 +857,7 @@ For more information about SMR completeness: **http://www.isdscotland.org/Produc
 
 
 #### Refreshing Previously Provisional Data
-The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data for April – June 2018 along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that quarter has now been refreshed to reflect additional returns that have subsequently been submitted for that quarter. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately 99% complete. The overall Scottish HSMR for April – June 2018 has reduced to 0.80 from 0.81 (rounded to 2 decimal places).  
+The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data for `r qtr_prev(qtr_start)` along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that quarter has now been refreshed to reflect additional returns that have subsequently been submitted for that quarter. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately `r completeness("previous", "scotland", qtr_start)` complete.
 
 Table 3 shows the impact of the refresh on the individual hospital level HSMRs. Completeness levels in the latest period for those NHS Boards undergoing PMS implementation is generally now consistent with levels observed for other NHS Boards.  
 
@@ -855,6 +894,7 @@ knitr::kable(mi_list, col.names = c("**NHS Health Board**",
              align = c('l','l'))
 ```
 <br>
+
 
 **Early Access for Quality Assurance**  
 These statistics will also have been made available to those who needed access to help quality assure the publication:
