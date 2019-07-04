@@ -86,7 +86,7 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data-level2.csv"))) %>%
+                                   "_trends-data-level1.csv"))) %>%
   mutate(hb = case_when(
     hb == "S08000018" ~ "S08000029",
     hb == "S08000027" ~ "S08000030",
@@ -133,10 +133,7 @@ table2 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 2
 writeData(table2, "table_data", trend_data %>%
-            filter((sub_grp == "All Admissions" &
-                      (agg_label == "Hospital" | agg_label == "Board")) |
-                     (agg_label == "Scotland" & !(sub_grp %in% c("Discharge", "Population",
-                                    "Symptom Coding", "Depth of Coding")))),
+            filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
 
 # Output Table 2
