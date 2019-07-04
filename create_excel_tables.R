@@ -6,7 +6,7 @@
 #
 # Type - data extraction/preparation/modelling
 # Written/run on - RStudio server
-# Version of R - 3.2.3
+# Version of R - 3.5.1
 #
 # Description - Populates Excel Tables for quarterly HSMR publication
 #
@@ -24,6 +24,18 @@ smr_data          <- read_csv(here("data",
                                    paste0(pub_date(end_date = end_date,
                                                    pub = "current"),
                                           "_SMR-data.csv"))) %>%
+  mutate(location      = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE                    ~ location),
+    hb = case_when(
+      hb == "S08000018" ~ "S08000029",
+      hb == "S08000027" ~ "S08000030",
+      hb == "S08000021" ~ "S08000031",
+      hb == "S08000023" ~ "S08000032",
+      TRUE ~ hb)) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
@@ -31,8 +43,8 @@ smr_data          <- read_csv(here("data",
              'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
              'W107H', 'Y146H', 'Y144H', 'Z102H',
              "S08000015", "S08000016", "S08000017", "S08000029",
-             "S08000019", "S08000020", "S08000021", "S08000022",
-             "S08000023", "S08000024", "S08000025", "S08000026",
+             "S08000019", "S08000020", "S08000031", "S08000022",
+             "S08000032", "S08000024", "S08000025", "S08000026",
              "S08000030", "S08000028", "S08100001",
              "Scot") & period == 3) %>%
 
@@ -65,7 +77,7 @@ smr_data          <- read_csv(here("data",
   select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
          "hb", "location", "location_name", "completeness_date", "death_scot",
          "pred_scot", "pats_scot", "smr_scot", "st_err",  "uwl", "ucl", "lwl",
-         "lcl")
+         "lcl", "period_label")
 
 ### SECTION 2 - CREATE TABLES ----
 
@@ -74,7 +86,21 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data.csv"))) %>%
+                                   "_trends-data-level1.csv"))) %>%
+  mutate(hb = case_when(
+    hb == "S08000018" ~ "S08000029",
+    hb == "S08000027" ~ "S08000030",
+    hb == "S08000021" ~ "S08000031",
+    hb == "S08000023" ~ "S08000032",
+    TRUE ~ hb
+  ),
+  location = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE ~ location
+  )) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
@@ -82,8 +108,8 @@ trend_data <- read_csv(here("data",
              'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
              'W107H', 'Y146H', 'Y144H', 'Z102H',
              "S08000015", "S08000016", "S08000017", "S08000029",
-             "S08000019", "S08000020", "S08000021", "S08000022",
-             "S08000023", "S08000024", "S08000025", "S08000026",
+             "S08000019", "S08000020", "S08000031", "S08000022",
+             "S08000032", "S08000024", "S08000025", "S08000026",
              "S08000030", "S08000028", "S08100001",
              "Scot"))
 
@@ -107,8 +133,7 @@ table2 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 2
 writeData(table2, "table_data", trend_data %>%
-            filter(!(sub_grp %in% c("Discharge", "Population",
-                                    "Symptom Coding", "Depth of Coding"))),
+            filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
 
 # Output Table 2
