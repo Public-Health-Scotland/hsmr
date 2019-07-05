@@ -124,7 +124,7 @@ writeData(table1, "funnel_data", smr_data, startCol = 2)
 saveWorkbook(table1,
              here("data",
                   "output",
-                  paste0(pub_date(end_date, pub = "current"),"-Table-1HSMR.xlsx")
+                  paste0(pub_date(end_date, pub = "current"),"-Table1-HSMR.xlsx")
                   ), overwrite = TRUE)
 
 # Load in Table 2 template
