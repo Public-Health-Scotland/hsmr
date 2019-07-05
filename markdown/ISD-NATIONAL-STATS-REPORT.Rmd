@@ -215,7 +215,7 @@ chart_7 <- ggplot(trend_data %>% filter(sub_grp == "Deprivation" &
   geom_line(aes(colour = label, group=label)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
-  labs(x = "Quarter", y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
