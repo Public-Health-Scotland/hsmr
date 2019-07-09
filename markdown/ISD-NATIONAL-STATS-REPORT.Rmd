@@ -130,8 +130,8 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     legend.position = "top")
 
 
-chart_3 <- ggplot(trend_data %>% filter(label == "Elective" | 
-                                          label == "Non-Elective"), aes(x = forcats::fct_reorder(quarter_short,
+chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
+                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
   geom_line(aes(colour = label, group=label)) +
@@ -147,11 +147,11 @@ chart_3 <- ggplot(trend_data %>% filter(label == "Elective" |
     legend.title = element_blank(),
     legend.position = "top")
 
-chart_4 <- ggplot(trend_data %>% filter(label == "Community" | label == "Dental"
+chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Community" | label == "Dental"
                                         | label == "Medical" | label == "Other" 
                                         | label == "Survery" 
                                         | label == "Emergency" 
-                                        | label == "Women & Newborn"), aes(x = forcats::fct_reorder(quarter_short,
+                                        | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
                                                y = crd_rate)) +
   geom_line(aes(colour = label, group=label)) +
@@ -167,11 +167,11 @@ chart_4 <- ggplot(trend_data %>% filter(label == "Community" | label == "Dental"
     legend.title = element_blank(),
     legend.position = "top")
 
-chart_5 <- ggplot(trend_data %>% filter(label == "0-19 years" 
+chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 years" 
                                         | label == "20-39 years" 
                                         | label == "40-59 years" 
                                         | label == "60-79 years" 
-                                        | label == "80+ years"), aes(x = forcats::fct_reorder(quarter_short,
+                                        | label == "80+ years")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
   geom_line(aes(colour = label, group=label)) +
@@ -187,7 +187,7 @@ chart_5 <- ggplot(trend_data %>% filter(label == "0-19 years"
     legend.title = element_blank(),
     legend.position = "top")
 
-chart_6 <- ggplot(trend_data %>% filter(label == "Male" | label == "Female"),
+chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | label == "Female")),
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
@@ -204,7 +204,7 @@ chart_6 <- ggplot(trend_data %>% filter(label == "Male" | label == "Female"),
     legend.title = element_blank(),
     legend.position = "top")
 
-chart_7 <- ggplot(trend_data %>% filter(sub_grp == "Deprivation" & 
+chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
                                           (label == "1 - Most Deprived" 
                                         | label == "2" | label == "3" 
                                         | label == "4" 
