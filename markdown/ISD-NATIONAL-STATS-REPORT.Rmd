@@ -552,7 +552,7 @@ Chart 1 shows the funnel plot for the latest 12 month period. Individual hospita
 <Div custom-style = "Heading 2_pgbrk">2 Trends at Scotland Level</div>
 
 ### Scotland Crude Mortality Trends
-Chart 2 shows that overall crude hospital mortality (%) at Scotland level from `r qtr(start_date_trends, "long")` to `r qtr(start_date_trends + months(21), "long")`, according to the existing definition of deaths within 30-days of admission, is fluctuating around 3% with clear seasonal patterns exhibited. This means crude mortality is consistently higher around winter quarters (i.e. October - December and January - March). 
+Chart 2 shows that overall crude hospital mortality (%) at Scotland level from `r qtr(start_date_trends, "long")` to `r qtr(start_date_trends + months(57), "long")`, according to the existing definition of deaths within 30-days of admission, is fluctuating around 3% with clear seasonal patterns exhibited. This means crude mortality is consistently higher around winter quarters (i.e. October - December and January - March). 
 <Div custom-style = "Heading 4_centre">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
