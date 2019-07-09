@@ -127,7 +127,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "none")
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
