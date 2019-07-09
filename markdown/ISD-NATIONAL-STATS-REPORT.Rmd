@@ -321,8 +321,8 @@ c1 <- c(months(pub_date(end_date, "current") - months(1)),
         months(pub_date(end_date, "current")),
         months(pub_date(end_date, "current") + months(1)))
 
-c2 <- c(paste0("Source database refreshed (", submission_deadline(end_date),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (25 January 2019)"),
-paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (5 February 2019);	ISD briefs Scottish Government on content of report (", pub_date(end_date, "current") - days(7),"); Report published on ISD website at 09:30 on Tuesday ", pub_date(end_date, "current"),"."),
+c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (tbc)"),
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	ISD briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on ISD website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
 "Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by ISD on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
 
 q_process <- data.frame(c1, c2)
@@ -413,22 +413,22 @@ Indicator <- c("**Publication title**",
 "**Date form completed**")
 
 Description <- c("Hospital Standardised Mortality Ratios",
-"Release of HSMR at Scotland, NHS Board and Hospital levels for the period April 2018 to March 2019. Also includes analyses of crude mortality trends over the longer term between Apr-Jun 2014 and Jan-Mar 2019.",
+paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
 "Health and Social Care, Mortality",
 "Quality Indicators",
 "Web Publication",
 "SMR01/NRS Death Registrations – Linked Database",
-submission_deadline(end_date),
-format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
+format(submission_deadline(end_date), "%d %B %Y"),
+format(pub_date(end_date = end_date, pub = "current"), "%d %B %Y"),
 "Quarterly",
-"Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period April 2018 to March 2019. Quarterly crude mortality trends from Apr-Jun 2014 to Jan-Mar 2019 (one quarter reporting lag)",
+paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period ", yr(end_date), " Quarterly crude mortality trends from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"), " (one quarter reporting lag)"),
 "SMR01 has recorded data in current form since April 2007",
 "The publication contains a refresh of previously reported crude mortality data to reflect additional source data that has been received since last publication. ",
 "This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology",
 "Contains sections on Data Source, Methodology and Development",
 "Quality improvement and assurance.",
 "Quality assured by NHS Boards (management information version of reports) and ISD",
-"Approximately 99% for the latest quarter.",
+paste0("Approximately ", completeness(first_day = qtr_start, "current", "scotland"), " for the latest quarter."),
 "Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England. ",
 "It is the policy of ISD Scotland to make its websites and products accessible according to published guidelines.",
 "Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology. ",
@@ -646,18 +646,18 @@ Table 1 presents: hospital-level HSMR on a **funnel plot** for each rolling 12 m
 The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The 
 following series of tables and charts are presented for the latest five year period: 
 
-* Overall crude mortality rates (%) for deaths within 30-days of admission 
+* Overall crude mortality rates (%) for deaths within 30-days of admission
 * Overall crude mortality rates (%) for deaths within 30-days of admission by:
-  * type of admission
-  * age group
-  * specialty group
-  * sex 
-  * deprivation
-* Proportion of deaths (%) within 30-days of admission by place of death
+    * type of admission 
+    * age group 
+    * specialty group 
+    * sex 
+    * deprivation 
+* Proportion of deaths (%) within 30-days of admission by place of death   
 
 
 **Table 3 – Crude mortality from discharge, and population based mortality rates**  
-The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.
+The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.  
 * Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
 * Crude population mortality rates (%).
 
@@ -740,7 +740,7 @@ In order to count the number of patients and deaths within each reporting period
 
 There are a number of caveats to be considered and addressed in relation to whether the HSMR is a good indicator of quality. For example, the statistical model used to produce the HSMR does not take account of palliative care, and so changes over time in palliative care services could be expected to impact on the HSMR. In addition, the current model looks at deaths within 30 days of admission to hospital, which means that in-hospital deaths are not captured if the patient is in hospital for more than 30 days. 
 
-#### Funnel Plots
+<div custom-style = "Heading 4_pgbrk">Funnel Plots</div>
 
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period.
 
@@ -762,7 +762,7 @@ An overdispersion factor has been applied to the funnel plot limits to reduce th
 Data points out with the control limits (referred to here as ‘outliers’) are said to exhibit ‘special cause variation’. Variations may reflect a number of factors, such as characteristics of the patients being cared for (case-mix), the quality of clinical care, errors in the data submitted by hospitals or even variation by chance. A single apparently high value of the HSMR is not sufficient evidence on which to conclude that a poor quality or unsafe service is being provided. This is why it is important not to focus solely on ‘outliers’ when making reliable judgements about the quality of patient care.  
 
 
-#### Inter-UK Comparisons: England and Wales 
+<div custom-style = "Heading 4_pgbrk">Inter-UK Comparisons: England and Wales </div>
 
 There is more than one measure routinely produced and used in England and Wales for the measurement of hospital mortality – HSMR and SHMI.  
 
@@ -795,7 +795,7 @@ Regardless of the method, one message holds true for both the Scottish and Engli
 
 A measure of uncertainty is calculated for the SHMI and the NHS Information Centre calculates statistical bands to help decide when the SHMI for any trust exceeds expected limits. There is a scientific debate about how best to calculate these bands, so two different methods have been used.  
 
-In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (run-chart) methodologies. See section on Quarterly Process for more information.  
+In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (control chart) methodologies. See section on Quarterly Process for more information.  
 
 As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving ISD, HIS and Scottish Government.  
 
@@ -805,7 +805,7 @@ In Scotland, the HSMR has focussed only on deaths within 30-days of admission (b
 
 Table 3 shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
-<Div custom-style = "Heading 3_pgbrk">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
+<Div custom-style = "Heading 4_pgbrk">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
 ```{r kable_Table3, echo = FALSE}
 
 knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
@@ -813,7 +813,7 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
 
-<Div custom-style = "Heading 2_pgbrk">A2 - Quarterly Process </div>
+<Div custom-style = "Heading 2_pgbrk">Appendix 2 - Quarterly Process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
 There are three key stages to this quarterly process which include other indicators of quality. 
@@ -840,7 +840,7 @@ Throughout the quarterly cycle, interaction with NHS Boards is of paramount impo
 knitr::kable(q_process, col.names = c("**Month**", "**Process and Key Dates**"), align = c('l','l'))
 ```
 
-<Div custom-style = "Heading 3_pgbrk">A3 - Data Quality and Timeliness</div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 3 - Data Quality and Timeliness</div>
 HSMR is being used extensively across Scotland as one of a number of indicators of quality and safety. The credibility of the HSMR is dependent on robust data quality, particularly around the accuracy and consistency of the recording of main diagnosis.  
 
 #### Source Data
@@ -851,9 +851,9 @@ The data is submitted to ISD on a monthly basis and are retrospectively linked t
 #### Data Quality Assurance
 In August 2016, ISD published the findings of their most recent [quality assurance assessment](http://www.isdscotland.org/Products-and-Services/Data-Quality/docs/Assessment-of-SMR01-Data-2014-15-report-181019.pdf)  which was undertaken during 2014-15 to ensure that SMR01 (General / Acute Inpatient and Day Case) data items are being recorded consistently and to a high standard throughout NHS Scotland. The report shows that:  
 
-* main condition (used as a fundamental part of the HSMR calculation) is being recorded with an accuracy rate of 89%;  
-*	however, not all of the hospitals participating in the SPSP were included in the sample, and the sample included hospitals not participating in the SPSP  
-*	Recommendations include an improved and increased recording of conditions identified as acute or background conditions affecting the management of the patient
+* main condition (used as a fundamental part of the HSMR calculation) is being recorded with an accuracy rate of 89%; 
+*	however, not all of the hospitals participating in the SPSP were included in the sample, and the sample included hospitals not participating in the SPSP 
+*	Recommendations include an improved and increased recording of conditions identified as acute or background conditions affecting the management of the patient  
 
 #### Timeliness
 The majority of hospital admission data will be complete for the latest quarter, however it should still be considered provisional on the basis that the source data are dynamic and additional hospital returns will come in and be reflected in future calculations of the HSMR for that quarter.
@@ -874,13 +874,13 @@ For more information about SMR completeness: **http://www.isdscotland.org/Produc
 The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data up to `r qtr_prev(qtr_start)` along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that period has now been refreshed to reflect additional returns that have subsequently been submitted for that time period. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately `r completeness("previous", "scotland", qtr_start)` complete.
 
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 2 – Publication Metadata</div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 4 – Publication Metadata</div>
 <br>
 ```{r kable_MetaData, echo = FALSE}
 knitr::kable(MetaData, col.names = c("**Metadata Indicator**", "**Description**"), align = c('l','l'))
 ```
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 3 – Early access details</div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 5 – Early access details</div>
 
 <br>
 
@@ -909,7 +909,7 @@ knitr::kable(mi_list, col.names = c("**NHS Health Board**",
 **Early Access for Quality Assurance**  
 These statistics will also have been made available to those who needed access to help quality assure the publication:
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 4 – ISD and Official Statistics</div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 6 – ISD and Official Statistics</div>
 
 <br>
 
