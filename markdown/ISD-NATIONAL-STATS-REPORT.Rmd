@@ -241,7 +241,7 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "none")
 
 
 chart_9 <- ggplot(trend_data %>% filter(label == "Population" 
@@ -259,7 +259,7 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "none")
 
 ggsave("Funnel_Plot.png", plot = funnel_plot, width = 17.49, 
        height = 9.03, units = "cm", device = "png", dpi = 600)
