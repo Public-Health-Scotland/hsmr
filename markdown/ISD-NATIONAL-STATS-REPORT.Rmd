@@ -5,7 +5,7 @@ output:
 ---
 
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
-hs# Load environment file
+# Load environment file
 source(here::here("setup_environment.R"))
 
 # Read in SMR data, filtered on latest period/reported hospitals
@@ -117,12 +117,14 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
                       y = crd_rate,
                       group = 1)) +
   trend_palette +
-  geom_line(aes(colour = "#26456E")) +
+  geom_line(aes(colour = "#26456E"), size = 1) +
   coord_cartesian(ylim = c(0, 4)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
@@ -134,16 +136,18 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
                                           label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -154,16 +158,18 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Communit
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
                                                y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -174,16 +180,18 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
                                         | label == "80+ years")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   coord_cartesian(ylim = c(0, 7)) +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -191,16 +199,18 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -212,16 +222,18 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -230,16 +242,18 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
 
@@ -249,16 +263,18 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
                                           quarter <= 20), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label, size = 1)) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
 
