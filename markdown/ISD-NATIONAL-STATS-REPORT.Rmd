@@ -91,7 +91,9 @@ trend_palette <- scale_color_manual(values = c("#26456E", "#43719F", "#5485B2",
 ## FUNNEL PLOT ##
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
-                                "#ffbc79", "#c85302"), guide = FALSE) +
+                                "#ffbc79", "#c85302"), 
+                     labels = c("Scotland SMR", "Upper/Lower Control Limit", 
+                                "Upper/Lower Warning Limit", "SMR")) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -106,7 +108,9 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     panel.grid.major.y = element_blank(),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 0)) +
+    axis.text = element_text(size = 9, angle= 0),
+    legend.title = element_blank(),
+    legend.position = "top") +
   scale_x_continuous(labels = comma)
 
 
