@@ -95,13 +95,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::mutate(smr           = deaths/pred,
                     crd_rate      = (deaths/pats) * 100,
                     location_type = "NHS Board",
-                    location      = hbtreat_currentdate,
-                    location      = case_when(
-                      location == "S08000018" ~ "S08000029",
-                      location == "S08000027" ~ "S08000030",
-                      location == "S08000021" ~ "S08000031",
-                      location == "S08000023" ~ "S08000032",
-                      TRUE                    ~ location)) %>%
+                    location      = hbtreat_currentdate) %>%
     dplyr::ungroup()
 
 
@@ -111,14 +105,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
   smr_data <- dplyr::bind_rows(hsmr_scot, hsmr_hosp, hsmr_hb) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name)) %>%
-    tidylog::mutate(hbtreat_currentdate = case_when(
-      hbtreat_currentdate == "S08000018" ~ "S08000029",
-      hbtreat_currentdate == "S08000027" ~ "S08000030",
-      hbtreat_currentdate == "S08000021" ~ "S08000031",
-      hbtreat_currentdate == "S08000023" ~ "S08000032",
-      TRUE ~ hbtreat_currentdate),
-      location_name = case_when(location == "C418H" ~
-                                  "Royal Alexandria/Vale of Leven",
+    tidylog::mutate(location_name = case_when(location == "C418H" ~
+                                  "Royal Alexandra/Vale of Leven",
                                 hbtreat_currentdate == "S08100001" ~
                                   "Golden Jubilee",
                                 TRUE ~ location_name),

@@ -6,7 +6,7 @@
 #
 # Type - data extraction/preparation/modelling
 # Written/run on - RStudio server
-# Version of R - 3.2.3
+# Version of R - 3.5.1
 #
 # Description - Populates Excel Tables for quarterly HSMR publication
 #
@@ -24,6 +24,18 @@ smr_data          <- read_csv(here("data",
                                    paste0(pub_date(end_date = end_date,
                                                    pub = "current"),
                                           "_SMR-data.csv"))) %>%
+  mutate(location      = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE                    ~ location),
+    hb = case_when(
+      hb == "S08000018" ~ "S08000029",
+      hb == "S08000027" ~ "S08000030",
+      hb == "S08000021" ~ "S08000031",
+      hb == "S08000023" ~ "S08000032",
+      TRUE ~ hb)) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
@@ -65,7 +77,7 @@ smr_data          <- read_csv(here("data",
   select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
          "hb", "location", "location_name", "completeness_date", "death_scot",
          "pred_scot", "pats_scot", "smr_scot", "st_err",  "uwl", "ucl", "lwl",
-         "lcl")
+         "lcl", "period_label")
 
 ### SECTION 2 - CREATE TABLES ----
 
@@ -74,7 +86,21 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data.csv"))) %>%
+                                   "_trends-data-level1.csv"))) %>%
+  mutate(hb = case_when(
+    hb == "S08000018" ~ "S08000029",
+    hb == "S08000027" ~ "S08000030",
+    hb == "S08000021" ~ "S08000031",
+    hb == "S08000023" ~ "S08000032",
+    TRUE ~ hb
+  ),
+  location = case_when(
+    location == "S08000018" ~ "S08000029",
+    location == "S08000027" ~ "S08000030",
+    location == "S08000021" ~ "S08000031",
+    location == "S08000023" ~ "S08000032",
+    TRUE ~ location
+  )) %>%
   filter(location %in%
            c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
@@ -98,7 +124,7 @@ writeData(table1, "funnel_data", smr_data, startCol = 2)
 saveWorkbook(table1,
              here("data",
                   "output",
-                  paste0(pub_date(end_date, pub = "current"),"Table-1HSMR.xlsx")
+                  paste0(pub_date(end_date, pub = "current"),"-Table1-HSMR.xlsx")
                   ), overwrite = TRUE)
 
 # Load in Table 2 template
@@ -107,8 +133,7 @@ table2 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 2
 writeData(table2, "table_data", trend_data %>%
-            filter(!(sub_grp %in% c("Discharge", "Population",
-                                    "Symptom Coding", "Depth of Coding"))),
+            filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
 
 # Output Table 2
@@ -117,7 +142,7 @@ saveWorkbook(table2,
                   "output",
                   paste0(pub_date(end_date,
                                   pub = "current"),
-                         "Table2-Crude-Mortality-subgroups.xlsx")),
+                         "-Table2-Crude-Mortality-subgroups.xlsx")),
              overwrite = TRUE)
 
 # Load in Table 3 template
@@ -135,7 +160,7 @@ saveWorkbook(table3,
                   "output",
                   paste0(pub_date(end_date,
                                   pub = "current"),
-                              paste0("Table3-Crude-Mortality-population-based",
+                              paste0("-Table3-Crude-Mortality-population-based",
                                    "-and-30-day-from-discharge.xlsx"))),
              overwrite = TRUE)
 

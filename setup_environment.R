@@ -6,7 +6,7 @@
 #
 # Type - Reproducible Analytical Pipeline
 # Written/run on - RStudio server
-# Version of R - 3.2.3
+# Version of R - 3.5.1
 #
 # Description - Sets up environment required for running reproducible analytical
 # pipeline process. This is the only file which should require updating every
