@@ -3,6 +3,7 @@
 export(clean_model)
 export(completeness)
 export(create_trends)
+export(file_sizes)
 export(funnel_text)
 export(mit_available)
 export(pub_date)
