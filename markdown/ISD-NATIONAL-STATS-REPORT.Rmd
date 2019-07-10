@@ -830,7 +830,7 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
 
-<Div custom-style = "Heading 2_pgbrk">Appendix 2 - Quarterly Process </div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 2 - Quarterly Process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
 There are three key stages to this quarterly process which include other indicators of quality. 
