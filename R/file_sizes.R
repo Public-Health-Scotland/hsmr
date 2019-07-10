@@ -80,7 +80,7 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
   x <- dir(path = filepath,
            pattern = paste0("^",
                             hsmr::pub_date(end_date, "current"),
-                            "(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$"))
+                            "\\-(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$"))
 
   if (length(x) != 3) {
     stop(paste0("Exactly three HSMR Excel tables for the current publication ",

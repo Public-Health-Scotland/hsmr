@@ -5,7 +5,7 @@ output:
 ---
 
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
-# Load environment file
+hs# Load environment file
 source(here::here("setup_environment.R"))
 
 # Read in SMR data, filtered on latest period/reported hospitals
@@ -311,7 +311,9 @@ c1 <- c(paste0("[Table 1 (Hospital Standardised Mortality Ratios)](",
         paste0("[Table 3 (Crude 30-day mortality from discharge and Overall population crude mortality rates by NHS Board and quarter)](", 
                url_list[3, "url"],")"))
 
-c2 <- c("tba", "tba", "tba")
+c2 <- c(file_sizes(end_date)[1], 
+        file_sizes(end_date)[2], 
+        file_sizes(end_date)[3])
 
 table_list <- data.frame(c1, c2)
 ```
