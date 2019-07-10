@@ -675,6 +675,7 @@ following series of tables and charts are presented for the latest five year per
 
 **Table 3 – Crude mortality from discharge, and population based mortality rates**  
 The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.  
+
 * Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
 * Crude population mortality rates (%).
 
