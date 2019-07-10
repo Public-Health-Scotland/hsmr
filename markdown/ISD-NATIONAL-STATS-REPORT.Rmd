@@ -133,10 +133,9 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
-                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short,
-                                               as.numeric(quarter))
+                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
@@ -158,7 +157,7 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Communit
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
                                                y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
@@ -180,7 +179,7 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
                                         | label == "80+ years")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   coord_cartesian(ylim = c(0, 7)) +
@@ -199,7 +198,7 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
@@ -222,7 +221,7 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
@@ -242,7 +241,7 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
@@ -263,7 +262,7 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
                                           quarter <= 20), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label, size = 1)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
