@@ -106,7 +106,7 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     panel.grid.major.y = element_blank(),
     axis.title.x = element_text(size = 12, face = "bold"),
     axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 12, angle= 0)) +
+    axis.text = element_text(size = 9, angle= 0)) +
   scale_x_continuous(labels = comma)
 
 
@@ -729,7 +729,7 @@ Email:  David.Caldwell1@nhs.net
 
 **Lucinda Lawrie, Information Analyst**  
 Quality Indicators  
-Phone:  0131 275 7929 
+Phone:  0131 275 7929  
 Email:  Lucinda.Lawrie1@nhs.net
 
 <br>
