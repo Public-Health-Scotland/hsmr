@@ -513,7 +513,8 @@ This predicted figure is then compared with the actual observed number of deaths
 
 <Div custom-style = "Heading 2_pgbrk">Main Points</div>
 
-`r funnel_text(smr_data)`
+`r funnel_text(smr_data, "above")`
+`r funnel_text(smr_data, "below")`
 * Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission. 
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
