@@ -1,4 +1,4 @@
-#' @title Assign a a year to a date
+#' @title Assign a year to a date
 #'
 #' @description
 #'
