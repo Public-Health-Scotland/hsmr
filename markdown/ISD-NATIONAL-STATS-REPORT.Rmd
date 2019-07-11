@@ -91,7 +91,9 @@ trend_palette <- scale_color_manual(values = c("#26456E", "#43719F", "#5485B2",
 ## FUNNEL PLOT ##
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
-                                "#ffbc79", "#c85302"), guide = FALSE) +
+                                "#ffbc79", "#c85302"), 
+                     labels = c("Scotland SMR", "Upper/Lower Control Limit", 
+                                "Upper/Lower Warning Limit", "SMR")) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -104,9 +106,11 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 12, angle= 0)) +
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text = element_text(size = 9, angle= 0),
+    legend.title = element_blank(),
+    legend.position = "top") +
   scale_x_continuous(labels = comma)
 
 
@@ -117,33 +121,36 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
                       y = crd_rate,
                       group = 1)) +
   trend_palette +
-  geom_line(aes(colour = "#26456E")) +
+  geom_line(aes(colour = "#26456E"), size = 1) +
   coord_cartesian(ylim = c(0, 4)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
-                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short,
-                                               as.numeric(quarter))
+                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -154,16 +161,18 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Communit
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
                                                y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -174,16 +183,18 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
                                         | label == "80+ years")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   coord_cartesian(ylim = c(0, 7)) +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -191,16 +202,18 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -212,16 +225,18 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
 
@@ -230,16 +245,18 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                       , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
 
@@ -249,16 +266,18 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
                                           quarter <= 20), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
-  geom_line(aes(colour = label, group=label)) +
+  geom_line(aes(colour = label, group=label), size = 1) +
   trend_palette +
   coord_cartesian(ylim = c(0, 7)) +
   labs(x = element_blank(), y = "Crude Rate (%)") +
   theme(panel.background = element_blank(),
-    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
-    axis.text = element_text(size = 9, angle= 90, hjust = 0, vjust = 0.5),
+    axis.line.x = element_line(size = .1, color = "#787878"),
+    axis.line.y = element_line(size = .1, color = "#787878"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
 
@@ -311,7 +330,9 @@ c1 <- c(paste0("[Table 1 (Hospital Standardised Mortality Ratios)](",
         paste0("[Table 3 (Crude 30-day mortality from discharge and Overall population crude mortality rates by NHS Board and quarter)](", 
                url_list[3, "url"],")"))
 
-c2 <- c("tba", "tba", "tba")
+c2 <- c(file_sizes(end_date)[1], 
+        file_sizes(end_date)[2], 
+        file_sizes(end_date)[3])
 
 table_list <- data.frame(c1, c2)
 ```
@@ -321,7 +342,7 @@ c1 <- c(months(pub_date(end_date, "current") - months(1)),
         months(pub_date(end_date, "current")),
         months(pub_date(end_date, "current") + months(1)))
 
-c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (tbc)"),
+c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (", format(mit_available(end_date), "%d %B %Y"),")"),
 paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	ISD briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on ISD website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
 "Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by ISD on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
 
@@ -413,7 +434,7 @@ Indicator <- c("**Publication title**",
 "**Date form completed**")
 
 Description <- c("Hospital Standardised Mortality Ratios",
-paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
+paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
 "Health and Social Care, Mortality",
 "Quality Indicators",
 "Web Publication",
@@ -496,7 +517,8 @@ This predicted figure is then compared with the actual observed number of deaths
 
 <Div custom-style = "Heading 2_pgbrk">Main Points</div>
 
-`r funnel_text(smr_data)`
+`r funnel_text(smr_data, "above")`
+`r funnel_text(smr_data, "below")`
 * Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission. 
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
@@ -506,7 +528,7 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
 During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
 
-The main changes made to the HSMR methodology at this time were:  
+The main changes made to the HSMR methodology at this time were to:  
 
 *	Move to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 *	Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
@@ -526,7 +548,7 @@ If the number of deaths is more than predicted this does not necessarily mean th
 <Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
 Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](http://www.scotland.gov.uk/Topics/Health/Policy/Quality-Strategy)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
 
-**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential. Healthcare Improvement Scotland offer advice/support to NHS boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
+**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
 **The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
@@ -544,7 +566,7 @@ To help local users better understand their data, and to encourage a sense of ow
 ### 1 Time in Point Comparisons
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
-Chart 1 shows the funnel plot for the latest 12 month period. Individual hospitals can be identified using the key under the graph, which lists the hospitals in the order in which they are plotted along the horizontal axis. This shows that there are no hospitals above the upper control limit which is three standard deviations above the Scottish average. 
+Chart 1 shows the funnel plot for the latest 12 month period. This shows that there are no hospitals above the upper control limit which is three standard deviations above the Scottish average. 
 
 <Div custom-style = "Heading 4_centre">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r yr(end_date)`</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1, "url"]`)
@@ -658,6 +680,7 @@ following series of tables and charts are presented for the latest five year per
 
 **Table 3 – Crude mortality from discharge, and population based mortality rates**  
 The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.  
+
 * Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
 * Crude population mortality rates (%).
 
@@ -674,6 +697,7 @@ The end of this phase of the SPSP provided the opportunity to review the model m
 
 
 The main changes made to the HSMR methodology from August 2019 were:
+
 * Moving to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 * Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
 * Use less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
@@ -710,7 +734,7 @@ Email:  David.Caldwell1@nhs.net
 
 **Lucinda Lawrie, Information Analyst**  
 Quality Indicators  
-Phone:  0131 275 7929 
+Phone:  0131 275 7929  
 Email:  Lucinda.Lawrie1@nhs.net
 
 <br>
@@ -813,7 +837,7 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
 
-<Div custom-style = "Heading 2_pgbrk">Appendix 2 - Quarterly Process </div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 2 - Quarterly Process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
 There are three key stages to this quarterly process which include other indicators of quality. 
@@ -867,7 +891,7 @@ All hospitals have HSMRs calculated for the most recent quarters based on their 
 
 HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. ISD continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
-For more information about SMR completeness: **http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/**
+For more information about SMR completeness: http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/
 
 
 #### Refreshing Previously Provisional Data
@@ -900,11 +924,10 @@ NHS Board Communication leads
 These statistics will also have been made available to those who needed access to ‘management information’, ie as part of the delivery of health and care:
 ```{r kable_mi_list, echo = FALSE}
 knitr::kable(mi_list, col.names = c("**NHS Health Board**",
-                                    "**Standard Pre-Release Access**"), 
-             align = c('l','l'))
+                                    "**Standard Pre-Release Access**"))
 ```
-<br>
 
+<br>
 
 **Early Access for Quality Assurance**  
 These statistics will also have been made available to those who needed access to help quality assure the publication:
