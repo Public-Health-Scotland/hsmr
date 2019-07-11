@@ -106,8 +106,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text = element_text(size = 9, angle= 0),
     legend.title = element_blank(),
     legend.position = "top") +
@@ -129,8 +129,8 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
@@ -148,8 +148,8 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
@@ -170,8 +170,8 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Communit
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
@@ -192,8 +192,8 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
@@ -211,8 +211,8 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
@@ -234,8 +234,8 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top")
@@ -254,8 +254,8 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
@@ -275,8 +275,8 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 12, face = "bold"),
-    axis.title.y = element_text(size = 12, face = "bold"),
+    axis.title.x = element_text(size = 10, face = "bold"),
+    axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none")
@@ -434,7 +434,7 @@ Indicator <- c("**Publication title**",
 "**Date form completed**")
 
 Description <- c("Hospital Standardised Mortality Ratios",
-paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
+paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
 "Health and Social Care, Mortality",
 "Quality Indicators",
 "Web Publication",
@@ -528,7 +528,7 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
 During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
 
-The main changes made to the HSMR methodology at this time were:  
+The main changes made to the HSMR methodology at this time were to:  
 
 *	Move to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 *	Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
@@ -548,7 +548,7 @@ If the number of deaths is more than predicted this does not necessarily mean th
 <Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
 Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](http://www.scotland.gov.uk/Topics/Health/Policy/Quality-Strategy)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
 
-**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential. Healthcare Improvement Scotland offer advice/support to NHS boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
+**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
 **The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
@@ -566,7 +566,7 @@ To help local users better understand their data, and to encourage a sense of ow
 ### 1 Time in Point Comparisons
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
-Chart 1 shows the funnel plot for the latest 12 month period. Individual hospitals can be identified using the key under the graph, which lists the hospitals in the order in which they are plotted along the horizontal axis. This shows that there are no hospitals above the upper control limit which is three standard deviations above the Scottish average. 
+Chart 1 shows the funnel plot for the latest 12 month period. This shows that there are no hospitals above the upper control limit which is three standard deviations above the Scottish average. 
 
 <Div custom-style = "Heading 4_centre">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r yr(end_date)`</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1, "url"]`)
@@ -697,6 +697,7 @@ The end of this phase of the SPSP provided the opportunity to review the model m
 
 
 The main changes made to the HSMR methodology from August 2019 were:
+
 * Moving to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 * Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
 * Use less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
@@ -890,7 +891,7 @@ All hospitals have HSMRs calculated for the most recent quarters based on their 
 
 HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. ISD continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
-For more information about SMR completeness: **http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/**
+For more information about SMR completeness: http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/
 
 
 #### Refreshing Previously Provisional Data
@@ -923,11 +924,10 @@ NHS Board Communication leads
 These statistics will also have been made available to those who needed access to ‘management information’, ie as part of the delivery of health and care:
 ```{r kable_mi_list, echo = FALSE}
 knitr::kable(mi_list, col.names = c("**NHS Health Board**",
-                                    "**Standard Pre-Release Access**"), 
-             align = c('l','l'))
+                                    "**Standard Pre-Release Access**"))
 ```
-<br>
 
+<br>
 
 **Early Access for Quality Assurance**  
 These statistics will also have been made available to those who needed access to help quality assure the publication:

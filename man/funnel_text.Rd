@@ -4,11 +4,15 @@
 \alias{funnel_text}
 \title{Create text for Funnel Plot outliers}
 \usage{
-funnel_text(smr_data)
+funnel_text(smr_data, indicator = c("above", "below"))
 }
 \arguments{
 \item{smr_data}{Should the final\code{tibble} output from the \code{smr_data}
 function.}
+
+\item{indicator}{indicates whether the function produces text for hospitals
+sitting above the upper control limit or hospitals sitting below the lower
+control limit.}
 }
 \description{
 The publication summary documents for the HSMR publication has main points
@@ -17,6 +21,7 @@ identifies outlying hospitals and returns the text for the publication
 document.
 }
 \examples{
-funnel_text(smr_data)
+funnel_text(smr_data, indicator = "above")
+funnel_text(smr_data, indicator = "below")
 
 }
