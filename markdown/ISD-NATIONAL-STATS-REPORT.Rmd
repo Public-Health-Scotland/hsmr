@@ -48,7 +48,11 @@ smr_data          <- read_csv(here("data",
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
-                          TRUE ~ "0"))
+                          TRUE ~ "0"),
+         flag_above = case_when(smr > ucl ~ TRUE,
+                                TRUE ~ FALSE),
+         flag_below = case_when(smr < lcl ~ TRUE,
+                                 TRUE ~ FALSE))
 
 # Read in trends data for charting, filtering out missing data
 trend_data <- read_csv(here("data",
@@ -105,6 +109,12 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   geom_line(aes(x = pred, y = 1, colour = "#006ba4")) +
   geom_point(aes(x = pred, y = smr, colour = factor(flag), 
                  show.legend = FALSE)) + 
+  geom_text(aes(x = pred, y = smr, 
+                label = ifelse(flag_below, as.character(location_name), '')), 
+            hjust = 0.5, vjust = 1.5) +
+  geom_text(aes(x = pred, y = smr, 
+                label = ifelse(flag_above, as.character(location_name), '')), 
+            hjust = 0.5, vjust = -1.5) +
   labs(x = "Number of Predicted Deaths", y = "Standardised Mortality Ratio") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
