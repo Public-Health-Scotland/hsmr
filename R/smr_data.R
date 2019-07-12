@@ -108,7 +108,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
     tidylog::mutate(location_name = case_when(location == "C418H" ~
                                   "Royal Alexandra/Vale of Leven",
                                 hbtreat_currentdate == "S08100001" ~
-                                  "Golden Jubilee",
+                                  "Golden Jubilee National Hospital",
                                 TRUE ~ location_name),
       completeness_date = hsmr::submission_deadline(end_date),
       period_label = yr(end_date)) %>%

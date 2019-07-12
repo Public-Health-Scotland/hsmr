@@ -48,7 +48,11 @@ smr_data          <- read_csv(here("data",
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
-                          TRUE ~ "0"))
+                          TRUE ~ "0"),
+         flag_above = case_when(smr > ucl ~ TRUE,
+                                TRUE ~ FALSE),
+         flag_below = case_when(smr < lcl ~ TRUE,
+                                 TRUE ~ FALSE))
 
 # Read in trends data for charting, filtering out missing data
 trend_data <- read_csv(here("data",
@@ -93,7 +97,10 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
                                 "#ffbc79", "#c85302"), 
                      labels = c("Scotland SMR", "Upper/Lower Control Limit", 
-                                "Upper/Lower Warning Limit", "SMR")) +
+                                "Upper/Lower Warning Limit", "SMR"),
+                     guide = guide_legend(override.aes = list(
+                       linetype = c(rep("solid", 3), "blank"),
+                       shape    = c(NA, NA, NA, 19)))) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -102,6 +109,28 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   geom_line(aes(x = pred, y = 1, colour = "#006ba4")) +
   geom_point(aes(x = pred, y = smr, colour = factor(flag), 
                  show.legend = FALSE)) + 
+  geom_label_repel(data = smr_data %>% filter(location_type == "hospital" & 
+                                                flag_below == TRUE),
+                   aes(x = pred, y= smr, label = location_name),
+                   nudge_y       = -2,
+                   size          = 4,
+                   box.padding   = 0.5,
+                   point.padding = 0.5,
+                   force         = 100,
+                   segment.size  = 0.2,
+                   segment.color = "grey50",
+                   direction     = "x") +
+  geom_label_repel(data = smr_data %>% filter(location_type == "hospital" & 
+                                                flag_above == TRUE),
+                   aes(x = pred, y= smr, label = location_name),
+                   nudge_y       = 2,
+                   size          = 4,
+                   box.padding   = 0.5,
+                   point.padding = 0.5,
+                   force         = 100,
+                   segment.size  = 0.2,
+                   segment.color = "grey50",
+                   direction     = "x") +
   labs(x = "Number of Predicted Deaths", y = "Standardised Mortality Ratio") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
@@ -133,7 +162,8 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "none")
+    legend.position = "none") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
@@ -152,11 +182,12 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "top") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Community" | label == "Dental"
                                         | label == "Medical" | label == "Other" 
-                                        | label == "Survery" 
+                                        | label == "Surgery" 
                                         | label == "Emergency" 
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
@@ -174,7 +205,8 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Communit
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "top") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 years" 
                                         | label == "20-39 years" 
@@ -196,7 +228,8 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "top") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | label == "Female")),
                   aes(x = forcats::fct_reorder(quarter_short,
@@ -215,7 +248,8 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "top") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
                                           (label == "1 - Most Deprived" 
@@ -238,7 +272,8 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "top")
+    legend.position = "top") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 chart_8 <- ggplot(trend_data %>% filter(label == "Discharge" 
                                         & hb == "Scotland"), 
@@ -258,7 +293,8 @@ chart_8 <- ggplot(trend_data %>% filter(label == "Discharge"
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "none")
+    legend.position = "none") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 
 chart_9 <- ggplot(trend_data %>% filter(label == "Population" 
@@ -279,7 +315,8 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Population"
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "none")
+    legend.position = "none") +
+  scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
 ggsave("Funnel_Plot.png", plot = funnel_plot, width = 17.49, 
        height = 9.03, units = "cm", device = "png", dpi = 600)

@@ -965,7 +965,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(
     location_name = case_when(location == "C418H" ~
                                 "Royal Alexandra/Vale of Leven",
-                              hb == "S08100001" ~ "Golden Jubilee",
+                              hb == "S08100001" ~
+                                "Golden Jubilee National Hospital",
                               TRUE ~ location_name))
 
   return(long_term_trends)
