@@ -187,7 +187,7 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
 
 chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Community" | label == "Dental"
                                         | label == "Medical" | label == "Other" 
-                                        | label == "Survery" 
+                                        | label == "Surgery" 
                                         | label == "Emergency" 
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
