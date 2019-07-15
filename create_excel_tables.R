@@ -49,9 +49,9 @@ smr_data          <- read_csv(here("data",
              "Scot") & period == 3) %>%
 
   # Calculate funnel limits for funnel plot
-  mutate(st_err = sqrt(1/pred),
+  mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
          z = if_else(location_type == "hospital",
-                             ((smr - 1)/st_err),
+                             round_half_up(((smr - 1)/st_err), 8),
                              0)) %>%
   group_by(period) %>%
   mutate(
@@ -67,7 +67,8 @@ smr_data          <- read_csv(here("data",
                        z_flag == -1 ~ z_min,
                        TRUE ~ z),
          z_flag = if_else(z != 0, 1, 0),
-         w_score = sqrt(sum(z * z)/sum(z_flag))) %>%
+         w_score = round_half_up(sqrt(sum(round_half_up(z * z, 8))/sum(z_flag)),
+                                 8)) %>%
   ungroup() %>%
   mutate(
          uwl = 1 + 1.96 * st_err * w_score,
