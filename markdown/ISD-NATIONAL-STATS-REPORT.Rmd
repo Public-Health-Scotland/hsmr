@@ -21,9 +21,9 @@ smr_data          <- read_csv(here("data",
              "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
              "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
              "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
-  mutate(st_err = sqrt(1/pred),
+  mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
        z = if_else(location_type == "hospital",
-                   ((smr - 1)/st_err),
+                   round_half_up(((smr - 1)/st_err), 8),
                    0)) %>%
   mutate(
     z_max = max(z),
@@ -38,7 +38,7 @@ smr_data          <- read_csv(here("data",
                   z_flag == -1 ~ z_min,
                   TRUE ~ z),
     z_flag = if_else(z != 0, 1, 0),
-    w_score = sqrt(sum(z * z)/sum(z_flag))) %>%
+    w_score = sqrt(sum(round_half_up(z * z, 8))/sum(z_flag))) %>%
   # Calculate funnel limits for funnel plot
   mutate(    uwl = 1 + 1.96 * st_err * w_score,
              ucl = 1 + 2.99 * st_err * w_score,
