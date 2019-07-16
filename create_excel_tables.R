@@ -78,7 +78,7 @@ smr_data          <- read_csv(here("data",
   select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
          "hb", "location", "location_name", "completeness_date", "death_scot",
          "pred_scot", "pats_scot", "smr_scot", "st_err",  "uwl", "ucl", "lwl",
-         "lcl", "period_label","w_score","z")
+         "lcl", "period_label")
 
 ### SECTION 2 - CREATE TABLES ----
 
