@@ -51,7 +51,7 @@ smr_data          <- read_csv(here("data",
   # Calculate funnel limits for funnel plot
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
          z = if_else(location_type == "hospital",
-                             round_half_up(((smr - 1)/st_err), 8),
+                             round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
                              0)) %>%
   group_by(period) %>%
   mutate(
@@ -68,17 +68,17 @@ smr_data          <- read_csv(here("data",
                        TRUE ~ z),
          z_flag = if_else(z != 0, 1, 0),
          w_score = round_half_up(sqrt(sum(round_half_up(z * z, 8))/sum(z_flag)),
-                                 8)) %>%
+                          8)) %>%
   ungroup() %>%
   mutate(
-         uwl = 1 + 1.96 * st_err * w_score,
-         ucl = 1 + 3.09 * st_err * w_score,
-         lwl = 1 - 1.96 * st_err * w_score,
-         lcl = 1 - 3.09 * st_err * w_score) %>%
+         uwl = 1 + 1.96 * round_half_up(st_err * w_score,8),
+         ucl = 1 + 3.09 * round_half_up(st_err * w_score,8),
+         lwl = 1 - 1.96 * round_half_up(st_err * w_score,8),
+         lcl = 1 - 3.09 * round_half_up(st_err * w_score,8)) %>%
   select("period", "deaths", "pred", "pats", "smr", "crd_rate", "location_type",
          "hb", "location", "location_name", "completeness_date", "death_scot",
          "pred_scot", "pats_scot", "smr_scot", "st_err",  "uwl", "ucl", "lwl",
-         "lcl", "period_label")
+         "lcl", "period_label","w_score","z")
 
 ### SECTION 2 - CREATE TABLES ----
 
