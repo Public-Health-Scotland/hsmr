@@ -967,6 +967,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                                 "Royal Alexandra/Vale of Leven",
                               location == "D102H" ~
                                 "Golden Jubilee National Hospital",
+                              location == "S08100001" ~
+                                "Golden Jubilee"
                               TRUE ~ location_name))
 
   return(long_term_trends)
