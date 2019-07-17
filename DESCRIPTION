@@ -1,6 +1,6 @@
 Package: hsmr
-Version: 0.0.0.9000
-Date: 2018-09-28
+Version: 1.0.0
+Date: 2019-07-17
 Title: Reproducible Analytical Pipeline of Hospital Standardised Mortality Ratios Quarterly Publication
 Authors@R: c(person("David", "Caldwell", email = "david.caldwell1@nhs.net", role = c("aut", "cre")),
              person("Anna", "Price", email = "anna.price5@nhs.net", role = "aut"),
@@ -13,6 +13,8 @@ Imports:
     dplyr (>= 0.8.0), 
     fuzzyjoin, 
     gdata, 
+    ggplot2,
+    ggrepel,
     here, 
     httr, 
     janitor, 
