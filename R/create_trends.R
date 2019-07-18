@@ -968,7 +968,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                               location == "D102H" ~
                                 "Golden Jubilee National Hospital",
                               location == "S08100001" ~
-                                "Golden Jubilee"
+                                "Golden Jubilee",
                               TRUE ~ location_name))
 
   return(long_term_trends)
