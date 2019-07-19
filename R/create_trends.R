@@ -973,47 +973,6 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   return(long_term_trends)
 
-  # Create template
-  quarter_template <- data.frame(quarter=trends_data$quarter,
-                                 quarter_short=trends_data$quarter_short,
-                                 quarter_full=trends_data$quarter_full) %>%
-    distinct(.keep_all = TRUE)
-
-    # Data frame with a row for each location for each quarter
-    location_template <- data.frame(hb=trends_data$hb,
-                                  location=trends_data$location,
-                                  location_name=trends_data$location_name,
-                                  agg_label=trends_data$agg_label) %>%
-    distinct(.keep_all =TRUE)
-
-
-    # Number of Scot deaths/pats for each combination of sub_grp, label and quarter
-    scot_deaths_template <- data.frame(sub_grp=trends_data$sub_grp,
-                                     label=trends_data$label,
-                                     quarter=trends_data$quarter,
-                                     scot_deaths=trends_data$scot_deaths,
-                                     scot_pats=trends_data$scot_pats,
-                                     completeness_date=trends_data$completeness_date) %>%
-    distinct(.keep_all = TRUE)
-
-    # Combines above in to a data frame with a row for each combination of location,
-    # sub_grp and label for each quarter
-    trends_data_all <- merge(location_template, quarter_template) %>%
-      left_join(scot_deaths_template) %>%
-      left_join(trends_data) %>%
-      replace_na(list(deaths=0, pats=0, crd_rate=0)) %>%
-      na.omit()
-
-    # Calculate the sum of deaths per subgroup per location
-    trends_all_deaths <- group_by(trends_data_all, location, label) %>%
-      summarise(all_deaths = sum(deaths)) %>%
-      ungroup()
-
-    # Merge above together and drop subgroups where there were no deaths
-    trend_data <- left_join(trends_data_all, trends_test) %>%
-      filter(all_deaths !=0) %>%
-      select(-all_deaths)
-
 
 }
 
