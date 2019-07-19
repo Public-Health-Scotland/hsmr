@@ -977,3 +977,4 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 }
 
 ### END OF SCRIPT ###
+
