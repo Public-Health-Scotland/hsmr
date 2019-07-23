@@ -17,6 +17,12 @@
 #' The URL of the spreadsheet is occasionally modified. Should this happen, the
 #' function should again be edited accordingly.
 #'
+#' If the ISD website is down, the function will return an error saying it has
+#' timed out. The package will also fail to build when the website is down, and
+#' the unit tests will fail to run, as access to the spreadsheet is required.
+#' Nothing can be done in this instance other than waiting for the website to
+#' return to normal.
+#'
 #' @param quarter A \code{character} string specifying the quarter for which
 #' completeness data should be returned. Valid options are `previous` and
 #' `current`.
