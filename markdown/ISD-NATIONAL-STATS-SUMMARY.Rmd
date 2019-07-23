@@ -89,10 +89,7 @@ The end of this phase of the Scottish Patient Safety Programme provided the oppo
 
 The HSMR is based on all acute inpatient and day case patients admitted to all specialties in hospital. The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
 
-The Scottish HSMR is 1.00:
-
-*	If an HSMR value for a hospital is less than one: This means the number of deaths within 30 days of admission for this hospital is fewer than predicted.
-*	If an HSMR value for a hospital is greater than one: This means the number of deaths within 30 days for this hospital is more than predicted.
+The Scottish HSMR is 1.00. If an HSMR value for a hospital is less than one, this means the number of deaths within 30 days of admission for this hospital is fewer than predicted. If an HSMR value for a hospital is greater than one, this means the number of deaths within 30 days for this hospital is more than predicted.
 
 If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (ie that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care.
 
