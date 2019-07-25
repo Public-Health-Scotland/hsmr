@@ -106,7 +106,7 @@ completeness <- function(quarter = c("previous", "current"),
     # Subsequently select only the columns pertaining to the name of the board
     # and the SMR01 dataset
     # The regex is needed to differentiate SMR01 from SMR01 GLS
-    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]*$"))
+    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]$"))
 
   # Now set the column names (with the exception of the one pertaining to the
   # name of the board) to the relevant quarter
