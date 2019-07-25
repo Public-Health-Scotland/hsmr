@@ -189,10 +189,7 @@ completeness <- function(quarter = c("previous", "current"),
                            hsmr::qtr(first_day = first_day,
                                      format = "long")),
             "with the exception of",
-            stringi::stri_replace_last_fixed(
-              stringr::str_c(sort(comp), collapse = ", "),
-              ", ",
-              " and "))))
+            glue::glue_collapse(sort(comp), sep = ", ", last = " and "))))
     }
   }
 
