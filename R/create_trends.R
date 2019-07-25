@@ -971,7 +971,52 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                                 "Golden Jubilee",
                               TRUE ~ location_name))
 
-  return(long_term_trends)
+
+  # Create template
+  quarter_template <- data.frame(quarter = long_term_trends$quarter,
+                                 quarter_short = long_term_trends$quarter_short,
+                                 quarter_full =
+                                   long_term_trends$quarter_full) %>%
+    distinct(.keep_all = TRUE)
+
+  # Data frame with a row for each location for each quarter
+  location_template <- data.frame(hb = long_term_trends$hb,
+                                  location = long_term_trends$location,
+                                  location_name =
+                                    long_term_trends$location_name,
+                                  agg_label = long_term_trends$agg_label) %>%
+    distinct(.keep_all =TRUE)
+
+
+  # Number of Scot deaths/pats for each combination of sub_grp, label and quarter
+  scot_deaths_template <- data.frame(sub_grp = long_term_trends$sub_grp,
+                                     label = long_term_trends$label,
+                                     quarter = long_term_trends$quarter,
+                                     scot_deaths = long_term_trends$scot_deaths,
+                                     scot_pats = long_term_trends$scot_pats,
+                                     completeness_date =
+                                       long_term_trends$completeness_date) %>%
+    distinct(.keep_all = TRUE)
+
+  # Combines above in to a data frame with a row for each combination of location,
+  # sub_grp and label for each quarter
+  trends_data_all <- merge(location_template, quarter_template) %>%
+    left_join(scot_deaths_template) %>%
+    left_join(long_term_trends) %>%
+    replace_na(list(deaths=0, pats=0, crd_rate=0)) %>%
+    na.omit()
+
+  # Calculate the sum of deaths per subgroup per location
+  trends_all_deaths <- group_by(trends_data_all, location, label) %>%
+    summarise(all_deaths = sum(deaths)) %>%
+    ungroup()
+
+  # Merge above together and drop subgroups where there were no deaths
+  trend_data <- left_join(trends_data_all, trends_all_deaths) %>%
+    filter(all_deaths !=0) %>%
+    select(-all_deaths)
+
+  return(trend_data)
 
 
 }
