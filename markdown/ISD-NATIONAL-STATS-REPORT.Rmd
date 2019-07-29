@@ -194,9 +194,10 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
                      limits = c(0, NA))
 
-chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Community" | label == "Dental"
+chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
+                                          label == "Community" | label == "Dental"
                                         | label == "Medical" | label == "Other" 
-                                        | label == "Surgery" 
+                                        | label == "Surgery" | label == "Paediatrics" 
                                         | label == "Emergency" 
                                         | label == "Women & Newborn")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
