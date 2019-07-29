@@ -41,7 +41,7 @@ comp <- janitor::clean_names(comp)
 # Subsequently select only the columns pertaining to the name of the board
 # and the SMR01 dataset
 # The regex is needed to differentiate SMR01 from SMR01 GLS
-comp <- dplyr::select(comp, nhs_board, smr01, dplyr::matches("^smr01_[0-9]*$"))
+comp <- dplyr::select(comp, nhs_board, smr01, dplyr::matches("^smr01_[0-9]$"))
 
 # Now set the column names (with the exception of the one pertaining to the
 # name of the board) to the relevant quarter

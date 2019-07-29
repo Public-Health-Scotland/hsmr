@@ -17,6 +17,12 @@
 #' The URL of the spreadsheet is occasionally modified. Should this happen, the
 #' function should again be edited accordingly.
 #'
+#' If the ISD website is down, the function will return an error saying it has
+#' timed out. The package will also fail to build when the website is down, and
+#' the unit tests will fail to run, as access to the spreadsheet is required.
+#' Nothing can be done in this instance other than waiting for the website to
+#' return to normal.
+#'
 #' @param quarter A \code{character} string specifying the quarter for which
 #' completeness data should be returned. Valid options are `previous` and
 #' `current`.
@@ -100,7 +106,7 @@ completeness <- function(quarter = c("previous", "current"),
     # Subsequently select only the columns pertaining to the name of the board
     # and the SMR01 dataset
     # The regex is needed to differentiate SMR01 from SMR01 GLS
-    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]*$"))
+    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]$"))
 
   # Now set the column names (with the exception of the one pertaining to the
   # name of the board) to the relevant quarter
@@ -183,10 +189,7 @@ completeness <- function(quarter = c("previous", "current"),
                            hsmr::qtr(first_day = first_day,
                                      format = "long")),
             "with the exception of",
-            stringi::stri_replace_last_fixed(
-              stringr::str_c(sort(comp), collapse = ", "),
-              ", ",
-              " and "))))
+            glue::glue_collapse(sort(comp), sep = ", ", last = " and "))))
     }
   }
 
