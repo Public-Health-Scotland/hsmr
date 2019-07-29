@@ -320,7 +320,7 @@ chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
     axis.title.y = element_text(size = 10, face = "bold"),
     axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
-    legend.position = "none",
+    legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x))
 
@@ -632,7 +632,7 @@ The main changes made to the HSMR methodology at this time were to:
 A **[Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology)** is available on how the HSMR is currently calculated and describes the methodology used in more detail. **[Interpretation Guidance and Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/)** documents are also available, answering questions on the differences between the previous and current methodologies.
 
 <Div custom-style = "Heading 2_pgbrk">Interpreting HSMR results</div>
-### Time in point comparison
+### Point in time comparison
 The Scottish HSMR is 1.00:  
 
 *	If an HSMR value for a hospital is less than one: This means the number of deaths within 30 days of admission for this hospital is fewer than predicted.
@@ -643,7 +643,7 @@ If the number of deaths is more than predicted this does not necessarily mean th
 <Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
 Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](http://www.scotland.gov.uk/Topics/Health/Policy/Quality-Strategy)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
 
-**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
+**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
 **The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
@@ -657,8 +657,8 @@ To help local users better understand their data, and to encourage a sense of ow
 
 
 
-<Div custom-style = "Heading 2_pgbrk">Results and Commentary</div>
-### 1 Time in Point Comparisons
+<Div custom-style = "Heading 2_pgbrk">1 Results and Commentary</div>
+### Point in Time Comparisons
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
 Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
