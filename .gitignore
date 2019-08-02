@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+odbc_connect.R
 
 # 'data' folder #
 data/
