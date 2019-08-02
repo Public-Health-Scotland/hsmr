@@ -19,7 +19,7 @@
 #' @param morbs Input tibble for the charlson index for comorbidities lookup.
 #' @param spec Input tibble for for specialty groupings lookup.
 #'
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export
