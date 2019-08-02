@@ -38,7 +38,7 @@
 #' file_sizes(end_date = extract_end_date)
 #' file_sizes(end_date = extract_end_date, filepath = getwd())[1]
 #'
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #'
 #' @export
 

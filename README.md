@@ -34,7 +34,7 @@ The hsmr publication process has been wrapped up inside an R package and so a nu
 
 #### Folders
 * **.git:** This is the folder containing the version control history of the repository. It can be safely ignored.
-* **.Rpoj.user:** Where project-specific temporary filse are saved. This can be safely ignored. 
+* **.Rproj.user:** Where project-specific temporary filse are saved. This can be safely ignored. 
 * **data:** This is where the output is saved. This folder is not tracked by git and so it is safe to have data stored here. 
 * **man:** This is where the documentation files for the R package are stored. E.g. the help files for the `completeness` function.
 * **markdown:** Where the markdown files and output are stored. 

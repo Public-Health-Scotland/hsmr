@@ -17,7 +17,7 @@
 #'
 #' @return If the class is not initiated correctly, nothing is returned.
 #'
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export

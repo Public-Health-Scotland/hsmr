@@ -43,7 +43,7 @@
 #' returns Scotland's SMR01 completeness level for the specified \code{quarter}
 #' as a percentage.
 #'
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export

@@ -18,7 +18,7 @@
 #' through the logistic regression model.
 #' @param index To define whether data produced are to be quarterly or annual.
 #'
-#' @importFrom dplyr %>%
+#' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export
