@@ -148,8 +148,7 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
                     pmorbs1_14 = 0,
                     pmorbs1_15 = 0,
                     pmorbs1_16 = 0,
-                    pmorbs1_17 = 0,
-                    n_emerg    = 0) %>%
+                    pmorbs1_17 = 0) %>%
 
     # In order to increase the efficiency of the following for loop:
     # Only keep records with link numbers which appear in the main extract
