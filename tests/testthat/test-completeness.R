@@ -41,11 +41,11 @@ test_that("SMR01 completeness for Scotland is displayed as percentage", {
   expect_match(completeness(quarter = "current",
                             level = "scotland",
                             first_day = qtr_start),
-               "%")
+               "^([0-9]|[0-9][0-9]|100)%$")
   expect_match(completeness(quarter = "previous",
                             level = "scotland",
                             first_day = qtr_start),
-               "%")
+               "^([0-9]|[0-9][0-9]|100)%$")
 })
 
 test_that("SMR01 completeness for Scotland never exceeds 100%", {
