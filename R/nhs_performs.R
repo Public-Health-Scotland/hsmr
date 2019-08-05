@@ -54,12 +54,17 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
                  "Z102H", "G107H", "D102H", "C313H", "C121H", "G306H", "T101H",
                  "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
                  "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
-                 "F704H", "S116H", "W107H", "G516H", "Scot")) %>%
+                 "F704H", "S116H", "W107H", "G516H",
+                 "S08000015", "S08000016", "S08000017", "S08000029",
+                 "S08000019", "S08000020", "S08000031", "S08000022",
+                 "S08000032", "S08000024", "S08000025", "S08000026",
+                 "S08000030", "S08000028", "S08100001",
+                 "Scot")) %>%
       mutate(topic       = "HSMR",
              indicator   = "SMR",
              time_period = end_date - years(1) + days(1)) %>%
       select(topic, indicator, time_period, location, location_name, smr,
-             completeness_date)
+             completeness_date, period_label)
 
     return(input_data)
 
@@ -72,16 +77,15 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
                                    "quarter_full",	"sub_grp",	"label",
                                    "scot_deaths",	"scot_pats",
                                    "completeness_date",	"deaths",	"pats",
-                                   "crd_rate"))
-       %in% names(input_data)){
+                                   "crd_rate")
+       %in% names(input_data))){
 
       stop(paste0("For NHS Performs data for Crude Rates, input_data object ",
                   "must be ",
                   "output from create_trends()"))}
 
     input_data %<>%
-      filter(sub_grp == "All Admissions" & (agg_label == "Board" | agg_label ==
-                                              "Scotland")) %>%
+      filter(sub_grp == "All Admissions") %>%
       mutate(topic       = "HSMR",
              indicator   = "Crude Mortality",
              time_period = case_when(substr(quarter_short, 1, 3) == "Apr" ~
@@ -96,8 +100,8 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
                                      substr(quarter_short, 1, 3) == "Jan" ~
                                        paste0("01/01/", substr(quarter_short,
                                                                9, 12)))) %>%
-      select(topic, indicator, time_period, location, location_name, crd_rate,
-             completeness_date)
+      select(topic, indicator, quarter, location, location_name, crd_rate,
+             completeness_date, quarter_short)
 
     return(input_data)
 
