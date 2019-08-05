@@ -48,17 +48,6 @@ test_that("SMR01 completeness for Scotland is displayed as percentage", {
                "^([0-9]|[0-9][0-9]|100)%$")
 })
 
-test_that("SMR01 completeness for Scotland never exceeds 100%", {
-  expect_lte(readr::parse_number(completeness(quarter = "current",
-                                              level = "scotland",
-                                              first_day = qtr_start)),
-             100)
-  expect_lte(readr::parse_number(completeness(quarter = "previous",
-                                              level = "scotland",
-                                              first_day = qtr_start)),
-             100)
-})
-
 test_that("Errors if first day of latest quarter is not in date format", {
   expect_error(completeness(quarter = "current",
                             level = "board",
