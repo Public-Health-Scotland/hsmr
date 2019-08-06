@@ -52,9 +52,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps == 0){
 
-      output_1 <- paste0("* No hospitals had a significantly higher ",
-                       "standardised mortality ratio for the period ",
-                       hsmr::yr(end_date), " than the national average.")
+      output_1 <- paste0("* For the period ",
+                       hsmr::yr(end_date), " no hospitals had a significantly higher ",
+                       "standardised mortality ratio than the national average.")
 
       output_2 <- paste0("This shows that there are no hospitals above the ",
                          "upper control limit which is three standard ",
@@ -64,9 +64,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps == 1){
 
-      output_1 <- paste0("* One hospital had a significantly higher ",
-                       "standardised mortality ratio for the period ",
-                       hsmr::yr(end_date), " than the national average",
+      output_1 <- paste0("* For the period ",
+                       hsmr::yr(end_date), " one hospital had a significantly higher ",
+                       "standardised mortality ratio  than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                             collapse = ", "), ".")
@@ -82,8 +82,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps > 1){
 
-      output_1 <- paste0("* ", n_hosps, " had a significantly higher ",
-                       "standardised mortality ratio for the period ",
+      output_1 <- paste0("* For the period ", n_hosps, " had a significantly higher ",
+                       "standardised mortality ratio ",
                        hsmr::yr(end_date), " than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2),
@@ -109,9 +109,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps == 0){
 
-      output_1 <- paste0("* No hospitals had a significantly lower ",
-                       "standardised mortality ratio for the period ",
-                       hsmr::yr(end_date), " than the national average.")
+      output_1 <- paste0("* For the period ",
+                       hsmr::yr(end_date), " no hospitals had a significantly lower ",
+                       "standardised mortality ratio f than the national average.")
 
       output_2 <- paste0("This also shows that there are no hospitals below ",
                          "the lower control limit which is three standard ",
@@ -122,9 +122,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps == 1){
 
-      output_1 <- paste0("* One hospital had a significantly lower ",
-                       "standardised mortality ratio for the period ",
-                       hsmr::yr(end_date), " than the national average",
+      output_1 <- paste0("* For the period ",
+                       hsmr::yr(end_date), " one hospital had a significantly lower ",
+                       "standardised mortality ratio than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                     collapse = ", "))
@@ -140,9 +140,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
     if(n_hosps > 1){
 
-      output_1 <- paste0("* ", n_hosps, " had a significantly lower ",
-                       "standardised mortality ratio for the period ",
-                       hsmr::yr(end_date), " than the national average",
+      output_1 <- paste0("* For the period ",
+                       hsmr::yr(end_date), n_hosps, " had a significantly lower ",
+                       "standardised mortality ratio "," than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                     collapse = ", "))
