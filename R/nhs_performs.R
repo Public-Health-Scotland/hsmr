@@ -6,7 +6,10 @@
 #' and reformats \code{period}, dropping all other variables except
 #' \code{location_name} and \code{smr}/\code{crd_rat}.
 #'
-#' @details NHS Performs is a companion website to the ISD website
+#' @details NHS Performs is a companion website to the ISD website which is a
+#' collection of indicators which provides information on how a selection of
+#' hospitals and NHS boards are performing. HSMR and crude mortality are two
+#' indicators featured on the website. \href{https://www.nhsperforms.scot/}{The NHS Performs website.}
 #'
 #' @param data The input \code{tibble} which is the output from \code{smr_data}
 #' or \code{create_trends}.
