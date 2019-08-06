@@ -99,7 +99,7 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
                                 "#ffbc79", "#c85302"), 
                      labels = c("Scotland SMR", "Upper/Lower Control Limit", 
-                                "Upper/Lower Warning Limit", "SMR"),
+                                "Upper/Lower Warning Limit", "Hospital"),
                      guide = guide_legend(override.aes = list(
                        linetype = c(rep("solid", 3), "blank"),
                        shape    = c(NA, NA, NA, 19)))) +
@@ -133,7 +133,7 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                    segment.size  = 0.2,
                    segment.color = "grey50",
                    direction     = "x") +
-  labs(x = "Number of Predicted Deaths", y = "Standardised Mortality Ratio") +
+  labs(x = "Number of Predicted Deaths", y = "Standardised Mortality Ratio (SMR)") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -582,7 +582,7 @@ Find out more about National Statistics at:
 https://www.statisticsauthority.gov.uk/national-statistician/types-of-official-statistics/ 
 
 <Div custom-style = "Heading 2_pgbrk">Introduction</div>
-This report by the Information Services Division presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period.  It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
+This report by Information Services Division presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period.  It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
 
 Information Services Division has produced quarterly Hospital Standardised Mortality Ratios for all Scottish hospitals participating in the Scottish Patient Safety Programme since December 2009. 
 
@@ -602,7 +602,7 @@ The calculation uses information from acute inpatient and day case patients admi
 These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12 month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter to show trends. A link to the relevant Excel data table has also been provided alongside each chart.
 
 <Div custom-style = "Heading 3_pgbrk">How is HSMR calculated?</div>
-For a standard population (Scotland) during a three year baseline period, the risk of dying for particular patient subgroups (eg age, sex, diagnosis, type of admission, number and severity of illness etc.) is calculated.
+For a standard population (Scotland) during a three year baseline period, the risk of dying for particular patient subgroups (e.g. age, sex, diagnosis, type of admission, number and severity of illness etc.) is calculated.
 
 This risk is then applied to the corresponding subgroups in different hospitals to calculate how many deaths would be predicted to occur in that hospital if the standard level of risk was applied.
 
@@ -639,7 +639,7 @@ The Scottish HSMR is 1.00:
 *	If an HSMR value for a hospital is less than one: This means the number of deaths within 30 days of admission for this hospital is fewer than predicted.
 *	If an HSMR value for a hospital is greater than one: This means the number of deaths within 30 days for this hospital is more than predicted. 
 
-If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (ie that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care. Trends in HSMR are impacted by variations in case mix and coding practices over the period, as such crude mortality is used to monitor change over time.
+If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care. Trends in HSMR are impacted by variations in case mix and coding practices over the period, as such crude mortality is used to monitor change over time.
 
 <Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
 Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](http://www.scotland.gov.uk/Topics/Health/Policy/Quality-Strategy)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
@@ -707,7 +707,7 @@ Chart 6 shows that mortality rates are consistently higher for males throughout 
 ![Trend chart showing crude mortality by gender for the last five years](Chart_6.png)</div>
 
 <Div custom-style = "Heading 3_pgbrk">Scotland – by Scottish Index of Multiple Deprivation</div>
-The Scottish Index of Multiple Deprivation presents a picture of multiple deprivation across Scotland. It identifies small area concentrations of multiple deprivation across all of Scotland in a fair way based on six domains - employment, income, health, education, access and crime. 
+The Scottish Index of Multiple Deprivation identifies small area concentrations of multiple deprivation across all of Scotland in a consistent way. It identifies small area concentrations of multiple deprivation across all of Scotland based on six domains - employment, income, health, education, access and crime. 
 
 Chart 7 shows that patients from the least deprived areas of Scotland consistently have lower levels of 30-day mortality than patients from more deprived areas. 
 
