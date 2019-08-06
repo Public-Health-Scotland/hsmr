@@ -165,4 +165,21 @@ saveWorkbook(table3,
                                    "-and-30-day-from-discharge.xlsx"))),
              overwrite = TRUE)
 
+# Load in NHS Performs file
+nhs_performs_file <- loadWorkbook(here("reference_files",
+                                       paste0("HSMR_NHSPerforms.xlsx")))
+
+writeData(nhs_performs_file, "data_smr",
+          nhs_performs(smr_data, end_date, "HSMR"), startCol = 2)
+
+writeData(nhs_performs_file, "data_crude",
+          nhs_performs(trend_data, end_date, "Crude"), startCol = 2)
+
+saveWorkbook(nhs_performs_file,
+             here("data",
+                  "output",
+                  paste0(pub_date(end_date,
+                                  pub = "current"),
+                         "_HSMR_NHSPerforms.xlsx")))
+
 ### END OF SCRIPT ###
