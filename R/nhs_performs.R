@@ -14,8 +14,13 @@
 #' information tab or the smr information tab.
 #'
 #' @examples
-#' nhs_performs(data = smr_data, indicator = "HSMR")
-#' nhs_performs(data = trend_data, indicator = "Crude")
+#' nhs_performs(data = smr_data, end_date = lubridate::dmy(31032019),
+#'              indicator = "HSMR")
+#' nhs_performs(data = trend_data, end_date = lubridate::dmy(31032019),
+#'              indicator = "Crude")
+#'
+#' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
 #'
 #' @export
 
