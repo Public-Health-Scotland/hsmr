@@ -119,6 +119,23 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
                                       extract_end = end_date))) %>%
   clean_names()
 
+# Save basefiles
+
+saveRDS(deaths, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_GRO_deaths.rds")))
+
+saveRDS(smr01, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_SMR01_basefile.rds")))
+
+saveRDS(data_pmorbs, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_SMR01_minus_5_basefile.rds")))
+
 
 # 2 - Pipeline ----
 # smr01    = The SMR01 extract used to produce SMR data. This should contain
