@@ -170,12 +170,6 @@ smr_data <- smr_data(smr01 = smr01,
                      index = "Y",
                      hospital_lookup = hospitals)
 
-# Adjust probability to calibrate Scotland SMR to 1.00
-smr01 %<>%
-  group_by(period) %>%
-  mutate(scot_smr = sum(death30)/sum(pred_eq),
-         pred_eq  = pred_eq/scot_smr)
-
 
 ### 3 - Save data ----
 write_csv(smr01 %>%
