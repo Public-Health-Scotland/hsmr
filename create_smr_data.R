@@ -127,6 +127,8 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
 #            ALL data AFTER the start of the first publication quarter
 # pdiags   = The primary diagnosis lookup dataframe/tibble
 # postcode = The postcode lookup dataframe for SIMD matching
+# morbs    = The lookup tibble for morbidity groupings
+# spec     = The specialty grouping lookup tibble
 #
 # This function does most of the wrangling required for producing HSMR
 smr01 <- smr_wrangling(smr01    = smr01,
@@ -140,6 +142,7 @@ smr01 <- smr_wrangling(smr01    = smr01,
 # smr01_minus5 = The SMR01 extract used to calculate the prior morbidities.
 #                This should contain all publication quarters plus an extra
 #                five years at the start
+# morbs        = The lookup tibble for morbidity groupings
 #
 # This function does the final bits of wrangling required for HSMR. These
 # are done separately from the rest because they are quite resource-heavy
