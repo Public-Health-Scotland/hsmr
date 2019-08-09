@@ -1,6 +1,6 @@
 # Hospital Standardised Mortality Ratios 
 
-The Hospital Standardised Mortality Ratios publication is a quarterly publication that has been fully RAP'd. The entire process is contained within this R package and git repository. 
+The [Hospital Standardised Mortality Ratios publication](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/) is a quarterly publication that has been fully RAP'd. The entire process is contained within this R package and git repository. 
 
 ## Resources
 
