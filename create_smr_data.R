@@ -119,6 +119,23 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
                                       extract_end = end_date))) %>%
   clean_names()
 
+# Save basefiles
+
+saveRDS(deaths, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_GRO_deaths.rds")))
+
+saveRDS(smr01, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_SMR01_basefile.rds")))
+
+saveRDS(data_pmorbs, here("data",
+                     "base_files",
+                     paste0(pub_date(end_date = end_date, pub = "current"),
+                            "_SMR01_minus_5_basefile.rds")))
+
 
 # 2 - Pipeline ----
 # smr01    = The SMR01 extract used to produce SMR data. This should contain
@@ -127,6 +144,8 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
 #            ALL data AFTER the start of the first publication quarter
 # pdiags   = The primary diagnosis lookup dataframe/tibble
 # postcode = The postcode lookup dataframe for SIMD matching
+# morbs    = The lookup tibble for morbidity groupings
+# spec     = The specialty grouping lookup tibble
 #
 # This function does most of the wrangling required for producing HSMR
 smr01 <- smr_wrangling(smr01    = smr01,
@@ -140,6 +159,7 @@ smr01 <- smr_wrangling(smr01    = smr01,
 # smr01_minus5 = The SMR01 extract used to calculate the prior morbidities.
 #                This should contain all publication quarters plus an extra
 #                five years at the start
+# morbs        = The lookup tibble for morbidity groupings
 #
 # This function does the final bits of wrangling required for HSMR. These
 # are done separately from the rest because they are quite resource-heavy
@@ -169,12 +189,6 @@ smr01 <- smr_model(smr01      = smr01,
 smr_data <- smr_data(smr01 = smr01,
                      index = "Y",
                      hospital_lookup = hospitals)
-
-# Adjust probability to calibrate Scotland SMR to 1.00
-smr01 %<>%
-  group_by(period) %>%
-  mutate(scot_smr = sum(death30)/sum(pred_eq),
-         pred_eq  = pred_eq/scot_smr)
 
 
 ### 3 - Save data ----
