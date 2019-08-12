@@ -6,28 +6,30 @@
 #' and reformats \code{period}, dropping all other variables except
 #' \code{location_name} and \code{smr}/\code{crd_rat}.
 #'
-#' @details NHS Performs is a companion website to the ISD website which is a
-#' collection of indicators which provides information on how a selection of
-#' hospitals and NHS boards are performing. HSMR and crude mortality are two
-#' indicators featured on the website. \href{https://www.nhsperforms.scot/}{The NHS Performs website.}
+#' @details \href{https://www.nhsperforms.scot/}{NHS Performs} is a companion
+#' website to the ISD website. It contains a collection of indicators which
+#' provide information on how a selection of hospitals and NHS boards are
+#' performing. HSMR and crude mortality are two indicators featured on the
+#' website.
 #'
 #' @param data The input \code{tibble} which is the output from \code{smr_data}
 #' or \code{create_trends}.
 #' @param indicator controls whether the function reformats data for the trends
-#' information tab or the smr information tab.
+#' information tab or the smr information tab. Valid options are `hsmr` and
+#' `crude`.
 #'
 #' @examples
 #' nhs_performs(data = smr_data, end_date = lubridate::dmy(31032019),
-#'              indicator = "HSMR")
+#'              indicator = "hsmr")
 #' nhs_performs(data = trend_data, end_date = lubridate::dmy(31032019),
-#'              indicator = "Crude")
+#'              indicator = "crude")
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export
 
-nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
+nhs_performs <- function(input_data, end_date, indicator = c("hsmr", "crude")){
 
   match.arg(indicator)
 
@@ -44,7 +46,7 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
   }
 
 
-  if(indicator == "HSMR"){
+  if(indicator == "hsmr"){
     if(!all(c("period", "deaths", "pred", "pats", "smr", "crd_rate",
               "location_type", "location", "hb", "location_name",
               "completeness_date", "period_label", "death_scot", "pred_scot",
@@ -76,7 +78,7 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
 
   }
 
-  if(indicator == "Crude"){
+  if(indicator == "crude"){
     if(!all(c("hb", "location", "location_name", "agg_label", "quarter",
               "quarter_short", "quarter_full", "sub_grp", "label",
               "scot_deaths", "scot_pats", "completeness_date", "deaths", "pats",
