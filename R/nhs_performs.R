@@ -45,13 +45,10 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
 
 
   if(indicator == "HSMR"){
-    if(!all(c("period",	"deaths",	"pred",	"pats",	"smr",
-                                  "crd_rate",	"location_type",	"location",
-                                  "hb",	"location_name",	"completeness_date",
-                                  "period_label",	"death_scot",	"pred_scot",
-                                  "pats_scot",	"smr_scot")
-            %in% names(input_data))){
-
+    if(!all(c("period", "deaths", "pred", "pats", "smr", "crd_rate",
+              "location_type", "location", "hb", "location_name",
+              "completeness_date", "period_label", "death_scot", "pred_scot",
+              "pats_scot", "smr_scot") %in% names(input_data))) {
       stop(paste0("For NHS Performs data for HSMR, input_data object must be ",
                   "output from smr_data()"))}
 
@@ -80,17 +77,12 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
   }
 
   if(indicator == "Crude"){
-    if(!all(c("hb", "location",	"location_name",
-                                   "agg_label",	"quarter",	"quarter_short",
-                                   "quarter_full",	"sub_grp",	"label",
-                                   "scot_deaths",	"scot_pats",
-                                   "completeness_date",	"deaths",	"pats",
-                                   "crd_rate")
-       %in% names(input_data))){
-
+    if(!all(c("hb", "location", "location_name", "agg_label", "quarter",
+              "quarter_short", "quarter_full", "sub_grp", "label",
+              "scot_deaths", "scot_pats", "completeness_date", "deaths", "pats",
+              "crd_rate") %in% names(input_data))) {
       stop(paste0("For NHS Performs data for Crude Rates, input_data object ",
-                  "must be ",
-                  "output from create_trends()"))}
+                  "must be output from create_trends()"))}
 
     input_data %<>%
       filter(sub_grp == "All Admissions") %>%
@@ -113,8 +105,6 @@ nhs_performs <- function(input_data, end_date, indicator = c("HSMR", "Crude")){
 
     return(input_data)
 
+
   }
-
-
-
 }
