@@ -51,8 +51,8 @@ smr_data          <- read_csv(here("data",
   # Calculate funnel limits for funnel plot
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
          z = if_else(location_type == "hospital",
-                             round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
-                             0)) %>%
+                     round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
+                     0)) %>%
   group_by(period) %>%
   mutate(
          z_max = max(z),
@@ -116,7 +116,7 @@ trend_data <- read_csv(here("data",
 
 # Load Table 1 template
 table1 <- loadWorkbook(here("reference_files",
-                      "Table1-HSMR.xlsx"))
+                            "Table1-HSMR.xlsx"))
 
 # Write data to data tab in Table 1
 writeData(table1, "funnel_data", smr_data, startCol = 2)
@@ -125,8 +125,9 @@ writeData(table1, "funnel_data", smr_data, startCol = 2)
 saveWorkbook(table1,
              here("data",
                   "output",
-                  paste0(pub_date(end_date, pub = "current"),"-Table1-HSMR.xlsx")
-                  ), overwrite = TRUE)
+                  paste0(pub_date(end_date, pub = "current"),
+                         "-Table1-HSMR.xlsx")),
+             overwrite = TRUE)
 
 # Load in Table 2 template
 table2 <- loadWorkbook(here("reference_files",
@@ -167,13 +168,13 @@ saveWorkbook(table3,
 
 # Load in NHS Performs file
 nhs_performs_file <- loadWorkbook(here("reference_files",
-                                       paste0("HSMR_NHSPerforms.xlsx")))
+                                       "HSMR_NHSPerforms.xlsx"))
 
 writeData(nhs_performs_file, "data_smr",
-          nhs_performs(smr_data, end_date, "HSMR"), startCol = 2)
+          nhs_performs(smr_data, end_date, "hsmr"), startCol = 2)
 
 writeData(nhs_performs_file, "data_crude",
-          nhs_performs(trend_data, end_date, "Crude"), startCol = 2)
+          nhs_performs(trend_data, end_date, "crude"), startCol = 2)
 
 saveWorkbook(nhs_performs_file,
              here("data",
