@@ -1,6 +1,6 @@
 #' @title NHS Performs
 #'
-#' @description \code{nhs_performs} reformats the output from \code(smr_data)
+#' @description \code{nhs_performs} reformats the output from \code{smr_data}
 #' and \code{trend_data} in order to fit the template agreed with the team in
 #' charge of NHS Performs. It adds variables \code{topic} and \code{indicator}
 #' and reformats \code{period}, dropping all other variables except

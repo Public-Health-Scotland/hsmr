@@ -14,7 +14,7 @@ information tab or the smr information tab.}
 or \code{create_trends}.}
 }
 \description{
-\code{nhs_performs} reformats the output from \code(smr_data)
+\code{nhs_performs} reformats the output from \code{smr_data}
 and \code{trend_data} in order to fit the template agreed with the team in
 charge of NHS Performs. It adds variables \code{topic} and \code{indicator}
 and reformats \code{period}, dropping all other variables except
@@ -24,7 +24,7 @@ and reformats \code{period}, dropping all other variables except
 NHS Performs is a companion website to the ISD website which is a
 collection of indicators which provides information on how a selection of
 hospitals and NHS boards are performing. HSMR and crude mortality are two
-indicators featured on the website. \href{https://www.nhsperforms.scot/}{The NHS Performs website}
+indicators featured on the website. \href{https://www.nhsperforms.scot/}{The NHS Performs website.}
 }
 \examples{
 nhs_performs(data = smr_data, end_date = lubridate::dmy(31032019),
