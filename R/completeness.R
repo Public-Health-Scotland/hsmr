@@ -12,16 +12,16 @@
 #' @details The \code{completeness} function assumes that the list of health
 #' board names (including Scotland) is contained in cells B31:B47 in the
 #' spreadsheet, where B29 is `NHS Board` and B47 is `All NHS Boards`. Should
-#' this change, the function should be edited accordingly.
+#' this change, \code{completeness} should be edited accordingly.
 #'
-#' The URL of the spreadsheet is occasionally modified. Should this happen, the
-#' function should again be edited accordingly.
+#' The URL of the spreadsheet is occasionally modified. Should this happen,
+#' \code{completeness} should again be edited accordingly.
 #'
-#' If the ISD website is down, the function will return an error saying it has
-#' timed out. The package will also fail to build when the website is down, and
-#' the unit tests will fail to run, as access to the spreadsheet is required.
-#' Nothing can be done in this instance other than waiting for the website to
-#' return to normal.
+#' If the ISD website is down, \code{completeness} will return an error saying
+#' it has timed out. The \code{hsmr} package will also fail to build when the
+#' website is down, and the unit tests relating to \code{completeness} will
+#' fail, as access to the spreadsheet is required. Nothing can be done in this
+#' instance other than waiting for the website to return to normal.
 #'
 #' @param quarter A \code{character} string specifying the quarter for which
 #' completeness data should be returned. Valid options are `previous` and
