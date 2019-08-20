@@ -70,7 +70,7 @@ The package is designed to require as little human intervention as possible. To 
 
 * In the master folder, open up `create_smr_data.R`, highlight the entire script and run
 * Check for any errors and investigate if necessary
-* check the output in [folder] looks as it should
+* Check the output in [folder] looks as it should
 * In the master folder, open up `create_trends_data.R`, highlight the entire script and run
 * As above, check for any errors and look at the output to see if it looks as it should do
 * Open `create_excel_tables.R`, highlight the entire script and run. This script pulls in Excel templates which can be found in the reference_files folder (without data). The output files are saved in the data/output folder. 
