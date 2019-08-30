@@ -4,32 +4,34 @@
 \alias{nhs_performs}
 \title{NHS Performs}
 \usage{
-nhs_performs(input_data, end_date, indicator = c("HSMR", "Crude"))
+nhs_performs(input_data, end_date, indicator = c("hsmr", "crude"))
 }
 \arguments{
 \item{indicator}{controls whether the function reformats data for the trends
-information tab or the smr information tab.}
+information tab or the smr information tab. Valid options are `hsmr` and
+`crude`.}
 
 \item{data}{The input \code{tibble} which is the output from \code{smr_data}
 or \code{create_trends}.}
 }
 \description{
-\code{nhs_performs} reformats the output from \code(smr_data)
+\code{nhs_performs} reformats the output from \code{smr_data}
 and \code{trend_data} in order to fit the template agreed with the team in
 charge of NHS Performs. It adds variables \code{topic} and \code{indicator}
 and reformats \code{period}, dropping all other variables except
 \code{location_name} and \code{smr}/\code{crd_rat}.
 }
 \details{
-NHS Performs is a companion website to the ISD website which is a
-collection of indicators which provides information on how a selection of
-hospitals and NHS boards are performing. HSMR and crude mortality are two
-indicators featured on the website. \href{https://www.nhsperforms.scot/}{The NHS Performs website}
+\href{https://www.nhsperforms.scot/}{NHS Performs} is a companion
+website to the ISD website. It contains a collection of indicators which
+provide information on how a selection of hospitals and NHS boards are
+performing. HSMR and crude mortality are two indicators featured on the
+website.
 }
 \examples{
 nhs_performs(data = smr_data, end_date = lubridate::dmy(31032019),
-             indicator = "HSMR")
+             indicator = "hsmr")
 nhs_performs(data = trend_data, end_date = lubridate::dmy(31032019),
-             indicator = "Crude")
+             indicator = "crude")
 
 }

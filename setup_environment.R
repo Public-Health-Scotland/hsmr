@@ -33,9 +33,13 @@ library(openxlsx)      # For manipulating Excel files
 library(hsmr)          # For HSMR functions
 
 ### 2 - Define Whether Running on Server or Locally ----
-# Comment out as appropriate
-platform <- c("server")
-#platform <- c("locally")
+# Covers both the old server and the pro one
+if (sessionInfo()$platform %in% c("x86_64-redhat-linux-gnu (64-bit)",
+                                  "x86_64-pc-linux-gnu (64-bit)")) {
+  platform <- "server"
+  } else {
+  platform <- "locally"
+}
 
 
 # Define root directory for cl-out based on whether script is running locally or

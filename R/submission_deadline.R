@@ -22,7 +22,6 @@
 #'
 #' @export
 
-
 submission_deadline <- function(end_date) {
 
   if (class(end_date) != "Date") {
