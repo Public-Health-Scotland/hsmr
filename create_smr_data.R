@@ -54,7 +54,7 @@ specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
 # them to be differentiated from one another
 simd_2016 <- read_spss(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2019_1.5_simd2016.sav")) %>%
+                              "/postcode_2019_2_simd2016.sav")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
