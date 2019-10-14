@@ -103,7 +103,7 @@ pop_est  <- read_spss(paste0(plat_filepath,
 
 pop_proj <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
-  "HB2014_pop_proj_2016_2041.sav")) %>%
+  "HB2018_pop_proj_2016_2041.sav")) %>%
   clean_names() %>%
   filter(year >= 2019) %>%
   group_by(year, hb2014) %>%
