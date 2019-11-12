@@ -219,6 +219,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       location == "G306H" ~ "G405H",
       location == "G516H" ~ "G405H",
       location == "Y104H" ~ "Y146H",
+      location == "R101H" ~ "R103H",
       TRUE ~ location
     ))
 
