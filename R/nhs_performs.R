@@ -56,10 +56,10 @@ nhs_performs <- function(input_data, end_date, indicator = c("hsmr", "crude")){
 
     input_data %<>%
       filter(period == 3 & location %in%
-               c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H",
+               c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R103H",
                  "H212H", "B120H", "H103H", "N411H", "Y146H", "V217H", "Y144H",
                  "Z102H", "G107H", "D102H", "C313H", "C121H", "G306H", "T101H",
-                 "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
+                 "T202H", "G405H", "H202H", "C418H", "S314H", "S308H",
                  "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
                  "F704H", "S116H", "W107H", "G516H",
                  "S08000015", "S08000016", "S08000017", "S08000029",
