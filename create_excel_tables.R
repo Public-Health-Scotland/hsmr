@@ -144,10 +144,7 @@ table2 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 2
 writeData(table2, "table_data", trend_data %>%
-            filter(!(sub_grp %in% c("Discharge", "Population"))) %>%
-            select(hb, location, location_name, agg_label, quarter, quarter_short,
-                   quarter_full, sub_grp, label, scot_deaths,	scot_pats,
-                   completeness_date,	deaths,	pats,	crd_rate),
+            filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
 
 # Output Table 2
@@ -166,10 +163,7 @@ table3 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 3
 writeData(table3, "data", trend_data %>%
-            filter(sub_grp %in% c("Discharge", "Population")) %>%
-            select(hb,	location,	location_name,	agg_label,	quarter,
-                   quarter_short,	quarter_full,	sub_grp,	label,	scot_deaths,
-                   scot_pats,	completeness_date,	deaths,	pats,	crd_rate),
+            filter(sub_grp %in% c("Discharge", "Population")),
           startCol = 2)
 
 # Output Table 3
