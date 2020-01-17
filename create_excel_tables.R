@@ -87,7 +87,12 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data-level1.csv"))) %>%
+                                   "_trends-data-level1.csv")),
+                       col_types = cols(
+                         quarter = col_double(),
+                         quarter_short = col_character(),
+                         quarter_full = col_character()
+                       )) %>%
   mutate(hb = case_when(
     hb == "S08000018" ~ "S08000029",
     hb == "S08000027" ~ "S08000030",
@@ -112,7 +117,11 @@ trend_data <- read_csv(here("data",
              "S08000019", "S08000020", "S08000031", "S08000022",
              "S08000032", "S08000024", "S08000025", "S08000026",
              "S08000030", "S08000028", "S08100001",
-             "Scot"))
+             "Scot")) %>%
+  filter(time_period == "Quarter") %>%
+  select(hb, location, location_name, agg_label, quarter, quarter_short,
+         quarter_full, sub_grp, label, scot_deaths,	scot_pats,
+         completeness_date,	deaths,	pats,	crd_rate)
 
 # Load Table 1 template
 table1 <- loadWorkbook(here("reference_files",
@@ -154,7 +163,8 @@ table3 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 3
 writeData(table3, "data", trend_data %>%
-            filter(sub_grp %in% c("Discharge", "Population")), startCol = 2)
+            filter(sub_grp %in% c("Discharge", "Population")),
+          startCol = 2)
 
 # Output Table 3
 saveWorkbook(table3,
