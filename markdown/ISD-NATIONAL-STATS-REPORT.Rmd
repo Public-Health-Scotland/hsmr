@@ -59,7 +59,16 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data-level2.csv"))) %>%
+                                   "_trends-data-level2.csv")),
+                            col_types = cols(
+                         quarter = col_double(),
+                         quarter_short = col_character(),
+                         quarter_full = col_character()
+                       )) %>%
+  filter(time_period == "Quarter") %>% 
+  select(hb, location, location_name, agg_label, quarter, quarter_short,
+         quarter_full, sub_grp, label, scot_deaths,	scot_pats,
+         completeness_date,	deaths,	pats,	crd_rate) %>% 
   filter(!is.na(label)) %>% 
   arrange(hb, label, quarter) 
 
