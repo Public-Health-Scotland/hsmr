@@ -419,10 +419,10 @@ ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table1-HSMR.xlsx"), 
-                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table2-Crude-Mortality-Subgroups.xlsx"), 
-                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx"), 
-                     paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table4.xls")), 
+             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/")), 
              stringsAsFactors = FALSE)
 
 ```
@@ -732,7 +732,9 @@ Chart 8 shows the proportion of deaths within 30 days of admission by place of d
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png)</div>
 
 <Div custom-style = "Heading 2_pgbrk">Hospital and NHS Board Level</div>
-HSMR data are provided by ISD to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time.  
+HSMR data are provided by ISD to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
+
+**NHS Fife**: In order to reflect current service configuration, an HSMR is not reported on separately for Queen Margaret Hospital as this site does not include any acute wards.
 
 ### Combined Institutions
 In order to reflect current service configuration, some hospitals are presented as combined institutions for the purposes of these reports. This applies to the following NHS Boards.  
@@ -825,13 +827,6 @@ The next update, reporting on admissions to `r completeness_next`, will be publi
     knitr::kable(glossary, col.names = NULL, align = c('l','l'))
 ```
 
-####### List of Tables
-<br>
-```{r kable_ListOfTables, echo = FALSE}
-
-  knitr::kable(table_list, col.names = c("**File Name**","**File and Size**"))
-
-```
 
 <Div custom-style = "Heading 2_pgbrk">Contact</div>
 **Robyn Munro, Principal Information Analyst**  
@@ -859,7 +854,7 @@ The next release of this publication will be `r format(pub_date(end_date = end_d
 <br>
 
 ## Rate this publication
-Please [provide feedback](http://www.isdscotland.org/Health-Topics/HEALTHTOPIC/Publications/rate-this-publication.asp?ID=XXXX) on this publication to help us improve our services.
+If you wish to provide feedback on this publication to help us improve our service, please email NSS.isdQualityIndicators@nhs.net.
 
 <Div custom-style = "Heading 2_pgbrk">Appendices</div>
 ### Appendix 1 – Background information
