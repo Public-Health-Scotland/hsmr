@@ -66,9 +66,7 @@ trend_data <- read_csv(here("data",
                          quarter_full = col_character()
                        )) %>%
   filter(time_period == "Quarter") %>% 
-  select(hb, location, location_name, agg_label, quarter, quarter_short,
-         quarter_full, sub_grp, label, scot_deaths,	scot_pats,
-         completeness_date,	deaths,	pats,	crd_rate) %>% 
+  select(-(month), -(month_label), -(time_period)) %>% 
   filter(!is.na(label)) %>% 
   arrange(hb, label, quarter) 
 
