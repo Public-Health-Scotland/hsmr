@@ -832,19 +832,18 @@ The next update, reporting on admissions to `r completeness_next`, will be publi
 **Robyn Munro, Principal Information Analyst**  
 Quality Indicators  
 Phone:  0131 275 6967  
-Email:  Robyn.Munro@nhs.net
 
 **David Caldwell, Senior Information Analyst**  
 Quality Indicators  
 Phone:  0131 275 7421  
-Email:  David.Caldwell1@nhs.net
 
 **Lucinda Lawrie, Information Analyst**  
 Quality Indicators  
 Phone:  0131 275 7929  
-Email:  Lucinda.Lawrie1@nhs.net
 
 <br>
+
+**Email:** NSS.isdQualityIndicators@nhs.net
 
 ## Further Information
 Further Information can be found on the [ISD website](http://www.isdscotland.org/).  
