@@ -257,6 +257,9 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(last_cis = max(cis_marker)) %>%
     tidylog::group_by(month) %>%
     tidylog::mutate(adm_first = min(admission_date)) %>%
+    tidylog::mutate(month_label = paste(
+                                    lubridate::month(adm_first, label = TRUE, abbr = TRUE),
+                                    year(adm_first))) %>%
     dplyr::ungroup() %>%
     tidylog::filter(epinum == 1 & cis_marker == last_cis) %>%
 
@@ -1084,7 +1087,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Crude Rates (Scotland) - All Admissions ----
   scot_all_adm_month <- smr01_month %>%
-    tidylog::group_by(month) %>%
+    tidylog::group_by(month, month_label) %>%
     tidylog::summarise(deaths      = sum(death30),
                        scot_deaths = sum(death30),
                        pats        = length(death30),
@@ -1098,7 +1101,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Crude Rates (Hosp) - All Admissions ----
   hosp_all_adm_month <- smr01_month %>%
-    tidylog::group_by(month, hbtreat_currentdate, location) %>%
+    tidylog::group_by(month, month_label, hbtreat_currentdate, location) %>%
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
     tidylog::group_by(month) %>%
@@ -1111,7 +1114,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Crude Rates (HB) - All Admissions ----
   hb_all_adm_month <- smr01_month %>%
-    tidylog::group_by(month, hbtreat_currentdate) %>%
+    tidylog::group_by(month, month_label, hbtreat_currentdate) %>%
     tidylog::summarise(deaths = sum(death30),
                        pats   = length(death30)) %>%
     tidylog::group_by(month) %>%
@@ -1131,7 +1134,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     scot_pats   = max(pats)) %>%
     tidylog::mutate(crd_rate = deaths/pats * 100) %>%
     dplyr::rename(hb = hbtreat_currentdate) %>%
-    tidylog::select(hb, location, month,
+    tidylog::select(hb, location, month, month_label,
                     deaths, pats, scot_deaths, scot_pats, crd_rate, sub_grp,
                     label, agg_label) %>%
     mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
