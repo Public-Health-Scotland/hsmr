@@ -29,8 +29,8 @@ source("odbc_connect.R")
 
 # Primary Diagnosis Groupings
 pdiag_grp_data <- read_spss(here("reference_files",
-                                 "shmi_diag_grps_lookup.sav")) %>%
-  select(diag1_4, SHMI_DIAGNOSIS_GROUP) %>%
+                                 "diag_grps_lookup.sav")) %>%
+  select(diag1_4, DIAGNOSIS_GROUP) %>%
   clean_names()
 
 

@@ -4,10 +4,10 @@
 \alias{clean_model}
 \title{Clean up logistic regression model}
 \usage{
-clean_model(cm)
+clean_model(model)
 }
 \arguments{
-\item{cm}{Input \code{glm}.}
+\item{model}{Input \code{glm}.}
 }
 \description{
 Strips logistic regression model object of extraneous data that
