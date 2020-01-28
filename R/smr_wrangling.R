@@ -71,12 +71,12 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
                 ipdc"))
   }
 
-  if(!all(c("diag1_4", "shmi_diagnosis_group") %in% names(pdiags))){
+  if(!all(c("diag1_4", "diagnosis_group") %in% names(pdiags))){
 
     stop(paste0("Object pdiags does not contain the required variables.",
                 "Must contain:
                 diag1_4
-                shmi_diagnosis_group"))
+                diagnosis_group"))
 
   }
 
@@ -124,7 +124,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
 
   }
 
-  if(!all(1:140 %in% pdiags$shmi_diagnosis_group)){
+  if(!all(1:140 %in% pdiags$diagnosis_group)){
 
     stop(paste0("Primary diagnosis lookup does not contain all 140 ",
                 "primary diagnosis groupings."))
@@ -202,7 +202,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
     # Create the pdiag_grp and wcomorbsx variables using joins to the morbs
     # dataset
     tidylog::left_join(tidylog::select(pdiags,
-                                       pdiag_grp = shmi_diagnosis_group,
+                                       pdiag_grp = diagnosis_group,
                                        diag1_4),
                        by = "diag1_4") %>%
 
