@@ -5,18 +5,17 @@ The [Hospital Standardised Mortality Ratios publication](https://www.isdscotland
 ## Resources
 
 * [A Quick Guide to git & GitHub](https://nhs-nss-transforming-publications.github.io/git-guide/index.html)
-* 
 
 ## Folder Structure
 
 All the publication files and folders are stored in the following directory:
 
-[filepath]
+/.../quality_indicators/hsmr/quarter_cycle
 
 This directory should contain:
 
 * A "master" folder
-* A folder named after each analyst who has worked on the publication e.g. a folder called "David"
+* A folder named after each analyst who has worked on the publication e.g. a folder called "David", "Lucinda", "Robyn" etc.
 
 ### The "master" folder
 
@@ -45,13 +44,15 @@ The hsmr publication process has been wrapped up inside an R package and so a nu
 #### Files
 * **.gitignore:** Any files that should not be tracked by git should be added to this file. 
 * **.Rbuildignore::** This can be safely ignored. 
+* **setup_environment.R:** This is the script which gets edited each quarter to update dates and lookup files.
 * **create_smr_data.R:** This is the script which uses the package to produce the SMR data for the publication.
 * **create_trends_data.R:** This is the script which uses the package to produce the long term trends data for the publication.
 * **create_excel_tables.R:** This is the script which uses the package to produce the excel tables. 
 * **DESCRIPTION:** This is metadata for the R package. If the package is ever updated, the version number should be updated here.
+* **NAMESPACE:** Namespace file for the package. Can be safely ignored.
 
 
-## Running the publciation 
+## Running the publication 
 
 ### Updating the code
 
