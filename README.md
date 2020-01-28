@@ -59,7 +59,7 @@ These can be located in the R/ folder.
 * **smr_model.R:** Runs the logistic regression model for HSMR.
 * **smr_data.R:** Carries out aggregation and calculates HSMR figures for all relevant hospitals.
 * **create_trends.R:** Calculates crude mortality (%). 
-* **clean_model.R::** Removes any surplus data from the logistic regression model (just to make more efficient use of memory when calculating probabilities).
+* **clean_model.R:** Removes any surplus data from the logistic regression model (just to make more efficient use of memory when calculating probabilities).
 * **completeness.R:** Generates completess text for publication document. 
 * **file_sizes.R:** Generates file size text for publication document (obsolete).
 * **funnel_text.R:** Generates text for main points from the funnel plot data. 
