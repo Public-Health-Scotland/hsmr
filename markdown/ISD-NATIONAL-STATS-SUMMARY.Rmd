@@ -86,7 +86,7 @@ Hospital mortality measures have an important role to play in stimulating reflec
 
 The HSMR methodology used up until May 2019 was agreed in 2015/16. The purpose of the HSMR at that time was to measure change in mortality over time, and to enable acute hospitals to monitor their progress towards the Scottish Patient Safety Programme (SPSP) aim of reducing hospital mortality by a further 10% by December 2018.
 
-The end of this phase of the Scottish Patient Safety Programme provided the opportunity to review the model methodology and subsequently update and refine it, ensuring that the methodology continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. This is the first release using a refined methodology. 
+The end of this phase of the Scottish Patient Safety Programme provided the opportunity to review the model methodology and subsequently update and refine it, ensuring that the methodology continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time.
 
 The HSMR is based on all acute inpatient and day case patients admitted to all specialties in hospital. The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
 
@@ -100,12 +100,13 @@ If the number of deaths is more than predicted this does not necessarily mean th
 ```{r, echo = FALSE}
     knitr::kable(contact, col.names=NULL)
 ```
+
 **Email:** NSS.isdQualityIndicators@nhs.net
 
 ### Further Information
 
 The data from this publication is available to download from this page. 
-A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/_docs/HSMR_2016_technical_specification.pdf) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
+A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
 
 
 ### NHS Performs
