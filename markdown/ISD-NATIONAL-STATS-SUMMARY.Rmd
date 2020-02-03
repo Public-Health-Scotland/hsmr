@@ -106,7 +106,7 @@ If the number of deaths is more than predicted this does not necessarily mean th
 ### Further Information
 
 The data from this publication is available to download from this page. 
-A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/_docs/HSMR_2016_technical_specification.pdf) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
+A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
 
 
 ### NHS Performs
