@@ -410,7 +410,7 @@ ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table1-HSMR.xlsx"), 
+             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/11-february-2020/", pub_date(end_date, "current"),"/"), 
                      paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table2-Crude-Mortality-Subgroups.xlsx"), 
                      paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/", pub_date(end_date, "current"),"/", pub_date(end_date, "current"),"-Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx"), 
                      paste0("http://www.isdscotland.org/Health-Topics/Quality-Indicators/Publications/",pub_date(end_date, "current"),"/Table4.xls")), 
@@ -642,7 +642,7 @@ The Scottish HSMR is 1.00:
 If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care. Trends in HSMR are impacted by variations in case mix and coding practices over the period, as such crude mortality is used to monitor change over time.
 
 <Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
-Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](http://www.scotland.gov.uk/Topics/Health/Policy/Quality-Strategy)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
+Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
 
 **Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
