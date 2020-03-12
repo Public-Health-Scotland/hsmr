@@ -73,6 +73,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
       location == "G306H" ~ "G405H",
       location == "G516H" ~ "G405H",
       location == "Y104H" ~ "Y146H",
+      location == "R101H" ~ "R103H",
       TRUE ~ location
     )) %>%
     tidylog::group_by(period, hbtreat_currentdate, location) %>%
@@ -111,6 +112,8 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
                                   "Golden Jubilee",
                                 location == "D102H" ~
                                   "Golden Jubilee National Hospital",
+                                location == "R103H" ~
+                                  "The Balfour",
                                 TRUE ~ location_name),
       completeness_date = hsmr::submission_deadline(end_date),
       period_label = yr(end_date)) %>%

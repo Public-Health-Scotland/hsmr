@@ -5,18 +5,17 @@ The [Hospital Standardised Mortality Ratios publication](https://www.isdscotland
 ## Resources
 
 * [A Quick Guide to git & GitHub](https://nhs-nss-transforming-publications.github.io/git-guide/index.html)
-* 
 
 ## Folder Structure
 
 All the publication files and folders are stored in the following directory:
 
-[filepath]
+/.../quality_indicators/hsmr/quarter_cycle
 
 This directory should contain:
 
 * A "master" folder
-* A folder named after each analyst who has worked on the publication e.g. a folder called "David"
+* A folder named after each analyst who has worked on the publication e.g. a folder called "David", "Lucinda", "Robyn" etc.
 
 ### The "master" folder
 
@@ -30,7 +29,7 @@ These folders also contain up-to-date copies of the repository and these are the
 
 ### Files and Folders
 
-The hsmr publication process has been wrapped up inside an R package and so a number of files/folders within the repository are there to facilitate this. 
+The HSMR publication process has been wrapped up inside an R package and so a number of files/folders within the repository are there to facilitate this. 
 
 #### Folders
 * **.git:** This is the folder containing the version control history of the repository. It can be safely ignored.
@@ -45,13 +44,34 @@ The hsmr publication process has been wrapped up inside an R package and so a nu
 #### Files
 * **.gitignore:** Any files that should not be tracked by git should be added to this file. 
 * **.Rbuildignore::** This can be safely ignored. 
+* **setup_environment.R:** This is the script which gets edited each quarter to update dates and lookup files.
 * **create_smr_data.R:** This is the script which uses the package to produce the SMR data for the publication.
 * **create_trends_data.R:** This is the script which uses the package to produce the long term trends data for the publication.
 * **create_excel_tables.R:** This is the script which uses the package to produce the excel tables. 
 * **DESCRIPTION:** This is metadata for the R package. If the package is ever updated, the version number should be updated here.
+* **NAMESPACE:** Namespace file for the package. Can be safely ignored.
 
+#### Functions
+These can be located in the R/ folder. 
 
-## Running the publciation 
+* **smr_wrangling.R:** This is the initial data wrangling for the HSMR process.
+* **smr_pmorbs.R:** Creates the pmorbs and n_emerg variables.
+* **smr_model.R:** Runs the logistic regression model for HSMR.
+* **smr_data.R:** Carries out aggregation and calculates HSMR figures for all relevant hospitals.
+* **create_trends.R:** Calculates crude mortality (%). 
+* **clean_model.R:** Removes any surplus data from the logistic regression model (just to make more efficient use of memory when calculating probabilities).
+* **completeness.R:** Generates completess text for publication document. 
+* **file_sizes.R:** Generates file size text for publication document (obsolete).
+* **funnel_text.R:** Generates text for main points from the funnel plot data. 
+* **mit_available.R:** Calculates key date from publication and generates relevant text for the publication report. 
+* **nhs_performs.R:** Reformats data in order to fit the required format of the NHS Performs platform. 
+* **pub_date.R:** Calculates the publication date(s) for the HSMR publication.
+* **qtr.R:** Generates text to label quarters. 
+* **sql_ltt.R/sql_smr.R:** SQL Queries for data extract.
+* **submission_deadline.R:** Calculates date data are complete to. 
+* **yr.R:** Generates text to label 12-month period. 
+
+## Running the publication 
 
 ### Updating the code
 
@@ -70,7 +90,7 @@ The package is designed to require as little human intervention as possible. To 
 
 * In the master folder, open up `create_smr_data.R`, highlight the entire script and run
 * Check for any errors and investigate if necessary
-* Check the output in [folder] looks as it should
+* Check the output in data/output looks as it should
 * In the master folder, open up `create_trends_data.R`, highlight the entire script and run
 * As above, check for any errors and look at the output to see if it looks as it should do
 * Open `create_excel_tables.R`, highlight the entire script and run. This script pulls in Excel templates which can be found in the reference_files folder (without data). The output files are saved in the data/output folder. 

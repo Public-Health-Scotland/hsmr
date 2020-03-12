@@ -99,6 +99,7 @@ query_smr01_ltt <- function(extract_start, extract_end) {
         "ELSE 'NULL'",
         "END age_grp,",
         "to_char(admission_date,'Q') AS quarter,",
+        "to_char(admission_date,'MM') AS month,",
         "extract(year from admission_date) AS year",
         "from SMR01_PI",
         "where ADMISSION_DATE BETWEEN",
@@ -127,6 +128,7 @@ query_gro_ltt <- function(extract_start) {
 
   paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE,",
         "to_char(DATE_OF_DEATH,'Q') AS quarter,",
+        "to_char(DATE_OF_DEATH,'MM') AS month,",
         "extract(year from DATE_OF_DEATH) AS year",
         "from ANALYSIS.GRO_DEATHS_C",
         "where DATE_OF_DEATH >=",

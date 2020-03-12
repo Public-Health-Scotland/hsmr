@@ -10,7 +10,7 @@
 #' @details \code{clean_model} expects an object of class \code{glm}.
 #'
 #'
-#' @param cm Input \code{glm}.
+#' @param model Input \code{glm}.
 #'
 #'
 #' @examples
@@ -18,26 +18,23 @@
 #'
 #' @export
 
-clean_model <- function(cm) {
-  # just in case we forgot to set
-  # y=FALSE and model=FALSE
+clean_model <- function(model) {
 
-  cm$residuals <- c()
-  cm$fitted.values <- c()
-  cm$effects <- c()
-  cm$qr$qr <- c()
-  cm$linear.predictors <- c()
-  cm$weights <- c()
-  cm$prior.weights <- c()
-  cm$data <- c()
+  model$residuals <- c()
+  model$fitted.values <- c()
+  model$effects <- c()
+  model$qr$qr <- c()
+  model$linear.predictors <- c()
+  model$weights <- c()
+  model$prior.weights <- c()
+  model$data <- c()
+  model$family$variance <- c()
+  model$family$dev.resids <- c()
+  model$family$aic <- c()
+  model$family$validmu <- c()
+  model$family$simulate <- c()
+  attr(model$terms,".Environment") <- c()
+  attr(model$formula,".Environment") <- c()
 
-  cm$family$variance <- c()
-  cm$family$dev.resids <- c()
-  cm$family$aic <- c()
-  cm$family$validmu <- c()
-  cm$family$simulate <- c()
-  attr(cm$terms,".Environment") <- c()
-  attr(cm$formula,".Environment") <- c()
-
-  cm
+  model
 }

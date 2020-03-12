@@ -37,9 +37,9 @@ smr_data          <- read_csv(here("data",
       hb == "S08000023" ~ "S08000032",
       TRUE ~ hb)) %>%
   filter(location %in%
-           c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
+           c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
-             'H202H', 'L302H', 'L106H', 'L308H', 'N101H', 'N411H', 'R101H',
+             'H202H', 'L302H', 'L106H', 'L308H', 'N101H', 'N411H', 'R103H',
              'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
              'W107H', 'Y146H', 'Y144H', 'Z102H',
              "S08000015", "S08000016", "S08000017", "S08000029",
@@ -87,7 +87,12 @@ trend_data <- read_csv(here("data",
                             "output",
                             paste0(pub_date(end_date = end_date,
                                             pub = "current"),
-                                   "_trends-data-level1.csv"))) %>%
+                                   "_trends-data-level1.csv")),
+                       col_types = cols(
+                         quarter = col_double(),
+                         quarter_short = col_character(),
+                         quarter_full = col_character()
+                       )) %>%
   mutate(hb = case_when(
     hb == "S08000018" ~ "S08000029",
     hb == "S08000027" ~ "S08000030",
@@ -103,16 +108,20 @@ trend_data <- read_csv(here("data",
     TRUE ~ location
   )) %>%
   filter(location %in%
-           c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F805H', 'F704H',
+           c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F704H',
              'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
-             'H202H', 'L302H', 'L106H', 'L308H', 'N101H', 'N411H', 'R101H',
+             'H202H', 'L302H', 'L106H', 'L308H', 'N101H', 'N411H', 'R103H',
              'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
              'W107H', 'Y146H', 'Y144H', 'Z102H',
              "S08000015", "S08000016", "S08000017", "S08000029",
              "S08000019", "S08000020", "S08000031", "S08000022",
              "S08000032", "S08000024", "S08000025", "S08000026",
              "S08000030", "S08000028", "S08100001",
-             "Scot"))
+             "Scot")) %>%
+  filter(time_period == "Quarter") %>%
+  select(hb, location, location_name, agg_label, quarter, quarter_short,
+         quarter_full, sub_grp, label, scot_deaths,	scot_pats,
+         completeness_date,	deaths,	pats,	crd_rate)
 
 # Load Table 1 template
 table1 <- loadWorkbook(here("reference_files",
@@ -154,7 +163,8 @@ table3 <- loadWorkbook(here("reference_files",
 
 # Write data to data tab in Table 3
 writeData(table3, "data", trend_data %>%
-            filter(sub_grp %in% c("Discharge", "Population")), startCol = 2)
+            filter(sub_grp %in% c("Discharge", "Population")),
+          startCol = 2)
 
 # Output Table 3
 saveWorkbook(table3,
