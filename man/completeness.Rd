@@ -4,8 +4,11 @@
 \alias{completeness}
 \title{SMR01 completeness}
 \usage{
-completeness(quarter = c("previous", "current"), level = c("board",
-  "scotland"), first_day)
+completeness(
+  quarter = c("previous", "current"),
+  level = c("board", "scotland"),
+  first_day
+)
 }
 \arguments{
 \item{quarter}{A \code{character} string specifying the quarter for which

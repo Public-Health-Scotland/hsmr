@@ -193,4 +193,12 @@ saveWorkbook(nhs_performs_file,
                                   pub = "current"),
                          "_HSMR_NHSPerforms.xlsx")))
 
+# Load in Hopsital Intelligence Dashboard file
+hid_data <- hsmr_hid (smr_data, trend_data, end_date)
+
+write_csv(hid_data, here("data","output",
+                         paste0(pub_date(end_date=end_date,
+                                         pub="current"),
+                                "_QHSMR_HID.csv")))
+
 ### END OF SCRIPT ###
