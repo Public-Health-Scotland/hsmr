@@ -116,6 +116,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
                  hb == "S08100001" ~ "Golden Jubilee",
                  hb == "Scotland" ~ "Scotland"),
              scot_ratio  = 1,
+             stdev = as.character(round(st_err, digits=8)),
              Topic       = "HSMR",
              Indicator   = "SMR",
              date_label = paste("01", paste0("0", lubridate::month(end_date) - 2),
@@ -123,10 +124,10 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
              Frequency = "Quarterly") %>%
       tidylog::select(hosp_code, hb, location_name, HBName, HealthBoard,
              deaths, pred, smr, death_scot, pred_scot,
-             scot_ratio, st_err, Topic, Indicator, date_label, Frequency)%>%
+             scot_ratio, stdev, Topic, Indicator, date_label, Frequency)%>%
       dplyr::rename(hb_code=hb, Location=location_name, numerator=deaths,
              denominator=pred,ratio=smr,scot_num=death_scot,
-             scot_denom=pred_scot,stdev=st_err)
+             scot_denom=pred_scot)
 
  ### 3 - Reformat Crude data ----
  if(!all(c("hb", "location", "location_name", "agg_label", "quarter",
@@ -191,7 +192,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
               hb == "S08100001" ~ "Golden Jubilee",
               hb == "Scotland" ~ "Scotland"),
             scot_ratio  = (scot_deaths/scot_pats)*100,
-            stdev = as.numeric(""),
+            stdev = " ",
             Topic       = "HSMR",
             Indicator   = "Crude Mortality",
             date_label = dplyr::case_when(substr(quarter_short, 1, 3) == "Apr" ~
