@@ -121,10 +121,10 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
              date_label = paste("01", paste0("0", lubridate::month(end_date) - 2),
                                 lubridate::year(end_date), sep = "/"),
              Frequency = "Quarterly") %>%
-      tidylog::select(hosp_code, hb, location, HBName, HealthBoard,
+      tidylog::select(hosp_code, hb, location_name, HBName, HealthBoard,
              deaths, pred, smr, death_scot, pred_scot,
              scot_ratio, st_err, Topic, Indicator, date_label, Frequency)%>%
-      dplyr::rename(hb_code=hb, Location=location,numerator=deaths,
+      dplyr::rename(hb_code=hb, Location=location_name, numerator=deaths,
              denominator=pred,ratio=smr,scot_num=death_scot,
              scot_denom=pred_scot,stdev=st_err)
 
@@ -207,10 +207,10 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
                                      paste0("01/01/", substr(quarter_short,
                                                              9, 12))),
             Frequency = "Quarterly") %>%
-          tidylog::select(hosp_code, hb, location, HBName, HealthBoard,
+          tidylog::select(hosp_code, hb, location_name, HBName, HealthBoard,
                  deaths, pats, crd_rate, scot_deaths, scot_pats,
                  scot_ratio, stdev, Topic, Indicator, date_label, Frequency)%>%
-          dplyr::rename(hb_code=hb, Location=location,numerator=deaths,
+          dplyr::rename(hb_code=hb, Location=location_name, numerator=deaths,
                 denominator=pats,ratio=crd_rate,scot_num=scot_deaths,
                 scot_denom=scot_pats)
 
