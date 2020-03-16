@@ -118,7 +118,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
              scot_ratio  = 1,
              stdev = as.character(round(st_err, digits=8)),
              Topic       = "HSMR",
-             Indicator   = "SMR",
+             Indicator   = "HSMR",
              date_label = paste("01", paste0("0", lubridate::month(end_date) - 2),
                                 lubridate::year(end_date), sep = "/"),
              Frequency = "Quarterly") %>%
