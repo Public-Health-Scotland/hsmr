@@ -194,7 +194,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
             scot_ratio  = (scot_deaths/scot_pats)*100,
             stdev = " ",
             Topic       = "HSMR",
-            Indicator   = "Crude Mortality",
+            Indicator   = "Crude Mortality rates within 30-days",
             date_label = dplyr::case_when(substr(quarter_short, 1, 3) == "Apr" ~
                                      paste0("01/04/", substr(quarter_short,
                                                              9, 12)),
