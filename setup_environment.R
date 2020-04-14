@@ -57,22 +57,22 @@ plat_filepath <- dplyr::if_else(platform == "server",
 
 
 # The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01102016)
+start_date        <- lubridate::dmy(01012017)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01102014)
+start_date_trends <- lubridate::dmy(01012015)
 
 # The end of the baseline period (for model)
-base_end          <- lubridate::dmy(30092019)
+base_end          <- lubridate::dmy(31122019)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01102011)
+start_date_5      <- lubridate::dmy(01012012)
 
 # First day of latest quarter in current publication
-qtr_start         <- lubridate::dmy(01072019)
+qtr_start         <- lubridate::dmy(01102019)
 
 # End date for the cut off for data
-end_date          <- lubridate::dmy(30092019)
+end_date          <- lubridate::dmy(31122019)
 
 
 ### END OF SCRIPT ###

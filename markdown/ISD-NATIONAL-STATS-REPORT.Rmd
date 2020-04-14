@@ -417,10 +417,10 @@ ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d_%B_%Y"),"/")), 
+             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/")), 
              stringsAsFactors = FALSE)
 
 ```
