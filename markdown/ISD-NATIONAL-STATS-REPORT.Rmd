@@ -106,10 +106,10 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
                                 "#ffbc79", "#c85302"), 
                      labels = c("Scotland SMR", "Upper/Lower Control Limit", 
-                                "Upper/Lower Warning Limit", "Hospital"),
+                                "Upper/Lower Warning Limit", "Hospital", ""),
                      guide = guide_legend(override.aes = list(
-                       linetype = c(rep("solid", 3), "blank"),
-                       shape    = c(NA, NA, NA, 19)))) +
+                       linetype = c(rep("solid", 3), "blank", "blank"),
+                       shape    = c(NA, NA, NA, 19, NA)))) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
