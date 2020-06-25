@@ -153,7 +153,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     # Assign the appropriate SIMD value to a patient depending on the year they
     # were admitted
     tidylog::mutate(simd = dplyr::case_when(
-      year >=2017 ~ simd_2020
+      year >=2017 ~ simd_2020,
       year >= 2014 & year < 2017 ~ simd_2016,
       year > 2009 & year < 2014 ~ simd_2012,
       year <= 2009 ~ simd_2009
