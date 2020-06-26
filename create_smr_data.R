@@ -29,7 +29,7 @@ source("odbc_connect.R")
 
 # Primary Diagnosis Groupings
 pdiag_grp_data <- read_csv(here("reference_files",
-                                 "diag_grps_lookup_updated.sav")) %>%
+                                 "diag_grps_lookup_updated.csv")) %>%
   select(diag1_4, DIAGNOSIS_GROUP) %>%
   clean_names()
 
