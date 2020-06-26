@@ -28,8 +28,8 @@ source("odbc_connect.R")
 ### 3 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
-pdiag_grp_data <- read_spss(here("reference_files",
-                                 "diag_grps_lookup.sav")) %>%
+pdiag_grp_data <- read_csv(here("reference_files",
+                                 "diag_grps_lookup_updated.csv")) %>%
   select(diag1_4, DIAGNOSIS_GROUP) %>%
   clean_names()
 
@@ -49,9 +49,17 @@ morbs <- read_csv(here("reference_files", "morbs.csv")) %>%
 specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
 
 
-# Postcode lookups for SIMD 2016 and 2012
+# Postcode lookups for SIMD 2020, 2016 and 2012
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
+simd_2020 <- read_spss(paste0(plat_filepath,
+                              "lookups/Unicode/Deprivation",
+                              "/postcode_2020_1_simd2020v2.sav")) %>%
+  select(pc7, simd2020v2_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2020v2_sc_quintile) %>%
+  mutate(year = "simd_2020")
+
 simd_2016 <- read_spss(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
                               "/postcode_2019_2_simd2016.sav")) %>%
@@ -72,7 +80,7 @@ simd_2012 <- read_spss(paste0(plat_filepath,
 # Both lookups have labelled variables, and bind_rows() drops the labels
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
-simd_all <- bind_rows(simd_2016, simd_2012) %>%
+simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
   spread(year, simd)
 
 

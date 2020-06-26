@@ -27,9 +27,17 @@ source("odbc_connect.R")
 
 ### 3 - Read in lookup files ----
 
-# Postcode lookups for SIMD 2016, 2012 and 2009
+# Postcode lookups for SIMD 2020, 2016, 2012 and 2009
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
+simd_2020 <- read_spss(paste0(plat_filepath,
+                              "lookups/Unicode/Deprivation",
+                              "/postcode_2020_1_simd2020v2.sav")) %>%
+  select(pc7, simd2020v2_sc_quintile) %>%
+  rename(postcode = pc7,
+         simd = simd2020v2_sc_quintile) %>%
+  mutate(year = "simd_2020")
+
 simd_2016 <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Deprivation",
   "/postcode_2019_2_simd2016.sav")) %>%
@@ -58,7 +66,7 @@ simd_2009 <- read_spss(paste0(plat_filepath,
 # All lookups have labelled variables, and bind_rows() drops the labels
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
-simd_all <- bind_rows(simd_2016, simd_2012, simd_2009) %>%
+simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
   spread(year, simd)
 
 # Specialty Groupings lookup
@@ -88,7 +96,7 @@ hospitals <- bind_rows(read_spss(paste0(
 # Population lookups for 2017
 pop_est  <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
-  "HB2019_pop_est_1981_2018.sav")) %>%
+  "HB2019_pop_est_1981_2019.sav")) %>%
   clean_names() %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
@@ -105,7 +113,7 @@ pop_proj <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
   "HB2019_pop_proj_2018_2043.sav")) %>%
   clean_names() %>%
-  filter(year >= 2019) %>%
+  filter(year >= 2020) %>%
   group_by(year, hb2014) %>%
   summarise(pop = sum(pop)) %>%
   ungroup()

@@ -378,12 +378,13 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
     # Assign the appropriate SIMD value to a patient depending on the year they
     # were admitted
     tidylog::mutate(simd = dplyr::case_when(
-      year >= 2014 ~ simd_2016,
+      year >=2017 ~ simd_2020,
+      year >= 2014 & year < 2017 ~ simd_2016,
       year < 2014 ~ simd_2012
     )) %>%
 
     # Remove the not needed year-specific SIMD variables
-    tidylog::select(-c(simd_2012, simd_2016)) %>%
+    tidylog::select(-c(simd_2012, simd_2016, simd_2020)) %>%
     tidylog::mutate(simd = dplyr::case_when(
       is.na(simd) & postcode == "NK010AA" ~ 6,
       is.na(simd) & postcode != "NK010AA" ~ 7,
