@@ -28,8 +28,8 @@ source("odbc_connect.R")
 ### 3 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
-pdiag_grp_data <- read_spss(here("reference_files",
-                                 "diag_grps_lookup.sav")) %>%
+pdiag_grp_data <- read_csv(here("reference_files",
+                                 "diag_grps_lookup_updated.sav")) %>%
   select(diag1_4, DIAGNOSIS_GROUP) %>%
   clean_names()
 
