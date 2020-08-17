@@ -4,7 +4,7 @@ The [Hospital Standardised Mortality Ratios publication](https://www.isdscotland
 
 ## Resources
 
-* [A Quick Guide to git & GitHub](https://nhs-nss-transforming-publications.github.io/git-guide/index.html)
+* [A Quick Guide to git & GitHub](https://public-health-scotland.github.io/git-guide/index.html)
 
 ## Folder Structure
 
