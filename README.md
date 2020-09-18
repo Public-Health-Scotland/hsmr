@@ -99,7 +99,7 @@ Once this step is done, the raw data files and Excel tables for the publication 
 
 * In the master/markdown folder, open both `.Rmd` scripts and click "knit"
 * Check output
-* A couple of manual steps are required to finish off the markdown documents (adding cover page, table of contents and formatting tables correctly). They are outlined in the readme in the [National Statistics Publication Templates repository.](https://github.com/NHS-NSS-transforming-publications/National-Stats-Template)
+* A couple of manual steps are required to finish off the markdown documents (adding cover page, table of contents and formatting tables correctly). They are outlined in the readme in the [National Statistics Publication Templates repository.](https://github.com/public-health-scotland/National-Stats-Template)
 
 The raw output files (`.csv` files with the numbers) from this process also feed into the Tableau dashboard, so once they are ready, they should be moved to the appropriate folder.
 
