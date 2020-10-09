@@ -82,7 +82,8 @@ completeness <- function(quarter = c("previous", "current"),
   # as intended
   comp <- suppressMessages(
     readxl::read_xlsx(tmp, range = "B29:AF47", col_names = FALSE)) %>%
-    janitor::clean_names()
+    janitor::clean_names() %>%
+    tibble::as_tibble()
 
   # The above step parses the file with the dataset names in the first row,
   # however it only adds the dataset name to the column containing the first
@@ -90,14 +91,12 @@ completeness <- function(quarter = c("previous", "current"),
   #
   # This step replaces those NAs in the first row with the nearest non-NA value
   # to the left, which should be the name of the relevant dataset
-  comp[1,] <- t(dplyr::select(
+  comp[1,] <- tibble::as_tibble(t(dplyr::select(
     tidyr::fill(
-      tidyr::pivot_longer(
+      tidyr::gather(
         dplyr::slice(
-          comp, 1), cols = starts_with("x"),
-        names_to = "key", values_to = "value"),
-      value), 2))[1,]
-
+          comp, 1)),
+      value), 2)))[1,]
 
 
   # Set the dataset names as the column names
