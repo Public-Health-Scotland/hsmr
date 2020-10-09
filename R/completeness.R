@@ -92,21 +92,25 @@ completeness <- function(quarter = c("previous", "current"),
   # to the left, which should be the name of the relevant dataset
   comp[1,] <- t(dplyr::select(
     tidyr::fill(
-      tidyr::gather(
+      tidyr::pivot_longer(
         dplyr::slice(
-          comp, 1)),
-      value), 2))
+          comp, 1), cols = starts_with("x"),
+        names_to = "key", values_to = "value"),
+      value), 2))[1,]
+
+
 
   # Set the dataset names as the column names
   comp %<>%
     setNames(., unlist(dplyr::slice(., 1), use.names = FALSE)) %>%
-    dplyr::slice(-1) %>%
     janitor::clean_names() %>%
 
     # Subsequently select only the columns pertaining to the name of the board
     # and the SMR01 dataset
     # The regex is needed to differentiate SMR01 from SMR01 GLS
-    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]$"))
+    dplyr::select(nhs_board, smr01, dplyr::matches("^smr01_[0-9]$")) %>%
+    dplyr::slice(-1)
+
 
   # Now set the column names (with the exception of the one pertaining to the
   # name of the board) to the relevant quarter
