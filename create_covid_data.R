@@ -161,3 +161,12 @@ covid <- covid_scot %>%
   tidylog::mutate(scot_crd_rate = max(scot_crd_rate)) %>%
   ungroup()
 
+### SECTION 3 - WRITE XLSX ----
+
+write_csv(covid, here("data",
+                         "output",
+                         paste0(pub_date(end_date = end_date, pub = "current"),
+                                "_COVID-data.csv")))
+
+
+### END OF SCRIPT ###
