@@ -108,8 +108,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                      labels = c("Scotland SMR", "Upper/Lower Control Limit", 
                                 "Upper/Lower Warning Limit", "Hospital", ""),
                      guide = guide_legend(override.aes = list(
-                       linetype = c(rep("solid", 3), "blank", "blank"),
-                       shape    = c(NA, NA, NA, 19, NA)))) +
+                       linetype = c(rep("solid", 3), "blank"),
+                       shape    = c(NA, NA, NA, 19)))) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -409,6 +409,36 @@ ggsave("Chart_9.png", plot = chart_9, width = 17.49, height = 9.03,
        units = "cm", device = "png", dpi = 600)
 
 ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Funnel_Plot.svg", plot = funnel_plot, width = 17.49, 
+       height = 9.03, units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_2.png", plot = chart_2, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_3.svg", plot = chart_3, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_4.png", plot = chart_4, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_5.svg", plot = chart_5, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_6.svg", plot = chart_6, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_7.svg", plot = chart_7, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_8.svg", plot = chart_8, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_9.svg", plot = chart_9, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_10.svg", plot = chart_10, width = 17.49, height = 9.03,
        units = "cm", device = "png", dpi = 600)
 
 
