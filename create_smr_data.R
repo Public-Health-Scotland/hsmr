@@ -81,6 +81,7 @@ simd_2012 <- read_spss(paste0(plat_filepath,
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
 simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
+  mutate(simd = as.numeric(simd)) %>%
   pivot_wider(names_from = year, values_from = simd)
 
 
