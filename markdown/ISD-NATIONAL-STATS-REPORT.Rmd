@@ -152,6 +152,9 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_x_continuous(labels = comma)
 
+qtr_list <- trend_data %>% 
+  filter(label == "All Admissions" & location == "Scot") %>% 
+  select(quarter_short)
 
 chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions" 
                                         & location == "Scot"), 
@@ -171,12 +174,22 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
@@ -194,12 +207,23 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0
+                               , hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
                                           label == "Community" | label == "Dental"
@@ -226,7 +250,17 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 years" 
                                         | label == "20-39 years" 
@@ -252,7 +286,17 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | label == "Female")),
                   aes(x = forcats::fct_reorder(quarter_short,
@@ -275,7 +319,17 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
                                           (label == "1 - Most Deprived" 
@@ -302,7 +356,17 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
                                            label == "Died in Community")
@@ -330,7 +394,17 @@ chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x), 
-                     breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1))
+                     breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_9 <- ggplot(trend_data %>% filter(label == "Discharge" 
                                         & hb == "Scotland"), 
@@ -354,7 +428,17 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Discharge"
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 
 chart_10 <- ggplot(trend_data %>% filter(label == "Population" 
@@ -379,7 +463,17 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 ggsave("Funnel_Plot.png", plot = funnel_plot, width = 17.49, 
        height = 9.03, units = "cm", device = "png", dpi = 600)
