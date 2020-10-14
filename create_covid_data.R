@@ -2,13 +2,13 @@
 # Name of file - create_covid_data.R
 # Data release - Quarterly HSMR publication
 # Original Authors - Lucinda Lawrie
-# Orginal Date - October 2020
+# Original Date - October 2020
 #
 # Type - Reproducible Analytical Pipeline
 # Written/run on - RStudio server
 # Version of R - 3.5.1
 #
-# Description - Uses SMR01 exract to calculate the proportion of hospital stays
+# Description - Uses SMR01 extract to calculate the proportion of hospital stays
 # with a diagnosis of COVID-19 at HB and Scot level
 #
 # Approximate run time - xx minutes
