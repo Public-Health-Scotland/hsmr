@@ -174,7 +174,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 0, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -245,7 +245,7 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -281,7 +281,7 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -314,7 +314,7 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -351,7 +351,7 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -389,7 +389,7 @@ chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -423,7 +423,7 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Discharge"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -458,7 +458,7 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
@@ -687,7 +687,7 @@ paste0("Approximately ", completeness(first_day = qtr_start, "current", "scotlan
 format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
 format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
 "June 2010",
-"NSS.isdQualityIndicators@nhs.net",
+"phs.QualityIndicators@phs.scot",
 format(Sys.time(), "%d %B %Y"))
 
 MetaData <- data.frame(Indicator, Description)
@@ -965,7 +965,7 @@ Phone:  0131 275 7929
 
 <br>
 
-**Email:** NSS.isdQualityIndicators@nhs.net
+**Email:** phs.QualityIndicators@phs.scot
 
 ## Further Information
 Further Information can be found on the [ISD website](http://www.isdscotland.org/).  
@@ -975,7 +975,7 @@ The next release of this publication will be `r format(pub_date(end_date = end_d
 <br>
 
 ## Rate this publication
-If you wish to provide feedback on this publication to help us improve our service, please email NSS.isdQualityIndicators@nhs.net.
+If you wish to provide feedback on this publication to help us improve our service, please email phs.QualityIndicators@phs.scot.
 
 <Div custom-style = "Heading 2_pgbrk">Appendices</div>
 ### Appendix 1 – Background information
