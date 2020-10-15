@@ -101,7 +101,7 @@ If the number of deaths is more than predicted this does not necessarily mean th
     knitr::kable(contact, col.names=NULL)
 ```
 
-**Email:** NSS.isdQualityIndicators@nhs.net
+**Email:** phs.QualityIndicators@phs.scot
 
 ### Further Information
 
