@@ -25,6 +25,20 @@ source("setup_environment.R")
 source("odbc_connect.R")
 
 
+smra_connect <- suppressWarnings(
+  dbConnect(
+    odbc(),
+    dsn = "SMRA",
+    uid = .rs.askForPassword("SMRA Username:"),
+    pwd = .rs.askForPassword("SMRA Password:"),
+    port = "1527",
+    host = "nssstats01.csa.scot.nhs.uk",
+    SVC = "SMRA.nss.scot.nhs.uk"
+  ))
+
+
+
+
 ### 3 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
@@ -54,7 +68,7 @@ specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
 # them to be differentiated from one another
 simd_2020 <- read_spss(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2020_1_simd2020v2.sav")) %>%
+                              "/postcode_2020_2_simd2020v2.sav")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
