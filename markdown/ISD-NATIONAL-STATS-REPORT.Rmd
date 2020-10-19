@@ -570,8 +570,8 @@ c1 <- c(months(pub_date(end_date, "current") - months(1)),
         months(pub_date(end_date, "current") + months(1)))
 
 c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (", format(mit_available(end_date), "%d %B %Y"),")"),
-paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	ISD briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on ISD website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
-"Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by ISD on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
+"Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by PHS on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
 
 q_process <- data.frame(c1, c2)
 
@@ -675,13 +675,13 @@ paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month pe
 "This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology",
 "Contains sections on Data Source, Methodology and Development",
 "Quality improvement and assurance.",
-"Quality assured by NHS Boards (management information version of reports) and ISD",
+"Quality assured by NHS Boards (management information version of reports) and PHS",
 paste0("Approximately ", completeness(first_day = qtr_start, "current", "scotland"), " for the latest quarter."),
 "Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England. ",
-"It is the policy of ISD Scotland to make its websites and products accessible according to published guidelines.",
+"It is the policy of PHS Scotland to make its websites and products accessible according to published guidelines.",
 "Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology. ",
 "Ratio of observed over predicted deaths (HSMR); Crude Mortality (expressed as percentage of patients that die within 30-days of admission)",
-"The ISD protocol on Statistical Disclosure Protocol is followed",
+"The PHS protocol on Statistical Disclosure Protocol is followed",
 "National Statistic",
 "Assessment report published (ref no. 249). Confirmed as National Statistics April 2014",
 format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
@@ -753,7 +753,7 @@ This predicted figure is then compared with the actual observed number of deaths
 *	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
 <Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
-During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
+During 2018/19, PHS undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by PHS was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
 
 The main changes made to the HSMR methodology at this time were to:  
 
@@ -781,7 +781,7 @@ Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScot
 
 **NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
 In addition, a guide for NHS Boards –has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
-To help local users better understand their data, and to encourage a sense of ownership of the information an infrastructure has been put in place, in partnership between ISD and Healthcare Improvement Scotland, offering:  
+To help local users better understand their data, and to encourage a sense of ownership of the information an infrastructure has been put in place, in partnership between PHS and Healthcare Improvement Scotland, offering:  
 
 *	sub-group analysis; 
 *	individual audit of case-listing; 
@@ -854,7 +854,7 @@ Chart 8 shows the proportion of deaths within 30 days of admission by place of d
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png)</div>
 
 <Div custom-style = "Heading 2_pgbrk">Hospital and NHS Board Level</div>
-HSMR data are provided by ISD to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
+HSMR data are provided by PHS to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
 
 **NHS Fife**: In order to reflect current service configuration, an HSMR is not reported on separately for Queen Margaret Hospital as this site does not include any acute wards.
 
@@ -925,7 +925,7 @@ These results have also been published in an interactive dashboard format. A lin
 
 
 <Div custom-style = "Heading 2_pgbrk">Refinements to HSMR Methodology</div>
-Since the HSMR statistics were first released in 2009, ISD have periodically reviewed the model methodology to ensure that it continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
+Since the HSMR statistics were first released in 2009, PHS have periodically reviewed the model methodology to ensure that it continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
 
 
 Any improvements needed to be balanced against the overall policy strategy and purpose of the HSMR which, since 2016, was to monitor progress towards the Scottish Patient Safety Programme aim of reducing mortality by a further 10% by end December 2018.
@@ -1049,7 +1049,7 @@ A measure of uncertainty is calculated for the SHMI and the NHS Information Cent
 
 In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (control chart) methodologies. See section on Quarterly Process for more information.  
 
-As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving ISD, HIS and Scottish Government.  
+As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving PHS, HIS and Scottish Government.  
 
 One important difference between the SHMI and other publicly available measures of hospital mortality in England is the inclusion of deaths within 30 days of discharge wherever they occur, not just in the hospital. There are other differences such as the proportion of all in hospital deaths included, and factors taken into account in the statistical model.  
 
@@ -1096,9 +1096,9 @@ knitr::kable(q_process, col.names = c("**Month**", "**Process and Key Dates**"),
 HSMR is being used extensively across Scotland as one of a number of indicators of quality and safety. The credibility of the HSMR is dependent on robust data quality, particularly around the accuracy and consistency of the recording of main diagnosis.  
 
 #### Source Data
-The HSMR measure is derived from the routine returns that hospitals submit to the information Services Division for their non-obstetric and non-psychiatric inpatient and day case activity (known as the SMR01 dataset). ISD have well established mechanisms to work with providers to ensure the quality of the SMR01 records is maintained and where necessary enhanced.  
+The HSMR measure is derived from the routine returns that hospitals submit to Public Health Scotland for their non-obstetric and non-psychiatric inpatient and day case activity (known as the SMR01 dataset). PHS have well established mechanisms to work with providers to ensure the quality of the SMR01 records is maintained and where necessary enhanced.  
 
-The data is submitted to ISD on a monthly basis and are retrospectively linked together at patient-level. The hospital patient-profiles are then linked to the NRS death records on a monthly basis. During interaction with NHS Boards ISD has found that widespread use of the HSMR has drawn the focus of attention to the quality of data and clinical coding.  
+The data is submitted to PHS on a monthly basis and are retrospectively linked together at patient-level. The hospital patient-profiles are then linked to the NRS death records on a monthly basis. During interaction with NHS Boards PHS has found that widespread use of the HSMR has drawn the focus of attention to the quality of data and clinical coding.  
 
 #### Data Quality Assurance
 In August 2016, ISD published the findings of their most recent [quality assurance assessment](http://www.isdscotland.org/Products-and-Services/Data-Quality/docs/Assessment-of-SMR01-Data-2014-15-report-181019.pdf)  which was undertaken during 2014-15 to ensure that SMR01 (General / Acute Inpatient and Day Case) data items are being recorded consistently and to a high standard throughout NHS Scotland. The report shows that:  
@@ -1113,11 +1113,11 @@ Death registrations from NRS are linked to hospital admissions in Scotland on a 
 
 A new patient management system (TrakCare PMS) has been implemented in eleven NHS Boards, with the exception of NHS Dumfries & Galloway, NHS Forth Valley and NHS Western Isles.
 
-ISD continues to work with PMS Consortium Boards on national outputs to ensure they meet national definitional and processing requirements.   
+PHS continues to work with PMS Consortium Boards on national outputs to ensure they meet national definitional and processing requirements.   
 
 All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`.
 
-HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. ISD continues to work with NHS Boards to assist in the resolution of any data submission issues.  
+HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. PHS continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
 For more information about SMR completeness: http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/
 
@@ -1137,7 +1137,7 @@ knitr::kable(MetaData, col.names = c("**Metadata Indicator**", "**Description**"
 <br>
 
 **Pre-Release Access**  
-Under terms of the "Pre-Release Access to Official Statistics (Scotland) Order 2008", ISD is obliged to publish information on those receiving Pre-Release Access ("Pre-Release Access" refers to statistics in their final form prior to publication). The standard maximum Pre-Release Access is five working days. Shown below are details of those receiving standard Pre-Release Access.
+Under terms of the "Pre-Release Access to Official Statistics (Scotland) Order 2008", PHS is obliged to publish information on those receiving Pre-Release Access ("Pre-Release Access" refers to statistics in their final form prior to publication). The standard maximum Pre-Release Access is five working days. Shown below are details of those receiving standard Pre-Release Access.
 
 <br>
 
@@ -1160,13 +1160,13 @@ knitr::kable(mi_list, col.names = c("**NHS Health Board**",
 **Early Access for Quality Assurance**  
 These statistics will also have been made available to those who needed access to help quality assure the publication:
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 6 – ISD and Official Statistics</div>
+<Div custom-style = "Heading 3_pgbrk">Appendix 6 – PHS and Official Statistics</div>
 
 <br>
 
-**About ISD**  
+**About PHS**  
 Scotland has some of the best health service data in the world combining high quality, consistency, national coverage and the ability to link data to allow patient based analysis and follow up.
-Information Services Division (ISD) is a business operating unit of NHS National Services Scotland and has been in existence for over 40 years. We are an essential support service to NHSScotland and the Scottish Government and others, responsive to the needs of NHSScotland as the delivery of health and social care evolves.  
+Public Health Scotland (PHS) is a business operating unit of NHS National Services Scotland and has been in existence for over 40 years. We are an essential support service to NHSScotland and the Scottish Government and others, responsive to the needs of NHSScotland as the delivery of health and social care evolves.  
 **Purpose**: To deliver effective national and specialist intelligence services to improve the health and wellbeing of people in Scotland.  
 **Mission**: Better Information, Better Decisions, Better Health  
 **Vision**: To be a valued partner in improving health and wellbeing in Scotland by providing a world class intelligence service.  
@@ -1174,15 +1174,15 @@ Information Services Division (ISD) is a business operating unit of NHS National
 <br>
 
 **Official Statistics**  
-Information Services Division (ISD) is the principal and authoritative source of statistics on health and care services in Scotland. ISD is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within ISD. 
-ISD’s statistical publications are currently classified as one of the following:  
+Public Health Scotland (PHS) is the principal and authoritative source of statistics on health and care services in Scotland. PHS is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within PHS. 
+PHS’s statistical publications are currently classified as one of the following:  
 
 * National Statistics (ie assessed by the UK Statistics Authority as complying with the Code of Practice)
 * National Statistics (ie legacy, still to be assessed by the UK Statistics Authority)
 * Official Statistics (ie still to be assessed by the UK Statistics Authority)
 * other (not Official Statistics)  
 
-Further information on ISD’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [ISD website](http://www.isdscotland.org/About-ISD/About-Our-Statistics/). 
+Further information on PHS’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [ISD website](http://www.isdscotland.org/About-ISD/About-Our-Statistics/). 
 
 
 
