@@ -118,7 +118,7 @@ covid_extract <- smr01 %>%
   tidylog::mutate(hb_total = n()) %>%
   dplyr::ungroup() %>%
 
-  # All hospital stays - HB total
+  # All hospital stays - Hosp total
   dplyr::group_by(quarter_label, hb, hosp) %>%
   tidylog::mutate(hosp_total = n()) %>%
   dplyr::ungroup() %>%
