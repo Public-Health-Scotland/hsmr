@@ -108,8 +108,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                      labels = c("Scotland SMR", "Upper/Lower Control Limit", 
                                 "Upper/Lower Warning Limit", "Hospital", ""),
                      guide = guide_legend(override.aes = list(
-                       linetype = c(rep("solid", 3), "blank", "blank"),
-                       shape    = c(NA, NA, NA, 19, NA)))) +
+                       linetype = c(rep("solid", 3), "blank"),
+                       shape    = c(NA, NA, NA, 19)))) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -152,6 +152,9 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_x_continuous(labels = comma)
 
+qtr_list <- trend_data %>% 
+  filter(label == "All Admissions" & location == "Scot") %>% 
+  select(quarter_short)
 
 chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions" 
                                         & location == "Scot"), 
@@ -171,12 +174,22 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
@@ -194,12 +207,23 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0
+                               , hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
                                           label == "Community" | label == "Dental"
@@ -221,12 +245,22 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 years" 
                                         | label == "20-39 years" 
@@ -247,12 +281,22 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | label == "Female")),
                   aes(x = forcats::fct_reorder(quarter_short,
@@ -270,12 +314,22 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
                                           (label == "1 - Most Deprived" 
@@ -297,12 +351,22 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
                                            label == "Died in Community")
@@ -325,12 +389,22 @@ chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x), 
-                     breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1))
+                     breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 chart_9 <- ggplot(trend_data %>% filter(label == "Discharge" 
                                         & hb == "Scotland"), 
@@ -349,12 +423,22 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Discharge"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 
 chart_10 <- ggplot(trend_data %>% filter(label == "Population" 
@@ -374,12 +458,22 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
     axis.line.y = element_line(size = .1, color = "#787878"),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold"),
-    axis.text.x = element_text(size = 9, angle = 90, hjust = 0, vjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
     legend.key = element_rect(colour = NA, fill = NA)) +
   scale_y_continuous(labels = function(x) sprintf("%.1f", x),
-                     limits = c(0, NA))
+                     limits = c(0, NA)) +
+  scale_x_discrete(labels = c(sub(" ", "\n", qtr_list[1,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[5,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[9,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[13,]),
+                              "", "", "",
+                              sub(" ", "\n", qtr_list[17,]),
+                              "", "", ""))
 
 ggsave("Funnel_Plot.png", plot = funnel_plot, width = 17.49, 
        height = 9.03, units = "cm", device = "png", dpi = 600)
@@ -409,6 +503,36 @@ ggsave("Chart_9.png", plot = chart_9, width = 17.49, height = 9.03,
        units = "cm", device = "png", dpi = 600)
 
 ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Funnel_Plot.svg", plot = funnel_plot, width = 17.49, 
+       height = 9.03, units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_2.png", plot = chart_2, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_3.svg", plot = chart_3, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_4.png", plot = chart_4, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_5.svg", plot = chart_5, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_6.svg", plot = chart_6, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_7.svg", plot = chart_7, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_8.svg", plot = chart_8, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_9.svg", plot = chart_9, width = 17.49, height = 9.03, 
+       units = "cm", device = "png", dpi = 600)
+
+ggsave("Chart_10.svg", plot = chart_10, width = 17.49, height = 9.03,
        units = "cm", device = "png", dpi = 600)
 
 
@@ -563,7 +687,7 @@ paste0("Approximately ", completeness(first_day = qtr_start, "current", "scotlan
 format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
 format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
 "June 2010",
-"NSS.isdQualityIndicators@nhs.net",
+"phs.QualityIndicators@phs.scot",
 format(Sys.time(), "%d %B %Y"))
 
 MetaData <- data.frame(Indicator, Description)
@@ -841,7 +965,7 @@ Phone:  0131 275 7929
 
 <br>
 
-**Email:** NSS.isdQualityIndicators@nhs.net
+**Email:** phs.QualityIndicators@phs.scot
 
 ## Further Information
 Further Information can be found on the [ISD website](http://www.isdscotland.org/).  
@@ -851,7 +975,7 @@ The next release of this publication will be `r format(pub_date(end_date = end_d
 <br>
 
 ## Rate this publication
-If you wish to provide feedback on this publication to help us improve our service, please email NSS.isdQualityIndicators@nhs.net.
+If you wish to provide feedback on this publication to help us improve our service, please email phs.QualityIndicators@phs.scot.
 
 <Div custom-style = "Heading 2_pgbrk">Appendices</div>
 ### Appendix 1 – Background information
