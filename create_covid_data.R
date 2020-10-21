@@ -265,6 +265,28 @@ covid_m <- covid_scot_m %>%
 
 covid %<>% rbind(covid_m)
 
+# Create template so null values are 0
+# Data frame with a row for each time_period
+time_period_template <- data.frame(time_period = covid$time_period) %>%
+  distinct(.keep_all = TRUE)
+
+# Data frame with a row for each location
+location_template <- data.frame(hb_name = covid$hb_name,
+                                hosp_name = covid$hosp_name) %>%
+  distinct(.keep_all =TRUE)
+
+# Combines above in to a data frame with a row for each combination of location
+# and time_period
+covid <- merge(location_template, time_period_template) %>%
+  left_join(covid) %>%
+  replace_na(list(covid_stays=0, hosp_stays=0, crd_rate=0)) %>%
+  dplyr::group_by(time_period) %>%
+  tidylog::mutate(scot_covid_stays=max(scot_covid_stays, na.rm = TRUE),
+                  scot_hospital_stays=max(scot_hospital_stays, na.rm = TRUE),
+                  scot_crd_rate=max(scot_crd_rate, na.rm = TRUE)) %>%
+  ungroup() %>%
+  na.omit()
+
 ### SECTION 3 - WRITE XLSX ----
 
 write_csv(covid, here("data",
