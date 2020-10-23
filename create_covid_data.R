@@ -93,6 +93,7 @@ covid_extract <- smr01 %>%
   tidylog::mutate(quarter_label =
                     phsmethods::qtr(lubridate::as_date(admission_date),
                                     format = "short")) %>%
+  tidylog::filter(cisdoa >= dmy(01032020))%>%
 
   # Recode DGRI and Balfour
   tidylog::mutate(location = case_when(location == "R101H" ~ "R103H",
@@ -109,17 +110,17 @@ covid_extract <- smr01 %>%
   rename(hb = location, hb_name = location_name) %>%
 
   # All hospital stays - Scotland total
-  dplyr::group_by(quarter_label) %>%
+  dplyr::group_by(month_label) %>%
   tidylog::mutate(scot_total = n()) %>%
   dplyr::ungroup() %>%
 
   # All hospital stays - HB total
-  dplyr::group_by(quarter_label, hb) %>%
+  dplyr::group_by(month_label, hb) %>%
   tidylog::mutate(hb_total = n()) %>%
   dplyr::ungroup() %>%
 
   # All hospital stays - Hosp total
-  dplyr::group_by(quarter_label, hb, hosp) %>%
+  dplyr::group_by(month_label, hb, hosp) %>%
   tidylog::mutate(hosp_total = n()) %>%
   dplyr::ungroup() %>%
 
@@ -135,73 +136,7 @@ covid_extract <- smr01 %>%
   dplyr::ungroup() %>%
   tidylog::filter(index_event == 1)
 
-### 3 - Quarterly ----
-
-### Create Scotland-level aggregation ----
-
-covid_scot <- covid_extract %>%
-  tidylog::group_by(quarter,  quarter_label) %>%
-  tidylog::summarise(scot_covid_stays = sum(covid),
-                     scot_hospital_stays = max(scot_total)) %>%
-  tidylog::mutate(covid_stays = scot_covid_stays,
-                  hosp_stays = scot_hospital_stays,
-                  scot_crd_rate = (covid_stays/hosp_stays) * 100,
-                  crd_rate = scot_crd_rate,
-                  hb_name = "Scotland",
-                  hosp_name = "Scotland",
-                  hb_code_9 = "Scot") %>%
-  dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
-  dplyr::arrange(quarter)
-
-### Create HB-level aggregation ----
-
-covid_hb <- covid_extract %>%
-  tidylog::group_by(quarter, quarter_label, hb_name, hb) %>%
-  tidylog::summarise(covid_stays = sum(covid),
-                     hosp_stays = max(hb_total)) %>%
-  tidylog::mutate(scot_covid_stays = 0,
-                  scot_hospital_stays = 0,
-                  scot_crd_rate = 0,
-                  crd_rate = (covid_stays/hosp_stays) * 100,
-                  hosp_name = hb_name,
-                  hb_code_9 = hb) %>%
-  dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
-  dplyr::arrange(quarter)
-
-### Create hosp-level aggregation ----
-
-covid_hosp<- covid_extract %>%
-  tidylog::group_by(quarter, quarter_label, hb_name, hb, hosp_name) %>%
-  tidylog::summarise(covid_stays = sum(covid),
-                     hosp_stays = max(hosp_total)) %>%
-  tidylog::mutate(scot_covid_stays = 0,
-                  scot_hospital_stays = 0,
-                  scot_crd_rate = 0,
-                  crd_rate = (covid_stays/hosp_stays) * 100,
-                  hb_code_9 = hb) %>%
-  dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
-  dplyr::arrange(quarter)
-
-### Combine Scot and HB data ----
-
-covid <- covid_scot %>%
-  rbind(covid_hb) %>%
-  rbind(covid_hosp) %>%
-  dplyr::group_by(quarter) %>%
-  tidylog::mutate(scot_crd_rate = max(scot_crd_rate),
-                  scot_hospital_stays = max(scot_hospital_stays),
-                  scot_covid_stays = max(scot_covid_stays)) %>%
-  ungroup() %>%
-  tidylog::select(-quarter) %>%
-  tidylog::rename(time_period = quarter_label)
-
-### 4 - Monthly ----
+### 3 - Monthly ----
 
 ### Create Scotland-level aggregation ----
 
@@ -256,7 +191,7 @@ covid_hosp_m <- covid_extract %>%
 
 ### Combine Scot and HB data ----
 
-covid_m <- covid_scot_m %>%
+covid <- covid_scot_m %>%
   rbind(covid_hb_m) %>%
   rbind(covid_hosp_m) %>%
   dplyr::group_by(month) %>%
@@ -267,9 +202,7 @@ covid_m <- covid_scot_m %>%
   tidylog::select(-month) %>%
   tidylog::rename(time_period = month_label)
 
-### 5 - Combine Quarterly and Monthly ----
-
-covid %<>% rbind(covid_m)
+### 4 - Combine with Location Template ----
 
 # Create template so null values are 0
 # Data frame with a row for each time_period
