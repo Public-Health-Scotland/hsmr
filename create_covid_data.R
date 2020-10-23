@@ -148,41 +148,44 @@ covid_scot <- covid_extract %>%
                   scot_crd_rate = (covid_stays/hosp_stays) * 100,
                   crd_rate = scot_crd_rate,
                   hb_name = "Scotland",
-                  hosp_name = "Scotland") %>%
+                  hosp_name = "Scotland",
+                  hb_code_9 = "Scot") %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(quarter)
 
 ### Create HB-level aggregation ----
 
 covid_hb <- covid_extract %>%
-  tidylog::group_by(quarter, quarter_label, hb_name) %>%
+  tidylog::group_by(quarter, quarter_label, hb_name, hb) %>%
   tidylog::summarise(covid_stays = sum(covid),
                      hosp_stays = max(hb_total)) %>%
   tidylog::mutate(scot_covid_stays = 0,
                   scot_hospital_stays = 0,
                   scot_crd_rate = 0,
                   crd_rate = (covid_stays/hosp_stays) * 100,
-                  hosp_name = hb_name) %>%
+                  hosp_name = hb_name,
+                  hb_code_9 = hb) %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(quarter)
 
 ### Create hosp-level aggregation ----
 
 covid_hosp<- covid_extract %>%
-  tidylog::group_by(quarter, quarter_label, hb_name, hosp_name) %>%
+  tidylog::group_by(quarter, quarter_label, hb_name, hb, hosp_name) %>%
   tidylog::summarise(covid_stays = sum(covid),
                      hosp_stays = max(hosp_total)) %>%
   tidylog::mutate(scot_covid_stays = 0,
                   scot_hospital_stays = 0,
                   scot_crd_rate = 0,
-                  crd_rate = (covid_stays/hosp_stays) * 100) %>%
+                  crd_rate = (covid_stays/hosp_stays) * 100,
+                  hb_code_9 = hb) %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, quarter, quarter_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(quarter)
 
 ### Combine Scot and HB data ----
@@ -211,41 +214,44 @@ covid_scot_m <- covid_extract %>%
                   scot_crd_rate = (covid_stays/hosp_stays) * 100,
                   crd_rate = scot_crd_rate,
                   hb_name = "Scotland",
-                  hosp_name = "Scotland") %>%
+                  hosp_name = "Scotland",
+                  hb_code_9 = "Scot") %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
 ### Create HB-level aggregation ----
 
 covid_hb_m <- covid_extract %>%
-  tidylog::group_by(month, month_label, hb_name) %>%
+  tidylog::group_by(month, month_label, hb_name, hb) %>%
   tidylog::summarise(covid_stays = sum(covid),
                      hosp_stays = max(hb_total)) %>%
   tidylog::mutate(scot_covid_stays = 0,
                   scot_hospital_stays = 0,
                   scot_crd_rate = 0,
                   crd_rate = (covid_stays/hosp_stays) * 100,
-                  hosp_name = hb_name) %>%
+                  hosp_name = hb_name,
+                  hb_code_9 = hb) %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
 ### Create hosp-level aggregation ----
 
 covid_hosp_m <- covid_extract %>%
-  tidylog::group_by(month, month_label, hb_name, hosp_name) %>%
+  tidylog::group_by(month, month_label, hb_name, hb, hosp_name) %>%
   tidylog::summarise(covid_stays = sum(covid),
                      hosp_stays = max(hosp_total)) %>%
   tidylog::mutate(scot_covid_stays = 0,
                   scot_hospital_stays = 0,
                   scot_crd_rate = 0,
-                  crd_rate = (covid_stays/hosp_stays) * 100) %>%
+                  crd_rate = (covid_stays/hosp_stays) * 100,
+                  hb_code_9 = hb) %>%
   dplyr::ungroup() %>%
   tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
-                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate) %>%
+                  crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
 ### Combine Scot and HB data ----
@@ -272,6 +278,7 @@ time_period_template <- data.frame(time_period = covid$time_period) %>%
 
 # Data frame with a row for each location
 location_template <- data.frame(hb_name = covid$hb_name,
+                                hb_code_9 = covid$hb_code_9,
                                 hosp_name = covid$hosp_name) %>%
   distinct(.keep_all =TRUE)
 
