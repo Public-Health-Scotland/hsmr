@@ -8,8 +8,8 @@ odbc_connect.R
 data/
 
 # Markdown output
-ISD-NATIONAL-STATS-REPORT.docx
-ISD-NATIONAL-STATS-SUMMARY.docx
+*.docx
+*.doc
 
 # Images
 *.png
