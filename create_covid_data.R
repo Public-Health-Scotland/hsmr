@@ -95,13 +95,24 @@ covid_extract <- smr01 %>%
                                     format = "short")) %>%
   tidylog::filter(cisdoa >= dmy(01032020))%>%
 
-  # Recode DGRI and Balfour
-  tidylog::mutate(location = case_when(location == "R101H" ~ "R103H",
+  # Recode hospitals for new codes and combinations
+  tidylog::mutate(location = case_when(location == "C206H" ~ "C418H",
+                                       location == "G207H" ~ "G107H",
+                                       location == "G306H" ~ "G405H",
+                                       location == "G516H" ~ "G405H",
                                        location == "Y104H" ~ "Y146H",
+                                       location == "R101H" ~ "R103H",
                                        TRUE ~ as.character(location))) %>%
 
   # Match on hospital names
   tidylog::left_join(hospitals, by = "location") %>%
+  tidylog::mutate(location_name = case_when(location == "C418H" ~
+                                              "Royal Alexandra/Vale of Leven",
+                                            location == "D102H" ~
+                                              "Golden Jubilee National Hospital",
+                                            location == "R103H" ~
+                                              "The Balfour",
+                                            TRUE ~ location_name)) %>%
   rename(hosp = location, hosp_name = location_name,
          location = hbtreat_currentdate) %>%
 
