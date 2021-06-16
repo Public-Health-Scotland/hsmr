@@ -20,12 +20,7 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
-
-### 2 - Define the database connection with SMRA ----
-source("odbc_connect.R")
-
-
-### 3 - Read in lookup files ----
+### 2 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
 pdiag_grp_data <- read_csv(here("reference_files",
@@ -60,6 +55,8 @@ simd_2020 <- read_spss(paste0(plat_filepath,
          simd = simd2020v2_sc_quintile) %>%
   mutate(year = "simd_2020")
 
+simd_2020[] <- lapply(simd_2020, c) #drop attributes to allow binding
+
 simd_2016 <- read_spss(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
                               "/postcode_2019_2_simd2016.sav")) %>%
@@ -68,22 +65,26 @@ simd_2016 <- read_spss(paste0(plat_filepath,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
 
+simd_2016[] <- lapply(simd_2016, c) #drop attributes to allow binding
+
 simd_2012 <- read_spss(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation/",
                               "postcode_2016_1_simd2012.sav")) %>%
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2012_sc_quintile) %>%
-  mutate(year = "simd_2012")
+  mutate(year = "simd_2012") 
+
+simd_2012[] <- lapply(simd_2012, c) #drop attributes to allow binding
 
 # Combine postcode lookups into a single dataset
 # Both lookups have labelled variables, and bind_rows() drops the labels
 # This produces a warning message that vectorising labelled elements may not
 # preserve their attributes, which can be ignored
 simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
-  mutate(simd = as.numeric(simd)) %>%
   pivot_wider(names_from = year, values_from = simd)
 
+rm(simd_2020, simd_2016, simd_2012) # saving a bit of space
 
 # Hospital names
 hospitals <- bind_rows(read_spss(paste0(

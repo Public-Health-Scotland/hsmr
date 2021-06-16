@@ -1,0 +1,130 @@
+---
+output: 
+  word_document:
+    reference_docx: "phs-national-stats-summary.dotx"
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
+
+# Load environment file
+source(here::here("setup_environment.R"))
+
+# Read in SMR data, filtered on latest period/reported hospitals
+smr_data          <- read_csv(here("data",
+                                   "output",
+                          paste0(pub_date(end_date = end_date, pub = "current"),
+                                 "_SMR-data.csv"))) %>% 
+  filter(period == 3 & 
+           location %in% 
+           c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H", 
+             "H212H", "B120H", "H103H", "N411H", "Y146H", "V217H", "Y144H",
+             "Z102H", "G107H", "D102H", "C313H", "C121H", "G306H", "T101H",
+             "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
+             "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
+             "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
+  mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
+       z = if_else(location_type == "hospital",
+                   round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
+                   0)) %>%
+  mutate(
+    z_max = max(z),
+    z_min = min(z),
+    z_flag = case_when(z == z_max ~ 1,
+                       z == z_min ~ -1,
+                       TRUE ~ 0),
+    z = if_else(z == z_max | z == z_min, 0, z),
+    z_max = max(z),
+    z_min = min(z),
+    z = case_when(z_flag == 1 ~ z_max,
+                  z_flag == -1 ~ z_min,
+                  TRUE ~ z),
+    z_flag = if_else(z != 0, 1, 0),
+    w_score = round_half_up(sqrt(sum(round_half_up(z * z, 8))/sum(z_flag)),8)) %>%
+  # Calculate funnel limits for funnel plot
+  mutate(uwl = 1 + 1.96 * round_half_up(st_err * w_score,8),
+         ucl = 1 + 3.09 * round_half_up(st_err * w_score,8),
+         lwl = 1 - 1.96 * round_half_up(st_err * w_score,8),
+         lcl = 1 - 3.09 * round_half_up(st_err * w_score,8)) %>%  
+  
+  # Create flag for where hospital sits on funnel plot
+  mutate(flag = case_when(smr > ucl ~ "2",
+                          smr > uwl & smr <= ucl ~ "1",
+                          TRUE ~ "0"))
+
+#Create contact information
+contact_names <- c("**Jaime Villacampa Ortega**", "**Lucinda Lawrie**", "**Catherine Perkins**")
+contact_details_1 <- c("Principal Information Analyst", "0141 282 2052")
+contact_details_2 <- c("Senior Information Analyst", "0131 275 7929")
+contact_details_3 <- c("Senior Information Analyst", "0131 275 7710")
+
+contact <- data.frame(contact_details_1, contact_details_2, contact_details_3)
+```
+
+<Div custom-style = "Publication Title"> 
+# Hospital Standardised Mortality Ratios
+</div>
+<Div custom-style = "Publication subtitle"> 
+## `r yr(end_date)`
+</div>
+<Div custom-style = "National stats"> 
+#### A National Statistics publication for Scotland
+
+#### Publication date: `r format(pub_date(end_date, "current"), "%d %B %Y")`
+</div>
+<Div custom-style = "RestrictedStats"> 
+##### RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_date(end_date, "current"), "%d/%m/%Y")`
+</div>
+
+## About this release
+
+This release by Public Health Scotland (PHS) provides information on Hospital Standardised Mortality Ratios (HSMRs) for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12-month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter and month to show trends.
+
+## Main Points
+
+`r funnel_text(smr_data, "above")[1]`
+`r funnel_text(smr_data, "below")[1]`
+
+<Div custom-style = "Chart Title">
+
+**HSMR for deaths within 30-days of admission; `r yr(end_date)`**
+</div>
+<Div custom-style = "centre_justify">
+![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png) \
+</div>
+
+## Background
+
+Hospital mortality measures have an important role to play in stimulating reflection on the quality and safety of patient care. PHS has produced quarterly HSMRs for hospitals since December 2009.
+
+The HSMR is based on all acute inpatient and day case patients admitted to all specialties in hospital (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
+
+(apart from obstetrics and psychiatry which are excluded)
+The Scottish HSMR is 1.00. If an HSMR value for a hospital is less than one, this means the number of deaths within 30 days of admission for this hospital is fewer than predicted. If an HSMR value for a hospital is greater than one, this means the number of deaths within 30 days for this hospital is more than predicted.
+
+If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care.
+
+The methodology has been updated to ensure the diagnosis ICD-10 codes for COVID19,
+U07.1 and U07.2, are included in the model. For more information please refer to
+the [HSMR COVID-19 Methodology Update paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
+
+During the pandemic hospitals have had to adjust their normal ways of working to react to this
+healthcare emergency. As a result, there will be changes in the volumes of activity
+in some of the groups used to calculate the HSMRs, for example
+less elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
+
+
+## Contact
+
+```{r, echo = FALSE}
+    knitr::kable(contact, col.names = contact_names)
+```
+
+**Email:** <phs.QualityIndicators@phs.scot> 
+
+For all media enquiries please email <phs.comms@phs.scot> or call 07500 854 574.
+
+## Further Information
+
+The data from this publication is available to download from [this page](https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/). A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
+
+

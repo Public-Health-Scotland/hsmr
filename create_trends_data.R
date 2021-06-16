@@ -11,7 +11,7 @@
 # Description - Extracts SMR01 & deaths data and carries out required
 # manipulations to create minimal tidy dataset for long term trends for HSMR
 #
-# Approximate run time - xx minutes
+# Approximate run time - 60 minutes
 #########################################################################
 
 
@@ -20,12 +20,7 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
-
-### 2 - Define the database connection with SMRA ----
-source("odbc_connect.R")
-
-
-### 3 - Read in lookup files ----
+### 2 - Read in lookup files ----
 
 # Postcode lookups for SIMD 2020, 2016, 2012 and 2009
 # These files will be combined, so create a year variable in each one, to allow
@@ -38,6 +33,8 @@ simd_2020 <- read_spss(paste0(plat_filepath,
          simd = simd2020v2_sc_quintile) %>%
   mutate(year = "simd_2020")
 
+simd_2020[] <- lapply(simd_2020, c) #drop attributes to allow binding
+
 simd_2016 <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Deprivation",
   "/postcode_2019_2_simd2016.sav")) %>%
@@ -45,6 +42,8 @@ simd_2016 <- read_spss(paste0(plat_filepath,
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
+
+simd_2016[] <- lapply(simd_2016, c) #drop attributes to allow binding
 
 simd_2012 <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Deprivation/",
@@ -54,6 +53,8 @@ simd_2012 <- read_spss(paste0(plat_filepath,
          simd = simd2012_sc_quintile) %>%
   mutate(year = "simd_2012")
 
+simd_2012[] <- lapply(simd_2012, c) #drop attributes to allow binding
+
 simd_2009 <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Deprivation/",
   "postcode_2012_2_simd2009v2.sav")) %>%
@@ -61,6 +62,8 @@ simd_2009 <- read_spss(paste0(plat_filepath,
   rename(postcode = PC7,
          simd = simd2009v2_sc_quintile) %>%
   mutate(year = "simd_2009")
+
+simd_2009[] <- lapply(simd_2009, c) #drop attributes to allow binding
 
 # Combine postcode lookups into a single dataset
 # All lookups have labelled variables, and bind_rows() drops the labels
@@ -102,22 +105,21 @@ pop_est  <- read_spss(paste0(plat_filepath,
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
   ungroup() %>%
-  mutate(hb2019 = as.character(hb2019),
-         hb2019 = case_when(hb2019 == "S08000029" ~ "S08000018",
-                            hb2019 == "S08000030" ~ "S08000027",
-                            hb2019 == "S08000031" ~ "S08000021",
-                            hb2019 == "S08000032" ~ "S08000023",
-                            TRUE ~ hb2019)) %>%
+  mutate(hb2019 = as.character(hb2019) ) %>%
   rename(hb2014 = hb2019)
+
+pop_est[] <- lapply(pop_est, c) #drop attributes to allow binding
 
 pop_proj <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
   "HB2019_pop_proj_2018_2043.sav")) %>%
   clean_names() %>%
   filter(year >= 2020) %>%
-  group_by(year, hb2014) %>%
+  group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
-  ungroup()
+  ungroup() %>%  rename(hb2014 =hb2019)
+
+pop_proj[] <- lapply(pop_proj, c) #drop attributes to allow binding
 
 # Combine population lookups into one lookup
 # Both lookups have labelled variables, and bind_rows() drops the labels

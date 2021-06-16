@@ -57,22 +57,36 @@ plat_filepath <- dplyr::if_else(platform == "server",
 
 
 # The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01072017)
+start_date        <- lubridate::dmy(01012018)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01072015)
+start_date_trends <- lubridate::dmy(01012016)
 
 # The end of the baseline period (for model)
-base_end          <- lubridate::dmy(30062020)
+base_end          <- lubridate::dmy(31122020)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01072012)
+start_date_5      <- lubridate::dmy(01012013)
 
 # First day of latest quarter in current publication
-qtr_start         <- lubridate::dmy(01042020)
+qtr_start         <- lubridate::dmy(01102020)
 
 # End date for the cut off for data
-end_date          <- lubridate::dmy(30062020)
+end_date          <- lubridate::dmy(31122020)
+
+## 4 - Create data folder structure ----
+#  If the folder doesn't exist creates it and subfolders too
+if (dir.exists(here("data")) == FALSE) {
+  dir.create(here("data"))
+  dir.create(here("data/base_files"))
+  dir.create(here("data/output"))
+  
+}
+
+### 5 - Define the database connection with SMRA ----
+smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
+                                            uid=.rs.askForPassword("SMRA Username:"), 
+                                            pwd=.rs.askForPassword("SMRA Password:")))
 
 
 ### END OF SCRIPT ###

@@ -1,7 +1,7 @@
 ---
 output: 
   word_document:
-    reference_docx: "NATIONAL_STATS_REPORT_TEMPLATE.docx"
+    reference_docx: "phs-national-stats-report.dotx"
 ---
 
 ```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
@@ -570,25 +570,11 @@ c1 <- c(months(pub_date(end_date, "current") - months(1)),
         months(pub_date(end_date, "current") + months(1)))
 
 c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (", format(mit_available(end_date), "%d %B %Y"),")"),
-paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	ISD briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on ISD website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
-"Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery (date tbc); Scottish Government and HIS briefed by ISD on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting (date tbc)")
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
+"Hospital Scorecard (containing HSMR and suite of additional indicators) released to Scottish Government’s Directorate for Health Performance and Delivery; Scottish Government and HIS briefed by PHS on analytical data issues and interpretation of the scorecard; Scorecard presented to Scottish Government Health & Social Care Management Meeting.")
 
 q_process <- data.frame(c1, c2)
 
-```
-
-
-```{r glossary, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
-glossary1 <- c("HSMR", "NRS", "SHMI", "SIMD", "SMR", "SMR(01)", "SPSP")
-glossary2 <- c("Hospital Standardised Mortality Ratio",
-               "National Records for Scotland (formerly General Register Office for Scotland)",
-               "The Summary Hospital-level Mortality Indicator (SHMI) is an indicator which reports on mortality at trust level across the NHS in England. It is produced and published quarterly as an official statistic by the Health and Social Care Information Centre (HSCIC).",
-               "Deprivation for individuals is estimated from aggregate data derived from the census and other routine sources. These are used to estimate the deprivation of small geographical areas. The Scottish Index of Multiple Deprivation (SIMD) has seven domains (income, employment, education, housing, health, crime, and geographical access, which have been combined into an overall index to pick out area concentrations of multiple deprivation.",
-               "Scottish Morbidity Record", 
-               "SMR containing non-obstetric and non-psychiatric inpatient and daycase activity.",
-               "The Scottish Patient Safety Programme (SPSP) is a national programme that aims to improve the safety and reliability of healthcare and reduce harm, whenever care is delivered. The SPSP is led by Healthcare Improvement Scotland.")
-
-glossary <- data.frame(glossary1, glossary2)
 ```
 
 ```{r mi_list, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
@@ -675,13 +661,14 @@ paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month pe
 "This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology",
 "Contains sections on Data Source, Methodology and Development",
 "Quality improvement and assurance.",
-"Quality assured by NHS Boards (management information version of reports) and ISD",
-paste0("Approximately ", completeness(first_day = qtr_start, "current", "scotland"), " for the latest quarter."),
+"Quality assured by NHS Boards (management information version of reports) and PHS",
+paste0("Approximately ", completeness(first_day=qtr_start, "current", "scotland"),
+       " for the latest quarter."),
 "Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England. ",
-"It is the policy of ISD Scotland to make its websites and products accessible according to published guidelines.",
+"It is the policy of PHS to make its websites and products accessible according to published guidelines.",
 "Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology. ",
 "Ratio of observed over predicted deaths (HSMR); Crude Mortality (expressed as percentage of patients that die within 30-days of admission)",
-"The ISD protocol on Statistical Disclosure Protocol is followed",
+"The PHS protocol on Statistical Disclosure Protocol is followed",
 "National Statistic",
 "Assessment report published (ref no. 249). Confirmed as National Statistics April 2014",
 format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
@@ -693,11 +680,12 @@ format(Sys.time(), "%d %B %Y"))
 MetaData <- data.frame(Indicator, Description)
 ```
 
-###### This is a National Statistics Publication
-
+<Div custom-style = "Publication subtitle">
+This is a National Statistics Publication
+</div>
+<Div custom-style = "National stats">
 ![National Statistics Quality Mark](kitemark_tcm97-17949.jpg) \
-
-<br>
+</div>
 
 National Statistics status means that the official statistics meet the highest standards of trustworthiness, quality and public value. They are identified by the quality mark shown above.
 They comply with the Code of Practice for statistics and are awarded National Statistics status following an assessment by the UK Statistics Authority’s regulatory arm. The Authority considers whether the statistics meet the highest standards of Code compliance, including the value they add to public decisions and debate.
@@ -705,17 +693,23 @@ They comply with the Code of Practice for statistics and are awarded National St
 <br>
 
 Find out more about the Code of Practice at:   
-https://www.statisticsauthority.gov.uk/osr/code-of-practice/
+https://code.statisticsauthority.gov.uk/
 
 <br>
 
 Find out more about National Statistics at:  
-https://www.statisticsauthority.gov.uk/national-statistician/types-of-official-statistics/ 
+https://uksa.statisticsauthority.gov.uk/about-the-authority/what-we-do/uk-statistical-system/types-of-official-statistics/
 
-<Div custom-style = "Heading 2_pgbrk">Introduction</div>
-This report by Information Services Division presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period.  It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
+<br>
 
-Information Services Division has produced quarterly Hospital Standardised Mortality Ratios for all Scottish hospitals participating in the Scottish Patient Safety Programme since December 2009. 
+Other formats of this publication are available on request at:
+0131 314 5300
+phs.otherformats@phs.scot
+
+<Div custom-style = "Heading 1">Introduction</div>
+This report by Public Health Scotland (PHS) presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period. It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
+
+PHS (formerly Information Services Division) has produced quarterly Hospital Standardised Mortality Ratios for all Scottish hospitals participating in the Scottish Patient Safety Programme since December 2009. 
 
 The HSMR methodology used up until May 2019 was agreed in 2015/16. The purpose of the HSMR at that time was to measure change in mortality over time, and to enable acute hospitals to monitor their progress towards the Scottish Patient Safety Programme (SPSP) aim of reducing hospital mortality by a further 10% by December 2018. 
 
@@ -725,14 +719,31 @@ The end of this phase of the Scottish Patient Safety Programme provided the oppo
 
 These latest statistics reflect completeness of validated hospital SMR01 returns as at `r format(submission_deadline(end_date), "%d %B %Y")`. This information has previously been released to NHS Boards as management information.
 
-<Div custom-style = "Heading 2_pgbrk">Hospital Standardised Mortality Ratios</div>
+
+<Div custom-style = "Heading 1">COVID-19</div>
+Since the start of the COVID-19 outbreak, Public Health Scotland (PHS) has been working closely with
+the Scottish Government and health and care colleagues to support the surveillance and
+monitoring of COVID-19 amongst the population. There is a large amount of data being
+regularly published regarding COVID-19 (for example, [PHS weekly reports, including wider impacts analysis](https://www.publichealthscotland.scot/our-areas-of-work/covid-19/covid-19-data-and-intelligence/); [Coronavirus in Scotland – Scottish Government](https://www.gov.scot/coronavirus-covid-19/) and [Deaths involving coronavirus in Scotland – National Records of Scotland](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-and-monthly-data-on-births-and-deaths/deaths-involving-coronavirus-covid-19-in-scotland).
+
+The methodology has been updated to ensure the diagnosis ICD-10 codes for
+COVID-19, U07.1 and U07.2 are included in the model. For more
+information please refer to the [HSMR COVID-19 Methodology Update paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
+
+During the pandemic hospitals have had to adjust their normal ways of working to react to
+this healthcare emergency. As a result, there will be changes in the volumes
+of activity in some of the groups used to calculate the HSMRs, for example less elective admissions.  Any changes in crude mortality
+trends HSMRs should be considered in this context.
+
+
+<Div custom-style = "Heading 1">Hospital Standardised Mortality Ratios</div>
 Hospital Standardised Mortality Ratios (HSMRs) adjust death data (referred to in this report as mortality data) to take account of some of the factors known to affect the underlying risk of death. 
 
 The calculation uses information from acute inpatient and day case patients admitted to all medical and surgical specialties in NHSScotland (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from hospital admission. This means that the HSMR also includes deaths that occur outside hospital.
 
-These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12 month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter to show trends. A link to the relevant Excel data table has also been provided alongside each chart.
+These statistics are updated every three months and reflect the HSMR for the latest 12 month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter to show trends. A link to the relevant Excel data table has also been provided alongside each chart.
 
-<Div custom-style = "Heading 3_pgbrk">How is HSMR calculated?</div>
+<Div custom-style = "Heading 2 no pgbrk">How is HSMR calculated?</div>
 For a standard population (Scotland) during a three year baseline period, the risk of dying for particular patient subgroups (e.g. age, sex, diagnosis, type of admission, number and severity of illness etc.) is calculated.
 
 This risk is then applied to the corresponding subgroups in different hospitals to calculate how many deaths would be predicted to occur in that hospital if the standard level of risk was applied.
@@ -742,18 +753,18 @@ This predicted figure is then compared with the actual observed number of deaths
 <Div custom-style = "centre_justify">**HSMR = Observed Deaths / Predicted Deaths**</div>
 
 
-<Div custom-style = "Heading 2_pgbrk">Main Points</div>
+<Div custom-style = "Heading 1">Main points</div>
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3%.
-*	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission. 
+* Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3% until April to June 2020, Reflecting the impact of the first wave of the COVID-19 epidemic in Scotland.
+*	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Almost three quarters of deaths within 30-days of admission take place in hospital with the other quarter of deaths in community.
 *	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
-<Div custom-style = "Heading 2_pgbrk">Comparing HSMR with Previous Years</div>
-During 2018/19, ISD undertook a review of the methodology used to calculate HSMR. A [Review Paper](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/_docs/HSMR-Model-Review-Discussion-Paper.pdf) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by ISD was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
+<Div custom-style = "Heading 1">Comparing HSMR with previous years</div>
+During 2018/19, PHS (formerly Information Services Division) undertook a review of the methodology used to calculate HSMR. A [review paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by PHS was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
 
 The main changes made to the HSMR methodology at this time were to:  
 
@@ -763,7 +774,7 @@ The main changes made to the HSMR methodology at this time were to:
 
 A **[Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology)** is available on how the HSMR is currently calculated and describes the methodology used in more detail. **[Interpretation Guidance and Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/)** documents are also available, answering questions on the differences between the previous and current methodologies.
 
-<Div custom-style = "Heading 2_pgbrk">Interpreting HSMR results</div>
+<Div custom-style = "Heading 1">Interpreting HSMR results</div>
 ### Point in time comparison
 The Scottish HSMR is 1.00:  
 
@@ -772,89 +783,96 @@ The Scottish HSMR is 1.00:
 
 If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care. Trends in HSMR are impacted by variations in case mix and coding practices over the period, as such crude mortality is used to monitor change over time.
 
-<Div custom-style = "Heading 2_pgbrk">How HSMR information is used</div>
+<Div custom-style = "Heading 1">How HSMR information is used</div>
 Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)** and a lower HSMR should reflect work in individual hospitals to review mortality, and reflect reduction in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives. 
 
-**Health Improvement Scotland** reviews the data, alongside other indicators, with the Information Services Division to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
+**Healthcare Improvement Scotland** reviews the data, alongside other indicators, with Public Health Scotland to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
 **The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
 **NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
 In addition, a guide for NHS Boards –has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
-To help local users better understand their data, and to encourage a sense of ownership of the information an infrastructure has been put in place, in partnership between ISD and Healthcare Improvement Scotland, offering:  
+To help local users better understand their data, and to encourage a sense of ownership of the information an infrastructure has been put in place, in partnership between PHS and Healthcare Improvement Scotland, offering:  
 
 *	sub-group analysis; 
 *	individual audit of case-listing; 
 *	our assistance in interpretation of the national statistics and local intelligence. 
 
 
+<Div custom-style = "Heading 1">1 Results and Commentary</div>
+<Div custom-style = "Heading 2 no pgbrk">Point in Time Comparisons</div>
 
-<Div custom-style = "Heading 2_pgbrk">1 Results and Commentary</div>
-### Point in Time Comparisons
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
 Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
 
-<Div custom-style = "Heading 4_centre">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r yr(end_date)`</div>
-<Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1, "url"]`)
-![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png)</div>
+<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r yr(end_date)`</div>
+<Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`) ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png)</div>
 
-<Div custom-style = "Heading 2_pgbrk">2 Trends at Scotland Level</div>
 
-### Scotland Crude Mortality Trends
-Chart 2 shows that overall crude hospital mortality (%) at Scotland level from `r qtr(start_date_trends, "long")` to `r qtr(start_date_trends + months(57), "long")`, according to the existing definition of deaths within 30-days of admission, is fluctuating around 3% with clear seasonal patterns exhibited. This means crude mortality is consistently higher around winter quarters (i.e. October - December and January - March). 
-<Div custom-style = "Heading 4_centre">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Heading 1">2 Trends at Scotland Level</div>
+
+<Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
+Chart 2 shows that overall crude hospital mortality (%) at Scotland level from `r qtr(start_date_trends, "long")` to `r qtr(start_date_trends + months(57), "long")`, according to the existing definition of deaths within 30-days of admission, is fluctuating around 3% with clear seasonal patterns exhibited until April to June 2020, reflecting the first full quarter of Scotland going into emergency measures due to COVID-19. This means crude mortality is consistently higher around winter quarters (i.e. October - December and January - March). The crude mortality for July to September 2020 is 3.4%, and although lower than April to June 2020, this is still being driven by a reduction in patient numbers.
+<Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 2_pgbrk">3 Scotland (Sub-Groups)</div>
-### Scotland – by type of admission
+<Div custom-style = "Heading 1">3 Scotland (sub-groups)</div>
+<Div custom-style = "Heading 2 no pgbrk">Scotland – by type of admission</div>
 HSMR is by definition an overall indicator that encapsulates mortality outcomes against overall hospital activity. It is possible to examine trends in the same 30-day mortality outcome for some of the underlying factors.
 Chart 3 shows the mortality trend according to admission type (i.e. whether the patient was an elective or non-elective admission). 
 It shows that non-elective patients consistently account for the largest proportion of deaths within 30-days of admission. 
-<Div custom-style = "Heading 4_centre">Chart 3: Crude mortality rates (%) for deaths within 30-days of admission by type of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 3: Crude mortality rates (%) for deaths within 30-days of admission by type of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by type of admission for the last five years](Chart_3.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 3_pgbrk">Scotland – by specialty</div>
+<Div custom-style = "Heading 2">Scotland – by specialty</div>
 Chart 4 shows the mortality trend according to seven distinct specialty groups. Specialty group is classified according to the specialty of the consultant/GP/HCP who is in charge of the patient episode. 
-It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by medical and then surgical. Those recorded under Dental or Women and Newborn specialty having the lowest rate.  
-<Div custom-style = "Heading 4_centre">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by medical. Those recorded under Dental, Paediatrics, Women & Newborn specialty having the lowest rate.  
+<Div custom-style = "Chart Title">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by specialty group for the last five years](Chart_4.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 3_pgbrk">Scotland – by age </div>
+<Div custom-style = "Heading 2">Scotland – by age </div>
 Chart 5 shows that mortality within 30-days of admission increases with age.
-<Div custom-style = "Heading 4_centre">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by age group for the last five years](Chart_5.png)</div>
+p Provisional
 
 
-<Div custom-style = "Heading 3_pgbrk">Scotland – by Gender</div>
+<Div custom-style = "Heading 2">Scotland – by sex</div>
 Chart 6 shows that mortality rates are consistently higher for males throughout the time period. The difference between the mortality for males and females has also remained relatively constant.
 
-<Div custom-style = "Heading 4_centre">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by gender; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by sex; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
-![Trend chart showing crude mortality by gender for the last five years](Chart_6.png)</div>
+![Trend chart showing crude mortality by sex for the last five years](Chart_6.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 3_pgbrk">Scotland – by Scottish Index of Multiple Deprivation</div>
-The Scottish Index of Multiple Deprivation identifies small area concentrations of multiple deprivation across all of Scotland in a consistent way. It identifies small area concentrations of multiple deprivation across all of Scotland based on six domains - employment, income, health, education, access and crime. 
+<Div custom-style = "Heading 2">Scotland – by Scottish Index of Multiple Deprivation</div>
+The Scottish Index of Multiple Deprivation classifies small areas in Scotland based on their deprivation level using data on employment, income, health, education, access and crime. 
 
 Chart 7 shows that patients from the least deprived areas of Scotland consistently have lower levels of 30-day mortality than patients from more deprived areas. 
 
-<Div custom-style = "Heading 4_centre">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by deprivation for the last five years](Chart_7.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 3_pgbrk">Scotland – by Place of Death</div>
+<Div custom-style = "Heading 2">Scotland – by place of death</div>
 Chart 8 shows the proportion of deaths within 30 days of admission by place of death (i.e. in-hospital or in community). A quarter of these deaths occurred in the community with the remaining three quarters taking place in hospital. 
 
-<Div custom-style = "Heading 4_centre">Chart 8: Proportion of deaths within 30-days of admission by place of death; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 8: Proportion of deaths within 30-days of admission by place of death; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png)</div>
+p Provisional
 
-<Div custom-style = "Heading 2_pgbrk">Hospital and NHS Board Level</div>
-HSMR data are provided by ISD to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
+<Div custom-style = "Heading 1">Hospital and NHS Board level</div>
+HSMR data are provided by PHS to allow an individual hospital to monitor its mortality in comparison to the National average. The process is not designed to compare hospitals. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
 
 **NHS Fife**: In order to reflect current service configuration, an HSMR is not reported on separately for Queen Margaret Hospital as this site does not include any acute wards.
 
@@ -865,44 +883,45 @@ In order to reflect current service configuration, some hospitals are presented 
 
 Individual hospital level data for any combined sites are available on request.
 
-<Div custom-style = "Heading 3_pgbrk">In-patient mortality and deaths within 30-days of discharge</div>
+<Div custom-style = "Heading 2">In-patient mortality and deaths within 30-days of discharge</div>
 Chart 9 shows the trend in mortality at Scotland level according to a definition similar to the Summary Hospital-level Mortality Indicator in England. SHMI takes account of in-patient mortality and deaths within 30-days of discharge. The Scottish HSMR does not include patients that die in-hospital more than 30-days from admission. In Scotland the decision was to associate the outcome with decisions made at the point of admission (see Inter-UK Comparisons: England and Wales section for more information on the differences between the Scottish and English approaches).  
 
-For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r latest_deaths_admission$deaths` deaths within 30-days of admission to hospital in Scotland, and `r latest_deaths_discharge$deaths` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). The mortality rates are inevitably higher than the admission-based method, reflecting the longer opportunity for follow-up. The trend is however consistent with the admission based mortality patterns, and show that although exhibiting seasonal variation, hospital mortality had been showing a general decrease over time, with exception of the winter of 2017/18 where mortality rates were back at similar levels to those prior to the baseline period.
+For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). The mortality rates are inevitably higher than the admission-based method, reflecting the longer opportunity for follow-up. The trend is however consistent with the admission based mortality patterns, and show that although exhibiting seasonal variation, hospital mortality had been showing a general decrease over time, until April to June 2020 reflecting the first full quarter of Scotland going into emergency measures due to COVID-19.
 
-<Div custom-style = "Heading 4_centre">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
+<Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude mortality for deaths within 30 days of discharge for the last five years](Chart_9.png)</div>
+p Provisional
 
 [Table 3](`r url_list[3, "url"]`) provides a chart similar to Chart 9 containing the trend for each NHS Board of treatment plotted against Scotland. 
 
-<Div custom-style = "Heading 3_pgbrk">Population-based Mortality</div>
+<Div custom-style = "Heading 2">Population-based mortality</div>
 
 Trends in crude death rates are useful for getting an overall picture of the number of deaths relative to the population.
 
 Trends in crude underlying population mortality rates have been derived from the total number of deaths (numerator), and mid-year population estimates (denominator), both available from the National Records of Scotland  at Scotland level and by NHS Board of residence.
 
-Chart 10 shows the trend in overall population mortality for Scotland between `r qtr(start_date_trends, "long")` and `r qtr(start_date_trends + months(57), "long")`. The series, although exhibiting seasonal characteristics, has remained relatively stable over the last three years.
+Chart 10 shows the trend in overall population mortality for Scotland between `r qtr(start_date_trends, "long")` and `r qtr(start_date_trends + months(57), "long")`. The series, although exhibiting seasonal characteristics, has remained relatively stable over the last three years. Although there was an increase in April to June 2020, reflecting the first full quarter of Scotland going into emergency measures due to COVID-19.
 
-<Div custom-style = "Heading 4_centre">Chart 10: Underlying Population Death Rates (crude rates per 1,000 population);
+<Div custom-style = "Chart Title">Chart 10: Underlying population death rates (crude rates per 1,000 people);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude population mortality for the last five years](Chart_10.png)</div>
+p Provisional
 
 [Table 3](`r url_list[3, "url"]`) provides a series of mortality charts for the resident populations of each NHS Board area. 
 
-<Div custom-style = "Heading 2_pgbrk">Data Files</div>
+<Div custom-style = "Heading 1">Data files</div>
 The latest NHSScotland data from **`r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`** and comparable information by NHS Board of treatment and Hospital are given in the Excel files that accompany this publication.  Please note the following.
 
 
 **Table 1 – HSMR**  
-Table 1 presents: hospital-level HSMR on a **funnel plot** for each rolling 12 month period since April 2018, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
+Table 1 presents: hospital-level HSMR on a **funnel plot** for each rolling 12 month period, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
 
 
 **Table 2 – Overall 30-day crude mortality demographics for NHS Scotland**  
-The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The 
-following series of tables and charts are presented for the latest five year period: 
+The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The following series of tables and charts are presented for the latest five year period: 
 
 * Overall crude mortality rates (%) for deaths within 30-days of admission
 * Overall crude mortality rates (%) for deaths within 30-days of admission by:
@@ -921,11 +940,11 @@ The data within Table 3 contains a ‘drop-down’ selection option for NHSScotl
 * Crude population mortality rates (%).
 
 
-These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the HSMR webpage.
+These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/).
 
 
-<Div custom-style = "Heading 2_pgbrk">Refinements to HSMR Methodology</div>
-Since the HSMR statistics were first released in 2009, ISD have periodically reviewed the model methodology to ensure that it continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
+<Div custom-style = "Heading 1">Refinements to HSMR methodology</div>
+Since the HSMR statistics were first released in 2009, PHS (formerly Information Services Division) have periodically reviewed the model methodology to ensure that it continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
 
 
 Any improvements needed to be balanced against the overall policy strategy and purpose of the HSMR which, since 2016, was to monitor progress towards the Scottish Patient Safety Programme aim of reducing mortality by a further 10% by end December 2018.
@@ -937,49 +956,61 @@ The main changes made to the HSMR methodology from August 2019 were:
 * Moving to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
 * Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
 * Use less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
-More details of the review work and recommendations are available in the HSMR Review Paper. A Technical Document is also available on how the HSMR is now calculated and describes the methodology used in more detail.  
+More details of the review work and recommendations are available in the [HSMR Review Paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/). A [Technical Document](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is also available on how the HSMR is now calculated and describes the methodology used in more detail.  
 
 
-<Div custom-style = "Heading 2">Next Update</div>
+<Div custom-style = "Heading 2 no pgbrk">Next update</div>
 The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
 
 
-####### Glossary
-```{r kable_glossary, echo = FALSE}
-    knitr::kable(glossary, col.names = NULL, align = c('l','l'))
-```
+<Div custom-style = "Heading 1">Glossary</div>
+<br>
+<Div custom-style = "Glossary Item Name">HSMR</div>
+<Div custom-style = "Glossary Item Description">Hospital Standardised Mortality Ratio</div>
+<Div custom-style = "Glossary Item Name">NRS</div>
+<Div custom-style = "Glossary Item Description">National Records for Scotland (formerly General Register Office for Scotland)</div>
+<Div custom-style = "Glossary Item Name">SHMI</div>
+<Div custom-style = "Glossary Item Description">The Summary Hospital-level Mortality Indicator (SHMI) is an indicator which reports on mortality at trust level across the NHS in England. It is produced and published quarterly as an official statistic by the Health and Social Care Information Centre (HSCIC).</div>
+<Div custom-style = "Glossary Item Name">SIMD</div>
+<Div custom-style = "Glossary Item Description">Deprivation for individuals is estimated from aggregate data derived from the census and other routine sources. These are used to estimate the deprivation of small geographical areas. The Scottish Index of Multiple Deprivation (SIMD) has seven domains (income, employment, education, housing, health, crime, and geographical access, which have been combined into an overall index to pick out area concentrations of multiple deprivation.</div>
+<Div custom-style = "Glossary Item Name">SMR</div>
+<Div custom-style = "Glossary Item Description">Scottish Morbidity Record</div>
+<Div custom-style = "Glossary Item Name">SMR(01)</div>
+<Div custom-style = "Glossary Item Description">SMR containing non-obstetric and non-psychiatric inpatient and daycase activity.</div>
+<Div custom-style = "Glossary Item Name">SPSP</div>
+<Div custom-style = "Glossary Item Description">The Scottish Patient Safety Programme (SPSP) is a national programme that aims to improve the safety and reliability of healthcare and reduce harm, whenever care is delivered. The SPSP is led by Healthcare Improvement Scotland.</div>
 
 
-<Div custom-style = "Heading 2_pgbrk">Contact</div>
-**Robyn Munro, Principal Information Analyst**  
+<Div custom-style = "Heading 1">Contact</div>
+**Jaime Villacampa Ortega, Principal Information Analyst**  
 Quality Indicators  
-Phone:  0131 275 6967  
+Phone:  0141 282 2052  
 
-**David Caldwell, Senior Information Analyst**  
-Quality Indicators  
-Phone:  0131 275 7421  
-
-**Lucinda Lawrie, Information Analyst**  
+**Lucinda Lawrie, Senior Information Analyst**  
 Quality Indicators  
 Phone:  0131 275 7929  
+
+**Catherine Perkins, Senior Information Analyst**  
+Quality Indicators  
+Phone:  0131 275 7710 
 
 <br>
 
 **Email:** phs.QualityIndicators@phs.scot
 
-## Further Information
-Further Information can be found on the [ISD website](http://www.isdscotland.org/).  
+<Div custom-style = "Heading 2 no pgbrk">Further Information</div>
+Further Information can be found on the [PHS website](https://beta.isdscotland.org/).  
 For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
 The next release of this publication will be `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.  
 
 <br>
 
-## Rate this publication
+<Div custom-style = "Heading 2 no pgbrk">Rate this publication</div>
 If you wish to provide feedback on this publication to help us improve our service, please email phs.QualityIndicators@phs.scot.
 
-<Div custom-style = "Heading 2_pgbrk">Appendices</div>
-### Appendix 1 – Background information
-#### Methods Used to Calculate the HSMR
+<Div custom-style = "Heading 1">Appendices</div>
+<Div custom-style = "Heading 2 no pgbrk">Appendix 1 – Background information</div>
+<Div custom-style = "Heading 3">Methods Used to Calculate the HSMR</div>
 The HSMR is calculated for all acute inpatient and day case patients admitted to all specialties (medical and surgical). The calculation takes account of patients who died within 30 days from admission; that is, it includes deaths that occurred in the community (out of hospital deaths) as well as those occurring in-hospital.
 
 The HSMR is calculated as: 
@@ -992,13 +1023,13 @@ In order to count the number of patients and deaths within each reporting period
 
 There are a number of caveats to be considered and addressed in relation to whether the HSMR is a good indicator of quality. For example, the statistical model used to produce the HSMR does not take account of palliative care, and so changes over time in palliative care services could be expected to impact on the HSMR. In addition, the current model looks at deaths within 30 days of admission to hospital, which means that in-hospital deaths are not captured if the patient is in hospital for more than 30 days. 
 
-<div custom-style = "Heading 4_pgbrk">Funnel Plots</div>
+<div custom-style = "Heading 3">Funnel Plots</div>
 
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons to be made between each hospital and the average for Scotland for a particular period.
 
-The Chart below provides an illustration of a funnel plot. The rate of the process, the HSMR, is plotted on the vertical axis. The denominator, predicted deaths, is plotted on the horizontal axis.
+The chart below provides an illustration of a funnel plot. The rate of the process, the HSMR, is plotted on the vertical axis. The denominator, predicted deaths, is plotted on the horizontal axis.
 
-<Div custom-style = "centre_justify>
+<Div custom-style = "centre_justify">
 ![Example Funnel Plot](Funnel_Plot_Example.png)</div>
 
 There are three lines in the funnel plots in this report.
@@ -1006,15 +1037,15 @@ There are three lines in the funnel plots in this report.
 The first line in dark blue is the average for Scotland. Plotted on either side of the average are two sets of curved lines called control limits (red). The red control limits are plotted at three standard deviations from the average. Orange warning limits have also been plotted on the charts presented here, at two standard deviations from the average. In the example below data points presented as circles represent hospitals. 
 The limits are wider at the left hand side of the graph because the data points plotted here represent smaller hospitals which are made up of fewer observations and subject to greater variability. This means that smaller hospitals will appear towards the left hand side of the graph and larger hospitals towards the right.
 
-#### Overdispersion
+<div custom-style = "Heading 3">Overdispersion</div>
 An overdispersion factor has been applied to the funnel plot limits to reduce the effect of possibly false outliers. This is discussed in more detail in the [Scottish HSMR Technical Document](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
 
 
-#### How to Interpret a Funnel Plot
+<div custom-style = "Heading 3">How to interpret a funnel plot</div>
 Data points out with the control limits (referred to here as ‘outliers’) are said to exhibit ‘special cause variation’. Variations may reflect a number of factors, such as characteristics of the patients being cared for (case-mix), the quality of clinical care, errors in the data submitted by hospitals or even variation by chance. A single apparently high value of the HSMR is not sufficient evidence on which to conclude that a poor quality or unsafe service is being provided. This is why it is important not to focus solely on ‘outliers’ when making reliable judgements about the quality of patient care.  
 
 
-<div custom-style = "Heading 4_pgbrk">Inter-UK Comparisons: England and Wales </div>
+<div custom-style = "Heading 3">Inter-UK comparisons: England and Wales </div>
 
 There is more than one measure routinely produced and used in England and Wales for the measurement of hospital mortality – HSMR and SHMI.  
 
@@ -1047,9 +1078,9 @@ Regardless of the method, one message holds true for both the Scottish and Engli
 
 A measure of uncertainty is calculated for the SHMI and the NHS Information Centre calculates statistical bands to help decide when the SHMI for any trust exceeds expected limits. There is a scientific debate about how best to calculate these bands, so two different methods have been used.  
 
-In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (control chart) methodologies. See section on Quarterly Process for more information.  
+In Scotland, we also calibrate our model each quarter and, as part of our governance process, look at point in time comparisons against the national average using statistical methods in combination with a more subjective review of patterns in the unadjusted mortality trends backed-up by Statistical Process Control (control chart) methodologies. See section on Quarterly process for more information.  
 
-As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving ISD, HIS and Scottish Government.  
+As there remains a subjective element to the assessment of when a communication should be triggered, work in Scotland is focused on developing a whole-system suite of indicators that includes HSMR underpinned by a set of statistical /subjective rules and formal multi-agency governance arrangements involving PHS, HIS and Scottish Government.  
 
 One important difference between the SHMI and other publicly available measures of hospital mortality in England is the inclusion of deaths within 30 days of discharge wherever they occur, not just in the hospital. There are other differences such as the proportion of all in hospital deaths included, and factors taken into account in the statistical model.  
 
@@ -1057,7 +1088,7 @@ In Scotland, the HSMR has focussed only on deaths within 30-days of admission (b
 
 Table 3 shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
-<Div custom-style = "Heading 4_pgbrk">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
+<Div custom-style = "Chart Title">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
 ```{r kable_Table3, echo = FALSE}
 
 knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
@@ -1065,7 +1096,7 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 2 - Quarterly Process </div>
+<Div custom-style = "Heading 2">Appendix 2 - Quarterly process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
 There are three key stages to this quarterly process which include other indicators of quality. 
@@ -1076,7 +1107,7 @@ The HSMR Management Information Tool is produced and shared with the NHS Boards 
 
 **Stage Two: Official Statistics Publication of HSMR for Scotland **
 
-The first Official Statistics release of the information was in June 2010, when a set of abbreviated summary tables were published on a dedicated website and linked to the main ISD site. The timing of the publication has been altered to better synchronise with the availability of death data from National Records of Scotland and to optimise the timeliness of reporting. See the section on Timeliness for further information. 
+The first Official Statistics release of the information was in June 2010, when a set of abbreviated summary tables were published on a dedicated website and linked to the main PHS site. The timing of the publication has been altered to better synchronise with the availability of death data from National Records of Scotland and to optimise the timeliness of reporting. See the section on Timeliness for further information. 
 The publication has been expanded to include more substantial commentary and context, including a look at stratified patterns of mortality at Scotland level and longer-term trends. There is also more commentary on the evolution of the measure in Scotland; where it came from, where we are now and where we are headed. We also take a more comprehensive look at how the Scottish HSMR compares to similar measures in other parts of the UK.  
 
 **Stage Three: Hospital Intelligence Dashboard**  
@@ -1092,97 +1123,96 @@ Throughout the quarterly cycle, interaction with NHS Boards is of paramount impo
 knitr::kable(q_process, col.names = c("**Month**", "**Process and Key Dates**"), align = c('l','l'))
 ```
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 3 - Data Quality and Timeliness</div>
+<Div custom-style = "Heading 2">Appendix 3 - Data quality and timeliness</div>
 HSMR is being used extensively across Scotland as one of a number of indicators of quality and safety. The credibility of the HSMR is dependent on robust data quality, particularly around the accuracy and consistency of the recording of main diagnosis.  
 
-#### Source Data
-The HSMR measure is derived from the routine returns that hospitals submit to the information Services Division for their non-obstetric and non-psychiatric inpatient and day case activity (known as the SMR01 dataset). ISD have well established mechanisms to work with providers to ensure the quality of the SMR01 records is maintained and where necessary enhanced.  
+### Source data
+The HSMR measure is derived from the routine returns that hospitals submit to Public Health Scotland for their non-obstetric and non-psychiatric inpatient and day case activity (known as the SMR01 dataset). PHS have well established mechanisms to work with providers to ensure the quality of the SMR01 records is maintained and where necessary enhanced.  
 
-The data is submitted to ISD on a monthly basis and are retrospectively linked together at patient-level. The hospital patient-profiles are then linked to the NRS death records on a monthly basis. During interaction with NHS Boards ISD has found that widespread use of the HSMR has drawn the focus of attention to the quality of data and clinical coding.  
+The data is submitted to PHS on a monthly basis and are retrospectively linked together at patient-level. The hospital patient-profiles are then linked to the NRS death records on a monthly basis. During interaction with NHS Boards, PHS has found that widespread use of the HSMR has drawn the focus of attention to the quality of data and clinical coding.  
 
-#### Data Quality Assurance
-In August 2016, ISD published the findings of their most recent [quality assurance assessment](http://www.isdscotland.org/Products-and-Services/Data-Quality/docs/Assessment-of-SMR01-Data-2014-15-report-181019.pdf)  which was undertaken during 2014-15 to ensure that SMR01 (General / Acute Inpatient and Day Case) data items are being recorded consistently and to a high standard throughout NHS Scotland. The report shows that:  
+### Data quality assurance
+In August 2016, PHS published the findings of their most recent [quality assurance assessment](http://www.isdscotland.org/Products-and-Services/Data-Quality/docs/Assessment-of-SMR01-Data-2014-15-report-181019.pdf)  which was undertaken during 2014-15 to ensure that SMR01 (General / Acute Inpatient and Day Case) data items are being recorded consistently and to a high standard throughout NHS Scotland. The report shows that:  
 
 * main condition (used as a fundamental part of the HSMR calculation) is being recorded with an accuracy rate of 89%; 
 *	however, not all of the hospitals participating in the SPSP were included in the sample, and the sample included hospitals not participating in the SPSP 
 *	Recommendations include an improved and increased recording of conditions identified as acute or background conditions affecting the management of the patient  
 
-#### Timeliness
+### Timeliness
 The majority of hospital admission data will be complete for the latest quarter, however it should still be considered provisional on the basis that the source data are dynamic and additional hospital returns will come in and be reflected in future calculations of the HSMR for that quarter.
 Death registrations from NRS are linked to hospital admissions in Scotland on a monthly basis. This has enabled the crude trends to include admissions up to `r format(submission_deadline(end_date), "%B %Y") ` in this release.  
 
-A new patient management system (TrakCare PMS) has been implemented in eleven NHS Boards, with the exception of NHS Dumfries & Galloway, NHS Forth Valley and NHS Western Isles.
+A new patient management system (TrakCare PMS) has been implemented in twelve NHS Boards, with the exception of NHS Dumfries & Galloway and NHS Western Isles.
 
-ISD continues to work with PMS Consortium Boards on national outputs to ensure they meet national definitional and processing requirements.   
+PHS continues to work with PMS Consortium Boards on national outputs to ensure they meet national definitional and processing requirements.   
 
 All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`.
 
-HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. ISD continues to work with NHS Boards to assist in the resolution of any data submission issues.  
+HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. PHS continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
 For more information about SMR completeness: http://www.isdscotland.org/Products-and-Services/Data-Support-and-Monitoring//SMR-Completeness/
 
 
-#### Refreshing Previously Provisional Data
+### Refreshing previously provisional data
 The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data up to `r qtr_prev(qtr_start)` along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that period has now been refreshed to reflect additional returns that have subsequently been submitted for that time period. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately `r completeness("previous", "scotland", qtr_start)` complete.
 
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 4 – Publication Metadata</div>
+<Div custom-style = "Heading 2">Appendix 4 – Publication metadata</div>
 <br>
 ```{r kable_MetaData, echo = FALSE}
 knitr::kable(MetaData, col.names = c("**Metadata Indicator**", "**Description**"), align = c('l','l'))
 ```
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 5 – Early access details</div>
+<Div custom-style = "Heading 2">Appendix 5 – Early access details</div>
 
 <br>
 
-**Pre-Release Access**  
-Under terms of the "Pre-Release Access to Official Statistics (Scotland) Order 2008", ISD is obliged to publish information on those receiving Pre-Release Access ("Pre-Release Access" refers to statistics in their final form prior to publication). The standard maximum Pre-Release Access is five working days. Shown below are details of those receiving standard Pre-Release Access.
+**Pre-release access**  
+Under terms of the "Pre-Release Access to Official Statistics (Scotland) Order 2008", PHS is obliged to publish information on those receiving Pre-Release Access ("Pre-Release Access" refers to statistics in their final form prior to publication). The standard maximum Pre-Release Access is five working days. Shown below are details of those receiving standard Pre-Release Access.
 
 <br>
 
-**Standard Pre-Release Access:**  
+**Standard pre-release access:**  
 Scottish Government Health Department  
 NHS Board Chief Executives  
 NHS Board Communication leads  
 
 <br>
 
-**Early Access for Management Information**  
+**Early access for management information**  
 These statistics will also have been made available to those who needed access to ‘management information’, ie as part of the delivery of health and care:
 ```{r kable_mi_list, echo = FALSE}
 knitr::kable(mi_list, col.names = c("**NHS Health Board**",
-                                    "**Standard Pre-Release Access**"))
+                                    "**Standard pre-release access**"))
 ```
 
 <br>
 
-**Early Access for Quality Assurance**  
-These statistics will also have been made available to those who needed access to help quality assure the publication:
+**Early access for quality assurance**  
+These statistics will also have been made available to those who needed access to help quality assure the publication.
 
-<Div custom-style = "Heading 3_pgbrk">Appendix 6 – ISD and Official Statistics</div>
+<Div custom-style = "Heading 2">Appendix 6 – PHS and Official Statistics</div>
 
 <br>
 
-**About ISD**  
-Scotland has some of the best health service data in the world combining high quality, consistency, national coverage and the ability to link data to allow patient based analysis and follow up.
-Information Services Division (ISD) is a business operating unit of NHS National Services Scotland and has been in existence for over 40 years. We are an essential support service to NHSScotland and the Scottish Government and others, responsive to the needs of NHSScotland as the delivery of health and social care evolves.  
-**Purpose**: To deliver effective national and specialist intelligence services to improve the health and wellbeing of people in Scotland.  
-**Mission**: Better Information, Better Decisions, Better Health  
-**Vision**: To be a valued partner in improving health and wellbeing in Scotland by providing a world class intelligence service.  
+**About Public Health Scotland (PHS)**  
+PHS is a knowledge-based and intelligence driven organisation with a critical reliance on
+data and information to enable it to be an independent voice for the public’s health, leading
+collaboratively and effectively across the Scottish public health system, accountable at local
+and national levels, and providing leadership and focus for achieving better health and
+wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics](https://code.statisticsauthority.gov.uk/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the [‘five safes’](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/).  
 
 <br>
 
 **Official Statistics**  
-Information Services Division (ISD) is the principal and authoritative source of statistics on health and care services in Scotland. ISD is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within ISD. 
-ISD’s statistical publications are currently classified as one of the following:  
+Public Health Scotland (PHS) is the principal and authoritative source of statistics on health and care services in Scotland. PHS is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within PHS. PHS’s statistical publications are currently classified as one of the following:  
 
 * National Statistics (ie assessed by the UK Statistics Authority as complying with the Code of Practice)
 * National Statistics (ie legacy, still to be assessed by the UK Statistics Authority)
 * Official Statistics (ie still to be assessed by the UK Statistics Authority)
 * other (not Official Statistics)  
 
-Further information on ISD’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [ISD website](http://www.isdscotland.org/About-ISD/About-Our-Statistics/). 
+Further information on PHS’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [PHS website](https://beta.isdscotland.org/about-our-statistics/). 
 
 
 
