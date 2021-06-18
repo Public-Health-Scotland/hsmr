@@ -20,6 +20,11 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
+# Define the database connection with SMRA 
+smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
+                                            uid=.rs.askForPassword("SMRA Username:"),
+                                            pwd=.rs.askForPassword("SMRA Password:")))
+
 ### 2 - Read in lookup files ----
 
 # Postcode lookups for SIMD 2020, 2016, 2012 and 2009

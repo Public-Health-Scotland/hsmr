@@ -88,10 +88,5 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day, "/output"))
 }
 
-### 5 - Define the database connection with SMRA ----
-smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
-                                            uid=.rs.askForPassword("SMRA Username:"), 
-                                            pwd=.rs.askForPassword("SMRA Password:")))
-
 
 ### END OF SCRIPT ###
