@@ -9,10 +9,8 @@ output:
 source(here::here("setup_environment.R"))
 
 # Read in SMR data, filtered on latest period/reported hospitals
-smr_data          <- read_csv(here("data",
-                                   "output",
-                          paste0(pub_date(end_date = end_date, pub = "current"),
-                                 "_SMR-data.csv"))) %>% 
+smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
+                 pub_day,  "_SMR-data.csv")) %>% 
   filter(period == 3 & 
            location %in% 
            c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H", 
@@ -55,11 +53,8 @@ smr_data          <- read_csv(here("data",
                                  TRUE ~ FALSE))
 
 # Read in trends data for charting, filtering out missing data
-trend_data <- read_csv(here("data",
-                            "output",
-                            paste0(pub_date(end_date = end_date,
-                                            pub = "current"),
-                                   "_trends-data-level2.csv")),
+trend_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
+                 pub_day,  "_trends-data-level2.csv"),
                             col_types = cols(
                          quarter = col_double(),
                          quarter_short = col_character(),
@@ -541,10 +536,10 @@ ggsave("Chart_10.svg", plot = chart_10, width = 17.49, height = 9.03,
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_date(end_date = end_date, pub = "current"), "%d-%B-%Y"),"/")), 
+             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
+                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/")), 
              stringsAsFactors = FALSE)
 
 ```
