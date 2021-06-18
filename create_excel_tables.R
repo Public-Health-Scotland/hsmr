@@ -161,23 +161,6 @@ saveWorkbook(table3,
                     "-Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx"),
              overwrite = TRUE)
 
-# Load in NHS Performs file
-nhs_performs_file <- loadWorkbook(here("reference_files",
-                                       "HSMR_NHSPerforms.xlsx"))
-
-writeData(nhs_performs_file, "data_smr",
-          nhs_performs(smr_data, end_date, "hsmr"), startCol = 2)
-
-writeData(nhs_performs_file, "data_crude",
-          nhs_performs(trend_data, end_date, "crude"), startCol = 2)
-
-saveWorkbook(nhs_performs_file,
-             here("data",
-                  "output",
-                  paste0(pub_date(end_date,
-                                  pub = "current"),
-                         "_HSMR_NHSPerforms.xlsx")))
-
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid (smr_data, trend_data, end_date)
 
