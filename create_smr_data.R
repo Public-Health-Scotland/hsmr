@@ -131,21 +131,14 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
 
 # Save basefiles
 
-saveRDS(deaths, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_GRO_deaths.rds")))
+saveRDS(deaths, paste0(data_folder, pub_day, "/base_files/", 
+                       pub_day, "_GRO_deaths.rds"))
 
-saveRDS(smr01, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_SMR01_basefile.rds")))
+saveRDS(smr01, paste0(data_folder, pub_day, "/base_files/", 
+                      pub_day, "_SMR01_basefile.rds"))
 
-saveRDS(data_pmorbs, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_SMR01_minus_5_basefile.rds")))
-
+saveRDS(data_pmorbs, paste0(data_folder, pub_day, "/base_files/", 
+                            pub_day, "_SMR01_minus_5_basefile.rds"))
 
 # 2 - Pipeline ----
 # smr01    = The SMR01 extract used to produce SMR data. This should contain
@@ -202,17 +195,12 @@ smr_data <- smr_data(smr01 = smr01,
 
 
 ### 3 - Save data ----
-write_csv(smr01 %>%
-            filter(admission_date >= start_date + years(2)),
-            here("data",
-                      "base_files",
-                      paste0(pub_date(end_date = end_date, pub = "current"),
-                             "_SMR-with-predprob.csv")))
+write_csv(smr01 %>% filter(admission_date >= start_date + years(2)),
+          paste0(data_folder, pub_day, "/base_files/", 
+                 pub_day,  "_SMR-with-predprob.csv"))
 
-write_csv(smr_data, here("data",
-                         "output",
-                         paste0(pub_date(end_date = end_date, pub = "current"),
-                                "_SMR-data.csv")))
-
+write_csv(smr_data, 
+          paste0(data_folder, pub_day, "/output/", 
+                 pub_day, "_SMR-data.csv"))
 
 ### END OF SCRIPT ###

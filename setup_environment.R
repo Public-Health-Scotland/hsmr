@@ -48,6 +48,9 @@ plat_filepath <- dplyr::if_else(platform == "server",
                                 '/conf/linkage/output/',
                                 '//stats/cl-out/')
 
+data_folder <- dplyr::if_else(platform == "server",
+                                '/conf/quality_indicators/hsmr/quarter_cycle/data/',
+                                '//stats/quality_indicators/hsmr/quarter_cycle/data/')
 
 ### 3 - Extract dates ----
 
@@ -74,13 +77,15 @@ qtr_start         <- lubridate::dmy(01102020)
 # End date for the cut off for data
 end_date          <- lubridate::dmy(31122020)
 
+# Publication date
+pub_day <- pub_date(end_date = end_date, pub = "current")
+
 ## 4 - Create data folder structure ----
 #  If the folder doesn't exist creates it and subfolders too
-if (dir.exists(here("data")) == FALSE) {
-  dir.create(here("data"))
-  dir.create(here("data/base_files"))
-  dir.create(here("data/output"))
-  
+if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
+  dir.create(paste0(data_folder, pub_day))
+  dir.create(paste0(data_folder, pub_day, "/basefiles"))
+  dir.create(paste0(data_folder, pub_day, "/output"))
 }
 
 ### 5 - Define the database connection with SMRA ----
