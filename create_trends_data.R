@@ -179,10 +179,6 @@ trends_data <- create_trends(smr01           = smr01,
 
 ### 3 - Save data ----
 
-
-# write CSVs
-save_file(trends_data, "trends-data-level2", "output", "csv")
-
 trends_data_lvl1 <- trends_data %>%
   filter((sub_grp == "All Admissions" &
             (agg_label == "Hospital" | agg_label == "Board")) |
@@ -190,8 +186,6 @@ trends_data_lvl1 <- trends_data %>%
               (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
-
-save_file(trends_data_lvl1, "trends-data-level1", "output", "csv")
 
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live

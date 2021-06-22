@@ -206,8 +206,6 @@ smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
 
 smr_data_dash <- rbind(smr_data, smr_data_dash) 
 
-save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv")
-
 # Create TDE files
 # yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
 save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", "tde", "xlsx")

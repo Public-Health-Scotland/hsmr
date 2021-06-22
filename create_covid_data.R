@@ -236,9 +236,7 @@ covid <- merge(location_template, time_period_template) %>%
   ungroup() %>%
   na.omit()
 
-### SECTION 3 - WRITE CSV ----
-save_file(covid, "COVID-data", "output", "csv")
-
+### SECTION 3 - SAVE DATA ----
 # Create TDE files
 # yyyy-mm-dd__COVID-data.csv – Discovery HSMR Level 2 COVID & Discovery HSMR Level 2 COVID Live
 save_file(covid, "Discovery HSMR Level 2 COVID", "tde", "xlsx")
