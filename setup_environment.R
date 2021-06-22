@@ -89,6 +89,7 @@ previous_pub <- pub_date(end_date, "previous")
 if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day))
   dir.create(paste0(data_folder, pub_day, "/basefiles"))
+  dir.create(paste0(data_folder, pub_day, "/tde"))
   dir.create(paste0(data_folder, pub_day, "/output"))
 }
 

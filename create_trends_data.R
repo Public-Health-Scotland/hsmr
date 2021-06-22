@@ -183,13 +183,23 @@ trends_data <- create_trends(smr01           = smr01,
 # write CSVs
 save_file(trends_data, "trends-data-level2", "output", "csv")
 
-save_file(trends_data %>%
-            filter((sub_grp == "All Admissions" &
-                      (agg_label == "Hospital" | agg_label == "Board")) |
-                     (agg_label == "Scotland" &
-                        (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
-                     (agg_label == "Board" &
-                        (sub_grp == "Discharge" | sub_grp == "Population"))),
-          "trends-data-level1", "output", "csv")
+trends_data_lvl1 <- trends_data %>%
+  filter((sub_grp == "All Admissions" &
+            (agg_label == "Hospital" | agg_label == "Board")) |
+           (agg_label == "Scotland" &
+              (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
+           (agg_label == "Board" &
+              (sub_grp == "Discharge" | sub_grp == "Population")))
+
+save_file(trends_data_lvl1, "trends-data-level1", "output", "csv")
+
+# Create TDE files
+# yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", "tde", "xlsx")
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", "tde", "xlsx")
+
+# yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
+save_file(trends_data, "Discovery HSMR Level 2 Trends", "tde", "xlsx")
+save_file(trends_data, "Discovery HSMR Level 2 Trends Live", "tde", "xlsx")
 
 ### END OF SCRIPT ###
