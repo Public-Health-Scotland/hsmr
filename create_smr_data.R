@@ -200,4 +200,13 @@ save_file(smr01 %>% filter(admission_date >= start_date + years(2)),
 
 save_file(smr_data, "SMR-data", "output", "csv")
 
+# File for dashboard, bringing previous publication data and adding new period
+smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
+                                 "/output/", previous_pub, "-SMR-data_dashboard.csv"))
+
+smr_data_dash <- rbind(smr_data, smr_data_dash) 
+
+save_file(smr_data, "SMR-data_dashboard", "output", "csv")
+
+
 ### END OF SCRIPT ###

@@ -82,6 +82,7 @@ end_date          <- lubridate::dmy(31122020)
 
 # Publication date
 pub_day <- pub_date(end_date = end_date, pub = "current")
+previous_pub <- pub_date(end_date, "previous")
 
 ## 4 - Create data folder structure ----
 #  If the folder doesn't exist creates it and subfolders too
