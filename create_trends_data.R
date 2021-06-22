@@ -181,17 +181,15 @@ trends_data <- create_trends(smr01           = smr01,
 
 
 # write CSVs
-write_csv(trends_data, paste0(data_folder, pub_day, "/output/", 
-                              pub_day, "_trends-data-level2.csv"))
+save_file(trends_data, "trends-data-level2", "output", "csv")
 
-write_csv(trends_data %>%
+save_file(trends_data %>%
             filter((sub_grp == "All Admissions" &
                       (agg_label == "Hospital" | agg_label == "Board")) |
                      (agg_label == "Scotland" &
                         (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
                      (agg_label == "Board" &
                         (sub_grp == "Discharge" | sub_grp == "Population"))),
-          paste0(data_folder, pub_day, "/output/", 
-                 pub_day, "_trends-data-level1.csv"))
+          "trends-data-level1", "output", "csv")
 
 ### END OF SCRIPT ###

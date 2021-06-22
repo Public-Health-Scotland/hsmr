@@ -125,10 +125,7 @@ table1 <- loadWorkbook(here("reference_files",
 writeData(table1, "funnel_data", smr_data, startCol = 2)
 
 # Output Table 1
-saveWorkbook(table1,
-             paste0(data_folder, pub_day, "/output/", 
-                    pub_day, "-Table1-HSMR.xlsx"),
-             overwrite = TRUE)
+save_file(table1, "Table1-HSMR", "output", "xlsx")
 
 # Load in Table 2 template
 table2 <- loadWorkbook(here("reference_files",
@@ -140,10 +137,7 @@ writeData(table2, "table_data", trend_data %>%
           startCol = 2)
 
 # Output Table 2
-saveWorkbook(table2,
-             paste0(data_folder, pub_day, "/output/", 
-                    pub_day, "-Table2-Crude-Mortality-subgroups.xlsx"),
-             overwrite = TRUE)
+save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx")
 
 # Load in Table 3 template
 table3 <- loadWorkbook(here("reference_files",
@@ -156,16 +150,12 @@ writeData(table3, "data", trend_data %>%
           startCol = 2)
 
 # Output Table 3
-saveWorkbook(table3,
-             paste0(data_folder, pub_day, "/output/", pub_day, 
-                    "-Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx"),
-             overwrite = TRUE)
+save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge", 
+          "output", "xlsx")
 
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid (smr_data, trend_data, end_date)
 
-write_csv(hid_data, 
-          paste0(data_folder, pub_day, "/output/", 
-                 pub_day, "_QHSMR_HID.csv"))
+save_file(hid_data, "QHSMR_HID", "output", "csv")
 
 ### END OF SCRIPT ###
