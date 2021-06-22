@@ -46,7 +46,7 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output", "
     
   } else if (type == "xlsx" & out_folder == "tde") {
     
-    openxlsx::write.xlsx(dataset, filepath)
+    openxlsx::write.xlsx(dataset, filepath, sheetName = filename)
   }
   
 }
