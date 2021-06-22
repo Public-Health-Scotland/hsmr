@@ -237,8 +237,6 @@ covid <- merge(location_template, time_period_template) %>%
   na.omit()
 
 ### SECTION 3 - WRITE CSV ----
-
-write_csv(covid, paste0(data_folder, pub_day, "/output/", 
-                        pub_day, "_COVID-data.csv"))
+save_file(covid, "COVID-data", "output", "csv")
 
 ### END OF SCRIPT ###
