@@ -5,7 +5,7 @@
 #' @param dataset The object that you want to save.
 #' @param filename A \code{character} string with name of output file.
 #' @param outfolder A \code{character} string with name of destination folder.
-#' This can be "base_file" or "output".
+#' This can be "base_file", "tde" or "output".
 #' @param type A \code{character} string with name of file extension. 
 #' This can be csv, rds or xlsx
 #' @param dev A \code{character} string. It add a "dev_version" bit to the filename
@@ -13,7 +13,7 @@
 #'
 #' @export
 
-save_file <- function(dataset, filename, out_folder = c("base_file", "output"), 
+save_file <- function(dataset, filename, out_folder = c("base_file", "output", "tde"), 
                       type = c("csv", "rds", "xlsx"), dev = F) {
   
   dataset <- dataset # brings data object
@@ -22,8 +22,14 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output"),
   
   # Creating dev version of files if required
   if (dev == FALSE) {
-    filepath <- paste0(data_folder, pub_day, "/", out_folder, "/",
-                       pub_day, dash, filename, ".", type)
+    if (out_folder == "tde") {
+      filepath <- paste0(data_folder, pub_day, "/", out_folder, "/",
+                         filename, ".", type)
+    } else {
+      filepath <- paste0(data_folder, pub_day, "/", out_folder, "/",
+                         pub_day, dash, filename, ".", type)
+    }
+    
   } else if (dev == TRUE) {
     filepath <- paste0(data_folder, pub_day,  "/", out_folder, "/",
                        pub_day, dash, filename, "_dev_version.", type)
@@ -35,8 +41,12 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output"),
   } else if (type == "rds") {
     saveRDS(dataset, filepath)
     
-  } else if (type == "xlsx") {
+  } else if (type == "xlsx" & out_folder != "tde") {
     openxlsx::saveWorkbook(dataset, filepath, overwrite = TRUE)
+    
+  } else if (type == "xlsx" & out_folder == "tde") {
+    
+    openxlsx::write.xlsx(dataset, filepath)
   }
   
 }

@@ -7,7 +7,7 @@
 save_file(
   dataset,
   filename,
-  out_folder = c("base_file", "output"),
+  out_folder = c("base_file", "output", "tde"),
   type = c("csv", "rds", "xlsx"),
   dev = F
 )
@@ -24,7 +24,7 @@ This can be csv, rds or xlsx}
 to be able to identify development work}
 
 \item{outfolder}{A \code{character} string with name of destination folder.
-This can be "base_file" or "output".}
+This can be "base_file", "tde" or "output".}
 }
 \description{
 Save files for different types of files and for development work.
