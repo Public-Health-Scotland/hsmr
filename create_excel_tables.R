@@ -19,11 +19,8 @@ source("setup_environment.R")
 
 
 # Read in SMR data, filtered on latest period/reported hospitals
-smr_data          <- read_csv(here("data",
-                                   "output",
-                                   paste0(pub_date(end_date = end_date,
-                                                   pub = "current"),
-                                          "_SMR-data.csv"))) %>%
+smr_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
+                            pub_day, "_SMR-data.csv")) %>%
   mutate(location      = case_when(
     location == "S08000018" ~ "S08000029",
     location == "S08000027" ~ "S08000030",
@@ -83,11 +80,8 @@ smr_data          <- read_csv(here("data",
 ### SECTION 2 - CREATE TABLES ----
 
 # Read in trend data
-trend_data <- read_csv(here("data",
-                            "output",
-                            paste0(pub_date(end_date = end_date,
-                                            pub = "current"),
-                                   "_trends-data-level1.csv")),
+trend_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
+                              pub_day, "_trends-data-level1.csv"),
                        col_types = cols(
                          quarter = col_double(),
                          quarter_short = col_character(),
@@ -131,12 +125,7 @@ table1 <- loadWorkbook(here("reference_files",
 writeData(table1, "funnel_data", smr_data, startCol = 2)
 
 # Output Table 1
-saveWorkbook(table1,
-             here("data",
-                  "output",
-                  paste0(pub_date(end_date, pub = "current"),
-                         "-Table1-HSMR.xlsx")),
-             overwrite = TRUE)
+save_file(table1, "Table1-HSMR", "output", "xlsx")
 
 # Load in Table 2 template
 table2 <- loadWorkbook(here("reference_files",
@@ -148,13 +137,7 @@ writeData(table2, "table_data", trend_data %>%
           startCol = 2)
 
 # Output Table 2
-saveWorkbook(table2,
-             here("data",
-                  "output",
-                  paste0(pub_date(end_date,
-                                  pub = "current"),
-                         "-Table2-Crude-Mortality-subgroups.xlsx")),
-             overwrite = TRUE)
+save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx")
 
 # Load in Table 3 template
 table3 <- loadWorkbook(here("reference_files",
@@ -167,38 +150,12 @@ writeData(table3, "data", trend_data %>%
           startCol = 2)
 
 # Output Table 3
-saveWorkbook(table3,
-             here("data",
-                  "output",
-                  paste0(pub_date(end_date,
-                                  pub = "current"),
-                              paste0("-Table3-Crude-Mortality-population-based",
-                                   "-and-30-day-from-discharge.xlsx"))),
-             overwrite = TRUE)
-
-# Load in NHS Performs file
-nhs_performs_file <- loadWorkbook(here("reference_files",
-                                       "HSMR_NHSPerforms.xlsx"))
-
-writeData(nhs_performs_file, "data_smr",
-          nhs_performs(smr_data, end_date, "hsmr"), startCol = 2)
-
-writeData(nhs_performs_file, "data_crude",
-          nhs_performs(trend_data, end_date, "crude"), startCol = 2)
-
-saveWorkbook(nhs_performs_file,
-             here("data",
-                  "output",
-                  paste0(pub_date(end_date,
-                                  pub = "current"),
-                         "_HSMR_NHSPerforms.xlsx")))
+save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge", 
+          "output", "xlsx")
 
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid (smr_data, trend_data, end_date)
 
-write_csv(hid_data, here("data","output",
-                         paste0(pub_date(end_date=end_date,
-                                         pub="current"),
-                                "_QHSMR_HID.csv")))
+save_file(hid_data, "QHSMR_HID", "output", "csv")
 
 ### END OF SCRIPT ###

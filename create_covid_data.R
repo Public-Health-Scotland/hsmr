@@ -47,10 +47,8 @@ hospitals <- bind_rows(read_spss(paste0(
 ### SECTION 2 - DATA MANIPULATION ----
 
 ### 1 - Read in SMR01 basefile ----
-smr01 <- readRDS(here("data",
-                    "base_files",
-                    paste0(pub_date(end_date = end_date, pub = "current"),
-                           "_SMR01_basefile.rds"))) %>%
+smr01 <- readRDS(paste0(data_folder, pub_day, "/base_files/", 
+                        pub_day, "_SMR01_basefile.rds")) %>%
   tidylog::mutate(quarter_name = paste0(year, "Q", quarter),
                   quarter = as.numeric(as.factor(quarter_name)),
                   month = lubridate::month(admission_date),
@@ -238,11 +236,10 @@ covid <- merge(location_template, time_period_template) %>%
   ungroup() %>%
   na.omit()
 
-### SECTION 3 - WRITE XLSX ----
-
-write_csv(covid, here("data",
-                         "output",
-                         paste0(pub_date(end_date = end_date, pub = "current"),
-                                "_COVID-data.csv")))
+### SECTION 3 - SAVE DATA ----
+# Create TDE files
+# yyyy-mm-dd__COVID-data.csv – Discovery HSMR Level 2 COVID & Discovery HSMR Level 2 COVID Live
+save_file(covid, "Discovery HSMR Level 2 COVID", "tde", "xlsx")
+save_file(covid, "Discovery HSMR Level 2 COVID Live", "tde", "xlsx")
 
 ### END OF SCRIPT ###

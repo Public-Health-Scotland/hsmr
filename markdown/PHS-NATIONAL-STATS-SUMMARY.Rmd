@@ -10,10 +10,8 @@ output:
 source(here::here("setup_environment.R"))
 
 # Read in SMR data, filtered on latest period/reported hospitals
-smr_data          <- read_csv(here("data",
-                                   "output",
-                          paste0(pub_date(end_date = end_date, pub = "current"),
-                                 "_SMR-data.csv"))) %>% 
+smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
+                 pub_day,  "_SMR-data.csv")) %>% 
   filter(period == 3 & 
            location %in% 
            c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H", 
@@ -69,10 +67,10 @@ contact <- data.frame(contact_details_1, contact_details_2, contact_details_3)
 <Div custom-style = "National stats"> 
 #### A National Statistics publication for Scotland
 
-#### Publication date: `r format(pub_date(end_date, "current"), "%d %B %Y")`
+#### Publication date: `r format(pub_day, "%d %B %Y")`
 </div>
 <Div custom-style = "RestrictedStats"> 
-##### RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_date(end_date, "current"), "%d/%m/%Y")`
+##### RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_day, "%d/%m/%Y")`
 </div>
 
 ## About this release

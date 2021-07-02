@@ -20,6 +20,11 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
+# Define the database connection with SMRA 
+smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
+                                            uid=.rs.askForPassword("SMRA Username:"),
+                                            pwd=.rs.askForPassword("SMRA Password:")))
+
 ### 2 - Read in lookup files ----
 
 # Primary Diagnosis Groupings
@@ -130,21 +135,9 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
   clean_names()
 
 # Save basefiles
-
-saveRDS(deaths, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_GRO_deaths.rds")))
-
-saveRDS(smr01, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_SMR01_basefile.rds")))
-
-saveRDS(data_pmorbs, here("data",
-                     "base_files",
-                     paste0(pub_date(end_date = end_date, pub = "current"),
-                            "_SMR01_minus_5_basefile.rds")))
+save_file(deaths, "GRO_deaths", "base_files", "rds")
+save_file(smr01, "SMR01_basefile", "base_files", "rds")
+save_file(data_pmorbs, "SMR01_minus_5_basefile", "base_files", "rds")
 
 
 # 2 - Pipeline ----
@@ -202,17 +195,20 @@ smr_data <- smr_data(smr01 = smr01,
 
 
 ### 3 - Save data ----
-write_csv(smr01 %>%
-            filter(admission_date >= start_date + years(2)),
-            here("data",
-                      "base_files",
-                      paste0(pub_date(end_date = end_date, pub = "current"),
-                             "_SMR-with-predprob.csv")))
+save_file(smr01 %>% filter(admission_date >= start_date + years(2)), 
+          "SMR-with-predprob", "base_files", "csv")
 
-write_csv(smr_data, here("data",
-                         "output",
-                         paste0(pub_date(end_date = end_date, pub = "current"),
-                                "_SMR-data.csv")))
+save_file(smr_data, "SMR-data", "output", "csv")
 
+# File for dashboard, bringing previous publication data and adding new period
+smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
+                                 "/output/", previous_pub, "-SMR-data_dashboard.csv"))
+
+smr_data_dash <- rbind(smr_data, smr_data_dash) 
+
+# Create TDE files
+# yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", "tde", "xlsx")
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", "tde", "xlsx")
 
 ### END OF SCRIPT ###

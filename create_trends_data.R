@@ -20,6 +20,11 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
+# Define the database connection with SMRA 
+smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
+                                            uid=.rs.askForPassword("SMRA Username:"),
+                                            pwd=.rs.askForPassword("SMRA Password:")))
+
 ### 2 - Read in lookup files ----
 
 # Postcode lookups for SIMD 2020, 2016, 2012 and 2009
@@ -174,27 +179,21 @@ trends_data <- create_trends(smr01           = smr01,
 
 ### 3 - Save data ----
 
+trends_data_lvl1 <- trends_data %>%
+  filter((sub_grp == "All Admissions" &
+            (agg_label == "Hospital" | agg_label == "Board")) |
+           (agg_label == "Scotland" &
+              (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
+           (agg_label == "Board" &
+              (sub_grp == "Discharge" | sub_grp == "Population")))
 
-# write CSVs
-write_csv(trends_data, here("data",
-                                    "output",
-                                    paste0(pub_date(end_date = end_date,
-                                                    pub = "current"),
-                                           "_trends-data-level2.csv")))
+# Create TDE files
+# yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", "tde", "xlsx")
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", "tde", "xlsx")
 
-write_csv(trends_data %>%
-            filter((sub_grp == "All Admissions" &
-                      (agg_label == "Hospital" | agg_label == "Board")) |
-                     (agg_label == "Scotland" &
-                        (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
-                     (agg_label == "Board" &
-                        (sub_grp == "Discharge" | sub_grp == "Population")))
-          ,
-          here("data",
-               "output",
-               paste0(pub_date(end_date = end_date,
-                               pub = "current"),
-                      "_trends-data-level1.csv")))
-
+# yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
+save_file(trends_data, "Discovery HSMR Level 2 Trends", "tde", "xlsx")
+save_file(trends_data, "Discovery HSMR Level 2 Trends Live", "tde", "xlsx")
 
 ### END OF SCRIPT ###
