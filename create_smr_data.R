@@ -203,14 +203,17 @@ save_file(smr_data, "SMR-data", "output", "csv")
 
 # File for dashboard, bringing previous publication data and adding new period
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
-                                 "/output/", previous_pub, "-SMR-data_dashboard.csv"))
+                                 "/output/", previous_pub, "-SMR-data_dashboard.csv")) %>% 
+                mutate(completeness_date = paste0(substr(completeness_date,7,10),
+                                                  "-", substr(completeness_date,4,5),
+                                                  "-", substr(completeness_date,1,2)))
 
 smr_data_dash <- rbind(smr_data, smr_data_dash) %>% 
   change_hbcodes(version_to == "14") # Tableau uses 2014 codes, but code produces 2019
 
 # Create TDE files
 # yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", "tde", "xlsx")
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", "tde", "xlsx")
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde", "xlsx")
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde", "xlsx")
 
 ### END OF SCRIPT ###
