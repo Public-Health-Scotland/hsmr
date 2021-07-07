@@ -187,6 +187,9 @@ trends_data_lvl1 <- trends_data %>%
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
 
+# File used for the Excel tables
+save_file(trends_data_lvl1, "trends-data-level1", "output", "csv")
+
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
 save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", "tde", "xlsx")
