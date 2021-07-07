@@ -82,26 +82,6 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
 spec <- read_spss(here("reference_files",
                        "discovery_spec_grps.sav"))
 
-# Hospital names
-hospitals <- bind_rows(read_spss(paste0(
-  plat_filepath,
-  "lookups/Unicode/National Reference Files/",
-  "location.sav")) %>%
-    select(Location, Locname) %>%
-    rename(location      = Location,
-           location_name = Locname),
-  read_spss(paste0(plat_filepath,
-                   "lookups/Unicode/National Reference Files/",
-                   "Health_Board_Identifiers.sav")) %>%
-    select(description, HB_Area_2014) %>%
-    rename(location      = HB_Area_2014,
-           location_name = description),
-  tibble(location = "Scot", location_name = "Scotland"),
-  tibble(location = "S08000029", location_name = "NHS Fife"),
-  tibble(location = "S08000030", location_name = "NHS Tayside"),
-  tibble(location = "S08000031", location_name = "NHS Greater Glasgow & Clyde"),
-  tibble(location = "S08000032", location_name = "NHS Lanarkshire"))
-
 # Population lookups for 2017
 pop_est  <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
