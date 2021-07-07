@@ -29,11 +29,10 @@ locations_excel <- c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F704H',
                      "S08000030", "S08000028", "S08100001",
                      "Scot")
 
-
 # Read in SMR data, filtered on latest period/reported hospitals
 smr_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
                             pub_day, "_SMR-data.csv")) %>%
-  change_hbcodes(version_to == "19") # Making sure using latest codes, maybe not needed
+  change_hbcodes(version_to = "19") %>%  # Making sure using latest codes, maybe not needed
   filter(location %in% locations_excel & period == 3) %>%
   # Calculate funnel limits for funnel plot
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
@@ -77,7 +76,7 @@ trend_data <- read_csv(paste0(data_folder, pub_day, "/output/",
                          quarter_short = col_character(),
                          quarter_full = col_character()
                        )) %>%
-    change_hbcodes(version_to == "19") # using latest HB codes
+    change_hbcodes(version_to = "19") %>%  # using latest HB codes
   filter(location %in% locations_excel & time_period == "Quarter") %>%
   select(hb, location, location_name, agg_label, quarter, quarter_short,
          quarter_full, sub_grp, label, scot_deaths,	scot_pats,
@@ -91,7 +90,7 @@ table1 <- loadWorkbook(here("reference_files",
 writeData(table1, "funnel_data", smr_data, startCol = 2)
 
 # Output Table 1
-save_file(table1, "Table1-HSMR", "output", "xlsx")
+save_file(table1, "Table1-HSMR", "output", "xlsx", dev = F, overwrite = F)
 
 # Load in Table 2 template
 table2 <- loadWorkbook(here("reference_files",
@@ -103,7 +102,8 @@ writeData(table2, "table_data", trend_data %>%
           startCol = 2)
 
 # Output Table 2
-save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx")
+save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx", 
+          dev = F, overwrite = F)
 
 # Load in Table 3 template
 table3 <- loadWorkbook(here("reference_files",
@@ -117,11 +117,11 @@ writeData(table3, "data", trend_data %>%
 
 # Output Table 3
 save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge", 
-          "output", "xlsx")
+          "output", "xlsx", dev = F, overwrite = F)
 
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid (smr_data, trend_data, end_date)
 
-save_file(hid_data, "QHSMR_HID", "output", "csv")
+save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###

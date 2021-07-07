@@ -36,9 +36,9 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output", "
                        pub_day, dash, filename, "_dev_version.", type)
   }
   
-  if (overwrite == F && dir.exists(filepath)) {
-    print("The file already exists, please add the parameter overwrite = TRUE 
-          if you want to overwrite it")
+  if (overwrite == F && file.exists(filepath)) {
+    print("The file already exists, please change the parameter overwrite to = TRUE",
+          "if you want to overwrite it")
   } else {
   
   # Saving file depending on type

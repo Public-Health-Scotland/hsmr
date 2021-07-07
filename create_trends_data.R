@@ -168,15 +168,19 @@ trends_data_lvl1 <- trends_data %>%
               (sub_grp == "Discharge" | sub_grp == "Population")))
 
 # File used for the Excel tables
-save_file(trends_data_lvl1, "trends-data-level1", "output", "csv")
+save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = F)
 
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", "tde", "xlsx")
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", "tde", "xlsx")
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 # yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
-save_file(trends_data, "Discovery HSMR Level 2 Trends", "tde", "xlsx")
-save_file(trends_data, "Discovery HSMR Level 2 Trends Live", "tde", "xlsx")
+save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###

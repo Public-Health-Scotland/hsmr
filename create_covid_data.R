@@ -214,12 +214,14 @@ covid <- merge(location_template, time_period_template) %>%
                   scot_crd_rate=max(scot_crd_rate, na.rm = TRUE)) %>%
   ungroup() %>%
   na.omit() %>% 
-  change_hbcodes(version_to == "14") # Tableau uses 2014 codes, but code produces 2019
+  change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
 
 ### SECTION 3 - SAVE DATA ----
 # Create TDE files
 # yyyy-mm-dd__COVID-data.csv – Discovery HSMR Level 2 COVID & Discovery HSMR Level 2 COVID Live
-save_file(covid, "Discovery HSMR Level 2 COVID", "tde", "xlsx")
-save_file(covid, "Discovery HSMR Level 2 COVID Live", "tde", "xlsx")
+save_file(covid, "Discovery HSMR Level 2 COVID", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(covid, "Discovery HSMR Level 2 COVID Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###
