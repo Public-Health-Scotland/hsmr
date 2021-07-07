@@ -195,6 +195,7 @@ smr_data <- smr_data(smr01 = smr01,
 
 
 ### 3 - Save data ----
+# This is the level 3 caselisting file
 save_file(smr01 %>% filter(admission_date >= start_date + years(2)), 
           "SMR-with-predprob", "base_files", "csv")
 
@@ -204,7 +205,8 @@ save_file(smr_data, "SMR-data", "output", "csv")
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
                                  "/output/", previous_pub, "-SMR-data_dashboard.csv"))
 
-smr_data_dash <- rbind(smr_data, smr_data_dash) 
+smr_data_dash <- rbind(smr_data, smr_data_dash) %>% 
+  change_hbcodes(version_to == "14") # Tableau uses 2014 codes, but code produces 2019
 
 # Create TDE files
 # yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 

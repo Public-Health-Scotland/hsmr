@@ -234,7 +234,8 @@ covid <- merge(location_template, time_period_template) %>%
                   scot_hospital_stays=max(scot_hospital_stays, na.rm = TRUE),
                   scot_crd_rate=max(scot_crd_rate, na.rm = TRUE)) %>%
   ungroup() %>%
-  na.omit()
+  na.omit() %>% 
+  change_hbcodes(version_to == "14") # Tableau uses 2014 codes, but code produces 2019
 
 ### SECTION 3 - SAVE DATA ----
 # Create TDE files
