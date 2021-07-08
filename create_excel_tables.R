@@ -160,52 +160,59 @@ save_file(hid_data, "QHSMR_HID", "output", "csv")
 
 # Open data
 
-write_csv(create_open_data(smr_data,
-                           trend_data,
-                           type = "smr"),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_smr_open_data.csv")))
+develop <- TRUE
 
-write_csv(create_open_data(smr_data,
+# SMR data - Scotland and HB & Hospital
+save_file(create_open_data(smr_data,
+                           trend_data,
+                           type = "smr",
+                           location = "hb"),
+          "smr_open_data_hb", out_folder = "open_data", "csv", dev = develop)
+
+save_file(create_open_data(smr_data,
+                           trend_data,
+                           type = "smr",
+                           location = "hosp"),
+          "smr_open_data_hosp", out_folder = "open_data", "csv", dev = develop)
+
+# All admissions - Scotland and HB & Hospital
+save_file(create_open_data(smr_data,
                            trend_data,
                            type = "crude",
-                           split = "All Admissions"),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_all_admissions_open_data.csv")))
+                           split = "All Admissions",
+                           location = "hb"),
+          "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+save_file(create_open_data(smr_data,
+                           trend_data,
+                           type = "crude",
+                           split = "All Admissions",
+                           location = "hosp"),
+          "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = develop)
+
+# Admission Type
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Admission Type") %>%
-             dplyr::select(-LocationCode) %>%
              dplyr::rename(Country = HBT,
                            AdmissionType = Label)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_admissions_type_open_data.csv")))
+          "admissions_type_open_data", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+# Age Group
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Age Group")%>%
-             dplyr::select(-LocationCode) %>%
              dplyr::rename(Country = HBT,
                            AgeGroup = Label)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_age_group_open_data.csv")))
+          "age_group_open_data", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+# Deprivation
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Deprivation") %>%
-             dplyr::select(-LocationCode) %>%
              dplyr::rename(Country = HBT,
                            SIMDQuintile = Label) %>%
              dplyr::mutate(SIMDQuintile =
@@ -219,54 +226,40 @@ write_csv((create_open_data(smr_data,
              dplyr::select("TimePeriod", "Country", "SIMDQuintile",
                            "SIMDQuintileQF", "NumberOfDeaths",	"NumberOfDeathsQF",
                            "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_simd_open_data.csv")))
+          "simd_open_data", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+# Discharge
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Discharge") %>%
              dplyr::select(-LocationCode)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_discharge_open_data.csv")))
+          "discharge_open_data", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+# Population
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Population") %>%
              dplyr::select(-LocationCode)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_pop_open_data.csv")))
+          "pop_open_data", out_folder = "open_data", "csv", dev = develop)
 
-write_csv((create_open_data(smr_data,
+# Sex
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Sex") %>%
-             dplyr::select(-LocationCode) %>%
              dplyr::rename(Country = HBT,
                            Sex = Label)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_sex_open_data.csv")))
+          "sex_open_data", out_folder = "open_data", "csv", dev = develop)
 
-
-write_csv((create_open_data(smr_data,
+# Specialty
+save_file((create_open_data(smr_data,
                             trend_data,
                             type = "crude",
                             split = "Specialty") %>%
-             dplyr::select(-LocationCode) %>%
              dplyr::rename(Country = HBT,
                            Specialty = Label)),
-          here("data", "output",
-               paste0(pub_date(end_date=end_date,
-                               pub="current"),
-                      "_spec_open_data.csv")))
+          "spec_open_data", out_folder = "open_data", "csv", dev = develop)
 
 ### END OF SCRIPT ###
