@@ -91,27 +91,6 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
 
 rm(simd_2020, simd_2016, simd_2012) # saving a bit of space
 
-# Hospital names
-hospitals <- bind_rows(read_spss(paste0(
-  plat_filepath,
-  "lookups/Unicode/National Reference Files/",
-  "location.sav")) %>%
-    select(Location, Locname) %>%
-    rename(location      = Location,
-           location_name = Locname),
-  read_spss(paste0(plat_filepath,
-                   "lookups/Unicode/National Reference Files/",
-                   "Health_Board_Identifiers.sav")) %>%
-    select(description, HB_Area_2014) %>%
-    rename(location      = HB_Area_2014,
-           location_name = description),
-  tibble(location = "Scot", location_name = "Scotland"),
-  tibble(location = "S08000029", location_name = "NHS Fife"),
-  tibble(location = "S08000030", location_name = "NHS Tayside"),
-  tibble(location = "S08000031", location_name = "NHS Greater Glasgow & Clyde"),
-  tibble(location = "S08000032", location_name = "NHS Lanarkshire"))
-
-
 ### SECTION 2 - DATA EXTRACTION AND MANIPULATION ----
 
 ### 1 - Extract data Extract deaths and SMR01 data from SMRA databases ----
@@ -195,10 +174,11 @@ smr_data <- smr_data(smr01 = smr01,
 
 
 ### 3 - Save data ----
+# This is the level 3 caselisting file
 save_file(smr01 %>% filter(admission_date >= start_date + years(2)), 
           "SMR-with-predprob", "base_files", "csv")
 
-save_file(smr_data, "SMR-data", "output", "csv")
+save_file(smr_data, "SMR-data", "output", "csv", dev = F, overwrite = F)
 
 # File for dashboard, bringing previous publication data and adding new period
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
@@ -207,11 +187,16 @@ smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
                                                   "-", substr(completeness_date,4,5),
                                                   "-", substr(completeness_date,1,2)))
 
-smr_data_dash <- rbind(smr_data, smr_data_dash) 
+smr_data_dash <- rbind(smr_data, smr_data_dash) %>% 
+  change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
+
+save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv", dev = F, overwrite = F)
 
 # Create TDE files
 # yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde", "xlsx")
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde", "xlsx")
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###

@@ -10,11 +10,13 @@
 #' This can be csv, rds or xlsx
 #' @param dev A \code{character} string. It add a "dev_version" bit to the filename
 #' to be able to identify development work
+#' #' @param overwrite A \code{logical} value. To allow overwriting or not of files
 #'
 #' @export
 
+
 save_file <- function(dataset, filename, out_folder = c("base_file", "output", "tde", "open_data"), 
-                      type = c("csv", "rds", "xlsx"), dev = F) {
+                      type = c("csv", "rds", "xlsx"), dev = F, overwrite) {
   
   dataset <- dataset # brings data object
   
@@ -35,6 +37,11 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output", "
                        pub_day, dash, filename, "_dev_version.", type)
   }
   
+  if (overwrite == F && file.exists(filepath)) {
+    print("The file already exists, please change the parameter overwrite to = TRUE",
+          "if you want to overwrite it")
+  } else {
+  
   # Saving file depending on type
   if (type == "csv") {
     readr::write_csv(dataset, filepath)
@@ -49,5 +56,6 @@ save_file <- function(dataset, filename, out_folder = c("base_file", "output", "
     openxlsx::write.xlsx(dataset, filepath, sheetName = filename)
   }
   
+  }
 }
 
