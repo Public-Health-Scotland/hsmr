@@ -13,7 +13,7 @@
 #'
 #' @export
 
-save_file <- function(dataset, filename, out_folder = c("base_file", "output", "tde"), 
+save_file <- function(dataset, filename, out_folder = c("base_file", "output", "tde", "open_data"), 
                       type = c("csv", "rds", "xlsx"), dev = F) {
   
   dataset <- dataset # brings data object
