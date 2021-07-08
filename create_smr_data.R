@@ -190,6 +190,8 @@ smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
 smr_data_dash <- rbind(smr_data, smr_data_dash) %>% 
   change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
 
+save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv", dev = F, overwrite = F)
+
 # Create TDE files
 # yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
 save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde", 
