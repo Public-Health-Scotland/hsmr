@@ -127,19 +127,22 @@ save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 # Open data
 
 develop <- TRUE
+over <- TRUE
 
 # SMR data - Scotland and HB & Hospital
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "smr",
                            location = "hb"),
-          "smr_open_data_hb", out_folder = "open_data", "csv", dev = develop)
+          "smr_open_data_hb", out_folder = "open_data", "csv", 
+          dev = develop, overwrite = over)
 
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "smr",
                            location = "hosp"),
-          "smr_open_data_hosp", out_folder = "open_data", "csv", dev = develop)
+          "smr_open_data_hosp", out_folder = "open_data", "csv", 
+          overwrite = over, dev = develop)
 
 # All admissions - Scotland and HB & Hospital
 save_file(create_open_data(smr_data,
@@ -147,14 +150,16 @@ save_file(create_open_data(smr_data,
                            type = "crude",
                            split = "All Admissions",
                            location = "hb"),
-          "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = develop)
+          "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "crude",
                            split = "All Admissions",
                            location = "hosp"),
-          "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = develop)
+          "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Admission Type
 save_file((create_open_data(smr_data,
@@ -163,7 +168,8 @@ save_file((create_open_data(smr_data,
                             split = "Admission Type") %>%
              dplyr::rename(Country = HBT,
                            AdmissionType = Label)),
-          "admissions_type_open_data", out_folder = "open_data", "csv", dev = develop)
+          "admissions_type_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Age Group
 save_file((create_open_data(smr_data,
@@ -172,7 +178,8 @@ save_file((create_open_data(smr_data,
                             split = "Age Group")%>%
              dplyr::rename(Country = HBT,
                            AgeGroup = Label)),
-          "age_group_open_data", out_folder = "open_data", "csv", dev = develop)
+          "age_group_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Deprivation
 save_file((create_open_data(smr_data,
@@ -192,7 +199,8 @@ save_file((create_open_data(smr_data,
              dplyr::select("TimePeriod", "Country", "SIMDQuintile",
                            "SIMDQuintileQF", "NumberOfDeaths",	"NumberOfDeathsQF",
                            "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")),
-          "simd_open_data", out_folder = "open_data", "csv", dev = develop)
+          "simd_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Discharge
 save_file((create_open_data(smr_data,
@@ -200,7 +208,8 @@ save_file((create_open_data(smr_data,
                             type = "crude",
                             split = "Discharge") %>%
              dplyr::select(-LocationCode)),
-          "discharge_open_data", out_folder = "open_data", "csv", dev = develop)
+          "discharge_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Population
 save_file((create_open_data(smr_data,
@@ -208,7 +217,8 @@ save_file((create_open_data(smr_data,
                             type = "crude",
                             split = "Population") %>%
              dplyr::select(-LocationCode)),
-          "pop_open_data", out_folder = "open_data", "csv", dev = develop)
+          "pop_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Sex
 save_file((create_open_data(smr_data,
@@ -217,7 +227,8 @@ save_file((create_open_data(smr_data,
                             split = "Sex") %>%
              dplyr::rename(Country = HBT,
                            Sex = Label)),
-          "sex_open_data", out_folder = "open_data", "csv", dev = develop)
+          "sex_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 # Specialty
 save_file((create_open_data(smr_data,
@@ -226,6 +237,7 @@ save_file((create_open_data(smr_data,
                             split = "Specialty") %>%
              dplyr::rename(Country = HBT,
                            Specialty = Label)),
-          "spec_open_data", out_folder = "open_data", "csv", dev = develop)
+          "spec_open_data", out_folder = "open_data", "csv", dev = develop,
+          overwrite = over)
 
 ### END OF SCRIPT ###
