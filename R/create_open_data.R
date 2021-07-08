@@ -203,6 +203,38 @@ create_open_data <- function(smr,
     
     return(trends)
     
+  } else if (type == "crude" && split != "Discharge" && split != "Population"){
+    
+    trends %<>%
+      filter(sub_grp == split) %>%
+      dplyr::rename(NumberOfDeaths   = deaths,
+                    NumberOfPatients = pats,
+                    CrudeRate = crd_rate,
+                    LocationCode = location,
+                    Label = label) %>%
+      dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
+                                             LocationCode == "S08100001" ~ "SB0801",
+                                             TRUE ~ LocationCode),
+                    NumberOfDeathsQF = "",
+                    NumberOfPatientsQF = "",
+                    T1 = stringr::str_split(quarter_full,
+                                            " "
+                                            , simplify = TRUE)[,1],
+                    T2 = stringr::str_split(quarter_full,
+                                            " "
+                                            , simplify = TRUE)[,4],
+                    T1 = recode(T1,
+                                "October" = "Q4",
+                                "January" = "Q1",
+                                "April"   = "Q2",
+                                "July"    = "Q3"),
+                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::select("TimePeriod", "LocationCode", "Label",
+                    "NumberOfDeaths",	"NumberOfDeathsQF",
+                    "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
+    
+    return(trends)
+    
   } else if (type == "crude"){
     
     trends %<>%
@@ -244,5 +276,7 @@ create_open_data <- function(smr,
     return(trends)
     
   }
+  
+  
 
 }
