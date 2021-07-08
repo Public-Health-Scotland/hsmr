@@ -32,7 +32,7 @@ create_open_data <- function(smr,
                         'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
                         'W107H', 'Y146H', 'Y144H', 'Z102H')
 
-  if (type == "smr" & location == "hb"){
+    if (type == "smr" && location == "hb" && !(is.null(location))){
 
     smr %<>%
       dplyr::filter(period == 3,
@@ -81,7 +81,7 @@ create_open_data <- function(smr,
 
     return(smr)
 
-  } else if (type == "smr" & location == "hosp"){
+  } else if (type == "smr" && location == "hosp"){
     
     smr %<>%
       dplyr::filter(period == 3,
@@ -127,9 +127,9 @@ create_open_data <- function(smr,
     
     return(smr)
     
-  }
-
-  if(type == "crude" & location == "hb"){
+  } 
+    
+  if(type == "crude" && location == "hb" && !(is.null(location))){
 
     trends %<>%
       filter(sub_grp == split,
@@ -166,7 +166,7 @@ create_open_data <- function(smr,
 
     return(trends)
 
-  } else if(type == "crude" & location == "hosp"){
+  } else if(type == "crude" && location == "hosp" && !(is.null(location))){
     
     trends %<>%
       filter(sub_grp == split,
