@@ -21,7 +21,7 @@
 source("setup_environment.R")
 
 ### 2 - COVID codes ----
-covid_diag_codes <- c("U071", "U072")
+covid_diag_codes <- c("U071", "U072", "U073", "U074", "U075", "U076", "U077")
 
 ### SECTION 2 - DATA MANIPULATION ----
 
