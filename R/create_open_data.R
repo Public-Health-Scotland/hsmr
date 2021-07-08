@@ -81,9 +81,7 @@ create_open_data <- function(smr,
 
     return(smr)
 
-  } 
-  
-  if (type == "smr" & location == "hosp"){
+  } else if (type == "smr" & location == "hosp"){
     
     smr %<>%
       dplyr::filter(period == 3,
@@ -168,9 +166,7 @@ create_open_data <- function(smr,
 
     return(trends)
 
-  } 
-  
-  if(type == "crude" & location == "hosp"){
+  } else if(type == "crude" & location == "hosp"){
     
     trends %<>%
       filter(sub_grp == split,
@@ -207,9 +203,7 @@ create_open_data <- function(smr,
     
     return(trends)
     
-  }  
-  
-  if(type == "crude" & split == "Admission Type"){
+  } else if (type == "crude"){
     
     trends %<>%
       filter(sub_grp == split) %>%
