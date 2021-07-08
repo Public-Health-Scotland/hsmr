@@ -9,7 +9,8 @@ save_file(
   filename,
   out_folder = c("base_file", "output", "tde"),
   type = c("csv", "rds", "xlsx"),
-  dev = F
+  dev = F,
+  overwrite
 )
 }
 \arguments{
@@ -21,7 +22,8 @@ save_file(
 This can be csv, rds or xlsx}
 
 \item{dev}{A \code{character} string. It add a "dev_version" bit to the filename
-to be able to identify development work}
+to be able to identify development work
+#' @param overwrite A \code{logical} value. To allow overwriting or not of files}
 
 \item{outfolder}{A \code{character} string with name of destination folder.
 This can be "base_file", "tde" or "output".}

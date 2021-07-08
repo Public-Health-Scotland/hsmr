@@ -82,26 +82,6 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
 spec <- read_spss(here("reference_files",
                        "discovery_spec_grps.sav"))
 
-# Hospital names
-hospitals <- bind_rows(read_spss(paste0(
-  plat_filepath,
-  "lookups/Unicode/National Reference Files/",
-  "location.sav")) %>%
-    select(Location, Locname) %>%
-    rename(location      = Location,
-           location_name = Locname),
-  read_spss(paste0(plat_filepath,
-                   "lookups/Unicode/National Reference Files/",
-                   "Health_Board_Identifiers.sav")) %>%
-    select(description, HB_Area_2014) %>%
-    rename(location      = HB_Area_2014,
-           location_name = description),
-  tibble(location = "Scot", location_name = "Scotland"),
-  tibble(location = "S08000029", location_name = "NHS Fife"),
-  tibble(location = "S08000030", location_name = "NHS Tayside"),
-  tibble(location = "S08000031", location_name = "NHS Greater Glasgow & Clyde"),
-  tibble(location = "S08000032", location_name = "NHS Lanarkshire"))
-
 # Population lookups for 2017
 pop_est  <- read_spss(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
@@ -187,13 +167,20 @@ trends_data_lvl1 <- trends_data %>%
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
 
+# File used for the Excel tables
+save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = F)
+
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", "tde", "xlsx")
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", "tde", "xlsx")
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 # yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
-save_file(trends_data, "Discovery HSMR Level 2 Trends", "tde", "xlsx")
-save_file(trends_data, "Discovery HSMR Level 2 Trends Live", "tde", "xlsx")
+save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###

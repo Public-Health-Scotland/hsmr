@@ -21,28 +21,7 @@
 source("setup_environment.R")
 
 ### 2 - COVID codes ----
-covid_diag_codes <- c("U071", "U072")
-
-### 3 - Hospital names ----
-hospitals <- bind_rows(read_spss(paste0(
-  plat_filepath,
-  "lookups/Unicode/National Reference Files/",
-  "location.sav")) %>%
-    select(Location, Locname) %>%
-    rename(location      = Location,
-           location_name = Locname),
-  read_spss(paste0(plat_filepath,
-                   "lookups/Unicode/National Reference Files/",
-                   "Health_Board_Identifiers.sav")) %>%
-    select(description, HB_Area_2014) %>%
-    rename(location      = HB_Area_2014,
-           location_name = description),
-  tibble(location = "Scot", location_name = "Scotland"),
-  tibble(location = "S08000029", location_name = "NHS Fife"),
-  tibble(location = "S08000030", location_name = "NHS Tayside"),
-  tibble(location = "S08000031", location_name = "NHS Greater Glasgow & Clyde"),
-  tibble(location = "S08000032", location_name = "NHS Lanarkshire"),
-  tibble(location = "S08100001", location_name = "Golden Jubilee"))
+covid_diag_codes <- c("U071", "U072", "U073", "U074", "U075", "U076", "U077")
 
 ### SECTION 2 - DATA MANIPULATION ----
 
@@ -234,12 +213,15 @@ covid <- merge(location_template, time_period_template) %>%
                   scot_hospital_stays=max(scot_hospital_stays, na.rm = TRUE),
                   scot_crd_rate=max(scot_crd_rate, na.rm = TRUE)) %>%
   ungroup() %>%
-  na.omit()
+  na.omit() %>% 
+  change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
 
 ### SECTION 3 - SAVE DATA ----
 # Create TDE files
 # yyyy-mm-dd__COVID-data.csv – Discovery HSMR Level 2 COVID & Discovery HSMR Level 2 COVID Live
-save_file(covid, "Discovery HSMR Level 2 COVID", "tde", "xlsx")
-save_file(covid, "Discovery HSMR Level 2 COVID Live", "tde", "xlsx")
+save_file(covid, "Discovery HSMR Level 2 COVID", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
+save_file(covid, "Discovery HSMR Level 2 COVID Live", out_folder = "tde", 
+          type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###
