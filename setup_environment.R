@@ -114,5 +114,8 @@ hospitals <- bind_rows(read_spss(paste0(
   tibble(location = "S08000031", location_name = "NHS Greater Glasgow & Clyde"),
   tibble(location = "S08000032", location_name = "NHS Lanarkshire"))
 
+# Specialty Groupings lookup
+specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
+
 
 ### END OF SCRIPT ###

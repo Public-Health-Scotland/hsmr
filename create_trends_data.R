@@ -30,45 +30,37 @@ smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
 # Postcode lookups for SIMD 2020, 2016, 2012 and 2009
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
-simd_2020 <- read_spss(paste0(plat_filepath,
+simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2020_2_simd2020v2.sav")) %>%
+                              "/postcode_2020_2_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
   mutate(year = "simd_2020")
 
-simd_2020[] <- lapply(simd_2020, c) #drop attributes to allow binding
-
-simd_2016 <- read_spss(paste0(plat_filepath,
+simd_2016 <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Deprivation",
-  "/postcode_2019_2_simd2016.sav")) %>%
+  "/postcode_2019_2_simd2016.rds")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
 
-simd_2016[] <- lapply(simd_2016, c) #drop attributes to allow binding
-
-simd_2012 <- read_spss(paste0(plat_filepath,
+simd_2012 <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Deprivation/",
-  "postcode_2016_1_simd2012.sav")) %>%
+  "postcode_2016_1_simd2012.rds")) %>%
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2012_sc_quintile) %>%
   mutate(year = "simd_2012")
 
-simd_2012[] <- lapply(simd_2012, c) #drop attributes to allow binding
-
-simd_2009 <- read_spss(paste0(plat_filepath,
+simd_2009 <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Deprivation/",
-  "postcode_2012_2_simd2009v2.sav")) %>%
+  "postcode_2012_2_simd2009v2.rds")) %>%
   select(PC7, simd2009v2_sc_quintile) %>%
   rename(postcode = PC7,
          simd = simd2009v2_sc_quintile) %>%
   mutate(year = "simd_2009")
-
-simd_2009[] <- lapply(simd_2009, c) #drop attributes to allow binding
 
 # Combine postcode lookups into a single dataset
 # All lookups have labelled variables, and bind_rows() drops the labels
@@ -78,14 +70,10 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
   mutate(simd = as.numeric(simd)) %>%
   pivot_wider(names_from = year, values_from = simd)
 
-# Specialty Groupings lookup
-spec <- read_spss(here("reference_files",
-                       "discovery_spec_grps.sav"))
-
-# Population lookups for 2017
-pop_est  <- read_spss(paste0(plat_filepath,
+# Population lookups, combining both estimations and projections
+pop_est  <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
-  "HB2019_pop_est_1981_2019.sav")) %>%
+  "HB2019_pop_est_1981_2020.rds")) %>%
   clean_names() %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
@@ -93,23 +81,16 @@ pop_est  <- read_spss(paste0(plat_filepath,
   mutate(hb2019 = as.character(hb2019) ) %>%
   rename(hb2014 = hb2019)
 
-pop_est[] <- lapply(pop_est, c) #drop attributes to allow binding
-
-pop_proj <- read_spss(paste0(plat_filepath,
+pop_proj <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
-  "HB2019_pop_proj_2018_2043.sav")) %>%
+  "HB2019_pop_proj_2018_2043.rds")) %>%
   clean_names() %>%
-  filter(year >= 2020) %>%
+  filter(year >= 2021) %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
   ungroup() %>%  rename(hb2014 =hb2019)
 
-pop_proj[] <- lapply(pop_proj, c) #drop attributes to allow binding
-
 # Combine population lookups into one lookup
-# Both lookups have labelled variables, and bind_rows() drops the labels
-# This produces a warning message that vectorising labelled elements may not
-# preserve their attributes, which can be ignored
 pop <- bind_rows(pop_est, pop_proj)
 
 # Aggregate lookup to get Scotland population and append to bottom

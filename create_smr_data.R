@@ -36,56 +36,40 @@ pdiag_grp_data <- read_csv(here("reference_files",
 
 # ICD-10 codes, their Charlson Index Groupings and CIG weights
 morbs <- read_csv(here("reference_files", "morbs.csv")) %>%
-
   # Gather ICD codes into a single column
   gather(code, diag, diag_3:diag_4) %>%
   select(-code) %>%
-
   # Remove all NAs from the ICD-10 column
   filter(!is.na(diag))
-
-
-# Specialty Groupings lookup
-specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
-
 
 # Postcode lookups for SIMD 2020, 2016 and 2012
 # These files will be combined, so create a year variable in each one, to allow
 # them to be differentiated from one another
-simd_2020 <- read_spss(paste0(plat_filepath,
+simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2020_2_simd2020v2.sav")) %>%
+                              "/postcode_2020_2_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
   mutate(year = "simd_2020")
 
-simd_2020[] <- lapply(simd_2020, c) #drop attributes to allow binding
-
-simd_2016 <- read_spss(paste0(plat_filepath,
+simd_2016 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2019_2_simd2016.sav")) %>%
+                              "/postcode_2019_2_simd2016.rds")) %>%
   select(pc7, simd2016_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2016_sc_quintile) %>%
   mutate(year = "simd_2016")
 
-simd_2016[] <- lapply(simd_2016, c) #drop attributes to allow binding
-
-simd_2012 <- read_spss(paste0(plat_filepath,
+simd_2012 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation/",
-                              "postcode_2016_1_simd2012.sav")) %>%
+                              "postcode_2016_1_simd2012.rds")) %>%
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2012_sc_quintile) %>%
   mutate(year = "simd_2012") 
 
-simd_2012[] <- lapply(simd_2012, c) #drop attributes to allow binding
-
 # Combine postcode lookups into a single dataset
-# Both lookups have labelled variables, and bind_rows() drops the labels
-# This produces a warning message that vectorising labelled elements may not
-# preserve their attributes, which can be ignored
 simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
   pivot_wider(names_from = year, values_from = simd)
 
