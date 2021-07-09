@@ -114,9 +114,10 @@ data_pmorbs <- as_tibble(dbGetQuery(smra_connect,
   clean_names()
 
 # Save basefiles
-save_file(deaths, "GRO_deaths", "base_files", "rds")
-save_file(smr01, "SMR01_basefile", "base_files", "rds")
-save_file(data_pmorbs, "SMR01_minus_5_basefile", "base_files", "rds")
+save_file(deaths, "GRO_deaths", "base_files", "rds",  dev = F, overwrite = F)
+save_file(smr01, "SMR01_basefile", "base_files", "rds",  dev = F, overwrite = F)
+save_file(data_pmorbs, "SMR01_minus_5_basefile", "base_files", "rds",
+          dev = F, overwrite = F)
 
 
 # 2 - Pipeline ----
