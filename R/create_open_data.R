@@ -1,24 +1,33 @@
 #' @title Open Data
 #'
-#' @description tba.
+#' @description Creates csv files used by the open data team to populate  
+#' open data website.
 #'
-#' @details tba.
+#' @details \code{create_open_data} expects a \code{tibble} produced by the 
+#' \code{create_smr_data} script and a \code{tibble} produced by the
+#' \code{create_trends_data} script.
 #'
-#' @param data tba.
-#'
-#' @return tba.
+#' @param smr Input tibble for HSMR data.
+#' @param trends Input tibble for crude trend data.
+#' @param type A character string specifying whether the data used is to be
+#' HSMR or crude trend data. Valid options are 'smr' and 'crude'.
+#' @param split A character string specifying the subgroup to be used to split 
+#' the crude data files. Default value is NULL.
+#' @param location A character string specifying whether the resulting tibble
+#' should include data for hospitals or Health Boards & Scotland. Default value
+#' is NULL. If not NULL, valid options are 'hb' and 'hosp'.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #'
 #' @export
 
+
 create_open_data <- function(smr,
                              trends,
                              type = c("smr", "crude"),
                              split = NULL,
-                             location = NULL,
-                             time = NULL){
+                             location = NULL){
   
   locations_HB <- c("S08000015", "S08000016", "S08000017", "S08000029",
                        "S08000019", "S08000020", "S08000031", "S08000022",
