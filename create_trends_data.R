@@ -20,7 +20,7 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
-# Define the database connection with SMRA 
+# Define the database connection with SMRA
 smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
                                             uid=.rs.askForPassword("SMRA Username:"),
                                             pwd=.rs.askForPassword("SMRA Password:")))
@@ -32,7 +32,7 @@ smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2020_2_simd2020v2.rds")) %>%
+                              "/postcode_2021_1_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
@@ -153,15 +153,15 @@ save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, over
 
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde", 
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde", 
+save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 
 # yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
-save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde", 
+save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
-save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde", 
+save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###
