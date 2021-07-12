@@ -4,11 +4,12 @@ Date: 2019-07-17
 Title: Reproducible Analytical Pipeline of Hospital Standardised Mortality Ratios Quarterly Publication
 Authors@R: c(person("David", "Caldwell", email = "david.caldwell@phs.scot", role = c("aut", "cre")),
              person("Anna", "Price", email = "anna.price5@nhs.net", role = "aut"),
-             person("Jack", "Hannah", email = "jack.hannah1@nhs.net", role = "aut"),
+             person("Jack", "Hannah", email = "jack.hannah2@phs.scot", role = "aut"),
              person("Robyn", "Munro", email = "robyn.munro@phs.scot", role = "aut"),
-             person("Lucinda", "Lawrie", email = "lucinda.lawrie@phs.scot", role = "aut"))
+             person("Lucinda", "Lawrie", email = "lucinda.lawrie@phs.scot", role = "aut")
+             person("Jaime", "Villacampa", email = "jaime.villacampa@phs.scot", role "aut"))
 Description: Extracts, processes and models SMR01 and GRO Deaths data in order to produce the quarterly Hospital Standardised Mortality Ratios publication.
-Maintainer: David Caldwell <david.caldwell1@nhs.net>
+Maintainer: PHS Quality Indicators team <phs.qualityindicators@phs.scot>
 Depends: R (>= 3.2.3)
 Imports: 
     data.table, 
@@ -37,4 +38,4 @@ Imports:
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1

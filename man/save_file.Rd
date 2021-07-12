@@ -7,7 +7,7 @@
 save_file(
   dataset,
   filename,
-  out_folder = c("base_file", "output", "tde"),
+  out_folder = c("base_file", "output", "tde", "open_data"),
   type = c("csv", "rds", "xlsx"),
   dev = F,
   overwrite
