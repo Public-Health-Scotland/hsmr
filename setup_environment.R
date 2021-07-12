@@ -63,22 +63,22 @@ Sys.umask("006")
 
 
 # The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01012018)
+start_date        <- lubridate::dmy(01042018)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01012016)
+start_date_trends <- lubridate::dmy(01042016)
 
 # The end of the baseline period (for model)
-base_end          <- lubridate::dmy(31122020)
+base_end          <- lubridate::dmy(31032021)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01012013)
+start_date_5      <- lubridate::dmy(01042013)
 
 # First day of latest quarter in current publication
-qtr_start         <- lubridate::dmy(01102020)
+qtr_start         <- lubridate::dmy(01012021)
 
 # End date for the cut off for data
-end_date          <- lubridate::dmy(31122020)
+end_date          <- lubridate::dmy(31032021)
 
 # Publication date
 pub_day <- pub_date(end_date = end_date, pub = "current")
