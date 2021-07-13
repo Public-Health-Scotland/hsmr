@@ -130,7 +130,8 @@ save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "smr",
-                           location = "hb"),
+                           location = "hb") %>% 
+          dplyr::rename(HBT = LocationCode),
           "smr_open_data_hb", out_folder = "open_data", "csv", dev = F, 
           overwrite = F)
 
@@ -147,7 +148,8 @@ save_file(create_open_data(smr_data,
                            type = "crude",
                            split = "All Admissions",
                            location = "hb") %>% 
-            dplyr::rename(Subgroup = Label),
+            dplyr::rename(Subgroup = Label,
+                          HBT = LocationCode),
           "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
 
