@@ -6,8 +6,8 @@ Authors@R: c(person("David", "Caldwell", email = "david.caldwell@phs.scot", role
              person("Anna", "Price", email = "anna.price5@nhs.net", role = "aut"),
              person("Jack", "Hannah", email = "jack.hannah1@nhs.net", role = "aut"),
              person("Robyn", "Munro", email = "robyn.munro@phs.scot", role = "aut"),
-             person("Lucinda", "Lawrie", email = "lucinda.lawrie@phs.scot", role = "aut")
-             person("Jaime", "Villacampa", email = "jaime.villacampa@phs.scot", role "aut"))
+             person("Lucinda", "Lawrie", email = "lucinda.lawrie@phs.scot", role = "aut"),
+             person("Jaime", "Villacampa", email = "jaime.villacampa@phs.scot", role = "aut"))
 Description: Extracts, processes and models SMR01 and GRO Deaths data in order to produce the quarterly Hospital Standardised Mortality Ratios publication.
 Maintainer: David Caldwell <david.caldwell1@nhs.net>
 Depends: R (>= 3.2.3)

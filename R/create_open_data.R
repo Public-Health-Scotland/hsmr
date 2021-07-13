@@ -251,19 +251,15 @@ create_open_data <- function(smr,
       dplyr::rename(NumberOfDeaths   = deaths,
                     NumberOfPatients = pats,
                     CrudeRate = crd_rate,
-                    LocationCode = location,
                     Label = label,
                     HBT = hb) %>%
-      dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
-                                             LocationCode == "S08100001" ~ "SB0801",
-                                             TRUE ~ LocationCode),
-                    HBT = case_when(HBT == "Scotland" ~ "S92000003",
+      dplyr::mutate(HBT = case_when(HBT == "Scotland" ~ "S92000003",
                                     HBT == "S08100001" ~ "SB0801",
                                     TRUE ~ HBT),
-                    NumberOfDeathsQF = case_when(LocationCode ==
+                    NumberOfDeathsQF = case_when(HBT ==
                                                    "S92000003" ~ "d",
                                                  TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(LocationCode ==
+                    NumberOfPatientsQF = case_when(HBT ==
                                                      "S92000003" ~ "d",
                                                    TRUE ~ ""),
                     T1 = stringr::str_split(quarter_full,
@@ -278,7 +274,7 @@ create_open_data <- function(smr,
                                 "April"   = "Q2",
                                 "July"    = "Q3"),
                     TimePeriod = paste0(T2, T1)) %>%
-      dplyr::select("TimePeriod", "HBT", "LocationCode", "Label",
+      dplyr::select("TimePeriod", "HBT", "Label",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
     
