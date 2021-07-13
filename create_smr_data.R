@@ -20,7 +20,7 @@
 ### 1 - Load environment file ----
 source("setup_environment.R")
 
-# Define the database connection with SMRA 
+# Define the database connection with SMRA
 smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
                                             uid=.rs.askForPassword("SMRA Username:"),
                                             pwd=.rs.askForPassword("SMRA Password:")))
@@ -47,7 +47,7 @@ morbs <- read_csv(here("reference_files", "morbs.csv")) %>%
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2020_2_simd2020v2.rds")) %>%
+                              "/postcode_2021_1_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
@@ -67,7 +67,7 @@ simd_2012 <- readRDS(paste0(plat_filepath,
   select(pc7, simd2012_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2012_sc_quintile) %>%
-  mutate(year = "simd_2012") 
+  mutate(year = "simd_2012")
 
 # Combine postcode lookups into a single dataset
 simd_all <- bind_rows(simd_2020, simd_2016, simd_2012) %>%
@@ -160,28 +160,28 @@ smr_data <- smr_data(smr01 = smr01,
 
 ### 3 - Save data ----
 # This is the level 3 caselisting file
-save_file(smr01 %>% filter(admission_date >= start_date + years(2)), 
-          "SMR-with-predprob", "base_files", "csv")
+save_file(smr01 %>% filter(admission_date >= start_date + years(2)),
+          "SMR-with-predprob", "base_files", "csv", dev = F, overwrite = F)
 
 save_file(smr_data, "SMR-data", "output", "csv", dev = F, overwrite = F)
 
 # File for dashboard, bringing previous publication data and adding new period
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
-                                 "/output/", previous_pub, "-SMR-data_dashboard.csv")) %>% 
+                                 "/output/", previous_pub, "-SMR-data_dashboard.csv")) %>%
                 mutate(completeness_date = paste0(substr(completeness_date,7,10),
                                                   "-", substr(completeness_date,4,5),
                                                   "-", substr(completeness_date,1,2)))
 
-smr_data_dash <- rbind(smr_data, smr_data_dash) %>% 
+smr_data_dash <- rbind(smr_data, smr_data_dash) %>%
   change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
 
 save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv", dev = F, overwrite = F)
 
 # Create TDE files
-# yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live 
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde", 
+# yyyy-mm-dd_SMR-data_dashboard.csv – Discovery HSMR Level 1 SMR & Discovery HSMR Level 1 SMR Live
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
-save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde", 
+save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###
