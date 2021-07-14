@@ -91,6 +91,7 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day, "/base_files"))
   dir.create(paste0(data_folder, pub_day, "/tde"))
   dir.create(paste0(data_folder, pub_day, "/output"))
+  dir.create(paste0(data_folder, pub_day, "/open_data"))
 }
 
 ## 5 - Load common lookups to all scripts ----
