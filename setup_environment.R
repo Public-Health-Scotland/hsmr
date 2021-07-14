@@ -88,7 +88,7 @@ previous_pub <- pub_date(end_date, "previous")
 #  If the folder doesn't exist creates it and subfolders too
 if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day))
-  dir.create(paste0(data_folder, pub_day, "/basefiles"))
+  dir.create(paste0(data_folder, pub_day, "/base_files"))
   dir.create(paste0(data_folder, pub_day, "/tde"))
   dir.create(paste0(data_folder, pub_day, "/output"))
 }
