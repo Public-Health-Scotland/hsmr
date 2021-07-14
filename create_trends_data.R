@@ -57,8 +57,8 @@ simd_2012 <- readRDS(paste0(plat_filepath,
 simd_2009 <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Deprivation/",
   "postcode_2012_2_simd2009v2.rds")) %>%
-  select(PC7, simd2009v2_sc_quintile) %>%
-  rename(postcode = PC7,
+  select(pc7, simd2009v2_sc_quintile) %>%
+  rename(postcode = pc7,
          simd = simd2009v2_sc_quintile) %>%
   mutate(year = "simd_2009")
 
