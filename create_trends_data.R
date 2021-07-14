@@ -134,7 +134,7 @@ trends_data <- create_trends(smr01           = smr01,
                              gro             = gro,
                              pop             = pop,
                              dep             = simd_all,
-                             spec            = spec,
+                             spec            = specialty_group,
                              hospital_lookup = hospitals)
 
 
