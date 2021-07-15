@@ -4,12 +4,15 @@
 \alias{change_hbcodes}
 \title{Change health boards codes from 2019 version to the 2014 one.}
 \usage{
-change_hbcodes(dataset, version_to)
+change_hbcodes(dataset, version_to, code_cols = c("location", "hb"))
 }
 \arguments{
 \item{dataset}{The object that you want to save.}
 
 \item{version_to}{If you want to go 14 to 19 or 19 to 14.}
+
+\item{code_cols}{Character vector of names for the columns in dataset that
+contain codes to change. Optional - will default to "location" and "hb".}
 }
 \description{
 # Tableau uses 2014 codes, but code produces 2019. Changing from

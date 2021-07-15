@@ -42,12 +42,12 @@ qtr <- function(first_day, format = c("long", "short")) {
     stop("The first day of the quarter must be provided in date format")
   }
 
-  if(!(format(first_day, "%d %B") %in% c("01 January",
-                                         "01 April",
-                                         "01 July",
-                                         "01 October"))) {
+  if (any(!(format(first_day, "%d %B") %in% c("01 January",
+                                              "01 April",
+                                              "01 July",
+                                              "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   if (format == "long") {
@@ -79,12 +79,12 @@ qtr_end <- function(first_day, quarter = c("current", "next")) {
     stop("The first day of the quarter must be provided in date format")
   }
 
-  if(!(format(first_day, "%d %B") %in% c("01 January",
-                                         "01 April",
-                                         "01 July",
-                                         "01 October"))) {
+  if (any(!(format(first_day, "%d %B") %in% c("01 January",
+                                              "01 April",
+                                              "01 July",
+                                              "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   if (quarter == "current") {
@@ -106,12 +106,12 @@ qtr_prev <- function(first_day) {
     stop("The first day of the quarter must be provided in date format")
   }
 
-  if(!(format(first_day, "%d %B") %in% c("01 January",
-                                         "01 April",
-                                         "01 July",
-                                         "01 October"))) {
+  if (any(!(format(first_day, "%d %B") %in% c("01 January",
+                                              "01 April",
+                                              "01 July",
+                                              "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   paste0(as.character(lubridate::month(first_day - months(3),
