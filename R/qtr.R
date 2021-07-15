@@ -47,7 +47,7 @@ qtr <- function(first_day, format = c("long", "short")) {
                                               "01 July",
                                               "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   if (format == "long") {
@@ -84,7 +84,7 @@ qtr_end <- function(first_day, quarter = c("current", "next")) {
                                               "01 July",
                                               "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   if (quarter == "current") {
@@ -111,7 +111,7 @@ qtr_prev <- function(first_day) {
                                               "01 July",
                                               "01 October")))) {
     stop("The beginning of a quarter must be the first day of either January, ",
-         "April, September or December")
+         "April, July or October")
   }
 
   paste0(as.character(lubridate::month(first_day - months(3),
