@@ -63,9 +63,6 @@ simd_2009 <- readRDS(paste0(plat_filepath,
   mutate(year = "simd_2009")
 
 # Combine postcode lookups into a single dataset
-# All lookups have labelled variables, and bind_rows() drops the labels
-# This produces a warning message that vectorising labelled elements may not
-# preserve their attributes, which can be ignored
 simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
   mutate(simd = as.numeric(simd)) %>%
   pivot_wider(names_from = year, values_from = simd)
