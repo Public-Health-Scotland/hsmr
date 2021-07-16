@@ -120,7 +120,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
              Topic       = "HSMR",
              Indicator   = "HSMR",
             # Dealing with cases when month is one or two digits
-             date_label = case_when(lubridate::month(end_date) - 2 == 1 ~
+            date_label = case_when(nchar(lubridate::month(end_date) - 2) == 1 ~
                                      paste("01", paste0("0", lubridate::month(end_date) - 2),
                                            lubridate::year(end_date), sep = "/"),
                                    T ~ paste("01", lubridate::month(end_date) - 2,
