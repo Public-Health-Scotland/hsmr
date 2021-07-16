@@ -125,6 +125,16 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     # Sorting data by link_no, cis_marker, adm_date and dis_date
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date)
+  
+  # Formatting deaths data for aggregations later on
+  gro %<>% 
+    tidylog::group_by(quarter, year) %>%
+    tidylog::mutate(adm_first = min(date_of_death)) %>%
+    tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
+                    quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
+    dplyr::ungroup() %>%
+    tidylog::filter(date_of_death > end_date - years(5)) %>% 
+    tidylog::filter(date_of_death <= end_date ) # excluding out of publication period records
 
   ### 2 - SIMD ----
 
@@ -966,12 +976,6 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Population-based mortality ----
   scot_pop <- gro %>%
-    tidylog::group_by(quarter, year) %>%
-    tidylog::mutate(adm_first = min(date_of_death)) %>%
-    tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
-                    quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
-    dplyr::ungroup() %>%
-    tidylog::filter(date_of_death > end_date - years(5)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short) %>%
     tidylog::summarise(deaths = length(year),
                        scot_deaths = length(year)) %>%
@@ -981,12 +985,6 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     agg_label = "Scotland")
 
   hb_pop <- gro %>%
-    tidylog::group_by(quarter, year) %>%
-    tidylog::mutate(adm_first = min(date_of_death)) %>%
-    tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
-                    quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
-    dplyr::ungroup() %>%
-    tidylog::filter(date_of_death > end_date - years(5)) %>%
     tidylog::group_by(year, quarter, quarter_full, quarter_short,
                       hbres_currentdate) %>%
     tidylog::summarise(deaths = length(year)) %>%
