@@ -3,7 +3,8 @@
 .RData
 .Ruserdata
 *.Rproj
-odbc_connect.R
+odbc_connect.
+testing.R
 
 # 'data' folder #
 data/
