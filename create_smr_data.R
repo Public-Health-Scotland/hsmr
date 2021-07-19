@@ -177,6 +177,7 @@ smr_data_dash <- rbind(smr_data, smr_data_dash) %>%
   filter(location %in% locations_filter) %>%
   change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
 
+# Used for the offline dashboard
 save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv", dev = F, overwrite = F)
 
 # Create TDE files
