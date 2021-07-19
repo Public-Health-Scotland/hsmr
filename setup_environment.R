@@ -119,4 +119,19 @@ hospitals <- bind_rows(read_spss(paste0(
 specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
 
 
+## 6 - Select locations to be included in excel tables/dashboard files ----
+
+# List of locations included in the Excel tables/dashboard files
+locations_filter <- c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F704H',
+                      'G107H', 'C313H', 'G405H', 'C418H', 'H212H', 'H103H', 'C121H',
+                      'H202H', 'L302H', 'L106H', 'L308H', 'N101H', 'N411H', 'R103H',
+                      'S314H', 'S308H', 'S116H', 'T101H', 'T202H', 'T312H', 'V217H',
+                      'W107H', 'Y146H', 'Y144H', 'Z102H',
+                      "S08000015", "S08000016", "S08000017", "S08000029",
+                      "S08000019", "S08000020", "S08000031", "S08000022",
+                      "S08000032", "S08000024", "S08000025", "S08000026",
+                      "S08000030", "S08000028", "S08100001",
+                      "Scot")
+
+
 ### END OF SCRIPT ###
