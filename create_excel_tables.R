@@ -30,7 +30,7 @@ locations_excel <- c('A101H', 'A111H', 'A210H', 'B120H', 'D102H', 'F704H',
                      "Scot")
 
 # Read in SMR data, filtered on latest period/reported hospitals
-smr_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
+smr_data <- read_csv(paste0(data_folder, pub_day, "/output/",
                             pub_day, "_SMR-data.csv")) %>%
   change_hbcodes(version_to = "19") %>%  # Making sure using latest codes, maybe not needed
   filter(location %in% locations_excel & period == 3) %>%
@@ -69,7 +69,7 @@ smr_data <- read_csv(paste0(data_folder, pub_day, "/output/",
 ### SECTION 2 - CREATE TABLES ----
 
 # Read in trend data
-trend_data <- read_csv(paste0(data_folder, pub_day, "/output/", 
+trend_data <- read_csv(paste0(data_folder, pub_day, "/output/",
                               pub_day, "_trends-data-level1.csv"),
                        col_types = cols(
                          quarter = col_double(),
@@ -87,7 +87,10 @@ table1 <- loadWorkbook(here("reference_files",
                             "Table1-HSMR.xlsx"))
 
 # Write data to data tab in Table 1
-writeData(table1, "funnel_data", smr_data, startCol = 2)
+writeData(table1, "Raw Data", smr_data, startCol = 2)
+
+# Hide lookup sheets
+sheetVisibility(table1)[4:6] = FALSE
 
 # Output Table 1
 save_file(table1, "Table1-HSMR", "output", "xlsx", dev = F, overwrite = F)
@@ -97,12 +100,15 @@ table2 <- loadWorkbook(here("reference_files",
                             "Table2-Crude-Mortality-subgroups.xlsx"))
 
 # Write data to data tab in Table 2
-writeData(table2, "table_data", trend_data %>%
+writeData(table2, "Raw Data", trend_data %>%
             filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
 
+# Hide lookup sheets
+sheetVisibility(table2)[9:11] = FALSE
+
 # Output Table 2
-save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx", 
+save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx",
           dev = F, overwrite = F)
 
 # Load in Table 3 template
@@ -111,16 +117,19 @@ table3 <- loadWorkbook(here("reference_files",
                                    "-and-30-day-from-discharge.xlsx")))
 
 # Write data to data tab in Table 3
-writeData(table3, "data", trend_data %>%
+writeData(table3, "Raw Data", trend_data %>%
             filter(sub_grp %in% c("Discharge", "Population")),
           startCol = 2)
 
+# Hide lookup sheets
+sheetVisibility(table3)[4] = FALSE
+
 # Output Table 3
-save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge", 
+save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge",
           "output", "xlsx", dev = F, overwrite = F)
 
 # Load in Hopsital Intelligence Dashboard file
-hid_data <- hsmr_hid (smr_data, trend_data, end_date)
+hid_data <- hsmr_hid(smr_data, trend_data, end_date)
 
 save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 
@@ -130,16 +139,16 @@ save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "smr",
-                           location = "hb") %>% 
+                           location = "hb") %>%
           dplyr::rename(HBT = LocationCode),
-          "smr_open_data_hb", out_folder = "open_data", "csv", dev = F, 
+          "smr_open_data_hb", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
 
 save_file(create_open_data(smr_data,
                            trend_data,
                            type = "smr",
                            location = "hosp"),
-          "smr_open_data_hosp", out_folder = "open_data", "csv", dev = F, 
+          "smr_open_data_hosp", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
 
 # All admissions - Scotland and HB & Hospital
@@ -147,7 +156,7 @@ save_file(create_open_data(smr_data,
                            trend_data,
                            type = "crude",
                            split = "All Admissions",
-                           location = "hb") %>% 
+                           location = "hb") %>%
             dplyr::rename(Subgroup = Label,
                           HBT = LocationCode),
           "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = F,
@@ -157,7 +166,7 @@ save_file(create_open_data(smr_data,
                            trend_data,
                            type = "crude",
                            split = "All Admissions",
-                           location = "hosp") %>% 
+                           location = "hosp") %>%
             dplyr::rename(Subgroup = Label),
           "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
@@ -207,7 +216,7 @@ save_file((create_open_data(smr_data,
 save_file(create_open_data(smr_data,
                             trend_data,
                             type = "crude",
-                            split = "Discharge") %>% 
+                            split = "Discharge") %>%
             dplyr::rename(Subgroup = Label),
           "discharge_open_data", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
@@ -216,7 +225,7 @@ save_file(create_open_data(smr_data,
 save_file(create_open_data(smr_data,
                             trend_data,
                             type = "crude",
-                            split = "Population") %>% 
+                            split = "Population") %>%
             dplyr::rename(Subgroup = Label),
           "pop_open_data", out_folder = "open_data", "csv", dev = F,
           overwrite = F)
