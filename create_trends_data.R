@@ -151,7 +151,7 @@ trends_data_lvl1 <- trends_data %>%
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
 
-# File used for the Excel tables
+# File used for the Excel tables and offline dashboard
 save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = F)
 
 # Create TDE files
@@ -166,5 +166,8 @@ save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
+# Used for the offline dashboard
+save_file(trends_data, "trends-data-level2", out_folder = "output",
+          type = "csv", dev = F, overwrite = F)
 
 ### END OF SCRIPT ###

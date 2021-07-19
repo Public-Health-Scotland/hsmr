@@ -230,4 +230,8 @@ save_file(covid, "Discovery HSMR Level 2 COVID", out_folder = "tde",
 save_file(covid, "Discovery HSMR Level 2 COVID Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 
+# Used for the offline dashboard
+save_file(covid, "COVID-data", out_folder = "output",
+          type = "csv", dev = F, overwrite = F)
+
 ### END OF SCRIPT ###
