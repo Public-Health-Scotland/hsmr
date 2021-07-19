@@ -1199,7 +1199,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Merge monthly and quarterly together
   trend_data <- bind_rows(trend_data_month,trend_data_quarter) %>%
-    change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
+    change_hbcodes(version_to = "19")
 
   return(trend_data)
 

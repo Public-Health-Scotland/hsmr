@@ -135,10 +135,9 @@ trends_data <- create_trends(smr01           = smr01,
                              hospital_lookup = hospitals)
 
 trends_data %<>%
-  # Location filtering uses 2019 codes, create_trends returns 2014 codes
-  change_hbcodes(version_to = "19") %>%
   # Required locations specified in setup_environment
   filter(location %in% locations_filter) %>%
+  # Tableau uses 2014 codes, but code produces 2019
   change_hbcodes(version_to = "14")
 
 
