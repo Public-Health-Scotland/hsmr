@@ -138,9 +138,10 @@ covid_scot_m <- covid_extract %>%
                   crd_rate = scot_crd_rate,
                   hb_name = "Scotland",
                   hosp_name = "Scotland",
-                  hb_code_9 = "Scot") %>%
+                  hb_code_9 = "Scot",
+                  hosp = "Scot") %>%
   dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
+  tidylog::select(hb_name, hosp_name, hosp, month, month_label, covid_stays, hosp_stays,
                   crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
@@ -155,16 +156,17 @@ covid_hb_m <- covid_extract %>%
                   scot_crd_rate = 0,
                   crd_rate = (covid_stays/hosp_stays) * 100,
                   hosp_name = hb_name,
-                  hb_code_9 = hb) %>%
+                  hb_code_9 = hb,
+                  hosp = hb) %>%
   dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
+  tidylog::select(hb_name, hosp_name, hosp, month, month_label, covid_stays, hosp_stays,
                   crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
 ### Create hosp-level aggregation ----
 
 covid_hosp_m <- covid_extract %>%
-  tidylog::group_by(month, month_label, hb_name, hb, hosp_name) %>%
+  tidylog::group_by(month, month_label, hb_name, hb, hosp_name, hosp) %>%
   tidylog::summarise(covid_stays = sum(covid),
                      hosp_stays = max(hosp_total)) %>%
   tidylog::mutate(scot_covid_stays = 0,
@@ -173,7 +175,7 @@ covid_hosp_m <- covid_extract %>%
                   crd_rate = (covid_stays/hosp_stays) * 100,
                   hb_code_9 = hb) %>%
   dplyr::ungroup() %>%
-  tidylog::select(hb_name, hosp_name, month, month_label, covid_stays, hosp_stays,
+  tidylog::select(hb_name, hosp_name, hosp, month, month_label, covid_stays, hosp_stays,
                   crd_rate, scot_covid_stays, scot_hospital_stays, scot_crd_rate, hb_code_9) %>%
   dplyr::arrange(month)
 
@@ -214,6 +216,9 @@ covid <- merge(location_template, time_period_template) %>%
                   scot_crd_rate=max(scot_crd_rate, na.rm = TRUE)) %>%
   ungroup() %>%
   na.omit() %>%
+  # Required locations specified in setup_environment
+  filter(hosp %in% locations_filter) %>%
+  select(-hosp) %>%
   # Tableau uses 2014 codes, but code produces 2019
   change_hbcodes(version_to = "14", code_cols = "hb_code_9")
 

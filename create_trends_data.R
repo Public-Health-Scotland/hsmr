@@ -134,6 +134,12 @@ trends_data <- create_trends(smr01           = smr01,
                              spec            = specialty_group,
                              hospital_lookup = hospitals)
 
+trends_data =
+  # Required locations specified in setup_environment
+  filter(location %in% locations_filter) %>%
+  # Tableau uses 2014 codes, but code produces 2019
+  change_hbcodes(version_to = "14")
+
 
 ### 3 - Save data ----
 

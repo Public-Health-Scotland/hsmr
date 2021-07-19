@@ -125,15 +125,15 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
     # Sorting data by link_no, cis_marker, adm_date and dis_date
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date)
-  
+
   # Formatting deaths data for aggregations later on
-  gro %<>% 
+  gro %<>%
     tidylog::group_by(quarter, year) %>%
     tidylog::mutate(adm_first = min(date_of_death)) %>%
     tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
                     quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
     dplyr::ungroup() %>%
-    tidylog::filter(date_of_death > end_date - years(5)) %>% 
+    tidylog::filter(date_of_death > end_date - years(5)) %>%
     tidylog::filter(date_of_death <= end_date ) # excluding out of publication period records
 
   ### 2 - SIMD ----
@@ -1198,8 +1198,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     mutate(time_period = "Month")
 
   # Merge monthly and quarterly together
-  trend_data <- bind_rows(trend_data_month,trend_data_quarter) %>% 
-    change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
+  trend_data <- bind_rows(trend_data_month,trend_data_quarter)
 
   return(trend_data)
 
