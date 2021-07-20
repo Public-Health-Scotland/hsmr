@@ -445,7 +445,7 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude Rate per 1,000 People") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -535,11 +535,12 @@ ggsave("Chart_10.svg", plot = chart_10, width = 17.49, height = 9.03,
 ```
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
+pub_url = 
+  paste0("https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios/hospital-standardised-mortality-ratios-",
+         tolower(format(end_date %m+% months(-11), "%B-%Y")), "-to-", tolower(format(end_date, "%B-%Y")), "/")
+
 url_list <- data.frame(a = c(1, 2, 3, 4), 
-             url = c(paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/"), 
-                     paste0("https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/", format(pub_day, "%d-%B-%Y"),"/")), 
+             url = c(pub_url, pub_url, pub_url, pub_url), 
              stringsAsFactors = FALSE)
 
 ```
@@ -679,7 +680,7 @@ MetaData <- data.frame(Indicator, Description)
 This is a National Statistics Publication
 </div>
 <Div custom-style = "National stats">
-![National Statistics Quality Mark](kitemark_tcm97-17949.jpg) \
+![National Statistics Quality Mark](/conf/quality_indicators/hsmr/quarter_cycle/Analyst folders/markdown_ref_files/kitemark_tcm97-17949.jpg) \
 </div>
 
 National Statistics status means that the official statistics meet the highest standards of trustworthiness, quality and public value. They are identified by the quality mark shown above.
@@ -722,19 +723,19 @@ monitoring of COVID-19 amongst the population. There is a large amount of data b
 regularly published regarding COVID-19 (for example, [PHS weekly reports, including wider impacts analysis](https://www.publichealthscotland.scot/our-areas-of-work/covid-19/covid-19-data-and-intelligence/); [Coronavirus in Scotland – Scottish Government](https://www.gov.scot/coronavirus-covid-19/) and [Deaths involving coronavirus in Scotland – National Records of Scotland](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-and-monthly-data-on-births-and-deaths/deaths-involving-coronavirus-covid-19-in-scotland).
 
 The methodology has been updated to ensure the diagnosis ICD-10 codes for
-COVID-19, U07.1 and U07.2 are included in the model. For more
+COVID-19, U07.1 to U07.7 are included in the model. For more
 information please refer to the [HSMR COVID-19 Methodology Update paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
 
 During the pandemic hospitals have had to adjust their normal ways of working to react to
 this healthcare emergency. As a result, there will be changes in the volumes
 of activity in some of the groups used to calculate the HSMRs, for example less elective admissions.  Any changes in crude mortality
-trends HSMRs should be considered in this context.
+trends and HSMRs should be considered in this context.
 
 
 <Div custom-style = "Heading 1">Hospital Standardised Mortality Ratios</div>
 Hospital Standardised Mortality Ratios (HSMRs) adjust death data (referred to in this report as mortality data) to take account of some of the factors known to affect the underlying risk of death. 
 
-The calculation uses information from acute inpatient and day case patients admitted to all medical and surgical specialties in NHSScotland (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from hospital admission. This means that the HSMR also includes deaths that occur outside hospital.
+The calculation uses information from acute inpatient and day case patients admitted to all medical and surgical specialties in NHSScotland (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from hospital admission. This means that the HSMR also includes deaths that occur outside hospital, and excludes deaths that occur in hospital more than 30 days after admission.
 
 These statistics are updated every three months and reflect the HSMR for the latest 12 month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter to show trends. A link to the relevant Excel data table has also been provided alongside each chart.
 
@@ -752,29 +753,30 @@ This predicted figure is then compared with the actual observed number of deaths
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Over the five year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`, although exhibiting clear seasonal patterns, unadjusted hospital mortality has remained relatively stable at around 3% until April to June 2020, Reflecting the impact of the first wave of the COVID-19 epidemic in Scotland.
+* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. Larger increases have been seen during the COVID-19 epidemic in Scotland, however, with unadjusted hospital mortality reaching 5.3% during the first wave and 4.3% during the second. 
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
-*	Almost three quarters of deaths within 30-days of admission take place in hospital with the other quarter of deaths in community.
+*	Over three quarters of deaths within 30-days of admission take place in hospital with the other quarter of deaths in community.
 *	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
 <Div custom-style = "Heading 1">Comparing HSMR with previous years</div>
-During 2018/19, PHS (formerly Information Services Division) undertook a review of the methodology used to calculate HSMR. A [review paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/) was subsequently produced with recommendations for refining the model following the end of the Scottish Patient Safety Programme aim. The methodology used by PHS was updated in August 2019. Please note HSMR quarterly releases from August 2019 onwards are not comparable to previous releases.
+HSMR quarterly releases from August 2019 onwards are not comparable to earlier releases due to changes in the methodology. These changes were designed to refine the model, and were made in response to a [review](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/) following the end of the Scottish Patient Safety Programme’s aim of reducing hospital mortality by December 2018. 
 
-The main changes made to the HSMR methodology at this time were to:  
+The main changes made in August 2019 were:
 
-*	Move to a dynamic three year base period, advanced by three months with each reporting period, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
-*	Move to a twelve month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
-*	Use less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
+*	Moving to a dynamic three-year base period, advanced by three months with each quarterly publication, ensuring the Scottish HSMR is always representative of current outcomes and reflective of changing case-mix and provision of services.
+*	Moving to a twelve-month reporting period – rather than three months – when drawing comparisons against the national average, smoothing out seasonal variation and reducing variation for smaller hospitals.
+*	Using less aggregated specialty groupings to improve performance of the model and allow more in-depth analysis.
 
 A **[Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology)** is available on how the HSMR is currently calculated and describes the methodology used in more detail. **[Interpretation Guidance and Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/)** documents are also available, answering questions on the differences between the previous and current methodologies.
 
 <Div custom-style = "Heading 1">Interpreting HSMR results</div>
 ### Point in time comparison
-The Scottish HSMR is 1.00:  
+HSMR values are calculated for a one-year period, and can be interpreted as follows: 
 
-*	If an HSMR value for a hospital is less than one: This means the number of deaths within 30 days of admission for this hospital is fewer than predicted.
-*	If an HSMR value for a hospital is greater than one: This means the number of deaths within 30 days for this hospital is more than predicted. 
+* An HSMR value of exactly 1 means that the number of patients who died within 30 days of admission is equal to the number of predicted deaths. In other words, the risk of death matches the Scottish average risk for the categories of patient seen. The HSMR value for Scotland is therefore always 1.00.
+* If an HSMR value for a hospital is less than 1: the number of deaths within 30 days of admission for this hospital is fewer than predicted.
+* If an HSMR value for a hospital is greater than 1: the number of deaths within 30 days of admission for this hospital is more than predicted.
 
 If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or attributable to failings in the quality of care. Trends in HSMR are impacted by variations in case mix and coding practices over the period, as such crude mortality is used to monitor change over time.
 
@@ -786,13 +788,12 @@ Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScot
 **The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
 **NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
-In addition, a guide for NHS Boards –has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
-To help local users better understand their data, and to encourage a sense of ownership of the information an infrastructure has been put in place, in partnership between PHS and Healthcare Improvement Scotland, offering:  
+In addition, a guide for NHS Boards has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
+To help local users better understand their data, and to encourage a sense of ownership of the information, an infrastructure has been put in place in partnership between PHS and Healthcare Improvement Scotland, offering:  
 
-*	sub-group analysis; 
-*	individual audit of case-listing; 
-*	our assistance in interpretation of the national statistics and local intelligence. 
-
+*	sub-group analysis 
+*	individual audit of case-listing
+*	our assistance in interpretation of the national statistics and local intelligence
 
 <Div custom-style = "Heading 1">1 Results and Commentary</div>
 <Div custom-style = "Heading 2 no pgbrk">Point in Time Comparisons</div>
@@ -808,7 +809,7 @@ Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_t
 <Div custom-style = "Heading 1">2 Trends at Scotland Level</div>
 
 <Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
-Chart 2 shows that overall crude hospital mortality (%) at Scotland level from `r qtr(start_date_trends, "long")` to `r qtr(start_date_trends + months(57), "long")`, according to the existing definition of deaths within 30-days of admission, is fluctuating around 3% with clear seasonal patterns exhibited until April to June 2020, reflecting the first full quarter of Scotland going into emergency measures due to COVID-19. This means crude mortality is consistently higher around winter quarters (i.e. October - December and January - March). The crude mortality for July to September 2020 is 3.4%, and although lower than April to June 2020, this is still being driven by a reduction in patient numbers.
+Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, when Scotland went into emergency measures due to COVID-19, hospitals reduced the number of patients admitted and prioritised more seriously ill patients. The crude mortality rate therefore increased substantially in April to June 2020, the first full quarter of emergency measures. Although it has subsequently decreased, the mortality rate remains elevated due to this reduction in patient numbers.
 <Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
@@ -816,9 +817,7 @@ p Provisional
 
 <Div custom-style = "Heading 1">3 Scotland (sub-groups)</div>
 <Div custom-style = "Heading 2 no pgbrk">Scotland – by type of admission</div>
-HSMR is by definition an overall indicator that encapsulates mortality outcomes against overall hospital activity. It is possible to examine trends in the same 30-day mortality outcome for some of the underlying factors.
-Chart 3 shows the mortality trend according to admission type (i.e. whether the patient was an elective or non-elective admission). 
-It shows that non-elective patients consistently account for the largest proportion of deaths within 30-days of admission. 
+This section examines some of the factors that affect the chance of mortality within 30 days of hospital admission. Chart 3 shows the mortality trend for the two types of admission: elective and non-elective. It shows that non-elective patients consistently account for the largest proportion of deaths.
 <Div custom-style = "Chart Title">Chart 3: Crude mortality rates (%) for deaths within 30-days of admission by type of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by type of admission for the last five years](Chart_3.png)</div>
@@ -881,7 +880,7 @@ Individual hospital level data for any combined sites are available on request.
 <Div custom-style = "Heading 2">In-patient mortality and deaths within 30-days of discharge</div>
 Chart 9 shows the trend in mortality at Scotland level according to a definition similar to the Summary Hospital-level Mortality Indicator in England. SHMI takes account of in-patient mortality and deaths within 30-days of discharge. The Scottish HSMR does not include patients that die in-hospital more than 30-days from admission. In Scotland the decision was to associate the outcome with decisions made at the point of admission (see Inter-UK Comparisons: England and Wales section for more information on the differences between the Scottish and English approaches).  
 
-For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). The mortality rates are inevitably higher than the admission-based method, reflecting the longer opportunity for follow-up. The trend is however consistent with the admission based mortality patterns, and show that although exhibiting seasonal variation, hospital mortality had been showing a general decrease over time, until April to June 2020 reflecting the first full quarter of Scotland going into emergency measures due to COVID-19.
+For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). While the longer time period does mean more deaths are included in the second definition, both trends are similar. Although there is a seasonal variation, crude mortality remained relatively constant until COVID-19 emergency measures were introduced in 2020.
 
 <Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
@@ -897,9 +896,9 @@ Trends in crude death rates are useful for getting an overall picture of the num
 
 Trends in crude underlying population mortality rates have been derived from the total number of deaths (numerator), and mid-year population estimates (denominator), both available from the National Records of Scotland  at Scotland level and by NHS Board of residence.
 
-Chart 10 shows the trend in overall population mortality for Scotland between `r qtr(start_date_trends, "long")` and `r qtr(start_date_trends + months(57), "long")`. The series, although exhibiting seasonal characteristics, has remained relatively stable over the last three years. Although there was an increase in April to June 2020, reflecting the first full quarter of Scotland going into emergency measures due to COVID-19.
+Chart 10 shows the trend in overall population mortality for Scotland between `r qtr(start_date_trends, "long")` and `r qtr(start_date_trends + months(57), "long")`. Values have remained relatively stable over the last five years, with some seasonal variation, before increasing in April to June 2020 due to the impact of the COVID-19 pandemic.
 
-<Div custom-style = "Chart Title">Chart 10: Underlying population death rates (crude rates per 1,000 people);
+<Div custom-style = "Chart Title">Chart 10: Population death rates (crude rates per 1,000 people);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude population mortality for the last five years](Chart_10.png)</div>
@@ -932,10 +931,10 @@ The data within Table 2 provides overall crude mortality rates by hospital, and 
 The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.  
 
 * Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
-* Crude population mortality rates (%).
+* Crude population mortality rates per 1,000 people.
 
 
-These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](https://beta.isdscotland.org/find-publications-and-data/health-services/hospital-care/hospital-standardised-mortality-ratios/).
+These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](`r pub_url`).
 
 
 <Div custom-style = "Heading 1">Refinements to HSMR methodology</div>
@@ -994,7 +993,7 @@ Phone:  0131 275 7710
 **Email:** phs.QualityIndicators@phs.scot
 
 <Div custom-style = "Heading 2 no pgbrk">Further Information</div>
-Further Information can be found on the [PHS website](https://beta.isdscotland.org/).  
+Further Information can be found on the [PHS website](https://publichealthscotland.scot/).  
 For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
 The next release of this publication will be `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.  
 
@@ -1025,7 +1024,7 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 The chart below provides an illustration of a funnel plot. The rate of the process, the HSMR, is plotted on the vertical axis. The denominator, predicted deaths, is plotted on the horizontal axis.
 
 <Div custom-style = "centre_justify">
-![Example Funnel Plot](Funnel_Plot_Example.png)</div>
+![Example Funnel Plot](/conf/quality_indicators/hsmr/quarter_cycle/Analyst folders/markdown_ref_files/Funnel_Plot_Example.png)</div>
 
 There are three lines in the funnel plots in this report.
 
@@ -1037,7 +1036,7 @@ An overdispersion factor has been applied to the funnel plot limits to reduce th
 
 
 <div custom-style = "Heading 3">How to interpret a funnel plot</div>
-Data points out with the control limits (referred to here as ‘outliers’) are said to exhibit ‘special cause variation’. Variations may reflect a number of factors, such as characteristics of the patients being cared for (case-mix), the quality of clinical care, errors in the data submitted by hospitals or even variation by chance. A single apparently high value of the HSMR is not sufficient evidence on which to conclude that a poor quality or unsafe service is being provided. This is why it is important not to focus solely on ‘outliers’ when making reliable judgements about the quality of patient care.  
+Data points outwith the control limits (referred to here as ‘outliers’) are said to exhibit ‘special cause variation’. Variations may reflect a number of factors, such as characteristics of the patients being cared for (case-mix), the quality of clinical care, errors in the data submitted by hospitals or even variation by chance. A single apparently high value of the HSMR is not sufficient evidence on which to conclude that a poor quality or unsafe service is being provided. This is why it is important not to focus solely on ‘outliers’ when making reliable judgements about the quality of patient care.  
 
 
 <div custom-style = "Heading 3">Inter-UK comparisons: England and Wales </div>

@@ -87,7 +87,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                        hsmr::yr(end_date), " than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2),
-                                    ")", collapse = ", "))
+                                    ")", collapse = ", "), ".")
 
       output_2 <- paste0("This shows there are ", n_hosps, " above the upper ",
                          "control limit which is three standard deiations ",
@@ -127,7 +127,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                        "standardised mortality ratio than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2), ")",
-                                    collapse = ", "))
+                                    collapse = ", "), ".")
 
       output_2 <- paste0("This also shows that there is one hospital below the",
                          " lower control limit which is three standard ",
@@ -145,11 +145,11 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                        "standardised mortality ratio "," than the national average",
                        ": ", paste0(smr_data$location_name, " (",
                                     janitor::round_half_up(smr_data$smr, 2), ")",
-                                    collapse = ", "))
+                                    collapse = ", "), ".")
 
       output_2 <- paste0("This also shows there are ", n_hosps,
                          " below the lower ",
-                         "control limit which is three standard deiations ",
+                         "control limit which is three standard deviations ",
                          "below the Scottish average: ",
                          paste0(smr_data$location_name, " (",
                                 janitor::round_half_up(smr_data$smr, 2),
