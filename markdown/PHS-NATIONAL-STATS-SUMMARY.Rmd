@@ -86,7 +86,8 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 
 **HSMR for deaths within 30-days of admission; `r yr(end_date)`**
 </div>
-<Div custom-style = "centre_justify">
+<!-- Need to use Table Head style for image as it is the only available centred style that works - template styles locked with password -->
+<Div custom-style = "Table Head">
 ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png) \
 </div>
 
