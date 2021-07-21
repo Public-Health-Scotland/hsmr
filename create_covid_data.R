@@ -30,7 +30,6 @@ smr01 <- readRDS(paste0(data_folder, pub_day, "/base_files/",
                         pub_day, "_SMR01_basefile.rds")) %>%
   tidylog::mutate(quarter_name = paste0(year, "Q", quarter),
                   quarter = as.numeric(as.factor(quarter_name)),
-                  month = lubridate::month(admission_date),
                   month_name = lubridate::month(admission_date, label = T, abbr = T),
                   month_label = paste0(month_name, " ", year),
                   diag1_4 = substr(main_condition, 1, 4),
