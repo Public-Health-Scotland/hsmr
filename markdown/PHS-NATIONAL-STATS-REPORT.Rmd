@@ -807,7 +807,8 @@ Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_t
 <Div custom-style = "Heading 1">2 Trends at Scotland Level</div>
 
 <Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
-Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, when Scotland went into emergency measures due to COVID-19, hospitals reduced the number of patients admitted and prioritised more seriously ill patients. The crude mortality rate therefore increased substantially in April to June 2020, the first full quarter of emergency measures. Although it has subsequently decreased, the mortality rate remains elevated due to this reduction in patient numbers.
+Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate has now reduced, but remains elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in patient numbers due to emergency measures that increased the mortality rate through a focus on more seriously ill patients.
+
 <Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
@@ -878,7 +879,7 @@ Individual hospital level data for any combined sites are available on request.
 <Div custom-style = "Heading 2">In-patient mortality and deaths within 30-days of discharge</div>
 Chart 9 shows the trend in mortality at Scotland level according to a definition similar to the Summary Hospital-level Mortality Indicator in England. SHMI takes account of in-patient mortality and deaths within 30-days of discharge. The Scottish HSMR does not include patients that die in-hospital more than 30-days from admission. In Scotland the decision was to associate the outcome with decisions made at the point of admission (see Inter-UK Comparisons: England and Wales section for more information on the differences between the Scottish and English approaches).  
 
-For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). While the longer time period does mean more deaths are included in the second definition, both trends are similar. Although there is a seasonal variation, crude mortality remained relatively constant until COVID-19 emergency measures were introduced in 2020.
+For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). While the longer time period does mean more deaths are included in the second definition, both trends are similar. Although there is a seasonal variation, crude mortality remained relatively constant until the impact of COVID-19 in 2020.
 
 <Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
@@ -978,7 +979,7 @@ Phone:  0141 282 2052
 Quality Indicators  
 Phone:  0131 275 7929  
 
-**Scott Mclaren-Gow, Information Analyst**  
+**Scott McLaren-Gow, Information Analyst**  
 Quality Indicators  
 
 <br>

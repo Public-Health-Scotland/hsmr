@@ -50,7 +50,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact_names <- c("Jaime Villacampa", "Lucinda Lawrie", "Scott Mclaren-Gow")
+contact_names <- c("Jaime Villacampa", "Lucinda Lawrie", "Scott McLaren-Gow")
 contact_details_1 <- c("Principal Information Analyst", "0141 282 2052")
 contact_details_2 <- c("Senior Information Analyst", "0131 275 7929")
 contact_details_3 <- c("Information Analyst", "")
