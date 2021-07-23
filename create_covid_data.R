@@ -200,7 +200,8 @@ time_period_template <- data.frame(time_period = covid$time_period) %>%
 # Data frame with a row for each location
 location_template <- data.frame(hb_name = covid$hb_name,
                                 hb_code_9 = covid$hb_code_9,
-                                hosp_name = covid$hosp_name) %>%
+                                hosp_name = covid$hosp_name,
+                                hosp = covid$hosp) %>%
   distinct(.keep_all =TRUE)
 
 # Combines above in to a data frame with a row for each combination of location
