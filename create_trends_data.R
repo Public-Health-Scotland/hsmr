@@ -166,7 +166,7 @@ save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
-# Used for the offline dashboard
+# Used for the offline dashboard and markdown script
 save_file(trends_data, "trends-data-level2", out_folder = "output",
           type = "csv", dev = F, overwrite = F)
 

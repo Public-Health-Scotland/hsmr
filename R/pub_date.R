@@ -56,7 +56,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
   }
 
 
-  # The publication date is always five months after p and is on the third last
+  # The publication date is always five months after p and is on the second 
   # Tuesday of the month
   # Calculate the first and last day of the month of publication (p + 5)
   # Then calculate n; the number of Tuesdays in the month of publication
@@ -69,9 +69,11 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
                                   unit = "month") - lubridate::days(1)
 
   n <- sum(format(seq(first, last, "day"), "%w") == 2)
+  # Strange behaviour of the getNthDayOfWeek means that for the previous pub we need this
+  n_minus <- dplyr::case_when(pub %in% "previous" ~ 2, TRUE ~ 3)
 
   # Return the date of the third last Tuesday in the month of publication
-  RcppBDT::getNthDayOfWeek(n - 2,
+  RcppBDT::getNthDayOfWeek(n - n_minus,
                            2,
                            lubridate::month(
                              lubridate::add_with_rollback(p,
