@@ -161,7 +161,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -194,7 +194,7 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -232,7 +232,7 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -268,7 +268,7 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -301,7 +301,7 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -338,7 +338,7 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -410,7 +410,7 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Discharge"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate (%)") +
+  labs(x = element_blank(), y = "Crude rate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -445,7 +445,7 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude Rate per 1,000 People") +
+  labs(x = element_blank(), y = "Crude rate per 1,000 people") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -715,7 +715,6 @@ The end of this phase of the Scottish Patient Safety Programme provided the oppo
 
 These latest statistics reflect completeness of validated hospital SMR01 returns as at `r format(submission_deadline(end_date), "%d %B %Y")`. This information has previously been released to NHS Boards as management information.
 
-
 <Div custom-style = "Heading 1">COVID-19</div>
 Since the start of the COVID-19 outbreak, Public Health Scotland (PHS) has been working closely with
 the Scottish Government and health and care colleagues to support the surveillance and
@@ -730,7 +729,6 @@ During the pandemic hospitals have had to adjust their normal ways of working to
 this healthcare emergency. As a result, there will be changes in the volumes
 of activity in some of the groups used to calculate the HSMRs, for example less elective admissions.  Any changes in crude mortality
 trends and HSMRs should be considered in this context.
-
 
 <Div custom-style = "Heading 1">Hospital Standardised Mortality Ratios</div>
 Hospital Standardised Mortality Ratios (HSMRs) adjust death data (referred to in this report as mortality data) to take account of some of the factors known to affect the underlying risk of death. 
@@ -984,9 +982,8 @@ Phone:  0141 282 2052
 Quality Indicators  
 Phone:  0131 275 7929  
 
-**Catherine Perkins, Senior Information Analyst**  
+**Scott Mclaren-Gow, Information Analyst**  
 Quality Indicators  
-Phone:  0131 275 7710 
 
 <br>
 
@@ -996,6 +993,11 @@ Phone:  0131 275 7710
 Further Information can be found on the [PHS website](https://publichealthscotland.scot/).  
 For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
 The next release of this publication will be `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.  
+
+<br>
+
+<Div custom-style = "Heading 2 no pgbrk">Open data</div>
+Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
 
 <br>
 
