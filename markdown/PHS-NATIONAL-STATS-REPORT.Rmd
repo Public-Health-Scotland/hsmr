@@ -774,7 +774,7 @@ A **[Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indica
 ### Point in time comparison
 HSMR values are calculated for a one-year period, and can be interpreted as follows: 
 
-* An HSMR value of exactly 1 means that the number of patients who died within 30 days of admission is equal to the number of predicted deaths. In other words, the risk of death matches the Scottish average risk for the categories of patient seen. The HSMR value for Scotland is therefore always 1.00.
+* An HSMR value of exactly 1 means that the number of patients who died within 30 days of admission is equal to the number of predicted deaths. In other words, the risk of death matches the Scottish average risk for the patient subgroups that were seen. The HSMR value for Scotland is therefore always 1.00.
 * If an HSMR value for a hospital is less than 1: the number of deaths within 30 days of admission for this hospital is fewer than predicted.
 * If an HSMR value for a hospital is greater than 1: the number of deaths within 30 days of admission for this hospital is more than predicted.
 
