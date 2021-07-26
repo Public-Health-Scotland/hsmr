@@ -125,6 +125,6 @@ The data from this publication is available to download from [this page](https:/
 
 The next release of this publication will be `r format(pub_date(end_date, "next"), "%d %B %Y")`.
 
-Other formats of this publication are available on request at: 0131 314 5300 <phs.otherformats@phs.scot>
+Other formats of this publication are available on request at: 0131 275 6105 <phs.otherformats@phs.scot>
 
 
