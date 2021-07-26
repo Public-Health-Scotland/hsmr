@@ -133,8 +133,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
                     quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
     dplyr::ungroup() %>%
-    tidylog::filter(date_of_death > end_date - years(5)) %>%
-    tidylog::filter(date_of_death <= end_date ) # excluding out of publication period records
+    tidylog::filter(date_of_death > end_date - years(5))
 
   ### 2 - SIMD ----
 
@@ -1199,8 +1198,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Merge monthly and quarterly together
   trend_data <- bind_rows(trend_data_month,trend_data_quarter) %>%
-    change_hbcodes(version_to = "19")
-
+    change_hbcodes(version_to = "19") %>% 
+    # excluding out of publication period records
+    filter(!(quarter >20 & time_period == "Quarter")) 
+  
   return(trend_data)
 
 
