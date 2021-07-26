@@ -803,7 +803,7 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 
 Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
 
-<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (funnel plot), `r yr(end_date)`</div>
+<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (funnel plot); `r yr(end_date)`</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`) ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png)</div>
 
 
@@ -814,7 +814,7 @@ Please note that a number of deaths from December 2020 were missing from the May
 <Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
 Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate has now reduced, but remains elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers but with the more seriously ill patients still attending hospital.
 
-<Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
 p Provisional
@@ -831,14 +831,14 @@ p Provisional
 <Div custom-style = "Heading 2">Scotland – by specialty</div>
 Chart 4 shows the mortality trend according to seven distinct specialty groups. Specialty group is classified according to the specialty of the consultant/GP/HCP who is in charge of the patient episode. 
 It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by Medical. Those recorded under Dental, Paediatrics, Women & Newborn specialty having the lowest rate.
-<Div custom-style = "Chart Title">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by specialty group for the last five years](Chart_4.png)</div>
 p Provisional
 
 <Div custom-style = "Heading 2">Scotland – by age </div>
 Chart 5 shows that mortality within 30-days of admission increases with age.
-<Div custom-style = "Chart Title">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by age group for the last five years](Chart_5.png)</div>
 p Provisional
@@ -847,7 +847,7 @@ p Provisional
 <Div custom-style = "Heading 2">Scotland – by sex</div>
 Chart 6 shows that mortality rates are consistently higher for males throughout the time period. The difference between the mortality for males and females has also remained relatively constant.
 
-<Div custom-style = "Chart Title">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by sex, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by sex; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by sex for the last five years](Chart_6.png)</div>
 p Provisional
@@ -857,7 +857,7 @@ The Scottish Index of Multiple Deprivation classifies small areas in Scotland ba
 
 Chart 7 shows that patients from the least deprived areas of Scotland consistently have lower levels of 30-day mortality than patients from more deprived areas. 
 
-<Div custom-style = "Chart Title">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by deprivation for the last five years](Chart_7.png)</div>
 p Provisional
@@ -865,7 +865,7 @@ p Provisional
 <Div custom-style = "Heading 2">Scotland – by place of death</div>
 Chart 8 shows the proportion of deaths within 30 days of admission by place of death (i.e. in-hospital or in community). A quarter of these deaths occurred in the community with the remaining three quarters taking place in hospital. 
 
-<Div custom-style = "Chart Title">Chart 8: Proportion of deaths within 30-days of admission by place of death, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 8: Proportion of deaths within 30-days of admission by place of death; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png)</div>
 p Provisional
@@ -887,7 +887,7 @@ Chart 9 shows the trend in mortality at Scotland level according to a definition
 
 For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). While the longer time period does mean more deaths are included in the second definition, both trends are similar. Although there is a seasonal variation, crude mortality remained relatively constant until the impact of COVID-19 in 2020.
 
-<Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality),
+<Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude mortality for deaths within 30 days of discharge for the last five years](Chart_9.png)</div>
@@ -903,7 +903,7 @@ Trends in crude underlying population mortality rates have been derived from the
 
 Chart 10 shows the trend in overall population mortality for Scotland between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`. Values have remained relatively stable over the last five years, with some seasonal variation, before increasing in April to June 2020 due to the impact of the COVID-19 pandemic.
 
-<Div custom-style = "Chart Title">Chart 10: Population death rates (crude rates per 1,000 people),
+<Div custom-style = "Chart Title">Chart 10: Population death rates (crude rates per 1,000 people);
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude population mortality for the last five years](Chart_10.png)</div>
