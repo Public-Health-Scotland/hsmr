@@ -801,7 +801,7 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 
 Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
 
-<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot), `r yr(end_date)`</div>
+<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (funnel plot), `r yr(end_date)`</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`) ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png)</div>
 
 
