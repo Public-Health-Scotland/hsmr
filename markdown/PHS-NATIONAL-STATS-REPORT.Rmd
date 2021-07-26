@@ -625,6 +625,7 @@ Indicator <- c("**Publication title**",
 "**Continuity of data**",
 "**Revisions statement**",
 "**Revisions relevant to this publication**",
+"",
 "**Concepts and definitions**",
 "**Relevance and key uses of the statistics**",
 "**Accuracy**",
@@ -654,7 +655,8 @@ format(pub_date(end_date = end_date, pub = "current"), "%d %B %Y"),
 paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period ", yr(end_date), " Quarterly crude mortality trends from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"), " (one quarter reporting lag)"),
 "SMR01 has recorded data in current form since April 2007",
 "The publication contains a refresh of previously reported crude mortality data to reflect additional source data that has been received since last publication. ",
-"This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology",
+"This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology.",
+"Due to an error a number of deaths were missing from the May 2021 release of this publication. The figures reported for crude mortality within 30 days of admission and within 30 days of discharge should have been higher for the quarter Oct-Dec 2020. The correct figures for Oct-Dec 2020 are included in this release. HSMR and population-based mortality values were not affected.",
 "Contains sections on Data Source, Methodology and Development",
 "Quality improvement and assurance.",
 "Quality assured by NHS Boards (management information version of reports) and PHS",
@@ -757,7 +759,7 @@ This predicted figure is then compared with the actual observed number of deaths
 *	Over three quarters of deaths within 30-days of admission take place in hospital with the other quarter of deaths in community.
 *	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
-Please note that a number of deaths from December 2020 were missing from the May 2021 release of this publication, leading to reduced crude mortality figures for the quarter Oct-Dec 2020. HSMR values were not affected, and the missing deaths have been included in this release.
+Please note that due to an error a number of deaths were missing from the May 2021 release of this publication. The figures reported for crude mortality within 30 days of admission and within 30 days of discharge should have been higher for the quarter Oct-Dec 2020. The correct figures for Oct-Dec 2020 are included in this release. HSMR and population-based mortality values were not affected.
 
 <Div custom-style = "Heading 1">Comparing HSMR with previous years</div>
 HSMR quarterly releases from August 2019 onwards are not comparable to earlier releases due to changes in the methodology. These changes were designed to refine the model, and were made in response to a [review](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/) following the end of the Scottish Patient Safety Programme’s aim of reducing hospital mortality by December 2018. 
@@ -809,7 +811,7 @@ Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_t
 
 <Div custom-style = "Heading 1">2 Trends at Scotland Level</div>
 
-Please note that a number of deaths from December 2020 were missing from the May 2021 release of this publication, leading to reduced crude mortality figures for the quarter Oct-Dec 2020. HSMR values were not affected, and the missing deaths have been included in this release.
+Please note that due to an error a number of deaths were missing from the May 2021 release of this publication. The figures reported for crude mortality within 30 days of admission and within 30 days of discharge should have been higher for the quarter Oct-Dec 2020. The correct figures for Oct-Dec 2020 are included in this release. HSMR and population-based mortality values were not affected.
 
 <Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
 Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate has now reduced, but remains elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers but with the more seriously ill patients still attending hospital.
