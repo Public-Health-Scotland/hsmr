@@ -951,10 +951,6 @@ The main changes made to the HSMR methodology from August 2019 were:
 More details of the review work and recommendations are available in the [HSMR Review Paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/). A [Technical Document](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is also available on how the HSMR is now calculated and describes the methodology used in more detail.  
 
 
-<Div custom-style = "Heading 2 no pgbrk">Next update</div>
-The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
-
-
 <Div custom-style = "Heading 1">Glossary</div>
 <br>
 <Div custom-style = "Glossary Item Name">HSMR</div>
@@ -989,10 +985,12 @@ Quality Indicators
 
 **Email:** phs.QualityIndicators@phs.scot
 
-<Div custom-style = "Heading 2 no pgbrk">Further Information</div>
+<Div custom-style = "Heading 1">Further information</div>
+
 Further Information can be found on the [PHS website](https://publichealthscotland.scot/).  
 For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
-The next release of this publication will be `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.  
+
+The next release of this publication, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
 
 <br>
 
