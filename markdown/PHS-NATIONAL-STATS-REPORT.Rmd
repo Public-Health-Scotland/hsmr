@@ -135,7 +135,7 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                    segment.size  = 0.2,
                    segment.color = "grey50",
                    direction     = "x") +
-  labs(x = "Number of Predicted Deaths", y = "Standardised Mortality Ratio (SMR)") +
+  labs(x = "Number of predicted deaths", y = "Standardised Mortality Ratio (SMR)") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
@@ -719,13 +719,13 @@ These latest statistics reflect completeness of validated hospital SMR01 returns
 Since the start of the COVID-19 outbreak, Public Health Scotland (PHS) has been working closely with
 the Scottish Government and health and care colleagues to support the surveillance and
 monitoring of COVID-19 amongst the population. There is a large amount of data being
-regularly published regarding COVID-19 (for example, [PHS weekly reports, including wider impacts analysis](https://www.publichealthscotland.scot/our-areas-of-work/covid-19/covid-19-data-and-intelligence/); [Coronavirus in Scotland – Scottish Government](https://www.gov.scot/coronavirus-covid-19/) and [Deaths involving coronavirus in Scotland – National Records of Scotland](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-and-monthly-data-on-births-and-deaths/deaths-involving-coronavirus-covid-19-in-scotland).
+regularly published regarding COVID-19 (for example, [PHS weekly reports, including wider impacts analysis](https://www.publichealthscotland.scot/our-areas-of-work/covid-19/covid-19-data-and-intelligence/); [Coronavirus in Scotland – Scottish Government](https://www.gov.scot/coronavirus-covid-19/) and [Deaths involving coronavirus in Scotland – National Records of Scotland](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-and-monthly-data-on-births-and-deaths/deaths-involving-coronavirus-covid-19-in-scotland)).
 
 The methodology has been updated to ensure the diagnosis ICD-10 codes for
-COVID-19, U07.1 to U07.7 are included in the model. For more
+COVID-19, U07.1 to U07.7, are included in the model. For more
 information please refer to the [HSMR COVID-19 Methodology Update paper](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
 
-During the pandemic hospitals have had to adjust their normal ways of working to react to
+During the pandemic, hospitals have had to adjust their normal ways of working to react to
 this healthcare emergency. As a result, there will be changes in the volumes
 of activity in some of the groups used to calculate the HSMRs, for example less elective admissions.  Any changes in crude mortality
 trends and HSMRs should be considered in this context.
@@ -783,9 +783,10 @@ Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScot
 
 **Healthcare Improvement Scotland** reviews the data, alongside other indicators, with Public Health Scotland to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
-**The Scottish Government** use these statistics to: monitor hospital mortality; inform policy decision making; respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
+**The Scottish Government** use these statistics to monitor hospital mortality, inform policy decision making, and respond to parliamentary and public business. One example of this was in the commissioning of the **[NHS Lanarkshire Rapid Review Assessment](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/programme_resources/nhs_lanarkshire__review.aspx)**.  
 
-**NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
+**NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality, and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
+
 In addition, a guide for NHS Boards has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
 To help local users better understand their data, and to encourage a sense of ownership of the information, an infrastructure has been put in place in partnership between PHS and Healthcare Improvement Scotland, offering:  
 
@@ -800,7 +801,7 @@ A funnel plot is a type of ‘Statistical Process Control’ chart that helps to
 
 Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
 
-<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot); `r yr(end_date)`</div>
+<Div custom-style = "Chart Title">Chart 1: HSMR for deaths within 30-days of admission (Funnel Plot), `r yr(end_date)`</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`) ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png)</div>
 
 
@@ -809,10 +810,11 @@ Chart 1 shows the funnel plot for the latest 12 month period. `r paste0(funnel_t
 <Div custom-style = "Heading 2 no pgbrk">Scotland Crude Mortality Trends</div>
 Chart 2 shows the overall crude hospital mortality percentage at Scotland level for deaths within 30 days of admission. The value is generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate has now reduced, but remains elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in patient numbers due to emergency measures that increased the mortality rate through a focus on more seriously ill patients.
 
-<Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)</div>
 p Provisional
+
 
 <Div custom-style = "Heading 1">3 Scotland (sub-groups)</div>
 <Div custom-style = "Heading 2 no pgbrk">Scotland – by type of admission</div>
@@ -824,15 +826,15 @@ p Provisional
 
 <Div custom-style = "Heading 2">Scotland – by specialty</div>
 Chart 4 shows the mortality trend according to seven distinct specialty groups. Specialty group is classified according to the specialty of the consultant/GP/HCP who is in charge of the patient episode. 
-It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by medical. Those recorded under Dental, Paediatrics, Women & Newborn specialty having the lowest rate.  
-<Div custom-style = "Chart Title">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+It shows that patients under the Community specialty have the highest rate of crude mortality within 30-days of admission, followed by Medical. Those recorded under Dental, Paediatrics, Women & Newborn specialty having the lowest rate.
+<Div custom-style = "Chart Title">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by specialty group for the last five years](Chart_4.png)</div>
 p Provisional
 
 <Div custom-style = "Heading 2">Scotland – by age </div>
 Chart 5 shows that mortality within 30-days of admission increases with age.
-<Div custom-style = "Chart Title">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 5: Crude mortality rates (%) for deaths within 30-days of admission by age group, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by age group for the last five years](Chart_5.png)</div>
 p Provisional
@@ -841,7 +843,7 @@ p Provisional
 <Div custom-style = "Heading 2">Scotland – by sex</div>
 Chart 6 shows that mortality rates are consistently higher for males throughout the time period. The difference between the mortality for males and females has also remained relatively constant.
 
-<Div custom-style = "Chart Title">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by sex; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 6: Crude mortality rates (%) for deaths within 30-days of admission by sex, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by sex for the last five years](Chart_6.png)</div>
 p Provisional
@@ -851,7 +853,7 @@ The Scottish Index of Multiple Deprivation classifies small areas in Scotland ba
 
 Chart 7 shows that patients from the least deprived areas of Scotland consistently have lower levels of 30-day mortality than patients from more deprived areas. 
 
-<Div custom-style = "Chart Title">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 7: Crude mortality rates (%) for deaths within 30-days of admission by deprivation, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing crude mortality by deprivation for the last five years](Chart_7.png)</div>
 p Provisional
@@ -859,7 +861,7 @@ p Provisional
 <Div custom-style = "Heading 2">Scotland – by place of death</div>
 Chart 8 shows the proportion of deaths within 30 days of admission by place of death (i.e. in-hospital or in community). A quarter of these deaths occurred in the community with the remaining three quarters taking place in hospital. 
 
-<Div custom-style = "Chart Title">Chart 8: Proportion of deaths within 30-days of admission by place of death; Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
+<Div custom-style = "Chart Title">Chart 8: Proportion of deaths within 30-days of admission by place of death, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`)
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png)</div>
 p Provisional
@@ -881,7 +883,7 @@ Chart 9 shows the trend in mortality at Scotland level according to a definition
 
 For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there were `r format(latest_deaths_admission$deaths, big.mark = ",")` deaths within 30-days of admission to hospital in Scotland, and `r format(latest_deaths_discharge$deaths, big.mark = ",")` deaths within 30-days of ultimate hospital discharge (including all in-hospital deaths). While the longer time period does mean more deaths are included in the second definition, both trends are similar. Although there is a seasonal variation, crude mortality remained relatively constant until the impact of COVID-19 in 2020.
 
-<Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality);
+<Div custom-style = "Chart Title">Chart 9: Crude mortality rates (%) for deaths within 30-days of ultimate hospital discharge (includes all in-hospital mortality),
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude mortality for deaths within 30 days of discharge for the last five years](Chart_9.png)</div>
@@ -895,9 +897,9 @@ Trends in crude death rates are useful for getting an overall picture of the num
 
 Trends in crude underlying population mortality rates have been derived from the total number of deaths (numerator), and mid-year population estimates (denominator), both available from the National Records of Scotland  at Scotland level and by NHS Board of residence.
 
-Chart 10 shows the trend in overall population mortality for Scotland between `r qtr(start_date_trends, "long")` and `r qtr(start_date_trends + months(57), "long")`. Values have remained relatively stable over the last five years, with some seasonal variation, before increasing in April to June 2020 due to the impact of the COVID-19 pandemic.
+Chart 10 shows the trend in overall population mortality for Scotland between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`. Values have remained relatively stable over the last five years, with some seasonal variation, before increasing in April to June 2020 due to the impact of the COVID-19 pandemic.
 
-<Div custom-style = "Chart Title">Chart 10: Population death rates (crude rates per 1,000 people);
+<Div custom-style = "Chart Title">Chart 10: Population death rates (crude rates per 1,000 people),
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
 <Div custom-style = "centre_justify">The data relating to this chart can be found in [Table 3](`r url_list[3, "url"]`)
 ![Trend chart showing crude population mortality for the last five years](Chart_10.png)</div>
@@ -906,15 +908,15 @@ p Provisional
 [Table 3](`r url_list[3, "url"]`) provides a series of mortality charts for the resident populations of each NHS Board area. 
 
 <Div custom-style = "Heading 1">Data files</div>
-The latest NHSScotland data from **`r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`** and comparable information by NHS Board of treatment and Hospital are given in the Excel files that accompany this publication.  Please note the following.
+The latest NHSScotland data from **`r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`** and comparable information by NHS Board of treatment and hospital are given in the Excel files that accompany this publication.  Please note the following:
 
 
 **Table 1 – HSMR**  
-Table 1 presents: hospital-level HSMR on a **funnel plot** for each rolling 12 month period, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
+Table 1 presents hospital-level HSMR on a **funnel plot** for each rolling 12 month period, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
 
 
-**Table 2 – Overall 30-day crude mortality demographics for NHS Scotland**  
-The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The following series of tables and charts are presented for the latest five year period: 
+**Table 2 – Overall 30-day crude mortality demographics for NHSScotland**  
+The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The following series of tables and charts are presented for the latest five-year period: 
 
 * Overall crude mortality rates (%) for deaths within 30-days of admission
 * Overall crude mortality rates (%) for deaths within 30-days of admission by:
@@ -927,7 +929,7 @@ The data within Table 2 provides overall crude mortality rates by hospital, and 
 
 
 **Table 3 – Crude mortality from discharge, and population based mortality rates**  
-The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented.  
+The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented:
 
 * Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
 * Crude population mortality rates per 1,000 people.
@@ -935,14 +937,12 @@ The data within Table 3 contains a ‘drop-down’ selection option for NHSScotl
 
 These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](`r pub_url`).
 
-
 <Div custom-style = "Heading 1">Refinements to HSMR methodology</div>
 Since the HSMR statistics were first released in 2009, PHS (formerly Information Services Division) have periodically reviewed the model methodology to ensure that it continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
 
+Any improvements needed to be balanced against the overall policy strategy and purpose of the HSMR which, from 2016, was to monitor progress towards the Scottish Patient Safety Programme aim of reducing mortality by a further 10% by end December 2018.
 
-Any improvements needed to be balanced against the overall policy strategy and purpose of the HSMR which, since 2016, was to monitor progress towards the Scottish Patient Safety Programme aim of reducing mortality by a further 10% by end December 2018.
 The end of this phase of the SPSP provided the opportunity to review the model methodology for a second time (the last significant review took place in 2015/16) and subsequently update/refine it. 
-
 
 The main changes made to the HSMR methodology from August 2019 were:
 
@@ -961,7 +961,7 @@ More details of the review work and recommendations are available in the [HSMR R
 <Div custom-style = "Glossary Item Name">SHMI</div>
 <Div custom-style = "Glossary Item Description">The Summary Hospital-level Mortality Indicator (SHMI) is an indicator which reports on mortality at trust level across the NHS in England. It is produced and published quarterly as an official statistic by the Health and Social Care Information Centre (HSCIC).</div>
 <Div custom-style = "Glossary Item Name">SIMD</div>
-<Div custom-style = "Glossary Item Description">Deprivation for individuals is estimated from aggregate data derived from the census and other routine sources. These are used to estimate the deprivation of small geographical areas. The Scottish Index of Multiple Deprivation (SIMD) has seven domains (income, employment, education, housing, health, crime, and geographical access, which have been combined into an overall index to pick out area concentrations of multiple deprivation.</div>
+<Div custom-style = "Glossary Item Description">Deprivation for individuals is estimated from aggregate data derived from the census and other routine sources. These are used to estimate the deprivation of small geographical areas. The Scottish Index of Multiple Deprivation (SIMD) has seven domains (income, employment, education, housing, health, crime, and geographical access), which have been combined into an overall index to pick out area concentrations of multiple deprivation.</div>
 <Div custom-style = "Glossary Item Name">SMR</div>
 <Div custom-style = "Glossary Item Description">Scottish Morbidity Record</div>
 <Div custom-style = "Glossary Item Name">SMR(01)</div>
@@ -1175,7 +1175,7 @@ NHS Board Communication leads
 <br>
 
 **Early access for management information**  
-These statistics will also have been made available to those who needed access to ‘management information’, ie as part of the delivery of health and care:
+These statistics will also have been made available to those who needed access to ‘management information’, i.e. as part of the delivery of health and care:
 ```{r kable_mi_list, echo = FALSE}
 knitr::kable(mi_list, col.names = c("**NHS Health Board**",
                                     "**Standard pre-release access**"))
@@ -1202,9 +1202,9 @@ wellbeing outcomes for the population. Our statistics comply with the [Code of P
 **Official Statistics**  
 Public Health Scotland (PHS) is the principal and authoritative source of statistics on health and care services in Scotland. PHS is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within PHS. PHS’s statistical publications are currently classified as one of the following:  
 
-* National Statistics (ie assessed by the UK Statistics Authority as complying with the Code of Practice)
-* National Statistics (ie legacy, still to be assessed by the UK Statistics Authority)
-* Official Statistics (ie still to be assessed by the UK Statistics Authority)
+* National Statistics (i.e. assessed by the UK Statistics Authority as complying with the Code of Practice)
+* National Statistics (i.e. legacy, still to be assessed by the UK Statistics Authority)
+* Official Statistics (i.e. still to be assessed by the UK Statistics Authority)
 * other (not Official Statistics)  
 
 Further information on PHS’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [PHS website](https://beta.isdscotland.org/about-our-statistics/). 
