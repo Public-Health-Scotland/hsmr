@@ -1134,7 +1134,7 @@ In August 2016, PHS published the findings of their most recent [quality assuran
 
 ### Timeliness
 The majority of hospital admission data will be complete for the latest quarter, however it should still be considered provisional on the basis that the source data are dynamic and additional hospital returns will come in and be reflected in future calculations of the HSMR for that quarter.
-Death registrations from NRS are linked to hospital admissions in Scotland on a monthly basis. This has enabled the crude trends to include admissions up to `r format(submission_deadline(end_date), "%B %Y") ` in this release.  
+Death registrations from NRS are linked to hospital admissions in Scotland on a monthly basis. This has enabled the crude trends to include admissions up to `r format(end_date, "%B %Y")` in this release.  
 
 A new patient management system (TrakCare PMS) has been implemented in twelve NHS Boards, with the exception of NHS Dumfries & Galloway and NHS Western Isles.
 
