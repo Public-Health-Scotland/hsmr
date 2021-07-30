@@ -47,15 +47,82 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
-                          TRUE ~ "0"))
+                          TRUE ~ "0"),
+         flag_above = case_when(smr > ucl ~ TRUE,
+                                TRUE ~ FALSE),
+         flag_below = case_when(smr < lcl ~ TRUE,
+                                 TRUE ~ FALSE))
+
+# Loads scales package for ggplot2 (could maybe be added to environment file?)
+library(scales)
+
+## FUNNEL PLOT ##
+funnel_plot_summary <- 
+  ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
+  scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
+                                "#ffbc79", "#c85302"), 
+                     labels = c("Scotland SMR", "Upper/Lower Control Limit", 
+                                "Upper/Lower Warning Limit", "Hospital", ""),
+                     guide = guide_legend(override.aes = list(
+                       linetype = c(rep("solid", 3), "blank"),
+                       shape    = c(NA, NA, NA, 19)))) +
+  coord_cartesian(ylim = c(0,2.5)) + 
+  geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
+  geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
+  geom_line(aes(x = pred, y = lwl, colour = "#ffbc79")) + 
+  geom_line(aes(x = pred, y = lcl, colour = "#c85302")) +
+  geom_line(aes(x = pred, y = 1, colour = "#006ba4")) +
+  geom_point(aes(x = pred, y = smr, colour = factor(flag), 
+                 show.legend = FALSE)) + 
+  geom_label_repel(data = smr_data %>% filter(location_type == "hospital" & 
+                                                flag_below == TRUE),
+                   aes(x = pred, y = smr, label = location_name),
+                   nudge_y       = -2,
+                   size          = 4,
+                   box.padding   = 0.5,
+                   point.padding = 0.5,
+                   force         = 100,
+                   segment.size  = 0.2,
+                   segment.color = "grey50",
+                   direction     = "x") +
+  geom_label_repel(data = smr_data %>% filter(location_type == "hospital" & 
+                                                flag_above == TRUE),
+                   aes(x = pred, y = smr, label = location_name),
+                   nudge_y       = 2,
+                   size          = 4,
+                   box.padding   = 0.5,
+                   point.padding = 0.5,
+                   force         = 100,
+                   segment.size  = 0.2,
+                   segment.color = "grey50",
+                   direction     = "x") +
+  labs(x = "Number of predicted deaths", y = "Standardised\nMortality\nRatio (SMR)") +
+  theme(panel.background = element_blank(),
+    panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
+    panel.grid.major.y = element_blank(),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust=0.5),
+    axis.text = element_text(size = 9, angle= 0),
+    legend.title = element_blank(),
+    # ggplot centres over plot area, not in the full figure, so legend is cut off
+    # when set to "top". This needs manual adjustment when sizes change
+    legend.position = c(0.37, 1.04), 
+    legend.background = element_rect(fill = "transparent"),
+    legend.direction = "horizontal",
+    legend.key = element_rect(colour = NA, fill = NA),
+    # make space for legend above plot area
+    plot.margin = unit(c(0.6,0.1,0.1,0.1), "cm")) +
+  scale_x_continuous(labels = comma)
+
+
+ggsave("Funnel_Plot_Summary.png", plot = funnel_plot_summary, width = 17.49, 
+       height = 9.03, units = "cm", device = "png", dpi = 600)
+
 
 #Create contact information
-contact_names <- c("Jaime Villacampa", "Lucinda Lawrie", "Scott McLaren-Gow")
-contact_details_1 <- c("Principal Information Analyst", "0141 282 2052")
-contact_details_2 <- c("Senior Information Analyst", "0131 275 7929")
-contact_details_3 <- c("Information Analyst", "")
-
-contact <- data.frame(contact_details_1, contact_details_2, contact_details_3)
+contact <- c("Jaime Villacampa | Principal Information Analyst | 0141 282 2052", 
+             "Lucinda Lawrie | Senior Information Analyst | 0131 275 7929",
+             "Scott McLaren-Gow | Information Analyst")
 ```
 
 <Div custom-style = "Publication Title"> 
@@ -88,7 +155,7 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 </div>
 <!-- Need to use Table Head style for image as it is the only available centred style that works - template styles locked with password -->
 <Div custom-style = "Table Head">
-![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png) \
+![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot_Summary.png) \
 </div>
 
 ## Background
@@ -111,8 +178,8 @@ less elective admissions. Any changes in crude mortality trends and HSMRs should
 
 ## Contact
 
-```{r, echo = FALSE}
-    knitr::kable(contact, col.names = contact_names)
+```{r, echo = FALSE, results='asis'}
+    writeLines(paste0(contact, collapse = "  \n"))
 ```
 
 **Email:** <phs.QualityIndicators@phs.scot> 
