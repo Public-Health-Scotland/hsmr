@@ -135,21 +135,34 @@ trends_data <- create_trends(smr01           = smr01,
                              hospital_lookup = hospitals)
 
 trends_data %<>%
-  # Required locations specified in setup_environment
-  filter(location %in% locations_filter) %>%
   # Tableau uses 2014 codes, but code produces 2019
   change_hbcodes(version_to = "14")
 
 
 ### 3 - Save data ----
 
-trends_data_lvl1 <- trends_data %>%
+trends_data_lvl1_all_loc <- trends_data %>%
   filter((sub_grp == "All Admissions" &
             (agg_label == "Hospital" | agg_label == "Board")) |
            (agg_label == "Scotland" &
               (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
+
+# File used for community hospital IR
+save_file(trends_data_lvl1_all_loc, "trends-data-all-loc-level1", "output", "csv",
+          dev = F, overwrite = T)
+
+# Remaining outputs should contain only the locations in locations_filter
+# (specified in setup_environment using 2019 codes - but trends_data uses 2014)
+locations_filter_hb14 =
+  change_hbcodes(as.data.frame(locations_filter, stringsAsFactors = FALSE),
+                 version_to = "14",
+                 code_cols = "locations_filter") %>%
+  pull(locations_filter)
+trends_data_lvl1 = filter(trends_data_lvl1_all_loc,
+                          location %in% locations_filter_hb14)
+trends_data = filter(trends_data, location %in% locations_filter_hb14)
 
 # File used for the Excel tables and offline dashboard
 save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = F)
