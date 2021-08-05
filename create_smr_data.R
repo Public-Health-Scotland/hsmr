@@ -160,7 +160,8 @@ smr_data <- smr_data(smr01 = smr01,
 
 ### 3 - Save data ----
 # This is the level 3 caselisting file
-save_file(smr01 %>% filter(admission_date >= start_date + years(2)),
+save_file(smr01 %>% filter(admission_date >= start_date + years(2)) %>% 
+                    change_hbcodes(version_to = "14", code_cols = "hbtreat_currentdate"),
           "SMR-with-predprob", "base_files", "csv", dev = F, overwrite = F)
 
 save_file(smr_data, "SMR-data", "output", "csv", dev = F, overwrite = F)
