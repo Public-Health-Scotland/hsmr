@@ -1002,7 +1002,7 @@ The next release of this publication, reporting on admissions to `r completeness
 <br>
 
 <Div custom-style = "Heading 2 no pgbrk">Open data</div>
-Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
+Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios).
 
 <br>
 
