@@ -8,6 +8,9 @@ output:
 # Load environment file
 source(here::here("setup_environment.R"))
 
+# Loads scales package for ggplot2 (could maybe be added to environment file?)
+library(scales)
+
 # Read in SMR data, filtered on latest period/reported hospitals
 smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
                  pub_day,  "_SMR-data.csv")) %>% 
@@ -84,10 +87,6 @@ completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ",
                                                              year(end_date)),
                                month(end_date) == 9 ~ paste0("31 December ",
                                                              year(end_date)))
-
-
-# Loads scales package for ggplot2 (could maybe be added to environment file?)
-library(scales)
 
 # Create custom colour/shape palette for the trend charts
 trend_palette <- scale_color_manual(values = c("#004949", "#006dd1", "#49006a", 

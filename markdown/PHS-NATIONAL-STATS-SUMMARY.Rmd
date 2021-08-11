@@ -9,6 +9,9 @@ output:
 # Load environment file
 source(here::here("setup_environment.R"))
 
+# Loads scales package for ggplot2 (could maybe be added to environment file?)
+library(scales)
+
 # Read in SMR data, filtered on latest period/reported hospitals
 smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
                  pub_day,  "_SMR-data.csv")) %>% 
@@ -52,9 +55,6 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                                 TRUE ~ FALSE),
          flag_below = case_when(smr < lcl ~ TRUE,
                                  TRUE ~ FALSE))
-
-# Loads scales package for ggplot2 (could maybe be added to environment file?)
-library(scales)
 
 ## FUNNEL PLOT ##
 funnel_plot_summary <- 
