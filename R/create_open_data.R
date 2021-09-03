@@ -212,6 +212,40 @@ create_open_data <- function(smr,
     
     return(trends)
     
+  } else if (type == "crude" && split == "Place of Death"){
+    
+    trends %<>%
+      filter(sub_grp == split) %>%
+      dplyr::rename(NumberOfDeaths   = deaths,
+                    LocationCode = location,
+                    Label = label) %>%
+      dplyr::group_by(quarter, LocationCode) %>%
+      dplyr::mutate(TotalNumberOfDeaths = sum(NumberOfDeaths)) %>% 
+      ungroup() %>% 
+      dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
+                                             LocationCode == "S08100001" ~ "SB0801",
+                                             TRUE ~ LocationCode),
+                    CrudeRate = (NumberOfDeaths/TotalNumberOfDeaths)*100,
+                    NumberOfDeathsQF = "",
+                    TotalNumberOfDeathsQF = "",
+                    T1 = stringr::str_split(quarter_full,
+                                            " "
+                                            , simplify = TRUE)[,1],
+                    T2 = stringr::str_split(quarter_full,
+                                            " "
+                                            , simplify = TRUE)[,4],
+                    T1 = recode(T1,
+                                "October" = "Q4",
+                                "January" = "Q1",
+                                "April"   = "Q2",
+                                "July"    = "Q3"),
+                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::select("TimePeriod", "LocationCode", "Label",
+                    "NumberOfDeaths",	"NumberOfDeathsQF",
+                    "TotalNumberOfDeaths",	"TotalNumberOfDeathsQF",	"CrudeRate")
+    
+    return(trends)  
+    
   } else if (type == "crude" && split != "Discharge" && split != "Population"){
     
     trends %<>%
