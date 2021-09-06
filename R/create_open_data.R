@@ -26,96 +26,76 @@ create_open_data <- function(smr = NULL,
                              split = NULL,
                              location = NULL){
   
-  # SMR data - Scotland & HB and Hospital
+##### SMR data ----
+  
+  if (type == "smr") {
+  
+  smr %<>% 
+    dplyr::filter(period == 3) %>% 
+    dplyr::rename(ObservedNumberOfDeaths  = deaths,
+                  PredictedNumberOfDeaths = pred,
+                  NumberOfPatients        = pats,
+                  SMR = smr,
+                  CrudeRate = crd_rate,
+                  LocationCode = location,
+                  LocationType = location_type) %>% 
+    dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
+                                           LocationCode == "S08100001" ~ "SB0801",
+                                           TRUE ~ LocationCode),
+                  ObservedNumberOfDeathsQF = case_when(LocationCode ==
+                                                         "S92000003" ~ "d",
+                                                       TRUE ~ ""),
+                  PredictedNumberOfDeathsQF = case_when(LocationCode ==
+                                                          "S92000003" ~ "d",
+                                                        TRUE ~ ""),
+                  NumberOfPatientsQF = case_when(LocationCode ==
+                                                   "S92000003" ~ "d",
+                                                 TRUE ~ ""),
+                  T1 = stringr::str_split(period_label,
+                                          " ")[[1]][1],
+                  T2 = stringr::str_split(period_label,
+                                          " ")[[1]][2],
+                  T3 = stringr::str_split(period_label,
+                                          " ")[[1]][4],
+                  T4 = stringr::str_split(period_label,
+                                          " ")[[1]][5],
+                  T1 = recode(T1,
+                              "October" = "Q4",
+                              "January" = "Q1",
+                              "April"   = "Q2",
+                              "July"    = "Q3"),
+                  T3 = recode(T3,
+                              "December" = "Q4",
+                              "March" = "Q1",
+                              "June"   = "Q2",
+                              "September"    = "Q3"),
+                  TimePeriod = paste0(T2, T1, "-", T4, T3)) %>%
+    select("TimePeriod", "LocationCode", "ObservedNumberOfDeaths",
+           "ObservedNumberOfDeathsQF", "PredictedNumberOfDeaths",
+           "PredictedNumberOfDeathsQF", "NumberOfPatients",
+           "NumberOfPatientsQF",	"SMR",	"CrudeRate", "LocationType")
+    
+    
+  # SMR data - Scotland & HB
 
-    if (type == "smr" && location == "hb" && !(is.null(location))){
+    if (location == "hb" && !(is.null(location))){
 
       smr %<>%
-      dplyr::filter(period == 3,
-                    location_type %in% c("NHS Board", "Scotland")) %>%
-      dplyr::rename(ObservedNumberOfDeaths  = deaths,
-                    PredictedNumberOfDeaths = pred,
-                    NumberOfPatients        = pats,
-                    SMR = smr,
-                    CrudeRate = crd_rate,
-                    HBT = location) %>%
-      dplyr::mutate(HBT = case_when(HBT == "Scot" ~ "S92000003",
-                                    HBT == "S08100001" ~ "SB0801",
-                                             TRUE ~ HBT),
-                    ObservedNumberOfDeathsQF = case_when(HBT ==
-                                                           "S92000003" ~ "d",
-                                                         TRUE ~ ""),
-                    PredictedNumberOfDeathsQF = case_when(HBT ==
-                                                           "S92000003" ~ "d",
-                                                         TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(HBT ==
-                                                           "S92000003" ~ "d",
-                                                         TRUE ~ ""),
-                    T1 = stringr::str_split(period_label,
-                                                      " ")[[1]][1],
-                    T2 = stringr::str_split(period_label,
-                                            " ")[[1]][2],
-                    T3 = stringr::str_split(period_label,
-                                            " ")[[1]][4],
-                    T4 = stringr::str_split(period_label,
-                                            " ")[[1]][5],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    T3 = recode(T3,
-                                "December" = "Q4",
-                                "March" = "Q1",
-                                "June"   = "Q2",
-                                "September"    = "Q3"),
-                    TimePeriod = paste0(T2, T1, "-", T4, T3)) %>%
-      select("TimePeriod", "HBT", "ObservedNumberOfDeaths",
-             "ObservedNumberOfDeathsQF", "PredictedNumberOfDeaths",
-             "PredictedNumberOfDeathsQF", "NumberOfPatients",
-             "NumberOfPatientsQF",	"SMR",	"CrudeRate")
-
+        dplyr::filter(LocationType %in% c("NHS Board", "Scotland")) %>%
+        dplyr::rename(HBT = LocationCode) %>% 
+        select("TimePeriod", "HBT", "ObservedNumberOfDeaths",
+               "ObservedNumberOfDeathsQF", "PredictedNumberOfDeaths",
+               "PredictedNumberOfDeathsQF", "NumberOfPatients",
+               "NumberOfPatientsQF",	"SMR",	"CrudeRate")
+        
     return(smr)
+      
+  # SMR data - Hospital
 
-  } else if (type == "smr" && location == "hosp"){
+  } else if (location == "hosp"){
     
     smr %<>%
-      dplyr::filter(period == 3,
-                    location_type == "hospital") %>%
-      dplyr::rename(ObservedNumberOfDeaths  = deaths,
-                    PredictedNumberOfDeaths = pred,
-                    NumberOfPatients        = pats,
-                    SMR = smr,
-                    CrudeRate = crd_rate,
-                    LocationCode = location) %>%
-      dplyr::mutate(ObservedNumberOfDeathsQF = case_when(LocationCode ==
-                                                           "S92000003" ~ "d",
-                                                         TRUE ~ ""),
-                    PredictedNumberOfDeathsQF = case_when(LocationCode ==
-                                                            "S92000003" ~ "d",
-                                                          TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(LocationCode ==
-                                                     "S92000003" ~ "d",
-                                                   TRUE ~ ""),
-                    T1 = stringr::str_split(period_label,
-                                            " ")[[1]][1],
-                    T2 = stringr::str_split(period_label,
-                                            " ")[[1]][2],
-                    T3 = stringr::str_split(period_label,
-                                            " ")[[1]][4],
-                    T4 = stringr::str_split(period_label,
-                                            " ")[[1]][5],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    T3 = recode(T3,
-                                "December" = "Q4",
-                                "March" = "Q1",
-                                "June"   = "Q2",
-                                "September"    = "Q3"),
-                    TimePeriod = paste0(T2, T1, "-", T4, T3)) %>%
+      dplyr::filter(LocationType == "hospital") %>% 
       select("TimePeriod", "LocationCode", "ObservedNumberOfDeaths",
              "ObservedNumberOfDeathsQF", "PredictedNumberOfDeaths",
              "PredictedNumberOfDeathsQF", "NumberOfPatients",
@@ -125,234 +105,136 @@ create_open_data <- function(smr = NULL,
     
   } 
   
-  # Crude - All admissions - Scotland & HB and Hospital
-    
-  if(type == "crude" && location == "hb" && !(is.null(location))){
+  }
 
-    trend_data %<>%
+#### Crude data ----
+  
+  if (type == "crude") {
+  
+  trend <- trend_data %>%
+    dplyr::rename(NumberOfDeaths   = deaths,
+                  NumberOfPatients = pats,
+                  CrudeRate = crd_rate,
+                  LocationCode = location,
+                  Label = label) %>% 
+    dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
+                                           LocationCode == "S08100001" ~ "SB0801",
+                                  TRUE ~ LocationCode),
+                  NumberOfDeathsQF = case_when(LocationCode ==
+                                                 "S92000003" ~ "d",
+                                               TRUE ~ ""),
+                  NumberOfPatientsQF = case_when(LocationCode ==
+                                                   "S92000003" ~ "d",
+                                                 TRUE ~ ""),
+                  T1 = stringr::str_split(quarter_full,
+                                          " "
+                                          , simplify = TRUE)[,1],
+                  T2 = stringr::str_split(quarter_full,
+                                          " "
+                                          , simplify = TRUE)[,4],
+                  T1 = recode(T1,
+                              "October" = "Q4",
+                              "January" = "Q1",
+                              "April"   = "Q2",
+                              "July"    = "Q3"),
+                  TimePeriod = paste0(T2, T1)) %>%
+    dplyr::select("TimePeriod", "LocationCode", "Label",
+                  "NumberOfDeaths",	"NumberOfDeathsQF",
+                  "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate",
+                  "agg_label", "sub_grp")
+    
+  
+  # Crude - All admissions - Scotland & HB
+    
+  if(location == "hb" && !(is.null(location))){
+
+    trend %<>%
       filter(sub_grp == "All Admissions",
              agg_label %in% c("Board", "Scotland")) %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    NumberOfPatients = pats,
-                    CrudeRate = crd_rate,
-                    HBT = location,
-                    SubGroup = label) %>%
-      dplyr::mutate(HBT = case_when(HBT == "Scot" ~ "S92000003",
-                                             HBT == "S08100001" ~ "SB0801",
-                                             TRUE ~ HBT),
-                    NumberOfDeathsQF = case_when(HBT ==
-                                                           "S92000003" ~ "d",
-                                                         TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(HBT ==
-                                                     "S92000003" ~ "d",
-                                                   TRUE ~ ""),
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::rename(HBT = LocationCode,
+                    SubGroup = Label) %>%
       dplyr::select("TimePeriod", "HBT", "SubGroup",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
 
-    return(trend_data)
+    return(trend)
 
-  } else if(type == "crude" && location == "hosp" && !(is.null(location))){
+    # Crude - All admissions - Hospital
     
-    trend_data %<>%
+  } else if(location == "hosp" && !(is.null(location))){
+    
+    trend %<>%
       filter(sub_grp == "All Admissions",
              agg_label == "Hospital") %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    NumberOfPatients = pats,
-                    CrudeRate = crd_rate,
-                    LocationCode = location,
-                    SubGroup = label) %>%
-      dplyr::mutate(LocationCode = case_when(LocationCode == "Scot" ~ "S92000003",
-                                             LocationCode == "S08100001" ~ "SB0801",
-                                             TRUE ~ LocationCode),
-                    NumberOfDeathsQF = case_when(LocationCode ==
-                                                   "S92000003" ~ "d",
-                                                 TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(LocationCode ==
-                                                     "S92000003" ~ "d",
-                                                   TRUE ~ ""),
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::rename(SubGroup = Label) %>%
       dplyr::select("TimePeriod", "LocationCode", "SubGroup",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
     
-    return(trend_data)
+    return(trend)
     
   # Crude - Place of Death
     
-  } else if (type == "crude" && split == "Place of Death"){
+  } else if (split == "Place of Death"){
     
-    trend_data %<>%
+    trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    Country = location,
-                    PlaceOfDeath = label) %>%
-      dplyr::group_by(quarter, Country) %>%
+      dplyr::rename(Country = LocationCode,
+                    PlaceOfDeath = Label) %>%
+      dplyr::group_by(TimePeriod, Country) %>%
       dplyr::mutate(TotalNumberOfDeaths = sum(NumberOfDeaths)) %>% 
       ungroup() %>% 
-      dplyr::mutate(Country = case_when(Country == "Scot" ~ "S92000003",
-                                        Country == "S08100001" ~ "SB0801",
-                                             TRUE ~ Country),
-                    CrudeRate = (NumberOfDeaths/TotalNumberOfDeaths)*100,
-                    NumberOfDeathsQF = "",
-                    TotalNumberOfDeathsQF = "",
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::mutate(CrudeRate = (NumberOfDeaths/TotalNumberOfDeaths)*100,
+                    TotalNumberOfDeathsQF = "") %>%
       dplyr::select("TimePeriod", "Country", "PlaceOfDeath",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "TotalNumberOfDeaths",	"TotalNumberOfDeathsQF",	"CrudeRate")
     
-    return(trend_data)  
+    return(trend)  
     
   # Crude - Deprivation
     
-  } else if (type == "crude" && split == "Deprivation"){
+  } else if (split == "Deprivation"){
     
-    trend_data %<>%
+    trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    NumberOfPatients = pats,
-                    CrudeRate = crd_rate,
-                    Country = location,
-                    SIMDQuintile = label) %>%
-      dplyr::mutate(Country = case_when(Country == "Scot" ~ "S92000003",
-                                        Country == "S08100001" ~ "SB0801",
-                                        TRUE ~ Country),
-                    NumberOfDeathsQF = "",
-                    NumberOfPatientsQF = "",
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1),
-                    SIMDQuintile =
-                      case_when(SIMDQuintile == "1 - Most Deprived" ~ "1",
-                                SIMDQuintile == "5 - Least Deprived" ~ "5",
-                                SIMDQuintile == "Unknown" ~ "",
-                                TRUE ~ SIMDQuintile),
-                    SIMDQuintileQF =
-                      case_when(SIMDQuintile == "" ~ ":",
-                                TRUE ~ "")) %>%
+      dplyr::rename(Country = LocationCode,
+                    SIMDQuintile = Label) %>%
+      dplyr::mutate(SIMDQuintileQF = "") %>% 
       dplyr::select("TimePeriod", "Country", "SIMDQuintile",
                     "SIMDQuintileQF", "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
     
-    return(trend_data)
+    return(trend)
     
   # Crude - Admission Type, Age, Sex & Specialty
     
-  } else if (type == "crude" && split != "Discharge" && split != "Population"){
+  } else if (split != "Discharge" && split != "Population"){
     
-    trend_data %<>%
+    trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    NumberOfPatients = pats,
-                    CrudeRate = crd_rate,
-                    Country = location,
-                    Label = label) %>%
-      dplyr::mutate(Country = case_when(Country == "Scot" ~ "S92000003",
-                                        Country == "S08100001" ~ "SB0801",
-                                             TRUE ~ Country),
-                    NumberOfDeathsQF = "",
-                    NumberOfPatientsQF = "",
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::rename(Country = LocationCode) %>%
       dplyr::select("TimePeriod", "Country", "Label",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
     
-    return(trend_data)
+    return(trend)
   
   # Crude - Discharge & Population
     
-  } else if (type == "crude"){
+  } else {
     
-    trend_data %<>%
+    trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::rename(NumberOfDeaths   = deaths,
-                    NumberOfPatients = pats,
-                    CrudeRate = crd_rate,
-                    Label = label,
-                    HBT = hb) %>%
-      dplyr::mutate(HBT = case_when(HBT == "Scotland" ~ "S92000003",
-                                    HBT == "S08100001" ~ "SB0801",
-                                    TRUE ~ HBT),
-                    NumberOfDeathsQF = case_when(HBT ==
-                                                   "S92000003" ~ "d",
-                                                 TRUE ~ ""),
-                    NumberOfPatientsQF = case_when(HBT ==
-                                                     "S92000003" ~ "d",
-                                                   TRUE ~ ""),
-                    T1 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,1],
-                    T2 = stringr::str_split(quarter_full,
-                                            " "
-                                            , simplify = TRUE)[,4],
-                    T1 = recode(T1,
-                                "October" = "Q4",
-                                "January" = "Q1",
-                                "April"   = "Q2",
-                                "July"    = "Q3"),
-                    TimePeriod = paste0(T2, T1)) %>%
+      dplyr::rename(HBT = LocationCode) %>%
       dplyr::select("TimePeriod", "HBT", "Label",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
     
-    return(trend_data)
+    return(trend)
     
   }
   
-  
+  }
 
 }
