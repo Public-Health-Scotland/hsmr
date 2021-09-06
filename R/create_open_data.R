@@ -185,6 +185,7 @@ create_open_data <- function(smr = NULL,
       dplyr::mutate(TotalNumberOfDeaths = sum(NumberOfDeaths)) %>% 
       ungroup() %>% 
       dplyr::mutate(CrudeRate = (NumberOfDeaths/TotalNumberOfDeaths)*100,
+                    NumberOfDeathsQF = "",
                     TotalNumberOfDeathsQF = "") %>%
       dplyr::select("TimePeriod", "Country", "PlaceOfDeath",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
@@ -200,7 +201,16 @@ create_open_data <- function(smr = NULL,
       filter(sub_grp == split) %>%
       dplyr::rename(Country = LocationCode,
                     SIMDQuintile = Label) %>%
-      dplyr::mutate(SIMDQuintileQF = "") %>% 
+      dplyr::mutate(SIMDQuintile =
+                      case_when(SIMDQuintile == "1 - Most Deprived" ~ "1",
+                                SIMDQuintile == "5 - Least Deprived" ~ "5",
+                                SIMDQuintile == "Unknown" ~ "",
+                                TRUE ~ SIMDQuintile),
+                    SIMDQuintileQF =
+                      case_when(SIMDQuintile == "" ~ ":",
+                                TRUE ~ ""),
+                    NumberOfDeathsQF = "",
+                    NumberOfPatientsQF = "") %>% 
       dplyr::select("TimePeriod", "Country", "SIMDQuintile",
                     "SIMDQuintileQF", "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
@@ -214,6 +224,8 @@ create_open_data <- function(smr = NULL,
     trend %<>%
       filter(sub_grp == split) %>%
       dplyr::rename(Country = LocationCode) %>%
+      dplyr::mutate(NumberOfDeathsQF = "",
+                    NumberOfPatientsQF = "") %>% 
       dplyr::select("TimePeriod", "Country", "Label",
                     "NumberOfDeaths",	"NumberOfDeathsQF",
                     "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")
