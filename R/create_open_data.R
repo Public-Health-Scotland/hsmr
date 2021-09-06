@@ -6,7 +6,8 @@
 #' @details \code{create_open_data} expects a \code{tibble} produced by the 
 #' \code{create_smr_data} script and a \code{tibble} produced by the
 #' \code{create_trends_data} script.
-#'
+#' 
+#' @param smr Input tibble for HSMR data.
 #' @param type A character string specifying whether the data used is to be
 #' HSMR or crude trend data. Valid options are 'smr' and 'crude'.
 #' @param split A character string specifying the subgroup to be used to split 
