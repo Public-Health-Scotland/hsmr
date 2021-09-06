@@ -1,4 +1,4 @@
-#########################################################################
+#########################################################################.
 # Name of file - create_excel_tables.R
 # data release - Quarterly HSMR publication
 # Original Authors - David Caldwell
@@ -11,7 +11,7 @@
 # Description - Populates Excel Tables for quarterly HSMR publication
 #
 # Approximate run time - 1 minute
-#########################################################################
+#########################################################################.
 
 
 ### SECTION 1 - HOUSE KEEPING ----
@@ -55,8 +55,6 @@ smr_data <- read_csv(paste0(data_folder, pub_day, "/output/",
          pred_scot, pats_scot, smr_scot, st_err,  uwl, ucl, lwl,
          lcl, period_label)
 
-### SECTION 2 - CREATE TABLES ----
-
 # Read in trend data
 trend_data <- read_csv(paste0(data_folder, pub_day, "/output/",
                               pub_day, "_trends-data-level1.csv"),
@@ -71,6 +69,8 @@ trend_data <- read_csv(paste0(data_folder, pub_day, "/output/",
   select(hb, location, location_name, agg_label, quarter, quarter_short,
          quarter_full, sub_grp, label, scot_deaths,	scot_pats,
          completeness_date,	deaths,	pats,	crd_rate)
+
+### SECTION 2 - CREATE TABLES ----
 
 # Load Table 1 template
 table1 <- loadWorkbook(here("reference_files",
@@ -123,132 +123,86 @@ hid_data <- hsmr_hid(smr_data, trend_data, end_date)
 
 save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 
-# Open data
+### SECTION 3 - CREATE OPEN DATA ----
 
-od_dev <- FALSE
-od_over <- FALSE
+od_dev <- TRUE
+od_over <- TRUE
 
-# SMR data - Scotland and HB & Hospital
+# SMR data - Scotland & HB and Hospital
 save_file(create_open_data(smr_data,
-                           trend_data,
                            type = "smr",
-                           location = "hb") %>%
-          dplyr::rename(HBT = LocationCode),
+                           location = "hb"),
           "smr_open_data_hb", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 save_file(create_open_data(smr_data,
-                           trend_data,
                            type = "smr",
                            location = "hosp"),
           "smr_open_data_hosp", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
-# All admissions - Scotland and HB & Hospital
-save_file(create_open_data(smr_data,
-                           trend_data,
-                           type = "crude",
-                           split = "All Admissions",
-                           location = "hb") %>%
-            dplyr::rename(Subgroup = Label,
-                          HBT = LocationCode),
+# All admissions - Scotland & HB and Hospital
+save_file(create_open_data(type = "crude",
+                           location = "hb"),
           "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
-save_file(create_open_data(smr_data,
-                           trend_data,
-                           type = "crude",
-                           split = "All Admissions",
-                           location = "hosp") %>%
-            dplyr::rename(Subgroup = Label),
+save_file(create_open_data(type = "crude",
+                           location = "hosp"),
           "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Admission Type
-save_file((create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
+save_file((create_open_data(type = "crude",
                             split = "Admission Type") %>%
-             dplyr::rename(Country = LocationCode,
-                           AdmissionType = Label)),
+             dplyr::rename(AdmissionType = Label)),
           "admissions_type_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Age Group
-save_file((create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
-                            split = "Age Group")%>%
-             dplyr::rename(Country = LocationCode,
-                           AgeGroup = Label)),
+save_file((create_open_data(type = "crude",
+                            split = "Age Group") %>%
+             dplyr::rename(AgeGroup = Label)),
           "age_group_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Deprivation
-save_file((create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
-                            split = "Deprivation") %>%
-             dplyr::rename(Country = LocationCode,
-                           SIMDQuintile = Label) %>%
-             dplyr::mutate(SIMDQuintile =
-                             case_when(SIMDQuintile == "1 - Most Deprived" ~ "1",
-                                       SIMDQuintile == "5 - Least Deprived" ~ "5",
-                                       SIMDQuintile == "Unknown" ~ "",
-                                       TRUE ~ SIMDQuintile),
-                           SIMDQuintileQF =
-                             case_when(SIMDQuintile == "" ~ ":",
-                                       TRUE ~ "")) %>%
-             dplyr::select("TimePeriod", "Country", "SIMDQuintile",
-                           "SIMDQuintileQF", "NumberOfDeaths",	"NumberOfDeathsQF",
-                           "NumberOfPatients",	"NumberOfPatientsQF",	"CrudeRate")),
+save_file((create_open_data(type = "crude",
+                            split = "Deprivation")),
           "simd_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Discharge
-save_file(create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
+save_file((create_open_data(type = "crude",
                             split = "Discharge") %>%
-            dplyr::rename(Subgroup = Label),
+            dplyr::rename(Subgroup = Label)),
           "discharge_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Population
-save_file(create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
-                            split = "Population") %>%
+save_file(create_open_data(type = "crude",
+                           split = "Population") %>%
             dplyr::rename(Subgroup = Label),
           "pop_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Place of Death
-save_file(create_open_data(smr_data,
-                           trend_data,
-                           type = "crude",
-                           split = "Place of Death") %>%
-            dplyr::rename(Subgroup = Label),
+save_file(create_open_data(type = "crude",
+                           split = "Place of Death"),
           "place_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Sex
-save_file((create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
+save_file((create_open_data(type = "crude",
                             split = "Sex") %>%
-             dplyr::rename(Country = LocationCode,
-                           Sex = Label)),
+             dplyr::rename(Sex = Label)),
           "sex_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
 # Specialty
-save_file((create_open_data(smr_data,
-                            trend_data,
-                            type = "crude",
+save_file((create_open_data(type = "crude",
                             split = "Specialty") %>%
-             dplyr::rename(Country = LocationCode,
-                           Specialty = Label)),
+             dplyr::rename(Specialty = Label)),
           "spec_open_data", out_folder = "open_data", "csv", dev = od_dev,
           overwrite = od_over)
 
