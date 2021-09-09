@@ -27,6 +27,7 @@ library(tidylog)       # For printing results of some dplyr functions
 library(tidyr)         # For data manipulation in the "tidy" way
 library(stringr)       # For string manipulation and matching
 library(ggplot2)       # For ggplot objects
+library(scales)        # For use with ggplot2
 library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
