@@ -15,14 +15,7 @@ library(scales)
 # Read in SMR data, filtered on latest period/reported hospitals
 smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
                  pub_day,  "_SMR-data.csv")) %>% 
-  filter(period == 3 & 
-           location %in% 
-           c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H", 
-             "H212H", "B120H", "H103H", "N411H", "Y146H", "V217H", "Y144H",
-             "Z102H", "G107H", "D102H", "C313H", "C121H", "G306H", "T101H",
-             "T202H", "G405H", "F805H", "H202H", "C418H", "S314H", "S308H",
-             "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
-             "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
+  filter(period == 3 & location %in% c(hosp_filter, scot_filter)) %>%
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
        z = if_else(location_type == "hospital",
                    round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
