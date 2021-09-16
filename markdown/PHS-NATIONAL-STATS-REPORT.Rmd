@@ -11,14 +11,7 @@ source(here::here("setup_environment.R"))
 # Read in SMR data, filtered on latest period/reported hospitals
 smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/", 
                  pub_day,  "_SMR-data.csv")) %>% 
-  filter(period == 3 & 
-           location %in% 
-           c("C206H", "C418H", "Y104H", "Y146H", "N101H", "A101H", "R101H", 
-             "H212H", "B120H", "H103H", "N411H", "Y146H", "V217H", "Y144H",
-             "Z102H", "G107H", "D102H", "C313H", "C121H", "G306H", "T101H",
-             "T202H", "G405H", "H202H", "C418H", "S314H", "S308H",
-             "G207H", "T312H", "A210H", "A111H", "L302H", "L106H", "L308H",
-             "F704H", "S116H", "W107H", "G516H", "Scot")) %>% 
+  filter(period == 3 & location %in% c(hosp_filter, scot_filter)) %>% 
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
        z = if_else(location_type == "hospital",
                    round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
@@ -85,10 +78,6 @@ completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ",
                                month(end_date) == 9 ~ paste0("31 December ",
                                                              year(end_date)))
 
-
-# Loads scales package for ggplot2 (could maybe be added to environment file?)
-library(scales)
-
 # Create custom colour/shape palette for the trend charts
 trend_palette <- scale_color_manual(values = c("#004949", "#006dd1", "#49006a", 
                                                "#920000", "#924900", "#db6d00", 
@@ -135,16 +124,22 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                    segment.size  = 0.2,
                    segment.color = "grey50",
                    direction     = "x") +
-  labs(x = "Number of predicted deaths", y = "Standardised Mortality Ratio (SMR)") +
+  labs(x = "Number of predicted deaths", y = "Standardised\nMortality\nRatio (SMR)") +
   theme(panel.background = element_blank(),
     panel.grid.major.x = element_line(size = .1, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust=0.5),
     axis.text = element_text(size = 9, angle= 0),
     legend.title = element_blank(),
-    legend.position = "top",
-    legend.key = element_rect(colour = NA, fill = NA)) +
+    # ggplot centres over plot area, not in the full figure, so legend is cut off
+    # when set to "top". This needs manual adjustment when sizes change
+    legend.position = c(0.37, 1.04), 
+    legend.background = element_rect(fill = "transparent"),
+    legend.direction = "horizontal",
+    legend.key = element_rect(colour = NA, fill = NA),
+    # make space for legend above plot area
+    plot.margin = unit(c(0.6,0.1,0.1,0.1), "cm")) +
   scale_x_continuous(labels = comma)
 
 qtr_list <- trend_data %>% 
@@ -161,14 +156,14 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
@@ -194,14 +189,14 @@ chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0
                                , hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
@@ -232,14 +227,14 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
@@ -268,14 +263,14 @@ chart_5 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "0-19 yea
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
@@ -301,14 +296,14 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
@@ -338,14 +333,14 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
@@ -382,8 +377,8 @@ chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "top",
@@ -410,14 +405,14 @@ chart_9 <- ggplot(trend_data %>% filter(label == "Discharge"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate (%)") +
+  labs(x = element_blank(), y = "Crude\nrate (%)") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
@@ -445,14 +440,14 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
   geom_point(aes(colour = label, shape = label)) +
   shape_palette +
   trend_palette +
-  labs(x = element_blank(), y = "Crude rate per 1,000 people") +
+  labs(x = element_blank(), y = "Crude rate\nper 1,000\npeople") +
   theme(panel.background = element_blank(),
     panel.grid.minor.x = element_line(size = .15, color = "#C0C0C0"), 
     panel.grid.major.y = element_blank(),
     axis.line.x = element_line(size = .1, color = "#787878"),
     axis.line.y = element_line(size = .1, color = "#787878"),
-    axis.title.x = element_text(size = 10, face = "bold"),
-    axis.title.y = element_text(size = 10, face = "bold"),
+    axis.title.x = element_text(size = 12, face = "bold"),
+    axis.title.y = element_text(size = 12, face = "bold", angle = 0, vjust = 0.5),
     axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 0.5),
     legend.title = element_blank(),
     legend.position = "none",
@@ -503,13 +498,13 @@ ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
 ggsave("Funnel_Plot.svg", plot = funnel_plot, width = 17.49, 
        height = 9.03, units = "cm", device = "png", dpi = 600)
 
-ggsave("Chart_2.png", plot = chart_2, width = 17.49, height = 9.03, 
+ggsave("Chart_2.svg", plot = chart_2, width = 17.49, height = 9.03, 
        units = "cm", device = "png", dpi = 600)
 
 ggsave("Chart_3.svg", plot = chart_3, width = 17.49, height = 9.03, 
        units = "cm", device = "png", dpi = 600)
 
-ggsave("Chart_4.png", plot = chart_4, width = 17.49, height = 9.03, 
+ggsave("Chart_4.svg", plot = chart_4, width = 17.49, height = 9.03, 
        units = "cm", device = "png", dpi = 600)
 
 ggsave("Chart_5.svg", plot = chart_5, width = 17.49, height = 9.03, 
@@ -1002,7 +997,7 @@ The next release of this publication, reporting on admissions to `r completeness
 <br>
 
 <Div custom-style = "Heading 2 no pgbrk">Open data</div>
-Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
+Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios).
 
 <br>
 
