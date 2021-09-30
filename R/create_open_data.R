@@ -112,7 +112,13 @@ create_open_data <- function(smr = NULL,
     
   } 
     
-    return(smr)
+    if (save == T) {
+      
+      save_file(dataset = smr, filename = filename, out_folder = "open_data", 
+                type = "csv", dev = od_dev, overwrite = od_over)
+    } else {
+      return(smr)
+    }
   }
 
 #### Crude data ----
