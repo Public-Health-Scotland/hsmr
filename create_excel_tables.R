@@ -129,81 +129,60 @@ od_dev <- TRUE
 od_over <- TRUE
 
 # SMR data - Scotland & HB and Hospital
-save_file(create_open_data(smr_data,
-                           type = "smr",
-                           location = "hb"),
-          "smr_open_data_hb", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(smr_data, type = "smr", location = "hb",
+                 "smr_open_data_hb", dev = od_dev, overwrite = od_over)
 
-save_file(create_open_data(smr_data,
-                           type = "smr",
-                           location = "hosp"),
-          "smr_open_data_hosp", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(smr_data, type = "smr", location = "hosp",
+                 "smr_open_data_hosp", dev = od_dev, overwrite = od_over)
 
 # All admissions - Scotland & HB and Hospital
-save_file(create_open_data(type = "crude",
-                           location = "hb"),
-          "all_admissions_open_data_hb", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", location = "hb",
+                 filename = "all_admissions_open_data_hb",
+                 dev = od_dev, overwrite = od_over)
 
-save_file(create_open_data(type = "crude",
-                           location = "hosp"),
-          "all_admissions_open_data_hosp", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", location = "hosp",
+                 filename = "all_admissions_open_data_hosp",
+                 dev = od_dev, overwrite = od_over)
 
 # Admission Type
-save_file((create_open_data(type = "crude",
-                            split = "Admission Type") %>%
-             dplyr::rename(AdmissionType = Label)),
-          "admissions_type_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Admission Type",
+                 filename = "admissions_type_open_data", label_var = "AdmissionType",
+                 dev = od_dev, overwrite = od_over)
 
 # Age Group
-save_file((create_open_data(type = "crude",
-                            split = "Age Group") %>%
-             dplyr::rename(AgeGroup = Label)),
-          "age_group_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+
+create_open_data(measure = "crude", split = "Age Group",
+                 filename = "age_group_open_data", label_var = "AgeGroup",
+                 dev = od_dev, overwrite = od_over)
 
 # Deprivation
-save_file((create_open_data(type = "crude",
-                            split = "Deprivation")),
-          "simd_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Deprivation",
+                 filename = "simd_open_data",
+                 dev = od_dev, overwrite = od_over)
 
 # Discharge
-save_file((create_open_data(type = "crude",
-                            split = "Discharge") %>%
-            dplyr::rename(Subgroup = Label)),
-          "discharge_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Discharge",
+                 filename = "discharge_open_data",
+                 dev = od_dev, overwrite = od_over)
 
 # Population
-save_file(create_open_data(type = "crude",
-                           split = "Population") %>%
-            dplyr::rename(Subgroup = Label),
-          "pop_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Population",
+                 filename = "pop_open_data",
+                 dev = od_dev, overwrite = od_over)
 
 # Place of Death
-save_file(create_open_data(type = "crude",
-                           split = "Place of Death"),
-          "place_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Place of Death",
+                 filename = "place_open_data",
+                 dev = od_dev, overwrite = od_over)
 
 # Sex
-save_file((create_open_data(type = "crude",
-                            split = "Sex") %>%
-             dplyr::rename(Sex = Label)),
-          "sex_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Sex",
+                 filename = "sex_open_data", label_var = "Sex",
+                 dev = od_dev, overwrite = od_over)
 
 # Specialty
-save_file((create_open_data(type = "crude",
-                            split = "Specialty") %>%
-             dplyr::rename(Specialty = Label)),
-          "spec_open_data", out_folder = "open_data", "csv", dev = od_dev,
-          overwrite = od_over)
+create_open_data(measure = "crude", split = "Specialty",
+                 filename = "spec_open_data", label_var = "Specialty",
+                 dev = od_dev, overwrite = od_over)
 
 ### END OF SCRIPT ###
