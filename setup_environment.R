@@ -18,7 +18,6 @@
 ### 1 - Load packages ----
 library(odbc)          # For accessing SMRA databases
 library(dplyr)         # For data manipulation in the "tidy" way
-library(haven)         # For reading in SPSS files
 library(readr)         # For reading in csv files
 library(janitor)       # For 'cleaning' variable names
 library(magrittr)      # For %<>% operator
@@ -97,10 +96,10 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
 
 ## 5 - Load common lookups to all scripts ----
 # Hospital names
-hospitals <- bind_rows(read_spss(paste0(
+hospitals <- bind_rows(read_csv(paste0(
   plat_filepath,
   "lookups/Unicode/National Reference Files/",
-  "location.sav")) %>%
+  "location.csv")) %>%
     select(Location, Locname) %>%
     rename(location      = Location,
            location_name = Locname),
@@ -117,8 +116,7 @@ hospitals <- bind_rows(read_spss(paste0(
   tibble(location = "S08000032", location_name = "NHS Lanarkshire"))
 
 # Specialty Groupings lookup
-specialty_group <- read_spss(here("reference_files", "discovery_spec_grps.sav"))
-
+specialty_group <- readRDS(here("reference_files", "discovery_spec_grps.rds"))
 
 ## 6 - Select locations to be included in excel tables/dashboard files ----
 
