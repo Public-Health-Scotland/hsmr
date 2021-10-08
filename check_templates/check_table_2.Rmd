@@ -1,0 +1,238 @@
+---
+title: "Check Table 2"
+output: 
+  html_notebook:
+    toc: true
+    code_folding: hide
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 72em;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+# Setup
+
+```{r message=FALSE}
+
+# Load environment file
+source(here::here("setup_environment.R"))
+
+# Tidylog messages make notebook output messy
+detach("package:tidylog", unload = TRUE)
+
+library(glue)      # for glue()
+library(DT)        # for tables
+
+source("checking_functions.R")
+
+# What is the minimum % difference to show in tables?
+table_pc_cutoff = 5
+
+```
+
+# Get Data
+
+```{r}
+
+get_t2_data = function(date_str, sheet_name = "Raw Data"){
+  
+  path = glue("{data_folder}{date_str}/output/{date_str}-Table2-Crude-Mortality-subgroups.xlsx")
+
+  data = 
+    read.xlsx(path, sheet = sheet_name) %>%
+    select(location_name, quarter_short, sub_grp, label, 
+           deaths, pats, crd_rate)
+  
+  return(data)
+  
+}
+
+t2_old = get_t2_data(previous_pub, sheet_name = "table_data")
+t2_new = get_t2_data(pub_day)
+
+```
+
+We can only compare the quarters that overlap, find those:
+
+```{r}
+
+overlap_quarters = 
+  semi_join(t2_new, t2_old, by = "quarter_short") %>%
+  select(quarter_short) %>%
+  distinct()
+
+```
+
+Now only keep the quarters that overlap:
+
+```{r}
+
+t2_old = filter(t2_old, quarter_short %in% overlap_quarters$quarter_short)
+t2_new = filter(t2_new, quarter_short %in% overlap_quarters$quarter_short)
+
+```
+
+# Compare to previous publication
+
+Get a dataframe with the change from the last publication:
+
+```{r}
+
+# Columns containing the labels
+join_cols = c("location_name", "quarter_short", "sub_grp", "label")
+
+t2_diff = compare_df(t2_new, t2_old, join_by = join_cols, 
+                     df1_name = "new", df2_name = "old")
+
+```
+
+
+## Patients
+
+```{r}
+
+t2_diff_px = 
+  t2_diff %>%
+  select(any_of(join_cols), starts_with("pats"))
+
+writeLines(glue("Max % diff: {max(t2_diff_px[, 'pats.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t2_diff_px[, 'pats.diff_pc'], na.rm = T)}"))
+
+```
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t2_diff_px, "pats")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t2_diff_px, measure = "pats",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t2_diff_px, measure = "pats",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t2_diff_px, measure = "pats",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```
+
+
+## Deaths
+
+```{r}
+
+t2_diff_deaths = 
+  t2_diff %>%
+  select(any_of(join_cols), starts_with("deaths"))
+
+writeLines(glue("Max % diff: {max(t2_diff_deaths[, 'deaths.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t2_diff_deaths[, 'deaths.diff_pc'], na.rm = T)}"))
+
+```
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t2_diff_deaths, "deaths")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t2_diff_deaths, measure = "deaths",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t2_diff_deaths, measure = "deaths", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t2_diff_deaths, measure = "deaths", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```
+
+## Crude Mortality Rate
+
+```{r}
+
+t2_diff_crd_rate = 
+  t2_diff %>%
+  select(any_of(join_cols), starts_with("crd_rate"))
+
+writeLines(glue("Max % diff: {max(t2_diff_crd_rate[, 'crd_rate.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t2_diff_crd_rate[, 'crd_rate.diff_pc'], na.rm = T)}"))
+
+```
+
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t2_diff_crd_rate, "crd_rate")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t2_diff_crd_rate, measure = "crd_rate", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t2_diff_crd_rate, measure = "crd_rate", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t2_diff_crd_rate, measure = "crd_rate", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```

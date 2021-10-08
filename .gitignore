@@ -9,9 +9,10 @@ testing.R
 # 'data' folder #
 data/
 
-# Markdown output
+# Markdown/notebook output
 *.docx
 *.doc
+*.html
 
 # Images
 *.png
