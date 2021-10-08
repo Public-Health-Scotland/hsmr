@@ -18,6 +18,7 @@
 ### 1 - Load packages ----
 library(odbc)          # For accessing SMRA databases
 library(dplyr)         # For data manipulation in the "tidy" way
+library(haven)         # For reading in SPSS files
 library(readr)         # For reading in csv files
 library(janitor)       # For 'cleaning' variable names
 library(magrittr)      # For %<>% operator
