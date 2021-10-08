@@ -237,7 +237,7 @@ create_open_data <- function(smr = NULL,
     
     trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::select(TimePeriod, HBT = LocationCode, SugGroup = Label,
+      dplyr::select(TimePeriod, HBT = LocationCode, SubGroup = Label,
                     NumberOfDeaths,	NumberOfDeathsQF,
                     NumberOfPatients,	NumberOfPatientsQF,	CrudeRate)
     
@@ -248,7 +248,7 @@ create_open_data <- function(smr = NULL,
   old_data <- read_csv(paste0(data_folder, previous_pub, "/open_data/",
                               previous_pub, "_", filename, ".csv")) %>%
     filter(!(TimePeriod %in% trend$TimePeriod))
-  
+
   trend <- rbind(old_data, trend)
   
   if (save == T) {
