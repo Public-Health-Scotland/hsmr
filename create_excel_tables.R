@@ -129,11 +129,13 @@ od_dev <- TRUE
 od_over <- TRUE
 
 # SMR data - Scotland & HB and Hospital
-create_open_data(smr_data, type = "smr", location = "hb",
-                 "smr_open_data_hb", dev = od_dev, overwrite = od_over)
+create_open_data(smr_data, measure = "smr", location = "hb",
+                 filename = "smr_open_data_hb", 
+                 dev = od_dev, overwrite = od_over)
 
-create_open_data(smr_data, type = "smr", location = "hosp",
-                 "smr_open_data_hosp", dev = od_dev, overwrite = od_over)
+create_open_data(smr_data, measure = "smr", location = "hosp",
+                 filename = "smr_open_data_hosp", 
+                 dev = od_dev, overwrite = od_over)
 
 # All admissions - Scotland & HB and Hospital
 create_open_data(measure = "crude", location = "hb",
