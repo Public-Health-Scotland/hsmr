@@ -31,6 +31,16 @@ library(scales)        # For use with ggplot2
 library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
+library(devtools)      # For automatically building HSMR package
+
+# Install HSMR package, without creating a bundle and without checking/upgrading
+# dependencies. Ensures latest changes are used.
+#
+# Note this will not update the documentation.
+# Ctrl+Shift+D > install package > restart R to do that.
+# (Help returns error until R is restarted => cannot do programmatically.)
+devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never")
+
 library(hsmr)          # For HSMR functions
 
 ### 2 - Define Whether Running on Server or Locally ----
