@@ -34,7 +34,7 @@ compare_df = function(df1, df2, join_by, df1_name="df1", df2_name="df2"){
     # Replace any missing values that were introduced by conversion to 0
     mutate(across(!all_of(join_by), ~replace_na(., 0))) %>%
     # Put the join columns first - they are the labels
-    relocate(join_by)
+    relocate(all_of(join_by))
 
 
 
@@ -170,9 +170,22 @@ make_change_table = function(table_data, measure,
     # Only affects table height on html output
     table_height = ifelse(nrow(table_data) <= 5, 300, 600)
 
+    # For use by data download buttons in table
+    filename = glue("{measure} {pc_cutoff}pc cutoff {quarter_filter} quarters")
+
     change_table =
       datatable(table_data, rownames = FALSE, filter = "top",
-                fillContainer = TRUE, options = list(scrollY = table_height))
+                fillContainer = TRUE, extensions = "Buttons",
+                options =
+                  list(scrollY = table_height,
+                       buttons = list('copy',
+                                      list(extend = 'csv', filename = filename),
+                                      list(extend = 'excel', filename = filename)),
+                       # Need to specify layout of table to include buttons.
+                       # Number of rows to show (l) looks odd without aligning
+                       # right using the .dataTables_filter class
+                       dom = 'B<".dataTables_filter"l>rtip')
+                )
 
     # All crude rate columns need rounded, otherwise just %
     if (measure == "crd_rate") {

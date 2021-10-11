@@ -78,6 +78,12 @@ t2_new = filter(t2_new, quarter_short %in% overlap_quarters$quarter_short)
 
 # Compare to previous publication
 
+Changes for the first overlapping quarter (1st quarter in this release, 2nd quarter in previous release), the last overlapping quarter (last quarter in previous release, 2nd last quarter in this release), and the remaining quarters are given in separate tables. 
+
+There may be a higher number of changes in the first quarter, as some of the deaths in the first quarter of the previous release will have rolled over into the first quarter in this release; patients may have an admission in quarter A, another in quarter B, then die within 30 days of their quarter A admission. The death would have been assigned to quarter A in the previous release and quarter B in this release if quarter A is no longer included.
+
+There may be a higher number of changes in the last quarter since that is the most recent in the previous publication and therefore the most likely to have seen changes to the SMR data.
+
 Get a dataframe with the change from the last publication:
 
 ```{r}
