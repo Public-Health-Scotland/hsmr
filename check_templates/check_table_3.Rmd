@@ -45,15 +45,15 @@ get_t3_data = function(date_str, sheet_name = "Raw Data"){
   
   data = 
     read.xlsx(path, sheet = sheet_name) %>%
-    select(location_name, quarter_short, label, 
+    select(location_name, quarter_short, agg_label, sub_grp, 
            deaths, pats, crd_rate)
   
   return(data)
   
 }
 
-t3_old = get_t3_data(previous_pub, sheet_name = "data")
-t3_new = get_t3_data(pub_day)
+t3_old_full = get_t3_data(previous_pub, sheet_name = "data")
+t3_new_full = get_t3_data(pub_day)
 
 ```
 
@@ -62,7 +62,7 @@ We can only compare the quarters that overlap, find those:
 ```{r}
 
 overlap_quarters = 
-  semi_join(t3_new, t3_old, by = "quarter_short") %>%
+  semi_join(t3_new_full, t3_old_full, by = "quarter_short") %>%
   select(quarter_short) %>%
   distinct()
 
@@ -72,8 +72,12 @@ Now only keep the quarters that overlap:
 
 ```{r}
 
-t3_old = filter(t3_old, quarter_short %in% overlap_quarters$quarter_short)
-t3_new = filter(t3_new, quarter_short %in% overlap_quarters$quarter_short)
+t3_old = filter(t3_old_full, quarter_short %in% overlap_quarters$quarter_short)
+t3_new = filter(t3_new_full, quarter_short %in% overlap_quarters$quarter_short)
+
+# We also don't need all of the columns here
+t3_old = select(t3_old, -agg_label)
+t3_new = select(t3_new, -agg_label)
 
 ```
 
@@ -90,7 +94,7 @@ Get a dataframe with the change from the last publication:
 ```{r}
 
 # Columns containing the labels
-join_cols = c("location_name", "quarter_short", "label")
+join_cols = c("location_name", "quarter_short", "sub_grp")
 
 t3_diff = compare_df(t3_new, t3_old, join_by = join_cols, 
                      df1_name = "new", df2_name = "old")
@@ -240,4 +244,35 @@ Now the rest of the quarters:
 make_change_table(t3_diff_crd_rate, measure = "crd_rate",
                   pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
 
+```
+
+# Check splits sum to totals
+
+Get the difference between the sum of each split and the Scotland totals
+```{r}
+
+t3_split_tot = split_tot_df(t3_new_full, hsmr_table = 3)
+
+split_id_cols = c("agg_label", "quarter_short", "sub_grp")
+
+t3_split_tot_deaths = 
+  select(t3_split_tot, any_of(split_id_cols), starts_with("deaths"))
+
+t3_split_tot_pats = 
+  select(t3_split_tot, any_of(split_id_cols), starts_with("pats"))
+
+
+```
+
+## Patients
+
+```{r}
+make_split_table(t3_split_tot_pats)
+```
+
+
+## Deaths
+
+```{r}
+make_split_table(t3_split_tot_deaths)
 ```

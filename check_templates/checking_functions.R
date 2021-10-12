@@ -1,7 +1,18 @@
 
-# Gets the difference between each row in df1 and df2, where any missing rows in either are assumed = 0
-# Only compares values in columns that are not specified in join_by
-# Difference is df1 - df2
+# Gets the difference between each row in df1 and df2.
+#
+# Any missing rows in either are assumed = 0.
+# Only compares values in columns that are not specified in join_by.
+# Difference is df1 - df2.
+#
+# Arguments
+# df1, df2 - dataframes to compare
+# join_by - character vector specifying the column names to join df1 and df2 by
+#           i.e. these are the columns that identify what data is in each row
+# df1_name, df2_name - name to give data frome each df in the output columns
+#
+# Value
+# Dataframe containing the original data and the differences
 compare_df = function(df1, df2, join_by, df1_name="df1", df2_name="df2"){
 
 
@@ -15,9 +26,6 @@ compare_df = function(df1, df2, join_by, df1_name="df1", df2_name="df2"){
 
   # Make sure columns are in the same order
   df2 = select(df2, names(df1))
-
-  # TODO: this whole replacing with 0 thing isn't great, but subtraction
-  # won't work on missing values
 
   # For now just treat any missing rows as data = 0
   # (only to the columns not in join_by, we don't want to replace any missing data in there)
@@ -86,6 +94,54 @@ compare_df = function(df1, df2, join_by, df1_name="df1", df2_name="df2"){
 }
 
 
+# Gets a dataframe showing the difference between subgroup totals and Scotland
+#
+# Arguments
+# df - dataframe of data from one of the HSMR tables
+# hsmr table - integer specifying which table df is from. Only 2 or 3 supported.
+#
+# Value
+# A dataframe with subgroups aggregate and difference from Scotland totals
+split_tot_df = function(df, hsmr_table){
+
+  tot_loc = "Scotland"
+
+  # Need a lookup of Scotland level totals, and the column for joining back to df
+  if (hsmr_table == 2) {
+    tot_lookup = filter(df, location_name == tot_loc, sub_grp == "All Admissions")
+    join_cols = "quarter_short"
+  } else if (hsmr_table == 3) {
+    tot_lookup = filter(df, location_name == tot_loc)
+    join_cols = c("quarter_short", "sub_grp")
+  } else {
+    stop("Only HSMR Tables 2 and 3 supported.")
+  }
+
+  # Drop the rows that have been put into the lookup - these are totals that
+  # we don't want to include in the group sums
+  df = anti_join(df, tot_lookup, by = names(df))
+
+  # Finish setting up lookup
+  tot_lookup =
+    tot_lookup %>%
+    select(all_of(join_cols), deaths, pats)
+
+  # Get totals from each split, and join on Scotland total
+  df_split_tot =
+    df %>%
+    group_by(agg_label, quarter_short, sub_grp) %>%
+    summarise(deaths = sum(deaths), pats = sum(pats), .groups = "drop") %>%
+    left_join(tot_lookup, by = join_cols, suffix = c(".split_tot", ".scot")) %>%
+    mutate(deaths.diff = deaths.split_tot - deaths.scot,
+           pats.diff = pats.split_tot - pats.scot,
+           deaths.diff_pc = (deaths.diff / deaths.scot) * 100,
+           pats.diff_pc = (pats.diff / pats.scot) * 100)
+
+  return(df_split_tot)
+
+}
+
+
 # Makes a loglog plot for % change vs old value
 #
 # Arguments
@@ -121,6 +177,44 @@ make_change_plot = function(plot_data, measure){
     theme_bw()
 
   return(change_plot)
+
+}
+
+
+# Makes a table
+#
+# Arguments
+# table_data - dataframe to put in the table
+# filename - filename to give to files produced by download buttons
+# round_cols - charactor vector of column names to apply rounding to.
+#               NULL to avoid rounding.
+make_table = function(table_data, filename = "data", round_cols = NULL){
+
+  # Much more convenient to avoid scrolling in table, but not found a way to
+  # automatically set table height to fit all rows. Instead set long enough
+  # to fit the tallest rows, and reduce a bit for smaller tables
+  # Only affects table height on html output
+  table_height = ifelse(nrow(table_data) <= 5, 300, 600)
+
+  change_table =
+  datatable(table_data, rownames = FALSE, filter = "top",
+            fillContainer = TRUE, extensions = "Buttons",
+            options =
+              list(scrollY = table_height,
+                   buttons = list('copy',
+                                  list(extend = 'csv', filename = filename),
+                                  list(extend = 'excel', filename = filename)),
+                   # Need to specify layout of table to include buttons.
+                   # Number of rows to show (l) looks odd without aligning
+                   # right using the .dataTables_filter class
+                   dom = 'B<".dataTables_filter"l>rtip')
+            )
+
+  if (!is.null(round_cols)) {
+    change_table = formatRound(change_table, round_cols, 2)
+  }
+
+  return(change_table)
 
 }
 
@@ -164,28 +258,8 @@ make_change_table = function(table_data, measure,
   # No point in returning a table if there's nothing in it
   if (nrow(table_data) > 0) {
 
-    # Much more convenient to avoid scrolling in table, but not found a way to
-    # automatically set table height to fit all rows. Instead set long enough
-    # to fit the tallest rows, and reduce a bit for smaller tables
-    # Only affects table height on html output
-    table_height = ifelse(nrow(table_data) <= 5, 300, 600)
-
     # For use by data download buttons in table
     filename = glue("{measure} {pc_cutoff}pc cutoff {quarter_filter} quarters")
-
-    change_table =
-      datatable(table_data, rownames = FALSE, filter = "top",
-                fillContainer = TRUE, extensions = "Buttons",
-                options =
-                  list(scrollY = table_height,
-                       buttons = list('copy',
-                                      list(extend = 'csv', filename = filename),
-                                      list(extend = 'excel', filename = filename)),
-                       # Need to specify layout of table to include buttons.
-                       # Number of rows to show (l) looks odd without aligning
-                       # right using the .dataTables_filter class
-                       dom = 'B<".dataTables_filter"l>rtip')
-                )
 
     # All crude rate columns need rounded, otherwise just %
     if (measure == "crd_rate") {
@@ -194,10 +268,37 @@ make_change_table = function(table_data, measure,
       round_cols = glue("{measure}.diff_pc")
     }
 
-    change_table = formatRound(change_table, round_cols, 2)
+    change_table = make_table(table_data, filename, round_cols)
 
   } else {
     change_table = glue("No differences greater than {pc_cutoff}%")
+  }
+
+  return(change_table)
+
+}
+
+
+# Makes table for exploring whether splits sum up to Scotland total
+#
+# Arguments
+# table - dataframe produced by split_tot_df()
+#
+# Value
+# datatable, or string if all splits sum to Scotland total
+make_split_table = function(table_data) {
+
+  # Only need rows where there is a difference
+  table_data = filter(table_data, across(ends_with(".diff"), ~(.x != 0)))
+
+  # No point in returning a table if there's nothing in it
+  if (nrow(table_data) > 0) {
+    # Need vector of % diff column names to specify rounding
+    round_cols = names(table_data)[str_ends(names(table_data), ".diff_pc")]
+    change_table = make_table(table_data, filename = "split totals",
+                              round_cols = round_cols)
+  } else {
+    change_table = "All splits sum to Scotland totals"
   }
 
   return(change_table)
