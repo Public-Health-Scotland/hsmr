@@ -80,7 +80,7 @@ start_date        <- lubridate::dmy(01072018)
 start_date_trends <- lubridate::dmy(01072016)
 
 # Add a buffer to the start of the trends extract. Extra time not included in
-# output, but helps assign corrent patients & deaths to 1st quarter.
+# output, but helps assign correct patients & deaths to 1st quarter.
 start_date_trends_buffer = start_date_trends %m-% months(3)
 
 # The end of the baseline period (for model)
