@@ -110,7 +110,7 @@ gro     <- as_tibble(dbGetQuery(smra_connect, query_gro_ltt(
 
 # SMR01 data
 smr01   <- as_tibble(dbGetQuery(smra_connect, query_smr01_ltt(
-  extract_start = start_date_trends,
+  extract_start = start_date_trends_buffer,
   extract_end = end_date))) %>%
   clean_names()
 

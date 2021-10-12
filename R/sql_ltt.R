@@ -31,14 +31,6 @@ query_smr01_ltt <- function(extract_start, extract_end) {
     stop("The extract start and end dates must both be provided in date format")
   }
 
-  if(!(format(extract_start, "%d %B") %in% c("01 January",
-                                             "01 April",
-                                             "01 July",
-                                             "01 October"))) {
-    stop("The extract start date must be the first day of either January, ",
-         "April, September or December")
-  }
-
   if(!(format(extract_end, "%d %B") %in% c("31 March",
                                            "30 June",
                                            "30 September",
