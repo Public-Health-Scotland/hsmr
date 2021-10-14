@@ -29,7 +29,6 @@ library(DT)        # for tables
 
 source("checking_functions.R")
 
-
 ```
 
 ```{r}
@@ -47,7 +46,7 @@ get_t1_data = function(date_str, sheet_name = "Raw Data"){
   
 }
 
-t1_old = get_t1_data(previous_pub, sheet_name = "funnel_data")
+t1_old = get_t1_data(previous_pub)
 t1_new = get_t1_data(pub_day)
 
 ```
@@ -67,6 +66,8 @@ print(scot_data)
 
 
 # Compare to previous publication
+
+We do expect there to be differences from the previous release, since they cover different time periods - but any drastic differences may be cause for further investigation.
 
 Get a dataframe with the change from the last publication:
 

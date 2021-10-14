@@ -52,7 +52,7 @@ get_t3_data = function(date_str, sheet_name = "Raw Data"){
   
 }
 
-t3_old_full = get_t3_data(previous_pub, sheet_name = "data")
+t3_old_full = get_t3_data(previous_pub)
 t3_new_full = get_t3_data(pub_day)
 
 ```
@@ -85,9 +85,8 @@ t3_new = select(t3_new, -agg_label)
 
 Changes for the first overlapping quarter (1st quarter in this release, 2nd quarter in previous release), the last overlapping quarter (last quarter in previous release, 2nd last quarter in this release), and the remaining quarters are given in separate tables. 
 
-First quarter shown separately to highlight any deaths or patients rolling over from the first quarter in the previous release.
-
-Last quarter shown separately as that is the most recent one in the previous publication and therefore the most likely to have seen changes to the SMR data.
+* First quarter shown separately to highlight any deaths or patients rolling over from the first quarter in the previous release.
+* Last quarter shown separately as that is the most recent one in the previous publication and therefore the most likely to have seen changes to the SMR data.
 
 Get a dataframe with the change from the last publication:
 
