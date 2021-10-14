@@ -160,7 +160,7 @@ smr_data <- smr_data(smr01 = smr01,
 
 ### 3 - Save data ----
 # This is the level 3 caselisting file
-save_file(smr01 %>% filter(admission_date >= start_date + years(2)) %>% 
+save_file(smr01 %>% filter(admission_date >= start_date + years(2)) %>%
                     change_hbcodes(version_to = "14", code_cols = "hbtreat_currentdate"),
           "SMR-with-predprob", "base_files", "csv", dev = F, overwrite = F)
 
@@ -168,7 +168,7 @@ save_file(smr_data, "SMR-data", "output", "csv", dev = F, overwrite = F)
 
 # File for dashboard, bringing previous publication data and adding new period
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
-                                 "/output/", previous_pub, "-SMR-data_dashboard.csv")) %>%
+                                 "/output/", previous_pub, "_SMR-data_dashboard.csv")) %>%
                 mutate(completeness_date = paste0(substr(completeness_date,7,10),
                                                   "-", substr(completeness_date,4,5),
                                                   "-", substr(completeness_date,1,2)))
