@@ -125,16 +125,16 @@ save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 
 ### SECTION 3 - CREATE OPEN DATA ----
 
-od_dev <- TRUE
+od_dev <- FALSE
 od_over <- TRUE
 
 # SMR data - Scotland & HB and Hospital
 create_open_data(smr_data, measure = "smr", location = "hb",
-                 filename = "smr_open_data_hb", 
+                 filename = "smr_open_data_hb",
                  dev = od_dev, overwrite = od_over)
 
 create_open_data(smr_data, measure = "smr", location = "hosp",
-                 filename = "smr_open_data_hosp", 
+                 filename = "smr_open_data_hosp",
                  dev = od_dev, overwrite = od_over)
 
 # All admissions - Scotland & HB and Hospital
