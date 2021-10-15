@@ -1,0 +1,122 @@
+---
+title: "Check Table 1"
+output: 
+  html_notebook:
+    toc: true
+    code_folding: hide
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 72em;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+# Setup
+
+```{r message=FALSE}
+
+# Load environment file
+source(here::here("setup_environment.R"))
+
+# Tidylog messages make notebook output messy
+detach("package:tidylog", unload = TRUE)
+
+library(glue)      # for glue()
+library(DT)        # for tables
+
+source("checking_functions.R")
+
+```
+
+```{r}
+
+get_t1_data = function(date_str, sheet_name = "Raw Data"){
+  
+  path = glue("{data_folder}{date_str}/output/{date_str}-Table1-HSMR.xlsx")
+  
+  data = 
+    read.xlsx(path, sheet = sheet_name) %>%
+    select(deaths, pred, pats, smr, crd_rate, location_type, location, 
+           location_name)
+  
+  return(data)
+  
+}
+
+t1_old = get_t1_data(previous_pub)
+t1_new = get_t1_data(pub_day)
+
+```
+
+# Check Scotland
+
+* smr should = 1
+* deaths should = pred
+
+```{r}
+
+scot_data = filter(t1_new, location_name == "Scotland")
+
+print(scot_data)
+
+```
+
+
+# Compare to previous publication
+
+We do expect there to be differences from the previous release, since they cover different time periods - but any drastic differences may be cause for further investigation.
+
+Get a dataframe with the change from the last publication:
+
+```{r}
+
+# Columns containing the labels
+join_cols = c("location_type", "location", "location_name")
+
+t1_diff = compare_df(t1_new, t1_old, join_by = join_cols, 
+                     df1_name = "new", df2_name = "old")
+
+```
+
+
+## Patients
+
+* Numbers should usually be in the same ballpark
+
+```{r}
+
+t1_diff_px = 
+  t1_diff %>%
+  select(any_of(join_cols), starts_with("pats"))
+
+writeLines(glue("Max % diff: {max(t1_diff_px[, 'pats.diff_pc'])}
+                 Min % diff: {min(t1_diff_px[, 'pats.diff_pc'])}"))
+
+```
+
+```{r}
+make_change_table(t1_diff_px, measure = "pats", quarter_filter = "all")
+```
+
+
+## Deaths
+
+* Numbers should usually be in the same ballpark
+
+```{r}
+
+t1_diff_deaths = 
+  t1_diff %>%
+  select(any_of(join_cols), starts_with("deaths"))
+
+writeLines(glue("Max % diff: {max(t1_diff_deaths[, 'deaths.diff_pc'])}
+                 Min % diff: {min(t1_diff_deaths[, 'deaths.diff_pc'])}"))
+
+```
+
+```{r}
+make_change_table(t1_diff_deaths, measure = "deaths", quarter_filter = "all")
+```

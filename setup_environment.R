@@ -39,7 +39,8 @@ library(devtools)      # For automatically building HSMR package
 # Note this will not update the documentation.
 # Ctrl+Shift+D > install package > restart R to do that.
 # (Help returns error until R is restarted => cannot do programmatically.)
-devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never")
+devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never",
+                  quiet = TRUE)
 
 library(hsmr)          # For HSMR functions
 

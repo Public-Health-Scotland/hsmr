@@ -1,0 +1,277 @@
+---
+title: "Check Table 3"
+output: 
+  html_notebook:
+    toc: true
+    code_folding: hide
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 72em;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+# Setup
+
+```{r message=FALSE}
+
+# Load environment file
+source(here::here("setup_environment.R"))
+
+# Tidylog messages make notebook output messy
+detach("package:tidylog", unload = TRUE)
+
+library(glue)      # for glue()
+library(DT)        # for tables
+
+source("checking_functions.R")
+
+# What is the minimum % difference to show in tables?
+table_pc_cutoff = 5
+
+```
+
+# Get Data
+
+```{r}
+
+get_t3_data = function(date_str, sheet_name = "Raw Data"){
+  
+  path = paste0(glue("{data_folder}{date_str}/output/{date_str}"),
+                "-Table3-Crude-Mortality-population-based-and-30-day-from-discharge.xlsx")
+  
+  data = 
+    read.xlsx(path, sheet = sheet_name) %>%
+    select(location_name, quarter_short, agg_label, sub_grp, 
+           deaths, pats, crd_rate)
+  
+  return(data)
+  
+}
+
+t3_old_full = get_t3_data(previous_pub)
+t3_new_full = get_t3_data(pub_day)
+
+```
+
+We can only compare the quarters that overlap, find those:
+
+```{r}
+
+overlap_quarters = 
+  semi_join(t3_new_full, t3_old_full, by = "quarter_short") %>%
+  select(quarter_short) %>%
+  distinct()
+
+```
+
+Now only keep the quarters that overlap:
+
+```{r}
+
+t3_old = filter(t3_old_full, quarter_short %in% overlap_quarters$quarter_short)
+t3_new = filter(t3_new_full, quarter_short %in% overlap_quarters$quarter_short)
+
+# We also don't need all of the columns here
+t3_old = select(t3_old, -agg_label)
+t3_new = select(t3_new, -agg_label)
+
+```
+
+# Compare to previous publication
+
+Changes for the first overlapping quarter (1st quarter in this release, 2nd quarter in previous release), the last overlapping quarter (last quarter in previous release, 2nd last quarter in this release), and the remaining quarters are given in separate tables. 
+
+* First quarter shown separately to highlight any deaths or patients rolling over from the first quarter in the previous release.
+* Last quarter shown separately as that is the most recent one in the previous publication and therefore the most likely to have seen changes to the SMR data.
+
+Get a dataframe with the change from the last publication:
+
+```{r}
+
+# Columns containing the labels
+join_cols = c("location_name", "quarter_short", "sub_grp")
+
+t3_diff = compare_df(t3_new, t3_old, join_by = join_cols, 
+                     df1_name = "new", df2_name = "old")
+
+```
+
+
+## Patients
+
+```{r}
+
+t3_diff_px = 
+  t3_diff %>%
+  select(any_of(join_cols), starts_with("pats"))
+
+writeLines(glue("Max % diff: {max(t3_diff_px[, 'pats.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t3_diff_px[, 'pats.diff_pc'], na.rm = T)}"))
+
+```
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t3_diff_px, "pats")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t3_diff_px, measure = "pats",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t3_diff_px, measure = "pats", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t3_diff_px, measure = "pats", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```
+
+## Deaths
+
+```{r}
+
+t3_diff_deaths = 
+  t3_diff %>%
+  select(any_of(join_cols), starts_with("deaths"))
+
+writeLines(glue("Max % diff: {max(t3_diff_deaths[, 'deaths.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t3_diff_deaths[, 'deaths.diff_pc'], na.rm = T)}"))
+
+```
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t3_diff_deaths, "deaths")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t3_diff_deaths, measure = "deaths", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t3_diff_deaths, measure = "deaths", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t3_diff_deaths, measure = "deaths",  
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```
+
+## Crude Mortality Rate
+
+```{r}
+
+t3_diff_crd_rate = 
+  t3_diff %>%
+  select(any_of(join_cols), starts_with("crd_rate"))
+
+writeLines(glue("Max % diff: {max(t3_diff_crd_rate[, 'crd_rate.diff_pc'], na.rm = T)}
+                 Min % diff: {min(t3_diff_crd_rate[, 'crd_rate.diff_pc'], na.rm = T)}"))
+
+```
+
+Compare absolute % difference to previous value:
+```{r}
+make_change_plot(t3_diff_crd_rate, "crd_rate")
+```
+
+### First Quarter
+
+Now look more closely at the larger % differences.
+
+Start with the first quarter of overlapping data only (i.e. first quarter in new publication):
+
+```{r}
+make_change_table(t3_diff_crd_rate, measure = "crd_rate", 
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "first only")
+
+```
+
+### Last Quarter
+
+Now last quarter of overlapping data (i.e. last quarter in previous publication):
+```{r}
+make_change_table(t3_diff_crd_rate, measure = "crd_rate",
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "last only")
+
+```
+
+### Middle Quarters
+
+Now the rest of the quarters:
+```{r}
+make_change_table(t3_diff_crd_rate, measure = "crd_rate",
+                  pc_cutoff = table_pc_cutoff, quarter_filter = "middle only")
+
+```
+
+# Check splits sum to totals
+
+Get the difference between the sum of each split and the Scotland totals
+```{r}
+
+t3_split_tot = split_tot_df(t3_new_full, hsmr_table = 3)
+
+split_id_cols = c("agg_label", "quarter_short", "sub_grp")
+
+t3_split_tot_deaths = 
+  select(t3_split_tot, any_of(split_id_cols), starts_with("deaths"))
+
+t3_split_tot_pats = 
+  select(t3_split_tot, any_of(split_id_cols), starts_with("pats"))
+
+
+```
+
+## Patients
+
+```{r}
+make_split_table(t3_split_tot_pats)
+```
+
+
+## Deaths
+
+```{r}
+make_split_table(t3_split_tot_deaths)
+```
