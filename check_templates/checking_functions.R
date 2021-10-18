@@ -252,7 +252,7 @@ make_change_table = function(table_data, measure,
   # No filtering when pc_cutoff = NULL
   if (!is.null(pc_cutoff)) {
     table_data = filter(table_data, across(all_of(glue("{measure}.diff_pc")),
-                                           ~(.x >= pc_cutoff)))
+                                           ~(abs(.x) >= pc_cutoff)))
   }
 
   # No point in returning a table if there's nothing in it
