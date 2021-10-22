@@ -56,8 +56,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                        hsmr::yr(end_date), " no hospitals had a significantly higher ",
                        "standardised mortality ratio than the national average.")
 
-      output_2 <- paste0("This shows that there are no hospitals above the ",
-                         "upper control limit which is three standard ",
+      output_2 <- paste0("This chart shows that there were no hospitals above the ",
+                         "upper control limit, which is three standard ",
                          "deviations above the Scottish average. ")
 
     }
@@ -71,8 +71,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                             collapse = ", "), ".")
 
-      output_2 <- paste0("This shows that there is one hospital above the ",
-                         "upper control limit which is three standard ",
+      output_2 <- paste0("This chart shows that there was one hospital above the ",
+                         "upper control limit, which is three standard ",
                          "deviations above the Scottish average: ",
                          paste0(smr_data$location_name, " (",
                                 janitor::round_half_up(smr_data$smr, 2), ")",
@@ -89,8 +89,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                                     janitor::round_half_up(smr_data$smr, 2),
                                     ")", collapse = ", "), ".")
 
-      output_2 <- paste0("This shows there are ", n_hosps, " above the upper ",
-                         "control limit which is three standard deiations ",
+      output_2 <- paste0("This chart shows there were ", n_hosps, " hospitals above the upper ",
+                         "control limit, which is three standard deviations ",
                          "above the Scottish average: ",
                          paste0(smr_data$location_name, " (",
                                 janitor::round_half_up(smr_data$smr, 2),
@@ -113,8 +113,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                        hsmr::yr(end_date), " no hospitals had a significantly lower ",
                        "standardised mortality ratio f than the national average.")
 
-      output_2 <- paste0("This also shows that there are no hospitals below ",
-                         "the lower control limit which is three standard ",
+      output_2 <- paste0("There were no hospitals below ",
+                         "the lower control limit, which is three standard ",
                          "deviations below the Scottish average. ")
 
 
@@ -129,8 +129,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2 <- paste0("This also shows that there is one hospital below the",
-                         " lower control limit which is three standard ",
+      output_2 <- paste0("There was one hospital below the",
+                         " lower control limit, which is three standard ",
                          "deviations below the Scottish average: ",
                          paste0(smr_data$location_name, " (",
                                 janitor::round_half_up(smr_data$smr, 2), ")",
@@ -147,9 +147,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                                     janitor::round_half_up(smr_data$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2 <- paste0("This also shows there are ", n_hosps,
-                         " below the lower ",
-                         "control limit which is three standard deviations ",
+      output_2 <- paste0("There were ", n_hosps,
+                         " hospitals below the lower ",
+                         "control limit, which is three standard deviations ",
                          "below the Scottish average: ",
                          paste0(smr_data$location_name, " (",
                                 janitor::round_half_up(smr_data$smr, 2),
