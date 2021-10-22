@@ -112,10 +112,10 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
 
 ## 5 - Load common lookups to all scripts ----
 # Hospital names
-hospitals <- bind_rows(read_csv(paste0(
+hospitals <- bind_rows(read_spss(paste0(
   plat_filepath,
   "lookups/Unicode/National Reference Files/",
-  "location.csv")) %>%
+  "location.sav")) %>%
     select(Location, Locname) %>%
     rename(location      = Location,
            location_name = Locname),
