@@ -1062,7 +1062,7 @@ The HSMR Management Information Tool is produced and shared with the NHS Boards 
 
 **Stage Two: Official Statistics publication of HSMR for Scotland **
 
-The first Official Statistics release of the information was a set of abbreviate summary tables in June 2010. The publication has since been expanded to include more substantial commentary and context, including stratified patterns of mortality at Scotland level and longer-term trends.
+The first Official Statistics release of the information was a set of abbreviated summary tables in June 2010. The publication has since been expanded to include more substantial commentary and context, including stratified patterns of mortality at Scotland level and longer-term trends.
 
 **Stage Three: Hospital Intelligence Dashboard**  
 
