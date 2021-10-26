@@ -43,8 +43,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact <- c("Jaime Villacampa | Principal Information Analyst | 0141 282 2052", 
-             "Lucinda Lawrie | Senior Information Analyst | 0131 275 7929",
+contact <- c("Jaime Villacampa | Principal Information Analyst", 
              "Scott McLaren-Gow | Information Analyst")
 ```
 
@@ -74,7 +73,7 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 
 <Div custom-style = "Chart Title">
 
-**HSMR for deaths within 30-days of admission; `r yr(end_date)`**
+**HSMR for deaths within 30-days of admission, `r yr(end_date)`**
 </div>
 <!-- Need to use Table Head style for image as it is the only available centred style that works - template styles locked with password -->
 <Div custom-style = "Table Head">
