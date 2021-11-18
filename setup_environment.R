@@ -37,7 +37,7 @@ library(devtools)      # For automatically building HSMR package
 # dependencies. Ensures latest changes are used.
 #
 # Note this will not update the documentation.
-# Ctrl+Shift+D > install package > restart R to do that.
+# Ctrl+Shift+B > install package > restart R to do that.
 # (Help returns error until R is restarted => cannot do programmatically.)
 devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never",
                   quiet = TRUE)
