@@ -680,22 +680,13 @@ This is a National Statistics Publication
 
 National Statistics status means that the official statistics meet the highest standards of trustworthiness, quality and public value. They are identified by the quality mark shown above.
 
-<br>
-
 The UK Statistics Authority has designated these statistics as National Statistics signifying compliance with the Code of Practice for Statistics.
-
-<br>
 
 Once statistics have been designated as National Statistics, it is a statutory requirement that the Code of Practice shall continue to be observed.
 
-<br>
-
 Find out more about the Code of Practice by visiting the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/).
 
-<br>
-
 Find out more about National Statistics on the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/glossary/#national-statistics).
-
 
 <Div custom-style = "Heading 1">Introduction</div>
 This report by Public Health Scotland (PHS) presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period. It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
