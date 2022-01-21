@@ -43,8 +43,8 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact <- c("Jaime Villacampa | Principal Information Analyst", 
-             "Peter Menzies | Information Analyst")
+contact1 <- "Jaime Villacampa | Principal Information Analyst | <phs.QualityIndicators@phs.scot>" 
+contact2 <- "Peter Menzies | Information Analyst"
 ```
 
 <Div custom-style = "Publication Title"> 
@@ -53,25 +53,29 @@ contact <- c("Jaime Villacampa | Principal Information Analyst",
 <Div custom-style = "Publication subtitle"> 
 ## `r yr(end_date)`
 </div>
-<Div custom-style = "National stats"> 
+<Div custom-style = "Stats designation"> 
 #### A National Statistics publication for Scotland
-
+</div>
+<Div custom-style = "Publication date"> 
 #### Publication date: `r format(pub_day, "%d %B %Y")`
 </div>
-<Div custom-style = "RestrictedStats"> 
+<Div custom-style = "Restricted Stats"> 
 ##### RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_day, "%d/%m/%Y")`
 </div>
-
-## About this release
-
+<Div custom-style = "Heading 1">
+### About this release
+</div>
 This release by Public Health Scotland (PHS) provides information on Hospital Standardised Mortality Ratios (HSMRs) for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12-month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter and month to show trends.
 
-## Main points
+</div>
+<Div custom-style = "Heading 1">
+### Main points
+</div>
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
 
-<Div custom-style = "Chart Title">
+<Div custom-style = "Table or chart caption">
 
 **HSMR for deaths within 30-days of admission, `r yr(end_date)`**
 </div>
@@ -80,8 +84,9 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png) \
 </div>
 
-## Background
-
+<Div custom-style = "Heading 1">
+### Background
+</div>
 Hospital mortality measures have an important role to play in stimulating reflection on the quality and safety of patient care. HSMRs are based on all acute inpatient and day case patients admitted to all specialties in hospital (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
 
 The Scottish HSMR is 1.00. If an HSMR value for a hospital is less than one, this means the number of deaths within 30 days of admission for this hospital is fewer than predicted. If an HSMR value for a hospital is greater than one, this means the number of deaths within 30 days for this hospital is more than predicted.
@@ -97,19 +102,26 @@ healthcare emergency. As a result, there will be changes in the volumes of activ
 in some of the groups used to calculate the HSMRs, for example
 less elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
 
-
-## Contact
-
+</div>
+<Div custom-style = "Heading 1">
+### Contact
+</div>
 ```{r, echo = FALSE, results='asis'}
-    writeLines(paste0(contact, collapse = "  \n"))
-```
+    writeLines(contact1)
 
-**Email:** <phs.QualityIndicators@phs.scot> 
+```
+</div>
+```{r, echo = FALSE, results='asis'}
+    writeLines(contact2)
+
+```
 
 For all media enquiries please email <phs.comms@phs.scot> or call 0131 275 6105.
 
-## Find out more
-
+</div>
+<Div custom-style = "Heading 1">
+### Find out more
+</div>
 The data from this publication is available to download from [this page](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios). Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios). A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
 
 The next release of this publication will be `r format(pub_date(end_date, "next"), "%d %B %Y")`.
