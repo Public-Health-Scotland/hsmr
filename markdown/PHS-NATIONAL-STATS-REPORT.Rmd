@@ -606,70 +606,6 @@ Table3 <- data.frame(c1, c2, c3, c4)
 
 ```
 
-```{r MetaData, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE}
-Indicator <- c("**Publication title**",
-"**Description**",
-"**Theme**",
-"**Topic**",
-"**Format**",
-"**Data source(s)**",
-"**Date that data are acquired**",
-"**Release date**",
-"**Frequency**",
-"**Timeframe of data and timeliness**",
-"**Continuity of data**",
-"**Revisions statement**",
-"**Revisions relevant to this publication**",
-"**Concepts and definitions**",
-"**Relevance and key uses of the statistics**",
-"**Accuracy**",
-"**Completeness**",
-"**Comparability**",
-"**Accessibility**",
-"**Coherence and clarity**",
-"**Value type and unit of measurement**",
-"**Disclosure**",
-"**Official Statistics designation**",
-"**UK Statistics Authority Assessment**",
-"**Last published**",
-"**Next published**",
-"**Date of first publication**",
-"**Help email**",
-"**Date form completed**")
-
-Description <- c("Hospital Standardised Mortality Ratios",
-paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),"."),
-"Health and Social Care, Mortality",
-"Quality Indicators",
-"Web Publication",
-"SMR01/NRS Death Registrations – Linked Database",
-format(submission_deadline(end_date), "%d %B %Y"),
-format(pub_date(end_date = end_date, pub = "current"), "%d %B %Y"),
-"Quarterly",
-paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period ", yr(end_date), " Quarterly crude mortality trends from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"), " (one quarter reporting lag)."),
-"SMR01 has recorded data in current form since April 2007.",
-"The publication contains a refresh of previously reported crude mortality data to reflect additional source data that has been received since last publication. ",
-"This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology.",
-"Contains sections on Data Source, Methodology and Development.",
-"Quality improvement and assurance.",
-"Quality assured by NHS Boards (management information version of reports) and PHS.",
-paste0("Approximately ", completeness(first_day=qtr_start, "current", "scotland"),
-       " for the latest quarter."),
-"Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England. ",
-"It is the policy of PHS to make its websites and products accessible according to published guidelines.",
-"Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology. ",
-"Ratio of observed over predicted deaths (HSMR); Crude Mortality (expressed as percentage of patients that die within 30-days of admission)",
-"The PHS protocol on Statistical Disclosure Protocol is followed.",
-"National Statistic",
-"Assessment report published (ref no. 249). Confirmed as National Statistics April 2014.",
-format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y"),
-format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y"),
-"June 2010",
-"phs.QualityIndicators@phs.scot",
-format(Sys.time(), "%d %B %Y"))
-
-MetaData <- data.frame(Indicator, Description)
-```
 
 <Div custom-style = "TOC Heading">
 This is a National Statistics Publication
@@ -1099,10 +1035,122 @@ The previous report, published on `r format(pub_date(end_date, "previous"), "%B 
 
 
 <Div custom-style = "Heading 2">Appendix 4 – publication metadata</div>
-<br>
-```{r kable_MetaData, echo = FALSE}
-knitr::kable(MetaData, col.names = c("**Metadata Indicator**", "**Description**"), align = c('l','l'))
-```
+
+**Publication title**
+
+Hospital Standardised Mortality Ratios
+
+**Description**
+
+`r paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),". Also includes analyses of crude mortality trends over the longer term from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"),".")`
+
+**Theme**
+
+Health and Social Care, mortality
+
+**Topic**
+
+Quality indicators
+
+**Format**
+
+Web publication
+
+**Data source(s)**
+
+SMR01/NRS death registrations – Linked database
+
+**Date that data are acquired**
+
+`r format(submission_deadline(end_date), "%d %B %Y")`
+
+**Release date**
+
+`r format(pub_date(end_date = end_date, pub = "current"), "%d %B %Y")`
+
+**Frequency**
+
+Quarterly
+
+**Timeframe of data and timeliness**
+
+`r paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period ", yr(end_date), " Quarterly crude mortality trends from ", qtr(start_date_trends, "long")," to ", qtr(start_date_trends + months(57), "long"), " (one quarter reporting lag).")`
+
+**Continuity of data**
+
+SMR01 has recorded data in current form since April 2007."
+
+**Revisions statement**
+
+The publication contains a refresh of previously reported crude mortality data to reflect additional source data that has been received since last publication.
+
+**Revisions relevant to this publication**
+
+This release of HSMR uses an updated methodology; it is not comparable to previous releases using the old methodology.
+
+**Concepts and definitions**
+
+Contains sections on Data Source, Methodology and Development.
+
+**Relevance and key uses of the statistics**
+
+Quality improvement and assurance.
+
+**Accuracy**
+
+Quality assured by NHS Boards (management information version of reports) and PHS.
+
+**Completeness**
+
+`r paste0("Approximately ", completeness(first_day=qtr_start, "current", "scotland"), " for the latest quarter.")`
+
+**Comparability**
+
+Contains section on inter-UK comparisons, data not directly comparable with similar measures used in England.
+
+**Accessibility**
+
+It is the policy of PHS to make its websites and products accessible according to published guidelines.
+
+**Coherence and clarity**
+
+Measures to enhance coherence and clarity within this report include: explanatory chart/table notes, minimal use of abbreviations/abbreviations explained in the text, comprehensive notes on background and methodology.
+
+**Value type and unit of measurement**
+
+Ratio of observed over predicted deaths (HSMR); crude mortality (expressed as percentage of patients that die within 30-days of admission)
+
+**Disclosure**
+
+The PHS protocol on statistical disclosure is followed."
+
+**Official Statistics designation**
+
+National Statistic
+
+**UK Statistics Authority Assessment**
+
+Assessment report published (ref no. 249). Confirmed as National Statistics April 2014.
+
+**Last published**
+
+`r format(pub_date(end_date = end_date, pub = "previous"), "%d %B %Y")`
+
+**Next published**
+
+`r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y") `
+
+**Date of first publication**
+
+June 2010
+
+**Help email**
+
+[phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
+
+**Date form completed**
+
+`r format(Sys.time(), "%d %B %Y")`
 
 <Div custom-style = "Heading 2">Appendix 5 – early access details</div>
 
