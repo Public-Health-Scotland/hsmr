@@ -44,7 +44,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
 
 #Create contact information
 contact <- c("Jaime Villacampa | Principal Information Analyst", 
-             "Scott McLaren-Gow | Information Analyst")
+             "Peter Menzies | Information Analyst")
 ```
 
 <Div custom-style = "Publication Title"> 
