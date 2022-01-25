@@ -799,26 +799,6 @@ p Provisional
 
 [Table 3](`r url_list[3, "url"]`) also provides population-based mortality charts for each NHS Board area.
 
-<Div custom-style = "Heading 1">Data files</div>
-The latest NHSScotland data from **`r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`** and comparable information by NHS Board of treatment and hospital are given in the Excel files that accompany this publication.  Please note the following:
-
-**Table 1 – HSMR**  
-Table 1 presents hospital-level HSMR on a **funnel plot** for each rolling 12 month period, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
-
-**Table 2 – Overall 30-day crude mortality demographics for NHSScotland**  
-The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The following series of tables and charts are presented for the latest five-year period:
-
-* Overall crude mortality rates (%) for deaths within 30 days of admission, including by type of admission, age group, specialty group, sex and deprivation.
-* Proportion of deaths (%) within 30-days of admission by place of death   
-
-**Table 3 – Crude mortality from discharge, and population based mortality rates**  
-The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented:
-
-* Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
-* Crude population mortality rates per 1,000 people.
-
-These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](`r pub_url`).
-
 <Div custom-style = "Heading 1">Hospital and NHS Board level</div>
 HSMR data are provided by PHS to allow an individual hospital to monitor its mortality in comparison to the national average. The process is not designed to compare hospitals or different time periods. Trends in crude mortality are provided to allow individual hospitals to monitor variation over time. 
 
@@ -868,30 +848,44 @@ Quality Indicators
 
 **Peter Menzies, Information Analyst**  
 Quality Indicators  
+[phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
 
-<br>
-
-**Email:** phs.QualityIndicators@phs.scot
-
-<Div custom-style = "Heading 1">Further information</div>
+<Div custom-style = "Heading 1 nopagebreak">Further information</div>
 
 Further Information can be found on the [PHS website](https://publichealthscotland.scot/).  
 For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
 
 The next release of this publication, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
 
-<br>
+<Div custom-style = "Heading 1 nopagebreak">Data files</div>
+The latest NHSScotland data from **`r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`** and comparable information by NHS Board of treatment and hospital are given in the Excel files that accompany this publication.  Please note the following:
 
-<Div custom-style = "Heading 2">Open data</div>
+**Table 1 – HSMR**  
+Table 1 presents hospital-level HSMR on a **funnel plot** for each rolling 12 month period, allowing comparisons to be made between each hospital and the average for Scotland for that particular period.
+
+**Table 2 – Overall 30-day crude mortality demographics for NHSScotland**  
+The data within Table 2 provides overall crude mortality rates by hospital, and crude mortality demographics for NHSScotland. The following series of tables and charts are presented for the latest five-year period:
+
+* Overall crude mortality rates (%) for deaths within 30 days of admission, including by type of admission, age group, specialty group, sex and deprivation.
+* Proportion of deaths (%) within 30-days of admission by place of death   
+
+**Table 3 – Crude mortality from discharge, and population based mortality rates**  
+The data within Table 3 contains a ‘drop-down’ selection option for NHSScotland and any of the NHS Boards. The following series of tables and charts are presented:
+
+* Crude mortality rates (%) within 30-days of ultimate hospital discharge (including all in-hospital deaths)
+* Crude population mortality rates per 1,000 people.
+
+These results have also been published in an interactive dashboard format. A link to the latest dashboard is available on the [HSMR webpage](`r pub_url`).
+
+<Div custom-style = "Heading 1 nopagebreak">Open data</div>
 Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios).
 
-<br>
 
-<Div custom-style = "Heading 2">Rate this publication</div>
-If you wish to provide feedback on this publication to help us improve our service, please email phs.QualityIndicators@phs.scot.
+<Div custom-style = "Heading 1 nopagebreak">Rate this publication</div>
+Let us know what you think about this publication via the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios) on the PHS website.
 
 <Div custom-style = "Heading 1">Appendices</div>
-<Div custom-style = "Heading 2">Appendix 1 – background information</div>
+<Div custom-style = "Heading 2">Appendix 1 – Background information</div>
 <Div custom-style = "Heading 3">Methods used to calculate the HSMR</div>
 The HSMR is calculated for all acute inpatient and day case patients admitted to all specialties (medical and surgical). The calculation takes account of patients who died within 30 days from admission; that is, it includes deaths that occurred in the community (out of hospital deaths) as well as those occurring in hospital.
 
@@ -978,7 +972,7 @@ knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
 
-<Div custom-style = "Heading 2">Appendix 2 – quarterly process </div>
+<Div custom-style = "Heading 2">Appendix 2 – Quarterly process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
 There are three key stages to this quarterly process which include other indicators of quality. 
@@ -1003,7 +997,7 @@ A summary of the processes and key dates for the latest quarterly cycle is in th
 knitr::kable(q_process, col.names = c("**Month**", "**Process and Key Dates**"), align = c('l','l'))
 ```
 
-<Div custom-style = "Heading 2">Appendix 3 – data quality and timeliness</div>
+<Div custom-style = "Heading 2">Appendix 3 – Data quality and timeliness</div>
 HSMR is being used extensively across Scotland as one of a number of indicators of quality and safety. The credibility of the HSMR is dependent on robust data quality, particularly around the accuracy and consistency of the recording of main diagnosis.  
 
 ### Source data
@@ -1034,7 +1028,7 @@ More information about SMR completeness is available on [our website](https://be
 The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data up to `r qtr_prev(qtr_start)` along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that period has now been refreshed to reflect additional returns that have subsequently been submitted for that time period. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately `r completeness("previous", "scotland", qtr_start)` complete.
 
 
-<Div custom-style = "Heading 2">Appendix 4 – publication metadata</div>
+<Div custom-style = "Heading 2">Appendix 4 – Publication metadata</div>
 
 **Publication title**
 
@@ -1152,7 +1146,7 @@ June 2010
 
 `r format(Sys.time(), "%d %B %Y")`
 
-<Div custom-style = "Heading 2">Appendix 5 – early access details</div>
+<Div custom-style = "Heading 2">Appendix 5 – Early access details</div>
 
 **Pre-release access**  
 Under terms of the "Pre-Release Access to Official Statistics (Scotland) Order 2008", PHS is obliged to publish information on those receiving Pre-Release Access ("Pre-Release Access" refers to statistics in their final form prior to publication). The standard maximum Pre-Release Access is five working days. Shown below are details of those receiving standard Pre-Release Access.
@@ -1180,17 +1174,7 @@ PHS is a knowledge-based and intelligence driven organisation with a critical re
 data and information to enable it to be an independent voice for the public’s health, leading
 collaboratively and effectively across the Scottish public health system, accountable at local
 and national levels, and providing leadership and focus for achieving better health and
-wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics](https://code.statisticsauthority.gov.uk/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the [‘five safes’](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/).  
-
-**Official Statistics**  
-Public Health Scotland (PHS) is the principal and authoritative source of statistics on health and care services in Scotland. PHS is designated by legislation as a producer of ‘Official Statistics’. Our official statistics publications are produced to a high professional standard and comply with the Code of Practice for Official Statistics. The Code of Practice is produced and monitored by the UK Statistics Authority which is independent of Government. Under the Code of Practice, the format, content and timing of statistics publications are the responsibility of professional staff working within PHS. PHS’s statistical publications are currently classified as one of the following:  
-
-* National Statistics (i.e. assessed by the UK Statistics Authority as complying with the Code of Practice)
-* National Statistics (i.e. legacy, still to be assessed by the UK Statistics Authority)
-* Official Statistics (i.e. still to be assessed by the UK Statistics Authority)
-* other (not Official Statistics)  
-
-Further information on PHS’s statistics, including compliance with the Code of Practice for Official Statistics, and on the UK Statistics Authority, is available on the [PHS website](https://beta.isdscotland.org/about-our-statistics/). 
+wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics](https://code.statisticsauthority.gov.uk/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the [‘five safes’](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/).
 
 
 
