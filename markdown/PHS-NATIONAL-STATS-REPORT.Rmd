@@ -583,7 +583,7 @@ c2 <- c("Clinical Improvement Manager, Assistant Director (Healthcare Quality, G
 mi_list <- data.frame(c1, c2)
 ```
 
-```{r Table3, echo = FALSE, message = FALSE, warning = FALSE, error =  FALSE}
+```{r table_eng_comp, echo = FALSE, message = FALSE, warning = FALSE, error =  FALSE}
 
 c1 <- c("**Patients**",
         "**Deaths**",
@@ -602,7 +602,7 @@ c4 <- c("One patient observation per spell attributed to each acute trust involv
         "All inpatient and day case deaths in hospital ",
         "Age/ sex/ admission type/ CCS group (diagnosis) / comorbidity (modified Charlson score)/ deprivation/ previous emergency admissions / palliative care (specialty code 315; ICD10 code Z515/source of admission) ")
 
-Table3 <- data.frame(c1, c2, c3, c4)
+table_eng_comp <- data.frame(c1, c2, c3, c4)
 
 ```
 
@@ -965,9 +965,9 @@ In Scotland, the HSMR has focussed only on deaths within 30-days of admission (b
 The table below shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
 <Div custom-style = "Table or chart caption">Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
-```{r kable_Table3, echo = FALSE}
+```{r kable_table_eng_comp, echo = FALSE}
 
-knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
+knitr::kable(table_eng_comp, col.names = c("","**Scotland (HSMR)**",
 "**England and Wales Summary Hospital-level Mortality Indicator (SHMI)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
