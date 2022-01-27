@@ -962,9 +962,9 @@ One important difference between the SHMI and other publicly available measures 
 
 In Scotland, the HSMR has focussed only on deaths within 30-days of admission (but includes deaths in the community). It differs therefore from both SHMI and Dr Fosters HSMR in that respect alone.  Also the adjustment factored into the different models varies, although they are very similar in many respects.  
 
-Table 3 shows a summary of some of the key comparisons between the English and Scottish approaches. 
+The table below shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
-<Div custom-style = "Table or chart caption">Table 3: Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
+<Div custom-style = "Table or chart caption">Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
 ```{r kable_Table3, echo = FALSE}
 
 knitr::kable(Table3, col.names = c("","**Scotland (HSMR)**",
@@ -1017,7 +1017,7 @@ The majority of hospital admission data will be complete for the latest quarter,
 
 PHS continues to work with health boards on national outputs to ensure they meet national definitional and processing requirements.
 
-All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`.
+All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`. PHS are aware of a delayed backlog of cases from Galloway Community Hospital in the previous reporting period.
 
 HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. PHS continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
