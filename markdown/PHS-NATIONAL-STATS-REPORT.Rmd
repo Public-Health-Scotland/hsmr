@@ -677,7 +677,7 @@ HSMR quarterly releases from August 2019 onwards are not comparable to earlier r
 HSMRs are also less appropriate than crude mortality rates for examining changes through time. Trends in HSMR are impacted by variations in case mix and coding practices, and do not allow a meaningful comparison between different time periods. They can be used only to compare each hospital to the Scottish average in a single time period.
 
 <Div custom-style = "Heading 2">How is HSMR information used?</div>
-Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)**. A lower HSMR should reflect work in individual hospitals to review mortality, and reflect reductions in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives.
+Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)**. A lower hospital mortality should reflect work in individual hospitals to review mortality, and reflect reductions in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives.
 
 **Healthcare Improvement Scotland** reviews the data, alongside other indicators, with Public Health Scotland to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
