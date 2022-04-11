@@ -467,66 +467,22 @@ chart_10 <- ggplot(trend_data %>% filter(label == "Population"
                               sub(" ", "\n", qtr_list[17,]),
                               "", "", ""))
 
-ggsave("Funnel_Plot.png", plot = funnel_plot, width = 17.49, 
-       height = 9.03, units = "cm", device = "png", dpi = 600)
+# Saving charts as images using function
+save_plot <- function(chart_number, file_format, list_pos) {
+  chart_title <- case_when(list_pos == 1 ~ paste0("Funnel_Plot.", file_format), 
+                           T ~ paste0("Chart_", chart_number, ".", file_format))
+  
+  ggsave(paste0("Chart_", chart_number, ".", file_format), 
+         plot = chart_object[[list_pos]], width = 17.49, height = 9.03, 
+         units = "cm", device = "png", dpi = 600)
+}
 
-ggsave("Chart_2.png", plot = chart_2, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
+# To loop the ggsave, plots need to be in a list
+chart_object = list(funnel_plot, chart_2, chart_3, chart_4, chart_5, chart_6, 
+                    chart_7, chart_8, chart_9, chart_10)
 
-ggsave("Chart_3.png", plot = chart_3, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_4.png", plot = chart_4, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_5.png", plot = chart_5, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_6.png", plot = chart_6, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_7.png", plot = chart_7, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_8.png", plot = chart_8, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_9.png", plot = chart_9, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_10.png", plot = chart_10, width = 17.49, height = 9.03,
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Funnel_Plot.svg", plot = funnel_plot, width = 17.49, 
-       height = 9.03, units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_2.svg", plot = chart_2, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_3.svg", plot = chart_3, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_4.svg", plot = chart_4, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_5.svg", plot = chart_5, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_6.svg", plot = chart_6, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_7.svg", plot = chart_7, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_8.svg", plot = chart_8, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_9.svg", plot = chart_9, width = 17.49, height = 9.03, 
-       units = "cm", device = "png", dpi = 600)
-
-ggsave("Chart_10.svg", plot = chart_10, width = 17.49, height = 9.03,
-       units = "cm", device = "png", dpi = 600)
-
+mapply(save_plot, chart_number = c(1:10), file_format = "png", list_pos = c(1:10))
+mapply(save_plot, chart_number = c(1:10), file_format = "svg", list_pos = c(1:10))
 
 
 ```
