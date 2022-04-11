@@ -75,26 +75,26 @@ Sys.umask("006")
 
 
 # The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01102018)
+start_date        <- lubridate::dmy(01012019)
 
 # The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01102016)
+start_date_trends <- lubridate::dmy(01012017)
 
 # Add a buffer to the start of the trends extract. Extra time not included in
 # output, but helps assign correct patients & deaths to 1st quarter.
 start_date_trends_buffer = start_date_trends %m-% months(3)
 
 # The end of the baseline period (for model)
-base_end          <- lubridate::dmy(30092021)
+base_end          <- lubridate::dmy(31122021)
 
 # Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01102013)
+start_date_5      <- lubridate::dmy(01012014)
 
 # First day of latest quarter in current publication
-qtr_start         <- lubridate::dmy(01072021)
+qtr_start         <- lubridate::dmy(01102021)
 
 # End date for the cut off for data
-end_date          <- lubridate::dmy(30092021)
+end_date          <- lubridate::dmy(31122021)
 
 # Publication date
 pub_day <- pub_date(end_date = end_date, pub = "current")
