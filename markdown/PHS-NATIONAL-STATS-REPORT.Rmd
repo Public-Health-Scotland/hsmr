@@ -5,7 +5,7 @@ output:
     
 ---
 
-```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
+```{r LoadConfig, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE, include=FALSE}
 
 # Load environment file
 source(here::here("setup_environment.R"))
@@ -563,25 +563,6 @@ c4 <- c("One patient observation per spell attributed to each acute trust involv
 table_eng_comp <- data.frame(c1, c2, c3, c4)
 
 ```
-
-
-<!-- <Div custom-style = "TOC Heading"> -->
-<!-- This is a National Statistics Publication -->
-<!-- </div> -->
-<!-- <Div custom-style = "National stats"> -->
-<!-- ![National Statistics Quality Mark](/conf/quality_indicators/hsmr/quarter_cycle/Analyst folders/markdown_ref_files/kitemark_tcm97-17949.jpg) \ -->
-<!-- </div> -->
-
-<!-- National Statistics status means that the official statistics meet the highest standards of trustworthiness, quality and public value. They are identified by the quality mark shown above. -->
-
-<!-- The UK Statistics Authority has designated these statistics as National Statistics signifying compliance with the Code of Practice for Statistics. -->
-
-<!-- Once statistics have been designated as National Statistics, it is a statutory requirement that the Code of Practice shall continue to be observed. -->
-
-<!-- Find out more about the Code of Practice by visiting the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/). -->
-
-<!-- Find out more about National Statistics on the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/glossary/#national-statistics). -->
-
 
 <Div custom-style = "Heading 1 alt">Introduction</div>
 This report by Public Health Scotland (PHS) presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period. It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
