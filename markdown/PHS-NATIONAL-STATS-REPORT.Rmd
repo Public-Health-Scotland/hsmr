@@ -1,7 +1,7 @@
 ---
 output: 
   word_document:
-    reference_docx: "phs-national-stats-report_test_template.dotx"
+    reference_docx: "phs-national-stats-report_hsmr_template.dotx"
     
 ---
 
