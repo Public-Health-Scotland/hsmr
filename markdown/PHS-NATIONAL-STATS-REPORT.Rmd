@@ -721,7 +721,7 @@ Chart 1 shows the funnel plot for the latest 12-month  period. `r paste0(funnel_
 
 This section presents crude mortality rates for deaths within 30 days of admission, which can be used to show trends through time. Since crude mortality rates do not account for differences in case mix, they are less appropriate for comparing individual hospitals to Scotland. This section therefore does not make such comparisons, but does show overall results for Scotland before an examination of some of the factors that affect the underlying risk of death.
 
-<Div custom-style = "Heading 2">Scotland – overall</div>
+<Div custom-style = "Heading 2 less spacing">Scotland – overall</div>
 Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The value was generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate did then reduce, but has since remained elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients.
 
 <Div custom-style = "Table or chart caption">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")`p</div>
