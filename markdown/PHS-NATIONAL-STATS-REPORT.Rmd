@@ -626,18 +626,16 @@ table_eng_comp <- data.frame(c1, c2, c3, c4)
 
 <!-- Find out more about National Statistics on the [UK Statistics Authority website](https://code.statisticsauthority.gov.uk/glossary/#national-statistics). -->
 
+
 <Div custom-style = "Heading 1 alt">Introduction</div>
 This report by Public Health Scotland (PHS) presents Hospital Standardised Mortality Ratios (HSMR) at Scotland, NHS Board and hospital levels for the latest 12 month period. It includes additional information and commentary on patterns of mortality by key demographic factors. There is extensive information on the development of the measure and how it compares to similar information used in other parts of the UK. 
 
-PHS (formerly Information Services Division) has produced quarterly Hospital Standardised Mortality Ratios for all Scottish hospitals participating in the Scottish Patient Safety Programme since December 2009. 
 
-The HSMR methodology used up until May 2019 was agreed in 2015/16. The purpose of the HSMR at that time was to measure change in mortality over time, and to enable acute hospitals to monitor their progress towards the Scottish Patient Safety Programme (SPSP) aim of reducing hospital mortality by a further 10% by December 2018. 
+The mix of patients seen varies between hospitals, and the mortality rate may be higher or lower at a hospital for many reasons; the patients seen, for example, may be more seriously ill than average. HSMRs therefore take account of some of the factors known to affect the risk of death, so that comparisons between individual hospitals and Scotland are made on a comparable basis.
 
-The end of this phase of the Scottish Patient Safety Programme provided the opportunity to review the model methodology and subsequently update and refine it, ensuring that the methodology continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. 
+Quarterly HSMR publications have been released since 2009, with periodic reviews of the methodology. The most recent changes were made in August 2019, ensuring that the methodology continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. As a result, **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology. **
 
-**HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology. **
-
-These latest statistics reflect completeness of validated hospital SMR01 returns as at `r format(submission_deadline(end_date), "%d %B %Y")`. This information has previously been released to NHS Boards as management information.
+This release provides HSMRs for the period `r yr(end_date)`, using validated hospital SMR01 returns as at `r format(submission_deadline(end_date), "%d %B %Y")`. This information has previously been released to NHS Boards as management information. Additional information and commentary on patterns of mortality by key demographic factors is included for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")` so that changes over time can be evaluated. There is also extensive information on the development of the measure and how it compares to similar information used in other parts of the UK.
 
 <Div custom-style = "Heading 1 alt">COVID-19</div>
 Since the start of the COVID-19 outbreak, Public Health Scotland (PHS) has been working closely with
@@ -683,7 +681,7 @@ HSMR quarterly releases from August 2019 onwards are not comparable to earlier r
 HSMRs are also less appropriate than crude mortality rates for examining changes through time. Trends in HSMR are impacted by variations in case mix and coding practices, and do not allow a meaningful comparison between different time periods. They can be used only to compare each hospital to the Scottish average in a single time period.
 
 <Div custom-style = "Heading 2">How is HSMR information used?</div>
-Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)**. A lower HSMR should reflect work in individual hospitals to review mortality, and reflect reductions in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives.
+Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScotland](https://www.gov.scot/publications/healthcare-quality-strategy-nhsscotland/)**. A lower hospital mortality should reflect work in individual hospitals to review mortality, and reflect reductions in serious adverse events and infections under the Scottish Patient Safety Programme and other improvement initiatives.
 
 **Healthcare Improvement Scotland** reviews the data, alongside other indicators, with Public Health Scotland to identify potential areas for further exploration. Healthcare Improvement Scotland offer advice/support to NHS Boards, on request, about using hospital mortality data to help learn about and improve the quality of patient care.
 
@@ -806,10 +804,7 @@ HSMR data are provided by PHS to allow an individual hospital to monitor its mor
 
 **NHS Fife**: in order to reflect current service configuration, an HSMR is not reported on separately for Queen Margaret Hospital as this site does not include any acute wards.
 
-### Combined Institutions
-In order to reflect current service configuration, some hospitals are presented as combined institutions for the purposes of these reports. This applies to the following NHS Boards.
-
-*	**NHS Greater Glasgow and Clyde**: in order to reflect current service configuration, the HSMRs for Stobhill Hospital and Glasgow Royal Infirmary have been combined as have the activity for Royal Alexandra Hospital and Vale of Leven. These changes have been applied to all time points retrospectively back to the initial reporting period. In addition, NHS Greater Glasgow & Clyde combine any activity (historic or current) from Blawarthill Hospital, Drumchapel Hospital, Glasgow Homoeopathic Hospital, Knightswood Hospital, and Beatson Oncology Centre with West Glasgow Hospital data. Please note that the Queen Elizabeth University Hospital opened to patients in April 2015, with services from the Southern General, old Victoria Infirmary and old Western Infirmary/Gartnavel transferred to this new hospital.  
+*	**NHS Greater Glasgow and Clyde**: in order to reflect current service configuration, the HSMRs for Stobhill Hospital and Glasgow Royal Infirmary have been combined as have the activity for Royal Alexandra Hospital and Vale of Leven. In addition, Queen Elizabeth University Hospital activity includes that of the New Victoria and West Glasgow hospitals. These changes have been applied to all time points retrospectively back to the initial reporting period. 
 
 Individual hospital level data for any combined sites are available on request.
 
@@ -855,7 +850,7 @@ Quality Indicators
 <Div custom-style = "Heading 1 nopagebreak">Further information</div>
 
 Further Information can be found on the [PHS website](https://publichealthscotland.scot/).  
-For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/).   
+For more information on HSMR see the [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). The code used to produce this publication can be accessed in this [GitHub repository](https://github.com/Public-Health-Scotland/hsmr).
 
 The next release of this publication, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`. 
 

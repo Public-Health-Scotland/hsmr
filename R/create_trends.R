@@ -224,12 +224,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     # Combine institutions
 
     tidylog::mutate(location = case_when(
-      location == "C206H" ~ "C418H",
-      location == "G207H" ~ "G107H",
-      location == "G306H" ~ "G405H",
-      location == "G516H" ~ "G405H",
-      location == "Y104H" ~ "Y146H",
-      location == "R101H" ~ "R103H",
+      location == "C206H" ~ "C418H", # Vale of Leven as Royal Alexandra Hospital
+      location == "G207H" ~ "G107H", # Stobhill Hospital as Glasgow Royal Infirmary
+      location == "G306H" ~ "G405H", # New Victoria Hospital as Queen Elizabeth University Hospital
+      location == "G516H" ~ "G405H", # West Glasgow as Queen Elizabeth University Hospital
+      location == "Y104H" ~ "Y146H", # Dumfries & Galloway Royal Infirmary Old as Dumfries & Galloway Royal Infirmary
+      location == "R101H" ~ "R103H", # Balfour Hospital as The Balfour
       TRUE ~ location
     ))
 
@@ -286,12 +286,14 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     # Combine institutions
 
     tidylog::mutate(location = case_when(
-      location == "C206H" ~ "C418H",
-      location == "G207H" ~ "G107H",
-      location == "G306H" ~ "G405H",
-      location == "G516H" ~ "G405H",
-      location == "Y104H" ~ "Y146H",
-      location == "R101H" ~ "R103H",
+      location == "C206H" ~ "C418H", # Vale of Leven as Royal Alexandra Hospital
+      location == "G207H" ~ "G107H", # Stobhill Hospital as Glasgow Royal Infirmary
+      location == "G306H" ~ "G405H", # New Victoria Hospital as Queen Elizabeth University Hospital
+      location == "G516H" ~ "G405H", # West Glasgow as Queen Elizabeth University Hospital
+      # Dumfries old not in the data anymore
+      location == "Y104H" ~ "Y146H", # Dumfries & Galloway Royal Infirmary Old as Dumfries & Galloway Royal Infirmary
+      # Balfour old code stopped in June 2019
+      location == "R101H" ~ "R103H", # Balfour Hospital as The Balfour
       TRUE ~ location
     ))
 
