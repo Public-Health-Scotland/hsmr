@@ -43,7 +43,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact1 <- "Jaime Villacampa | Principal Information Analyst | <phs.QualityIndicators@phs.scot>" 
+contact1 <- "Catherine Perkins | Senior Information Analyst | <phs.QualityIndicators@phs.scot>" 
 contact2 <- "Peter Menzies | Information Analyst"
 ```
 
@@ -81,7 +81,7 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 </div>
 <!-- Need to use Table Head style for image as it is the only available centred style that works - template styles locked with password -->
 <Div custom-style = "Table Head">
-![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Funnel_Plot.png) \
+![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Chart_1.png) \
 </div>
 
 <Div custom-style = "Heading 1">

@@ -44,17 +44,16 @@ signals_data %<>%
   mutate(shift_i = case_when((crd_rate > mean & lag(crd_rate, 1) > mean &
                                 lag(crd_rate, 2) > mean & lag(crd_rate, 3) > mean &
                                 lag(crd_rate, 4) > mean & lag(crd_rate, 5) > mean &
-                                lag(crd_rate, 6) > mean & lag(crd_rate, 7) > mean & 
-                                lag(crd_rate, 8) > mean)
+                                lag(crd_rate, 6) > mean & lag(crd_rate, 7) > mean)
                              | (crd_rate < mean & lag(crd_rate, 1) < mean &
                                   lag(crd_rate, 2) < mean & lag(crd_rate, 3) < mean &
                                   lag(crd_rate, 4) < mean & lag(crd_rate, 5) < mean &
-                                  lag(crd_rate, 6) < mean & lag(crd_rate, 7) < mean & 
-                                  lag(crd_rate, 8) < mean ) ~ T , T ~ F),
+                                  lag(crd_rate, 6) < mean & lag(crd_rate, 7) < mean) 
+                             ~ T , T ~ F),
          shift = case_when(shift_i == T | lead(shift_i, 1) == T | lead(shift_i, 2) == T
                            | lead(shift_i, 3) == T | lead(shift_i, 4) == T
                            | lead(shift_i, 5) == T | lead(shift_i, 6) == T
-                           | lead(shift_i, 7) == T | lead(shift_i, 8) == T ~ T, T ~ F),
+                           | lead(shift_i, 7) == T  ~ T, T ~ F),
          trend_i = case_when((crd_rate > lag(crd_rate ,1) & lag(crd_rate, 1) > lag(crd_rate, 2)
                               & lag(crd_rate, 2) > lag(crd_rate, 3)  & lag(crd_rate, 3) > lag(crd_rate, 4) &
                                 lag(crd_rate, 4) > lag(crd_rate, 5)) |
@@ -74,7 +73,7 @@ signals_data %<>%
 
 #If any signal is true in last quarter select 
 signals_data %<>% 
-  filter(across(c(shift, trend, outlier)) & quarter == 20) %>% 
+  filter((shift == TRUE | trend == TRUE | outlier == TRUE) & quarter == 20) %>% 
   arrange(deaths) # most are 0 trends so can generally be ignored
 
 View(signals_data)
