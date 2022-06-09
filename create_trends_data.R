@@ -183,4 +183,49 @@ save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
 save_file(trends_data, "trends-data-level2", out_folder = "output",
           type = "csv", dev = F, overwrite = F)
 
+
+# Create file for RShiny public dashboard
+# Reformat variables
+public_dash_trends <- trends_data_lvl1 %>%
+  mutate(label_short = case_when(time_period == "Quarter" ~ quarter_short,
+                                 time_period == "Month" ~ month_label),
+         mth_qtr = case_when(time_period == "Quarter" ~ quarter,
+                             time_period == "Month" ~ month),
+         sub_grp = case_when(sub_grp == "All Admissions" ~ "All admissions",
+                             sub_grp == "Admission Type" ~ "Admission type",
+                             sub_grp == "Age Group" ~ "Age group",
+                             sub_grp == "Place of Death" ~ "Place of death",
+                             TRUE ~ sub_grp),
+         label = case_when(label == "All Admissions" ~ "All admissions",
+                           label == "Admission Type" ~ "Admission type",
+                           label == "Age Group" ~ "Age group",
+                           label == "Died in Hospital" ~ "Died in hospital",
+                           label == "Died in Community" ~ "Died in community",
+                           label == "Non-Elective" ~ "Non-elective",
+                           label == "1 - Most Deprived" ~ "1 - most deprived",
+                           label == "5 - Least Deprived" ~ "5 - least deprived",
+                           TRUE ~ label))
+
+
+# Recalculate the crude rate for 'place of death' subgroup - this can be removed if it is fixed in RAP code
+public_dash_trends %<>%
+  group_by(location, time_period, mth_qtr, sub_grp) %>%
+  mutate(total_deaths = sum(deaths)) %>%
+  ungroup %>%
+  mutate(crd_rate = case_when(sub_grp == "Place of death" ~ (deaths/total_deaths)*100,
+                   TRUE ~ crd_rate))
+
+# Calculate the Scotland crude rate
+public_dash_trends %<>%
+  mutate(scot_crd_rate = case_when(sub_grp == "Place of death" ~ crd_rate,
+                                   sub_grp == "Population" ~ (scot_deaths/scot_pats)*1000,
+                                   TRUE ~ (scot_deaths/scot_pats)*100)) %>%
+  select(hb, location, location_name, agg_label, time_period, mth_qtr, label_short,
+         sub_grp, label, deaths, pats, crd_rate, scot_deaths, scot_pats,
+         scot_crd_rate)
+
+# Save into output folder
+save_file(public_dash_trends, "trend-data-public-dashboard", "output", "rds", dev = F, overwrite = F)
+
+
 ### END OF SCRIPT ###

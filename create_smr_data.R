@@ -166,6 +166,7 @@ save_file(smr01 %>% filter(admission_date >= start_date + years(2)) %>%
 
 save_file(smr_data, "SMR-data", "output", "csv", dev = F, overwrite = F)
 
+
 # File for dashboard, bringing previous publication data and adding new period
 smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
                                  "/output/", previous_pub, "_SMR-data_dashboard.csv")) %>%
@@ -187,5 +188,59 @@ save_file(smr_data_dash, "Discovery HSMR Level 1 SMR", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
 save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde",
           type = "xlsx", dev = F, overwrite = F)
+
+
+# Create file for RShiny public dashboard
+# Update the HB codes back to the 2019 codes
+public_dash_smr <- smr_data_dash %>%
+  change_hbcodes(version_to = "19") %>%
+  # Create a variable that is used to sort time periods
+  mutate(year = stringr::word(period_label, 2, 2),
+         month = sprintf("%02d", match(stringr::word(period_label, 1, 1), month.name)),
+         order_var = paste0(year, "-", month))
+
+# Create warning and control confidence limits for funnel plot
+public_dash_smr %<>%
+  filter(period == 3 & location %in% c(hosp_filter)) %>%
+  mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
+         z = if_else(location_type == "hospital",
+                     round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
+                     0)) %>%
+  mutate(z_max = max(z),
+         z_min = min(z),
+         z_flag = case_when(z == z_max ~ 1,
+                            z == z_min ~ -1,
+                            TRUE ~ 0),
+         z = if_else(z == z_max | z == z_min, 0, z),
+         z_max = max(z),
+         z_min = min(z),
+         z = case_when(z_flag == 1 ~ z_max,
+                       z_flag == -1 ~ z_min,
+                       TRUE ~ z),
+         z_flag = if_else(z != 0, 1, 0),
+         w_score = round_half_up(sqrt(sum(round_half_up(z * z, 8))/sum(z_flag)),8)) %>%
+  # Calculate funnel limits for funnel plot
+  mutate(uwl = 1 + 1.96 * round_half_up(st_err * w_score,8),
+         ucl = 1 + 3.09 * round_half_up(st_err * w_score,8),
+         lwl = 1 - 1.96 * round_half_up(st_err * w_score,8),
+         lcl = 1 - 3.09 * round_half_up(st_err * w_score,8)) %>%
+
+  # Create flag for where hospital sits on funnel plot
+  mutate(flag = case_when(smr > ucl ~ "2",
+                          smr > uwl & smr <= ucl ~ "1",
+                          smr <lcl ~ "3",
+                          smr <lwl & smr >= lcl ~ "4",
+                          TRUE ~ "0"))
+
+# Keep only variables that are required for dashboard
+public_dash_smr %<>% select(hb, location, location_name, order_var, period_label, deaths, pred,
+                 pats, smr, crd_rate, smr_scot, death_scot, pats_scot,
+                 uwl, ucl, lwl, lcl, flag) %>%
+  arrange(order_var, location_name)
+
+
+# Save into output folder
+save_file(public_dash_smr, "SMR-data-public-dashboard", "output", "rds", dev = F, overwrite = F)
+
 
 ### END OF SCRIPT ###
