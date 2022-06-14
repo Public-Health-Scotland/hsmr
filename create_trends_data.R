@@ -225,7 +225,7 @@ public_dash_trends %<>%
          scot_crd_rate)
 
 # Save into output folder
-save_file(public_dash_trends, "trend-data-public-dashboard", "output", "rds", dev = F, overwrite = F)
+save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", dev = F, overwrite = F)
 
 
 ### END OF SCRIPT ###
