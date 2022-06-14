@@ -192,15 +192,19 @@ save_file(smr_data_dash, "Discovery HSMR Level 1 SMR Live", out_folder = "tde",
 
 # Create file for RShiny public dashboard
 # Update the HB codes back to the 2019 codes
-public_dash_smr <- smr_data_dash %>%
+public_dash <- smr_data_dash %>%
   change_hbcodes(version_to = "19") %>%
   # Create a variable that is used to sort time periods
   mutate(year = stringr::word(period_label, 2, 2),
          month = sprintf("%02d", match(stringr::word(period_label, 1, 1), month.name)),
          order_var = paste0(year, "-", month))
 
+# Create a Scotland row to add after funnel limits have been calculated
+public_dash_scot <- public_dash %>%
+  filter(location == 'Scot' & period == 3)
+
 # Create warning and control confidence limits for funnel plot
-public_dash_smr %<>%
+public_dash_hosps <- public_dash %>%
   filter(period == 3 & location %in% c(hosp_filter)) %>%
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
          z = if_else(location_type == "hospital",
@@ -226,21 +230,22 @@ public_dash_smr %<>%
          lcl = 1 - 3.09 * round_half_up(st_err * w_score,8)) %>%
 
   # Create flag for where hospital sits on funnel plot
-  mutate(flag = case_when(smr > ucl ~ "2",
-                          smr > uwl & smr <= ucl ~ "1",
-                          smr <lcl ~ "3",
+  mutate(flag = case_when(smr > ucl ~ "1",
+                          smr < lcl ~ "2",
+                          smr > uwl & smr <= ucl ~ "3",
                           smr <lwl & smr >= lcl ~ "4",
                           TRUE ~ "0"))
 
 # Keep only variables that are required for dashboard
-public_dash_smr %<>% select(hb, location, location_name, order_var, period_label, deaths, pred,
+public_dash_all <- bind_rows(public_dash_scot, public_dash_hosps) %>%
+  select(hb, location, location_name, order_var, period_label, deaths, pred,
                  pats, smr, crd_rate, smr_scot, death_scot, pats_scot,
                  uwl, ucl, lwl, lcl, flag) %>%
   arrange(order_var, location_name)
 
 
 # Save into output folder
-save_file(public_dash_smr, "SMR-data-public-dashboard", "output", "rds", dev = F, overwrite = F)
+save_file(public_dash_all, "SMR_data_public_dashboard", "output", "rds", dev = F, overwrite = F)
 
 
 ### END OF SCRIPT ###
