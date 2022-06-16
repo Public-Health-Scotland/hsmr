@@ -115,7 +115,7 @@ query_gro_ltt <- function(extract_start) {
                                              "01 July",
                                              "01 October"))) {
     stop("The extract start date must be the first day of either January, ",
-         "April, September or December")
+         "April, October or December")
   }
 
   paste("select LINK_NO, DATE_OF_DEATH, HBRES_CURRENTDATE,",
