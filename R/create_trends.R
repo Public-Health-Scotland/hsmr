@@ -330,12 +330,12 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     aggs <- dplyr::bind_rows(scot_agg, hb_agg, hosp_agg) 
     
   }
-  
+
   ###############################################.
   # All Admissions ----
   all_adm <- agg_subgroups(NULL) %>%
     mutate(label = "All admissions",
-           sub_grp = "All admissions")
+           sub_grp = "All admissions") %>% 
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats))
