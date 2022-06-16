@@ -552,7 +552,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     scot_pats   = max(pats))
 
   ###############################################.
-  # Crude Rates Place of Death ----
+  # Place of Death ----
   #First aggregating by hospital
   hosp_place_of_death <- smr01_quarter %>%
     tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short,
@@ -579,7 +579,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     agg_label = "Scotland") 
   
   # Combine place of death datasets together
-  place_of_death_new <- dplyr::bind_rows(scot_place_of_death, hb_place_of_death, hosp_place_of_death) %>%
+  place_of_death <- dplyr::bind_rows(scot_place_of_death, hb_place_of_death, hosp_place_of_death) %>%
     #Calculating denominator for %s which is number of total deaths in community/hopital
     tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short) %>% 
     tidylog::mutate(pats = sum(deaths)) %>% dplyr::ungroup() %>% 
@@ -591,143 +591,75 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
 
-
-  # Crude Rates (Scotland) - Deprivation ----
-  scot_dep <- smr01_quarter %>%
-    tidylog::group_by(quarter, quarter_full, quarter_short, simd) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
-    tidylog::mutate(label = dplyr::case_when(
-      is.na(simd) ~ "Unknown",
-      simd == 1   ~ "1 - Most Deprived",
-      simd == 2   ~ "2",
-      simd == 3   ~ "3",
-      simd == 4   ~ "4",
-      simd == 5   ~ "5 - Least Deprived"
-    ),
-    hbtreat_currentdate = "Scotland",
-    location = "Scot",
-    sub_grp = "Deprivation",
-    agg_label = "Scotland",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
-    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, scot_deaths, scot_pats,
-                    sub_grp, label, agg_label)
-
-  # Crude Rates (Health Board) - Deprivation ----
-  hb_dep <- smr01_quarter %>%
-    tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short, simd) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
-    tidylog::mutate(label = dplyr::case_when(
-      is.na(simd) ~ "Unknown",
-      simd == 1   ~ "1 - Most Deprived",
-      simd == 2   ~ "2",
-      simd == 3   ~ "3",
-      simd == 4   ~ "4",
-      simd == 5   ~ "5 - Least Deprived"
-    ),
-    location = hbtreat_currentdate,
-    sub_grp = "Deprivation",
-    agg_label = "Board",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
-    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, scot_deaths, scot_pats,
-                    sub_grp, label, agg_label)
-
-  # Crude Rates (Hospital) - Deprivation ----
+  ###############################################.
+  # Deprivation ----
   hosp_dep <- smr01_quarter %>%
     tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short, simd) %>%
     tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
+                       pats   = length(death30)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(agg_label = "Hospital") 
+  
+  # Aggregating at Scotland level
+  scot_dep <- hosp_dep %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short, simd) %>%
+    tidylog::summarise(deaths = sum(deaths),
+                       pats   = sum(pats)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(hbtreat_currentdate = "Scotland",
+                    location = "Scot",
+                    agg_label = "Scotland") 
+  
+  # Aggregating at HB level
+  hb_dep <- hosp_dep %>%
+    tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short, simd) %>%
+    tidylog::summarise(deaths = sum(deaths),
+                       pats   = sum(pats)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(location = hbtreat_currentdate,
+                    agg_label = "Board") 
+  
+  # Combine Deprivation tibbles together
+  deprivation <- dplyr::bind_rows(scot_dep, hb_dep, hosp_dep) %>%
     tidylog::mutate(label = dplyr::case_when(
       is.na(simd) ~ "Unknown",
-      simd == 1   ~ "1 - Most Deprived",
+      simd == 1   ~ "1 - most deprived",
       simd == 2   ~ "2",
       simd == 3   ~ "3",
       simd == 4   ~ "4",
-      simd == 5   ~ "5 - Least Deprived"
-    ),
-    sub_grp = "Deprivation",
-    agg_label = "Hospital",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
-    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, scot_deaths, scot_pats,
-                    sub_grp, label, agg_label)
-
-  # Combine Deprivation tibbles together
-  deprivation <- dplyr::bind_rows(scot_dep, hb_dep, hosp_dep) %>%
+      simd == 5   ~ "5 - least deprived"),
+      sub_grp = "Deprivation") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
-                    scot_pats   = max(pats))
-
-  # Crude Rates (Scotland) - Specialty ----
-  scot_spec <- smr01_quarter %>%
-    tidylog::group_by(quarter, quarter_full, quarter_short, spec_grp) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
-    tidylog::mutate(label = dplyr::case_when(
-      is.na(spec_grp) ~ "Unknown",
-      spec_grp == 1   ~ "Community",
-      spec_grp == 2   ~ "Dental",
-      spec_grp == 3   ~ "Emergency",
-      spec_grp == 4   ~ "Medical",
-      spec_grp == 5   ~ "Mental",
-      spec_grp == 6   ~ "Other",
-      spec_grp == 7   ~ "Paediatrics",
-      spec_grp == 8   ~ "Surgery",
-      spec_grp == 9   ~ "Women & Newborn"
-    ),
-    hbtreat_currentdate = "Scotland",
-    location = "Scot",
-    sub_grp = "Specialty",
-    agg_label = "Scotland",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
+                    scot_pats   = max(pats)) %>% 
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
 
-  # Crude Rates (Health Board) - Specialty ----
-  hb_spec <- smr01_quarter %>%
-    tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short, spec_grp) %>%
-    tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
-    tidylog::mutate(label = dplyr::case_when(
-      is.na(spec_grp) ~ "Unknown",
-      spec_grp == 1   ~ "Community",
-      spec_grp == 2   ~ "Dental",
-      spec_grp == 3   ~ "Emergency",
-      spec_grp == 4   ~ "Medical",
-      spec_grp == 5   ~ "Mental",
-      spec_grp == 6   ~ "Other",
-      spec_grp == 7   ~ "Paediatrics",
-      spec_grp == 8   ~ "Surgery",
-      spec_grp == 9   ~ "Women & Newborn"
-    ),
-    location = hbtreat_currentdate,
-    sub_grp = "Specialty",
-    agg_label = "Board",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
-    tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
-                    quarter_short, deaths, pats, scot_deaths, scot_pats,
-                    sub_grp, label, agg_label)
-
-  # Crude Rates (Hospital) - Specialty ----
+  ###############################################.
+  # Specialty ----
   hosp_spec <- smr01_quarter %>%
     tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short, spec_grp) %>%
     tidylog::summarise(deaths = sum(death30),
-                       pats   = length(death30)) %>%
-    dplyr::ungroup() %>%
+                       pats   = length(death30)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(agg_label = "Hospital") 
+  
+  # Aggregating at Scotland level
+  scot_spec <- hosp_spec %>%
+    tidylog::group_by(quarter, quarter_full, quarter_short, spec_grp) %>%
+    tidylog::summarise(deaths = sum(deaths),
+                       pats   = sum(pats)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(hbtreat_currentdate = "Scotland",
+                    location = "Scot",
+                    agg_label = "Scotland") 
+  
+  # Aggregating at HB level
+  hb_spec <- hosp_spec %>%
+    tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short, spec_grp) %>%
+    tidylog::summarise(deaths = sum(deaths),
+                       pats   = sum(pats)) %>% dplyr::ungroup() %>%
+    tidylog::mutate(location = hbtreat_currentdate,
+                    agg_label = "Board") 
+  
+  # Combine Specialty tibbles together
+  specialty <- dplyr::bind_rows(scot_spec, hb_spec, hosp_spec) %>%
     tidylog::mutate(label = dplyr::case_when(
       is.na(spec_grp) ~ "Unknown",
       spec_grp == 1   ~ "Community",
@@ -738,23 +670,17 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       spec_grp == 6   ~ "Other",
       spec_grp == 7   ~ "Paediatrics",
       spec_grp == 8   ~ "Surgery",
-      spec_grp == 9   ~ "Women & Newborn"
-    ),
-    sub_grp = "Specialty",
-    agg_label = "Hospital",
-    scot_deaths = deaths,
-    scot_pats   = pats) %>%
+      spec_grp == 9   ~ "Women & Newborn"),
+      sub_grp = "Specialty") %>% 
+    tidylog::group_by(quarter, label) %>%
+    tidylog::mutate(scot_deaths = max(deaths),
+                    scot_pats   = max(pats)) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
 
-  # Combine Specialty tibbles together
-  specialty <- dplyr::bind_rows(scot_spec, hb_spec, hosp_spec) %>%
-    tidylog::group_by(quarter, label) %>%
-    tidylog::mutate(scot_deaths = max(deaths),
-                    scot_pats   = max(pats))
-
-  # Depth of Coding - Scotland ----
+  ###############################################.
+  # Depth of Coding ----
   scot_depth <- smr01_quarter %>%
     tidylog::group_by(quarter, quarter_full, quarter_short, depth_of_coding) %>%
     tidylog::summarise(deaths = length(death30)) %>%
