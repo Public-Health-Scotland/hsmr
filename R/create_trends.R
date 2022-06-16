@@ -343,14 +343,16 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   ###############################################.
   # Admission type ----
   adm_type <- agg_subgroups(admgrp) %>%
-    tidylog::mutate(label = dplyr::case_when(
-      admgrp == 1 ~ "Elective",
-      admgrp == 2 ~ "Non-elective"),
-  sub_grp = "Admission type") %>% 
+    tidylog::mutate(label = dplyr::case_when( admgrp == 1 ~ "Elective",
+                                              admgrp == 2 ~ "Non-elective"),
+                    sub_grp = "Admission type") %>% 
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
-                    scot_pats   = max(pats))
-  
+                    scot_pats   = max(pats)) %>%
+      tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
+                      quarter_short,deaths, pats, scot_deaths, scot_pats,
+                      sub_grp, label, agg_label)
+    
   ###############################################.
   # Age group ----
   age_group <- agg_subgroups(age_grp) %>%
