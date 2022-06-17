@@ -78,6 +78,13 @@ signals_data %<>%
 
 View(signals_data)
 
+# Filtering out signals that are not likely to be relevant
+signals_data %<>% 
+  filter(deaths !=0) %>% 
+  filter(!(sub_grp %in% c("Sex", "Deprivation", "Age Group")))
+
+View(signals_data)
+
 save_file(signals_data, "XMR_signals", "output", "csv", dev = F, overwrite = F)
 
 ## END
