@@ -90,9 +90,29 @@ table2 <- loadWorkbook(here("reference_files",
                             "Table2-Crude-Mortality-subgroups.xlsx"))
 
 # Write data to data tab in Table 2
-writeData(table2, "Raw Data", trend_data %>%
-            filter(!(sub_grp %in% c("Discharge", "Population"))),
+writeData(table2, "Raw Data", 
+          trend_data %>% filter(!(sub_grp %in% c("Discharge", "Population"))),
           startCol = 2)
+
+#Preparing location lookup and writing it in table
+locations <- read_csv("https://www.opendata.nhs.scot/dataset/cbd1802e-0e04-4282-88eb-d7bdcfb120f0/resource/c698f450-eeed-41a0-88f7-c1e40a568acc/download/current-hospital_flagged20211216.csv") %>% 
+  janitor::clean_names() %>% 
+  select(location, location_name, hb) %>% 
+  mutate(hbname = phsmethods::match_area(hb),
+         hbname = case_when(location == 'D102H' ~ "Golden Jubilee",
+                            T ~ paste0("NHS ", hbname)),
+         hb = case_when(location == 'D102H' ~ "S08100001",
+                        T ~ paste0(hb)),
+         hbname = gsub(" and ", " & ", hbname))
+
+hb_list <- locations %>% #list of hbs
+  mutate (location = hb, location_name = hbname) %>% distinct()
+
+locations <- rbind(hb_list, locations) %>% arrange (hb) %>% 
+  select(hbname, location_name, location) %>% 
+  filter(location %in% c(hosp_filter, board_filter)) # only locations in publication
+
+writeData(table2, "location_lookup", locations, colNames = FALSE)
 
 # Hide lookup sheets
 sheetVisibility(table2)[9:11] = FALSE
