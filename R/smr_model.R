@@ -66,7 +66,8 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   }
 
-  if(index == "Y"){
+  if(index == "Y" & start_date != base_end %m-% years(round(
+    time_length(difftime(base_end, start_date), "years"))) + 1){
 
     warning(paste0("Annual HSMRs are only to be produced on a rolling basis. ",
                    "Therefore, data provided to this function MUST cover ",
