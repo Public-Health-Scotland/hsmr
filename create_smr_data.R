@@ -47,7 +47,7 @@ morbs <- read_csv(here("reference_files", "morbs.csv")) %>%
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2021_2_simd2020v2.rds")) %>%
+                              "/postcode_2022_1_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
