@@ -174,10 +174,11 @@ smr_data_dash <- readr::read_csv(paste0(data_folder, previous_pub,
                                                   "-", substr(completeness_date,4,5),
                                                   "-", substr(completeness_date,1,2)))
 
-smr_data_dash <- rbind(smr_data, smr_data_dash) %>%
+smr_data_dash <- smr_data %>%
   # Required locations specified in setup_environment
   filter(location %in% locations_filter) %>%
-  change_hbcodes(version_to = "14") # Tableau uses 2014 codes, but code produces 2019
+  change_hbcodes(version_to = "14") %>%  # Tableau uses 2014 codes, but code produces 2019
+  rbind(smr_data_dash) # add old dashboard data, already uses 2014 codes and has correct location filtering
 
 # Used for the offline dashboard
 save_file(smr_data_dash, "SMR-data_dashboard", "output", "csv", dev = F, overwrite = F)
