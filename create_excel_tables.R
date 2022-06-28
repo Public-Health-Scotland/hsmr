@@ -188,3 +188,7 @@ create_open_data(measure = "crude", split = "Specialty",
                  dev = od_dev, overwrite = od_over)
 
 ### END OF SCRIPT ###
+
+# Load metadata template
+metadata <- loadWorkbook(here("reference_files",
+                            "metadata.xlsx"))
