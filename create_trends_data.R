@@ -1,19 +1,12 @@
-#########################################################################
+#########################################################################.
 # Name of file - create_hsmr_data.R
 # data release - Quarterly HSMR publication
-# Original Authors - David Caldwell & Anna Price
-# Orginal Date - August 2018
-#
-# Type - data extraction/preparation/modelling
-# Written/run on - RStudio server
-# Version of R - 3.5.1
 #
 # Description - Extracts SMR01 & deaths data and carries out required
 # manipulations to create minimal tidy dataset for long term trends for HSMR
 #
 # Approximate run time - 60 minutes
-#########################################################################
-
+#########################################################################.
 
 ### SECTION 1 - HOUSE KEEPING ----
 
@@ -142,10 +135,10 @@ trends_data %<>%
 ### 3 - Save data ----
 
 trends_data_lvl1_all_loc <- trends_data %>%
-  filter((sub_grp == "All Admissions" &
+  filter((sub_grp == "All admissions" &
             (agg_label == "Hospital" | agg_label == "Board")) |
            (agg_label == "Scotland" &
-              (sub_grp != "Depth of Coding" & sub_grp != "Symptom Coding")) |
+              (sub_grp != "Depth of coding" & sub_grp != "Symptom coding")) |
            (agg_label == "Board" &
               (sub_grp == "Discharge" | sub_grp == "Population")))
 
@@ -190,22 +183,7 @@ public_dash_trends <- trends_data_lvl1 %>%
   mutate(label_short = case_when(time_period == "Quarter" ~ quarter_short,
                                  time_period == "Month" ~ month_label),
          mth_qtr = case_when(time_period == "Quarter" ~ quarter,
-                             time_period == "Month" ~ month),
-         sub_grp = case_when(sub_grp == "All Admissions" ~ "All admissions",
-                             sub_grp == "Admission Type" ~ "Admission type",
-                             sub_grp == "Age Group" ~ "Age group",
-                             sub_grp == "Place of Death" ~ "Place of death",
-                             TRUE ~ sub_grp),
-         label = case_when(label == "All Admissions" ~ "All admissions",
-                           label == "Admission Type" ~ "Admission type",
-                           label == "Age Group" ~ "Age group",
-                           label == "Died in Hospital" ~ "Died in hospital",
-                           label == "Died in Community" ~ "Died in community",
-                           label == "Non-Elective" ~ "Non-elective",
-                           label == "1 - Most Deprived" ~ "1 - most deprived",
-                           label == "5 - Least Deprived" ~ "5 - least deprived",
-                           TRUE ~ label))
-
+                             time_period == "Month" ~ month))
 
 # Recalculate the crude rate for 'place of death' subgroup - this can be removed if it is fixed in RAP code
 public_dash_trends %<>%
