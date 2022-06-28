@@ -326,7 +326,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       tidylog::mutate(location = hbtreat_currentdate,
                       agg_label = "Board") 
     
-    # Combine Sex tibbles together
+    # Combine tibbles together
     aggs <- dplyr::bind_rows(scot_agg, hb_agg, hosp_agg) 
     
   }
@@ -391,7 +391,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(label = dplyr::case_when(
       death_inhosp_max == 1 ~ "Died in hospital",
       death_inhosp_max == 0 ~ "Died in community" )) %>% 
-    #Calculating denominator for %s which is number of total deaths in community/hopital
+    #Calculating denominator for %s which is number of total deaths in community/hospital
     tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short) %>% 
     tidylog::mutate(pats = sum(deaths)) %>% dplyr::ungroup() %>% 
     tidylog::mutate(sub_grp = "Place of death") %>%
@@ -691,8 +691,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Combine All Admissions tibbles together
   all_adm_month <- dplyr::bind_rows(scot_all_adm_month, hb_all_adm_month,
                                     hosp_all_adm_month) %>%
-    tidylog::mutate(label = "All Admissions",
-                    sub_grp = "All Admissions") %>% 
+    tidylog::mutate(label = "All admissions",
+                    sub_grp = "All admissions") %>% 
     tidylog::group_by(month, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
