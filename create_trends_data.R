@@ -185,14 +185,6 @@ public_dash_trends <- trends_data_lvl1 %>%
          mth_qtr = case_when(time_period == "Quarter" ~ quarter,
                              time_period == "Month" ~ month))
 
-# Recalculate the crude rate for 'place of death' subgroup - this can be removed if it is fixed in RAP code
-public_dash_trends %<>%
-  group_by(location, time_period, mth_qtr, sub_grp) %>%
-  mutate(total_deaths = sum(deaths)) %>%
-  ungroup %>%
-  mutate(crd_rate = case_when(sub_grp == "Place of death" ~ (deaths/total_deaths)*100,
-                   TRUE ~ crd_rate))
-
 # Calculate the Scotland crude rate
 public_dash_trends %<>%
   mutate(scot_crd_rate = case_when(sub_grp == "Place of death" ~ crd_rate,
