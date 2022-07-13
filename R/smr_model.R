@@ -72,7 +72,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
     warning(paste0("Annual HSMRs are only to be produced on a rolling basis. ",
                    "Therefore, data provided to this function MUST cover ",
                    "a period which can be measured in whole years. E.g. ",
-                   "January 2011 to December 2014 (4 whole years)."))
+                   "January 2011 to December 2013 (3 whole years)."))
 
     smr01 %<>%
       tidylog::mutate(period = dplyr::case_when(
