@@ -207,4 +207,23 @@ create_open_data(measure = "crude", split = "Specialty",
                  filename = "spec_open_data", label_var = "Specialty",
                  dev = od_dev, overwrite = od_over)
 
+# Update metadata template for this publication
+metadata <- read_csv(here("reference_files/metadata.csv")) %>%
+  select(Label, `Completed fields`)
+
+metadata %<>%
+  mutate(`Completed fields` =
+           case_when(Label == "Time frame of data and timeliness" ~ paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period from ", yr(end_date),
+                                                                           ". Quarterly crude mortality trends from July to September 2016 to ", qtr(qtr_start) , "."),
+                     Label == "Coverage" ~ paste0("Scotland, July 2016 - ", format(end_date, "%B %Y")),
+                     Label == "Completeness" ~ paste0("Approximately ", completeness(quarter = "current", level = "scotland", first_day = qtr_start),
+                                                      " for the latest quarter. "),
+                     Label == "Description" ~ paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),
+                                                     ". Also includes analyses of crude mortality trends over the longer term from July to September 2016 to ", qtr(qtr_start), "."),
+                     TRUE ~ `Completed fields`))
+
+save_file(metadata, "metadata", "open_data", "csv", dev = F, overwrite = F)
+
+
 ### END OF SCRIPT ###
+
