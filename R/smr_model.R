@@ -66,13 +66,15 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
 
   }
 
-  if(index == "Y" & start_date != base_end %m-% years(round(
-    time_length(difftime(base_end, start_date), "years"))) + 1){
+  if(index == "Y"){
+    
+    ifelse(start_date != base_end %m-% years(round(
+    time_length(difftime(base_end, start_date), "years"))) + 1,
 
-    warning(paste0("Annual HSMRs are only to be produced on a rolling basis. ",
+    stop(paste0("Annual HSMRs are only to be produced on a rolling basis. ",
                    "Therefore, data provided to this function MUST cover ",
                    "a period which can be measured in whole years. E.g. ",
-                   "January 2011 to December 2013 (3 whole years)."))
+                   "January 2011 to December 2013 (3 whole years).")),
 
     smr01 %<>%
       tidylog::mutate(period = dplyr::case_when(
@@ -81,6 +83,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
           admission_date <= end_date - lubridate::years(1) ~ 2,
         admission_date > end_date - lubridate::years(1) ~ 3
       ))
+    )
 
   }
 
