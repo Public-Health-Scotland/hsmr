@@ -325,10 +325,10 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
                               "", "", ""))
 
 chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
-                                          (label == "1 - Most Deprived" 
+                                          (label == "1 - most deprived" 
                                         | label == "2" | label == "3" 
                                         | label == "4" 
-                                        | label == "5 - Least Deprived")), 
+                                        | label == "5 - least deprived")), 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
