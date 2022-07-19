@@ -186,7 +186,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All admissions"
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
-                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
+                                          label == "Non-elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
                                                , y = crd_rate)) +
   geom_line(aes(colour = label, group=label), size = 1) +
   geom_point(aes(colour = label, shape = label)) +
