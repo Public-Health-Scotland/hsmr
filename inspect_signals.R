@@ -17,7 +17,7 @@ signals_data <- read.csv(paste0(data_folder, pub_day, "/output/", pub_day,
 
 signals_data %<>% 
   filter(is.na(month)) %>% #selecting quarters
-  filter(!(sub_grp %in% c("Depth of Coding", "Symptom Coding"))) %>%  # we don't report on these
+  filter(!(sub_grp %in% c("Depth of coding", "Symptom coding"))) %>%  # we don't report on these
   select(-c(scot_deaths, scot_pats, completeness_date, month, month_label, time_period))
 
  # Creating mean and limits
@@ -81,7 +81,7 @@ View(signals_data)
 # Filtering out signals that are not likely to be relevant
 signals_data %<>% 
   filter(deaths !=0) %>% 
-  filter(!(sub_grp %in% c("Sex", "Deprivation", "Age Group")))
+  filter(!(sub_grp %in% c("Sex", "Deprivation", "Age group")))
 
 View(signals_data)
 

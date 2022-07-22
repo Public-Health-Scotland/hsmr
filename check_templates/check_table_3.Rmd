@@ -1,9 +1,12 @@
 ---
 title: "Check Table 3"
-output: 
+output:
+  html_document:
+    df_print: paged
+    toc: yes
   html_notebook:
-    toc: true
     code_folding: hide
+    toc: yes
 ---
 
 <style type="text/css">

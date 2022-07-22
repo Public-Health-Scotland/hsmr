@@ -1,9 +1,12 @@
 ---
 title: "Check Table 2"
-output: 
+output:
+  html_document:
+    df_print: paged
+    toc: yes
   html_notebook:
-    toc: true
     code_folding: hide
+    toc: yes
 ---
 
 <style type="text/css">
@@ -51,7 +54,20 @@ get_t2_data = function(date_str, sheet_name = "Raw Data"){
   
 }
 
-t2_old_full = get_t2_data(previous_pub)
+t2_old_full = get_t2_data(previous_pub) %>% 
+  # this chunk shouldn't be required after July 2022
+  mutate(sub_grp = case_when(sub_grp == "All Admissions" ~ "All admissions",
+                             sub_grp == "Age Group" ~ "Age group",
+                             sub_grp == "Admission Type" ~ "Admission type",
+                             sub_grp == "Place of Death" ~ "Place of death",
+                             T ~ sub_grp),
+         label = case_when(label == "All Admissions" ~ "All admissions",
+                           label == "Non-Elective" ~ "Non-elective",
+                           label == "1 - Most Deprived" ~ "1 - most deprived",
+                           label == "5 - Least Deprived" ~ "5 - least deprived",
+                           label == "Died in Community" ~ "Died in community",
+                           label == "Died in Hospital" ~ "Died in hospital",
+                           T ~ label))
 t2_new_full = get_t2_data(pub_day)
 
 ```
