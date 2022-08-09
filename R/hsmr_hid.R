@@ -142,7 +142,7 @@ hsmr_hid <- function(smr_data, trend_data, end_date){
                       "must be output from create_trends()"))}
 
     crude_data<-trend_data %<>%
-        tidylog::filter(sub_grp == "All Admissions") %>%
+        tidylog::filter(sub_grp == "All admissions") %>%
         tidylog::mutate(
             hosp_code = dplyr::case_when(
               location == "S08000015" ~ "A",
