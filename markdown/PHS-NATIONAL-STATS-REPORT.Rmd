@@ -223,7 +223,7 @@ chart_4 <- ggplot(trend_data %>% filter(location == "Scot" & (
                                         | label == "Medical" | label == "Other" 
                                         | label == "Surgery" | label == "Paediatrics" 
                                         | label == "Emergency" 
-                                        | label == "Obstetrics and Gynaecology")), aes(x = forcats::fct_reorder(quarter_short,
+                                        | label == "Gynaecology")), aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
                                                y = crd_rate)) +
   geom_line(aes(colour = label, group=label), size = 1) +
@@ -673,7 +673,7 @@ Chart 3 shows the mortality trend for the two types of admission: elective and n
 
 
 <Div custom-style = "Heading 2 page break">Scotland – by specialty</div>
-Chart 4 shows the mortality trend according to seven distinct specialty groups. We classify specialty group according to the specialty of the consultant/GP/healthcare professional who was in charge of the patient episode. It shows that patients under the Community specialty have the highest rate of crude mortality within 30 days of admission, followed by Medical. Those recorded under Dental, Paediatrics, and Obstetrics and Gynaecology specialties consistently have the lowest rate.
+Chart 4 shows the mortality trend according to seven distinct specialty groups. We classify specialty group according to the specialty of the consultant/GP/healthcare professional who was in charge of the patient episode. It shows that patients under the Community specialty have the highest rate of crude mortality within 30 days of admission, followed by Medical. Those recorded under Dental, Paediatrics, and Gynaecology specialties consistently have the lowest rate.
 <Div custom-style = "Table or chart caption">Chart 4: Crude mortality rates (%) for deaths within 30-days of admission by specialty group, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">
 ![Trend chart showing crude mortality by specialty group for the last five years](Chart_4.png) The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). **p** Provisional</div>

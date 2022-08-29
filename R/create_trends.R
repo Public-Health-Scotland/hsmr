@@ -433,7 +433,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       spec_grp == 6   ~ "Other",
       spec_grp == 7   ~ "Paediatrics",
       spec_grp == 8   ~ "Surgery",
-      spec_grp == 9   ~ "Obstetrics and Gynaecology"),
+      spec_grp == 9   ~ "Gynaecology"),
       sub_grp = "Specialty") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
