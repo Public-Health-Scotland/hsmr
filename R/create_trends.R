@@ -296,19 +296,19 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       location == "R101H" ~ "R103H", # Balfour Hospital as The Balfour
       TRUE ~ location
     ))
-  
+
 ###############################################.
   ### 4 - Quarterly aggregations ----
-  
+
 # Function to do aggregations at different levels and combine
   agg_subgroups <- function(subgroup) {
-    
+
     hosp_agg <- smr01_quarter %>%
       tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short, {{subgroup}}) %>%
       tidylog::summarise(deaths = sum(death30),
                          pats   = length(death30)) %>% dplyr::ungroup() %>%
-      tidylog::mutate(agg_label = "Hospital") 
-    
+      tidylog::mutate(agg_label = "Hospital")
+
     # Aggregating at Scotland level
     scot_agg <- hosp_agg %>%
       tidylog::group_by(quarter, quarter_full, quarter_short, {{subgroup}}) %>%
@@ -316,26 +316,26 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                          pats   = sum(pats)) %>% dplyr::ungroup() %>%
       tidylog::mutate(hbtreat_currentdate = "Scotland",
                       location = "Scot",
-                      agg_label = "Scotland") 
-    
+                      agg_label = "Scotland")
+
     # Aggregating at HB level
     hb_agg <- hosp_agg %>%
       tidylog::group_by(quarter, hbtreat_currentdate, quarter_full, quarter_short, {{subgroup}}) %>%
       tidylog::summarise(deaths = sum(deaths),
                          pats   = sum(pats)) %>% dplyr::ungroup() %>%
       tidylog::mutate(location = hbtreat_currentdate,
-                      agg_label = "Board") 
-    
+                      agg_label = "Board")
+
     # Combine tibbles together
-    aggs <- dplyr::bind_rows(scot_agg, hb_agg, hosp_agg) 
-    
+    aggs <- dplyr::bind_rows(scot_agg, hb_agg, hosp_agg)
+
   }
 
   ###############################################.
   # All Admissions ----
   all_adm <- agg_subgroups(NULL) %>%
     mutate(label = "All admissions",
-           sub_grp = "All admissions") %>% 
+           sub_grp = "All admissions") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats))
@@ -345,14 +345,14 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   adm_type <- agg_subgroups(admgrp) %>%
     tidylog::mutate(label = dplyr::case_when( admgrp == 1 ~ "Elective",
                                               admgrp == 2 ~ "Non-elective"),
-                    sub_grp = "Admission type") %>% 
+                    sub_grp = "Admission type") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
       tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                       quarter_short,deaths, pats, scot_deaths, scot_pats,
                       sub_grp, label, agg_label)
-    
+
   ###############################################.
   # Age group ----
   age_group <- agg_subgroups(age_grp) %>%
@@ -362,7 +362,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       age_grp == 3 ~ "40-59 years",
       age_grp == 4 ~ "60-79 years",
       age_grp == 5 ~ "80+ years"),
-      sub_grp = "Age group") %>% 
+      sub_grp = "Age group") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
@@ -376,28 +376,28 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(label = dplyr::case_when(
       sex == 1 ~ "Male",
       sex == 2 ~ "Female"),
-      sub_grp = "Sex") %>% 
+      sub_grp = "Sex") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
-  
+
 
   ###############################################.
   # Place of Death ----
   place_of_death <-  agg_subgroups(death_inhosp_max) %>%
     tidylog::mutate(label = dplyr::case_when(
       death_inhosp_max == 1 ~ "Died in hospital",
-      death_inhosp_max == 0 ~ "Died in community" )) %>% 
+      death_inhosp_max == 0 ~ "Died in community" )) %>%
     #Calculating denominator for %s which is number of total deaths in community/hospital
-    tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short) %>% 
-    tidylog::mutate(pats = sum(deaths)) %>% dplyr::ungroup() %>% 
+    tidylog::group_by(quarter, hbtreat_currentdate, location, quarter_full, quarter_short) %>%
+    tidylog::mutate(pats = sum(deaths)) %>% dplyr::ungroup() %>%
     tidylog::mutate(sub_grp = "Place of death") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
-                    scot_pats   = max(pats)) %>% 
+                    scot_pats   = max(pats)) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
@@ -415,7 +415,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       sub_grp = "Deprivation") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
-                    scot_pats   = max(pats)) %>% 
+                    scot_pats   = max(pats)) %>%
     tidylog::select(hbtreat_currentdate, location, quarter, quarter_full,
                     quarter_short, deaths, pats, scot_deaths, scot_pats,
                     sub_grp, label, agg_label)
@@ -433,8 +433,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       spec_grp == 6   ~ "Other",
       spec_grp == 7   ~ "Paediatrics",
       spec_grp == 8   ~ "Surgery",
-      spec_grp == 9   ~ "Women & Newborn"),
-      sub_grp = "Specialty") %>% 
+      spec_grp == 9   ~ "Gynaecology"),
+      sub_grp = "Specialty") %>%
     tidylog::group_by(quarter, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
@@ -451,8 +451,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       tidylog::group_by(quarter, quarter_full, quarter_short,
                         hbtreat_currentdate, location) %>%
       tidylog::mutate(pats = sum(deaths)) %>% dplyr::ungroup() %>%
-      tidylog::mutate(agg_label = "Hospital") 
-    
+      tidylog::mutate(agg_label = "Hospital")
+
     # Aggregating at Scotland level
     scot_depth <- hosp_depth %>%
       tidylog::group_by(quarter, quarter_full, quarter_short, depth_of_coding) %>%
@@ -462,7 +462,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       tidylog::mutate(hbtreat_currentdate = "Scotland",
                       location = "Scot",
                       agg_label = "Scotland")
-    
+
     # Aggregating at HB level
     hb_depth <- hosp_depth %>%
       tidylog::group_by(quarter, quarter_full, quarter_short,
@@ -472,7 +472,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
       tidylog::mutate(pats = sum(deaths)) %>%
       tidylog::mutate(location = hbtreat_currentdate,
                       agg_label = "Board")
-    
+
     # Combine Depth of Coding tibbles together
     depth_of_coding <- dplyr::bind_rows(scot_depth, hb_depth, hosp_depth) %>%
       tidylog::mutate(label = dplyr::case_when(
@@ -480,7 +480,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
         depth_of_coding == 1 ~ "1",
         depth_of_coding == 2 ~ "2",
         depth_of_coding == 3 ~ "3+"),
-        sub_grp = "Depth of coding") %>% 
+        sub_grp = "Depth of coding") %>%
       tidylog::group_by(quarter, label) %>%
       tidylog::mutate(scot_deaths = max(deaths),
                       scot_pats   = max(pats)) %>%
@@ -498,8 +498,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                       hbtreat_currentdate, location) %>%
     tidylog::summarise(deaths = sum(symptom_flag),
                        pats   = length(death30)) %>% dplyr::ungroup() %>%
-    tidylog::mutate(agg_label = "Hospital") 
-  
+    tidylog::mutate(agg_label = "Hospital")
+
   # Aggregating at Scotland level
   scot_symptoms <- hosp_symptoms %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
@@ -507,8 +507,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                        pats   = sum(pats)) %>%dplyr::ungroup() %>%
     tidylog::mutate(hbtreat_currentdate = "Scotland",
                     location = "Scot",
-                    agg_label = "Scotland") 
-  
+                    agg_label = "Scotland")
+
   # Aggregating at HB level
   hb_symptoms <- hosp_symptoms %>%
     tidylog::group_by(quarter, quarter_full, quarter_short,
@@ -517,11 +517,11 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                        pats   = sum(pats)) %>%dplyr::ungroup() %>%
     tidylog::mutate(location = hbtreat_currentdate,
                     agg_label = "Board")
-  
+
   # Combine symptom coding tibbles together
   symptom_coding <- dplyr::bind_rows(scot_symptoms, hb_symptoms, hosp_symptoms) %>%
     tidylog::mutate(sub_grp = "Symptom coding",
-                    label   = "Symptom coding") %>% 
+                    label   = "Symptom coding") %>%
     tidylog::group_by(quarter) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
@@ -548,7 +548,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
                        pats   = length(death30_dis)) %>% dplyr::ungroup() %>%
     tidylog::mutate(location  = hbtreat_currentdate,
                     agg_label = "Board")
-  
+
   scot_dis <- hb_dis %>%
     tidylog::group_by(quarter, quarter_full, quarter_short) %>%
     tidylog::summarise(deaths = sum(deaths),
@@ -556,11 +556,11 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(hbtreat_currentdate = "Scotland",
                     location = "Scot",
                     agg_label = "Scotland")
-  
+
   # Merge dataframes together
   dis <- dplyr::bind_rows(scot_dis, hb_dis) %>%
     tidylog::mutate(label     = "Discharge",
-                    sub_grp   = "Discharge", 
+                    sub_grp   = "Discharge",
                     scot_deaths = max(deaths),
                     scot_pats   = max(pats),
                     crd_rate = deaths/pats * 100) %>%
@@ -692,7 +692,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   all_adm_month <- dplyr::bind_rows(scot_all_adm_month, hb_all_adm_month,
                                     hosp_all_adm_month) %>%
     tidylog::mutate(label = "All admissions",
-                    sub_grp = "All admissions") %>% 
+                    sub_grp = "All admissions") %>%
     tidylog::group_by(month, label) %>%
     tidylog::mutate(scot_deaths = max(deaths),
                     scot_pats   = max(pats)) %>%
@@ -759,10 +759,10 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
   # Merge monthly and quarterly together
   trend_data <- bind_rows(trend_data_month,trend_data_quarter) %>%
-    change_hbcodes(version_to = "19") %>% 
+    change_hbcodes(version_to = "19") %>%
     # excluding out of publication period records
-    filter(!(quarter >20 & time_period == "Quarter")) 
-  
+    filter(!(quarter >20 & time_period == "Quarter"))
+
   return(trend_data)
 
 }
