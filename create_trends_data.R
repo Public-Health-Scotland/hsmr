@@ -25,7 +25,7 @@ smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2022_1_simd2020v2.rds")) %>%
+                              "/postcode_2022_2_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
@@ -63,7 +63,7 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
 # Population lookups, combining both estimations and projections
 pop_est  <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
-  "HB2019_pop_est_1981_2020.rds")) %>%
+  "HB2019_pop_est_1981_2021.rds")) %>%
   clean_names() %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
