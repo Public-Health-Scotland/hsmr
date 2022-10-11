@@ -141,7 +141,7 @@ save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-disch
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid(smr_data, trend_data, end_date)
 
-save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
+save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = T)
 
 ### SECTION 3 - CREATE OPEN DATA ----
 
@@ -167,13 +167,13 @@ create_open_data(measure = "crude", location = "hosp",
                  dev = od_dev, overwrite = od_over)
 
 # Admission Type
-create_open_data(measure = "crude", split = "Admission Type",
+create_open_data(measure = "crude", split = "Admission type",
                  filename = "admissions_type_open_data", label_var = "AdmissionType",
                  dev = od_dev, overwrite = od_over)
 
 # Age Group
 
-create_open_data(measure = "crude", split = "Age Group",
+create_open_data(measure = "crude", split = "Age group",
                  filename = "age_group_open_data", label_var = "AgeGroup",
                  dev = od_dev, overwrite = od_over)
 

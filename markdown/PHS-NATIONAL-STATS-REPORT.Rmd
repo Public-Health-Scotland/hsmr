@@ -64,7 +64,7 @@ trend_data <- read_csv(paste0(data_folder, pub_day, "/output/",
 # Extract latest row for all admissions/discharge at Scotland from the trends 
 # data. Could maybe be put into a function but works like this for now
 latest_deaths_admission <- trend_data %>% 
-  filter(hb == "Scotland" & label == "All Admissions" & quarter == 20)
+  filter(hb == "Scotland" & label == "All admissions" & quarter == 20)
   
 latest_deaths_discharge <- trend_data %>% 
   filter(hb == "Scotland" & label == "Discharge" & quarter == 20)
@@ -146,10 +146,10 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
   scale_x_continuous(labels = comma)
 
 qtr_list <- trend_data %>% 
-  filter(label == "All Admissions" & location == "Scot") %>% 
+  filter(label == "All admissions" & location == "Scot") %>% 
   select(quarter_short)
 
-chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions" 
+chart_2 <- ggplot(trend_data %>% filter(label == "All admissions" 
                                         & location == "Scot"), 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter)), 
@@ -186,7 +186,7 @@ chart_2 <- ggplot(trend_data %>% filter(label == "All Admissions"
 
 
 chart_3 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Elective" | 
-                                          label == "Non-Elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
+                                          label == "Non-elective")), aes(x = forcats::fct_reorder(quarter_short, as.numeric(quarter))
                                                , y = crd_rate)) +
   geom_line(aes(colour = label, group=label), size = 1) +
   geom_point(aes(colour = label, shape = label)) +
@@ -325,10 +325,10 @@ chart_6 <- ggplot(trend_data %>% filter(location == "Scot" & (label == "Male" | 
                               "", "", ""))
 
 chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Deprivation" & 
-                                          (label == "1 - Most Deprived" 
+                                          (label == "1 - most deprived" 
                                         | label == "2" | label == "3" 
                                         | label == "4" 
-                                        | label == "5 - Least Deprived")), 
+                                        | label == "5 - least deprived")), 
                   aes(x = forcats::fct_reorder(quarter_short,
                                                as.numeric(quarter))
                                                , y = crd_rate)) +
@@ -361,8 +361,8 @@ chart_7 <- ggplot(trend_data %>% filter(location == "Scot" & sub_grp == "Depriva
                               sub(" ", "\n", qtr_list[17,]),
                               "", "", ""))
 
-chart_8 <- ggplot(trend_data %>% filter((label == "Died in Hospital" |
-                                           label == "Died in Community")
+chart_8 <- ggplot(trend_data %>% filter((label == "Died in hospital" |
+                                           label == "Died in community")
                                         & hb == "Scotland") %>% 
                     group_by(quarter) %>% 
                     mutate(total = sum(deaths)), 

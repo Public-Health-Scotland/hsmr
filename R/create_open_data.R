@@ -163,7 +163,7 @@ create_open_data <- function(smr = NULL,
   if(location == "hb" && !(is.null(location))){
 
     trend %<>%
-      filter(sub_grp == "All Admissions",
+      filter(sub_grp == "All admissions",
              agg_label %in% c("Board", "Scotland")) %>%
       dplyr::select(TimePeriod, HBT = LocationCode, SubGroup = Label,
                     NumberOfDeaths,	NumberOfDeathsQF,
@@ -174,7 +174,7 @@ create_open_data <- function(smr = NULL,
   } else if(location == "hosp" && !(is.null(location))){
     
     trend %<>%
-      filter(sub_grp == "All Admissions",
+      filter(sub_grp == "All admissions",
              agg_label == "Hospital") %>%
       dplyr::select(TimePeriod, LocationCode, SubGroup = Label,
                     NumberOfDeaths,	NumberOfDeathsQF,
