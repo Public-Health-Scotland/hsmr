@@ -248,7 +248,7 @@ create_open_data <- function(smr = NULL,
   old_data <- read_csv(paste0(data_folder, previous_pub, "/open_data/",
                               previous_pub, "_", filename, ".csv")) %>%
     filter(!(TimePeriod %in% trend$TimePeriod)) %>% 
-    mutate(across(everything(), ~replace_na(.x, "")))
+    mutate(across(where(is.character), ~replace_na(.x, "")))
 
   trend <- rbind(old_data, trend)
   

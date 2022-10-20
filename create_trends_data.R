@@ -75,7 +75,7 @@ pop_proj <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
   "HB2019_pop_proj_2018_2043.rds")) %>%
   clean_names() %>%
-  filter(year >= 2021) %>%
+  filter(year >= 2022) %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
   ungroup() %>%  rename(hb2014 =hb2019)
