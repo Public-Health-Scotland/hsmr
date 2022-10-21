@@ -43,8 +43,8 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact1 <- "Catherine Perkins | Senior Information Analyst | <phs.QualityIndicators@phs.scot>" 
-contact2 <- "Peter Menzies | Information Analyst"
+contact1 <- "Monica McGibbon | Senior Information Analyst | <phs.QualityIndicators@phs.scot>" 
+contact2 <- "Paul Fejiro | Information Analyst"
 ```
 
 <Div custom-style = "Publication Title"> 
