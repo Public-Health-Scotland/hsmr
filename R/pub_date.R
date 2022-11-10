@@ -4,7 +4,7 @@
 #' included in the current publication. It uses this cut-off date to calculate
 #' the publication dates of the previous, current and next HSMR publications.
 #'
-#' @details The publication date for HSMR is always the third last Tuesday of
+#' @details The publication date for HSMR is always the second Tuesday of
 #' the month.
 #'
 #' @param end_date The cut-off date for data to be included in the current HSMR
@@ -56,7 +56,7 @@ pub_date <- function(end_date, pub = c("previous", "current", "next")) {
   }
 
 
-  # Return the date of the second  Tuesday in the month of publication
+  # Return the date of the second Tuesday in the month of publication
   RcppBDT::getNthDayOfWeek(2,
                            2,
                            lubridate::month(
