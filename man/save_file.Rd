@@ -18,7 +18,7 @@ save_file(
 
 \item{filename}{A \code{character} string with name of output file.}
 
-\item{type}{A \code{character} string with name of file extension. 
+\item{type}{A \code{character} string with name of file extension.
 This can be csv, rds or xlsx}
 
 \item{dev}{A \code{character} string. It add a "dev_version" bit to the filename

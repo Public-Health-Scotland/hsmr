@@ -5,19 +5,21 @@
 \title{Open Data}
 \usage{
 create_open_data(
-  smr,
-  trends,
-  type = c("smr", "crude"),
+  smr = NULL,
+  measure = c("smr", "crude"),
   split = NULL,
-  location = NULL
+  location = NULL,
+  label_var = NULL,
+  save = TRUE,
+  filename = NULL,
+  dev = NULL,
+  overwrite = NULL
 )
 }
 \arguments{
 \item{smr}{Input tibble for HSMR data.}
 
-\item{trends}{Input tibble for crude trend data.}
-
-\item{type}{A character string specifying whether the data used is to be
+\item{measure}{A character string specifying whether the data used is to be
 HSMR or crude trend data. Valid options are 'smr' and 'crude'.}
 
 \item{split}{A character string specifying the subgroup to be used to split 
@@ -26,6 +28,12 @@ the crude data files. Default value is NULL.}
 \item{location}{A character string specifying whether the resulting tibble
 should include data for hospitals or Health Boards & Scotland. Default value
 is NULL. If not NULL, valid options are 'hb' and 'hosp'.}
+
+\item{label_var}{New name of the label variable used in a few files.}
+
+\item{save}{If true it will save the file. If false it will return the object}
+
+\item{filename}{dev and overwrite. They come from the save_file function}
 }
 \description{
 Creates csv files used by the open data team to populate  

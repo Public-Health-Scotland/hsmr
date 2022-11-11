@@ -20,7 +20,7 @@ included in the current publication. It uses this cut-off date to calculate
 the publication dates of the previous, current and next HSMR publications.
 }
 \details{
-The publication date for HSMR is always the third last Tuesday of
+The publication date for HSMR is always the second Tuesday of
 the month.
 }
 \examples{
