@@ -186,15 +186,11 @@ create_open_data <- function(smr = NULL,
     
     trend %<>%
       filter(sub_grp == split) %>%
-      dplyr::group_by(TimePeriod, LocationCode) %>%
-      dplyr::mutate(TotalNumberOfDeaths = sum(NumberOfDeaths)) %>% 
-      ungroup() %>% 
-      dplyr::mutate(CrudeRate = (NumberOfDeaths/TotalNumberOfDeaths)*100,
-                    NumberOfDeathsQF = "",
+            dplyr::mutate(NumberOfDeathsQF = "",
                     TotalNumberOfDeathsQF = "") %>%
       dplyr::select(TimePeriod, Country = LocationCode, PlaceOfDeath = Label,
                     NumberOfDeaths,	NumberOfDeathsQF,
-                    TotalNumberOfDeaths,	TotalNumberOfDeathsQF,	CrudeRate)
+                    TotalNumberOfDeaths = NumberOfPatients,	TotalNumberOfDeathsQF,	CrudeRate)
     
   # Crude - Deprivation
     
