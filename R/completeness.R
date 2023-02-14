@@ -71,7 +71,7 @@ completeness <- function(quarter = c("previous", "current"),
 
   # Note that this file can occasionally change when a new quarter's data is
   # added, which will cause the function to error if not updated
-  httr::GET(url = "https://beta.isdscotland.org/media/9597/smr_estimates.xlsx?10:39:40",
+  httr::GET(url = "https://beta.isdscotland.org/media/9606/smr_estimates.xlsx?10:39:40",
             httr::write_disk(tmp))
 
   # Note that the range is based on B29 being "NHS Board" and B47 being "All

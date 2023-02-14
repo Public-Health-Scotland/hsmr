@@ -182,13 +182,14 @@ create_open_data <- function(smr = NULL,
     
   # Crude - Place of Death
     
-  } else if (split == "Place of Death"){
+  } else if (split == "Place of death"){
     
     trend %<>%
       filter(sub_grp == split) %>%
-            dplyr::mutate(NumberOfDeathsQF = "",
+      dplyr::rename(PlaceOfDeath = Label) %>%
+      dplyr::mutate(NumberOfDeathsQF = "",
                     TotalNumberOfDeathsQF = "") %>%
-      dplyr::select(TimePeriod, Country = LocationCode, PlaceOfDeath = Label,
+      dplyr::select(TimePeriod, Country = LocationCode, PlaceOfDeath,
                     NumberOfDeaths,	NumberOfDeathsQF,
                     TotalNumberOfDeaths = NumberOfPatients,	TotalNumberOfDeathsQF,	CrudeRate)
     

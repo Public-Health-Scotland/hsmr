@@ -193,7 +193,7 @@ create_open_data(measure = "crude", split = "Population",
                  dev = od_dev, overwrite = od_over)
 
 # Place of Death
-create_open_data(measure = "crude", split = "Place of Death",
+create_open_data(measure = "crude", split = "Place of death",
                  filename = "place_open_data",
                  dev = od_dev, overwrite = od_over)
 

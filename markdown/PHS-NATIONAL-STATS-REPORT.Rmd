@@ -638,7 +638,7 @@ To help local users better understand their data, and to encourage a sense of ow
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave and 4.4% during the second. 
+* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second and 4% during the third. 
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Around three quarters of deaths within 30-days of admission take place in hospital while the remaining deaths take place in the community.
@@ -780,7 +780,7 @@ More details of the review work and recommendations are available in the [HSMR R
 
 <Div custom-style = "Heading 1 alt">Contact</div>
 
-**Monica McGibbon, Senior Information Analyst** 
+**Peter Menzies, Information Analyst** 
 Quality Indicators  
 
 

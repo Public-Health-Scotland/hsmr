@@ -43,8 +43,8 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact1 <- "Monica McGibbon | Senior Information Analyst | <phs.QualityIndicators@phs.scot>" 
-contact2 <- "Paul Fejiro | Information Analyst"
+contact1 <- "Peter Menzies | Information Analyst | <phs.QualityIndicators@phs.scot>" 
+contact2 <- "Paul Fejiro | Information Analyst | <phs.QualityIndicators@phs.scot>"
 ```
 
 <Div custom-style = "Publication Title"> 
@@ -100,7 +100,7 @@ the [HSMR COVID-19 Methodology Update paper](https://www.isdscotland.org/Health-
 During the pandemic hospitals have had to adjust their normal ways of working to react to this
 healthcare emergency. As a result, there will be changes in the volumes of activity
 in some of the groups used to calculate the HSMRs, for example
-less elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
+fewer elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
 
 </div>
 <Div custom-style = "Heading 1">
@@ -122,7 +122,7 @@ For all media enquiries please email <phs.comms@phs.scot> or call 0131 275 6105.
 <Div custom-style = "Heading 1">
 ### Find out more
 </div>
-The data from this publication is available to download from [this page](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios). Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios). A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
+Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios) on our website. Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios). A [Technical Document](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
 
 The next release of this publication will be `r format(pub_date(end_date, "next"), "%d %B %Y")`.
 
