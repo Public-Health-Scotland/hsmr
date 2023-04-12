@@ -32,7 +32,6 @@ library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
 library(devtools)      # For automatically building HSMR package
-library(phsmethods)
 
 # Install HSMR package, without creating a bundle and without checking/upgrading
 # dependencies. Ensures latest changes are used.
