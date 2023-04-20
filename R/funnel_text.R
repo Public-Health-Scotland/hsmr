@@ -111,7 +111,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
 
       output_1 <- paste0("* For the period ",
                        hsmr::yr(end_date), " no hospitals had a significantly lower ",
-                       "standardised mortality ratio f than the national average.")
+                       "standardised mortality ratio than the national average.")
 
       output_2 <- paste0("There were no hospitals below ",
                          "the lower control limit, which is three standard ",
