@@ -43,8 +43,8 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
                           TRUE ~ "0"))
 
 #Create contact information
-contact1 <- "Peter Menzies | Information Analyst | <phs.QualityIndicators@phs.scot>" 
-contact2 <- "Paul Fejiro | Information Analyst | <phs.QualityIndicators@phs.scot>"
+contact1 <- "Isabella Tortora Brayda | Senior Information Analyst | <phs.QualityIndicators@phs.scot>" 
+contact2 <- "Peter Menzies | Information Analyst | <phs.QualityIndicators@phs.scot>"
 ```
 
 <Div custom-style = "Publication Title"> 
@@ -65,7 +65,7 @@ contact2 <- "Paul Fejiro | Information Analyst | <phs.QualityIndicators@phs.scot
 <Div custom-style = "Heading 1">
 ### About this release
 </div>
-This release by Public Health Scotland (PHS) provides information on Hospital Standardised Mortality Ratios (HSMRs) for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12-month reporting period when drawing comparisons against the Scottish average, whilst crude mortality data is presented by quarter and month to show trends.
+This release by Public Health Scotland (PHS) provides information on Hospital Standardised Mortality Ratios (HSMRs) for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12-month reporting period, whilst crude mortality data is presented by quarter and month to show trends.
 
 </div>
 <Div custom-style = "Heading 1">
