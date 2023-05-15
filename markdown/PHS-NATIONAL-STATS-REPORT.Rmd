@@ -638,10 +638,10 @@ To help local users better understand their data, and to encourage a sense of ow
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second and 4% during the third. 
+* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second. Since the quarter April to June 2021, the crude mortality rate has been between 3.2% to 4.0%. 
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
-*	Around three quarters of deaths within 30-days of admission take place in hospital while the remaining deaths take place in the community.
+*	Around 4 in 5 deaths within 30-days of admission take place in hospital while the remaining deaths take place in the community.
 *	The next update, reporting on admissions to `r completeness_next`, will be published on Tuesday `r format(pub_date(end_date = end_date, pub = "next"), "%d %B %Y")`.
 
 <Div custom-style = "Heading 1 alt">1 HSMR results and commentary</div>
@@ -704,7 +704,7 @@ Chart 7 shows that patients from the least deprived areas of Scotland consistent
 
 
 <Div custom-style = "Heading 2 page break">Scotland – by place of death</div>
-Chart 8 shows the proportion of deaths within 30 days of admission by place of death. Around a quarter of these deaths generally occur in the community with the remaining three quarters taking place in hospital.
+Chart 8 shows the proportion of deaths within 30 days of admission by place of death. Around 4 in 5 of these deaths generally occur in the community with 1 in 5 taking place in hospital.
 <Div custom-style = "Table or chart caption">Chart 8: Proportion of deaths within 30-days of admission by place of death, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png) The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). **p** Provisional</div>
@@ -728,7 +728,7 @@ For the latest quarter (`r qtr(start_date_trends + months(57), "long")`) there w
 <Div custom-style = "Heading 2">Population-based mortality</div>
 Mortality rates can also be examined by comparing the total number of deaths with the population in a given time period and area. This approach provides an overall picture of the mortality in the population. Crude population mortality rates for Scotland are given in this section using the total number of deaths in each quarter and mid-year population estimates.
 
-Chart 10 shows the trend in overall population mortality for Scotland between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`. Values have remained relatively stable over the last five years, with some seasonal variation, before increasing in April to June 2020 due to the impact of the COVID-19 pandemic.
+Chart 10 shows the trend in overall population mortality for Scotland between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`. Values have remained relatively stable over the last five years, with some seasonal variation, other than the peak in April to June 2020 likely due to the impact of the COVID-19 pandemic.
 
 <Div custom-style = "Table or chart caption">Chart 10: Population death rates (crude rates per 1,000 people),
 Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
@@ -780,11 +780,11 @@ More details of the review work and recommendations are available in the [HSMR R
 
 <Div custom-style = "Heading 1 alt">Contact</div>
 
-**Peter Menzies, Information Analyst** 
+**Isabella Tortora Brayda, Senior Information Analyst** 
 Quality Indicators  
 
 
-**Paul Fejiro, Information Analyst**  
+**Peter Menzies, Information Analyst**  
 Quality Indicators
 
 [phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
@@ -875,7 +875,7 @@ More recently other alternatives have become available, most notably the Summary
 The SHMI was developed in collaboration with the Department of Health and overseen by an expert reference group. Its development followed publication of the first Francis report into Mid Staffordshire Hospital which included a recommendation for an NHS-owned and produced summary hospital mortality indicator.  
 
 Like the HSMR in Scotland, the SHMI is updated and published quarterly and is based on a statistical model developed from the national hospital dataset (equivalent to the SMR01 in Scotland), which calculates for each hospital how many deaths would be expected to occur if they were like the national average at that point in time. 
-The model takes into account a number of factors such as differences in age, sex, diagnosis, type of admission and other diseases (co-morbidity). This figure is then compared with the number of deaths that did occur in the hospital and the SHMI is the ratio between the two. SHMI acknowledges that there are unaccounted for factors affecting mortality in hospitals and recognition that there is random variation in the number of deaths as we do in Scotland. Chart 8 showed the crude mortality in Scotland over time according to the same definition as SHMI.  
+The model takes into account a number of factors such as differences in age, sex, diagnosis, type of admission and other diseases (co-morbidity). This figure is then compared with the number of deaths that did occur in the hospital and the SHMI is the ratio between the two. SHMI acknowledges that there are unaccounted for factors affecting mortality in hospitals and recognition that there is random variation in the number of deaths as we do in Scotland. Chart 9 showed the crude mortality in Scotland over time according to the same definition as SHMI.  
 
 In England the SHMI model is re-calibrated every quarter so comparisons that are made against the average are appropriate and relevant for each point in time. As of August 2019, Scotland moved to a similar approach of re-calibrating every quarter using a rolling three year base period.  
 
