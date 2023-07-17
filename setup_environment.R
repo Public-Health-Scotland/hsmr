@@ -114,7 +114,7 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
 # Hospital names
 hospitals <- bind_rows(read_csv(paste0(
   plat_filepath, "lookups/Unicode/National Reference Files/", "location.csv")) %>%
-    select(location = Location, location_name = Locname),
+    select(location, location_name = Locname),
   read_spss(paste0(plat_filepath,
                    "lookups/Unicode/National Reference Files/Archive/",
                    "Health_Board_Identifiers.sav")) %>%
