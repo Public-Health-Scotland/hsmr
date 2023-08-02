@@ -96,8 +96,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                      labels = c("Scotland", "Upper/Lower Control Limit", 
                                 "Upper/Lower Warning Limit", "Hospital", ""),
                      guide = guide_legend(override.aes = list(
-                       # The following 2 lines cause issues if a hospital is above warning/control limits. 
-                       # Change to the commented out lines below when there are not hospitals above warning limits. 
+                       # The following 2 lines cause issues if a hospital is above/below warning/control limits. 
+                       # Change to the commented out lines below when there are not hospitals above/below warning limits. 
                        linetype = c(rep("solid", 3), "blank", "blank"), 
                        shape    = c(NA, NA, NA, 19, NA)))) +
                        # linetype = c(rep("solid", 3), "blank"), 
