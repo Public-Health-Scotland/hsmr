@@ -40,6 +40,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
+                          smr < lwl & smr >= lcl ~ "1",
                           TRUE ~ "0"))
 
 #Create contact information

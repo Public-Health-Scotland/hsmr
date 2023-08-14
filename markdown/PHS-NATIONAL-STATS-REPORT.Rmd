@@ -42,6 +42,7 @@ smr_data          <- read_csv(paste0(data_folder, pub_day, "/output/",
   # Create flag for where hospital sits on funnel plot
   mutate(flag = case_when(smr > ucl ~ "2",
                           smr > uwl & smr <= ucl ~ "1",
+                          smr < lwl & smr >= lcl ~ "1",
                           TRUE ~ "0"),
          flag_above = case_when(smr > ucl ~ TRUE,
                                 TRUE ~ FALSE),
@@ -95,8 +96,12 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
                      labels = c("Scotland", "Upper/Lower Control Limit", 
                                 "Upper/Lower Warning Limit", "Hospital", ""),
                      guide = guide_legend(override.aes = list(
-                       linetype = c(rep("solid", 3), "blank"),
-                       shape    = c(NA, NA, NA, 19)))) +
+                       # The following 2 lines cause issues if a hospital is above/below warning/control limits. 
+                       # Change to the commented out lines below when there are not hospitals above/below warning limits. 
+                       linetype = c(rep("solid", 3), "blank", "blank"), 
+                       shape    = c(NA, NA, NA, 19, NA)))) +
+                       # linetype = c(rep("solid", 3), "blank"), 
+                       # shape    = c(NA, NA, NA, 19)))) +
   coord_cartesian(ylim = c(0,2.5)) + 
   geom_line(aes(x = pred, y = ucl, colour = "#c85302")) +
   geom_line(aes(x = pred, y = uwl, colour = "#ffbc79")) + 
@@ -486,6 +491,8 @@ mapply(save_plot, chart_number = c(1:10), file_format = "png", list_pos = c(1:10
 mapply(save_plot, chart_number = c(1:10), file_format = "svg", list_pos = c(1:10))
 
 
+
+
 ```
 
 ```{r URL list, echo = FALSE, message= FALSE, warning = FALSE, error = FALSE}
@@ -638,7 +645,7 @@ To help local users better understand their data, and to encourage a sense of ow
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second. Since the quarter April to June 2021, the crude mortality rate has been between 3.2% to 4.0%. 
+* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second wave. Since the quarter April to June 2021, the crude mortality rate has been between 3.2% to 4.0%, showing seasonal variation.  
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Around 4 in 5 deaths within 30-days of admission take place in hospital while the remaining deaths take place in the community.
@@ -647,7 +654,9 @@ To help local users better understand their data, and to encourage a sense of ow
 <Div custom-style = "Heading 1 alt">1 HSMR results and commentary</div>
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
-Chart 1 shows the funnel plot for the latest 12-month  period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])`
+Chart 1 shows the funnel plot for the latest 12-month  period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])` 
+
+One hospital, the Royal Infirmary of Edinburgh, was above the upper warning limit, which is two standard deviations above the Scottish average. Meanwhile two hospitals, the Western General Hospital and the Queen Elizabeth University Hospital, were below the lower warning limit, which is two standard deviations below the Scottish average.  
 
 <Div custom-style = "Table or chart caption">Chart 1: HSMR for deaths within 30-days of admission, `r yr(end_date)` p</div>
 <Div custom-style = "centre_justify"> ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Chart_1.png) The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`). **p** Provisional </div>
@@ -658,7 +667,7 @@ Chart 1 shows the funnel plot for the latest 12-month  period. `r paste0(funnel_
 This section presents crude mortality rates for deaths within 30 days of admission, which can be used to show trends through time. Since crude mortality rates do not account for differences in case mix, they are less appropriate for comparing individual hospitals to Scotland. This section therefore does not make such comparisons, but does show overall results for Scotland before an examination of some of the factors that affect the underlying risk of death.
 
 <Div custom-style = "Heading 2 less spacing">Scotland – overall</div>
-Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The value was generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. The crude mortality rate did then reduce, but has since remained elevated. Two factors have influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients.
+Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The value was generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. Two factors influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients. The crude mortality rate did then reduce, but has since remained elevated at approximately 3.5%, with seasonal variation. 
 
 <Div custom-style = "Table or chart caption less spacing">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). Table 2 also provides crude mortality charts for each NHS Board and hospital. **p** Provisional</div>
@@ -956,7 +965,7 @@ The majority of hospital admission data will be complete for the latest quarter,
 
 PHS continues to work with health boards on national outputs to ensure they meet national definitional and processing requirements.
 
-All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`. PHS are aware of a delayed backlog of cases from Galloway Community Hospital in the previous reporting period.
+All hospitals have HSMRs calculated for the most recent quarters based on their current levels of data completeness. `r completeness(quarter = "current", level = "board", first_day = qtr_start)`. 
 
 HSMRs should therefore be interpreted within the context of changes over time to the denominator patient numbers. PHS continues to work with NHS Boards to assist in the resolution of any data submission issues.  
 
@@ -965,6 +974,9 @@ More information about SMR completeness is available on [our website](https://be
 
 ### Refreshing previously provisional data
 The previous report, published on `r format(pub_date(end_date, "previous"), "%B %Y")`, presented provisional data up to `r qtr_prev(qtr_start)` along with data completeness estimates for those hospitals undergoing PMS implementation. The data for that period has now been refreshed to reflect additional returns that have subsequently been submitted for that time period. The impact of those further submissions suggests that previous completeness estimation was appropriate, and at Scotland level the data were approximately `r completeness("previous", "scotland", qtr_start)` complete.
+
+### Specialty Coding
+In the 12 July 2023 SMR update a very small number of acute hospital admissions were attributed to the “Integrative Care” specialty. The use of this specialty code for acute admissions is being investigated. While this is ongoing, the admissions attributed to Integrative Care have been excluded when presenting the crude mortality rate within 30 days of admission by specialty group. 
 
 
 <Div custom-style = "Heading 2 page break">Appendix 4 – Publication metadata</div>

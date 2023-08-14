@@ -14,8 +14,8 @@ compile_report(rmd_filename = "markdown/PHS-NATIONAL-STATS-REPORT.Rmd",
                cover_filename = "markdown/phs-natstats-cover.docx", 
                filename_out = "markdown/PHS-NATIONAL-STATS-REPORT.docx",
                title = "Hospital Standardised Mortality Ratio",
-               subtitle = "January 2022 to December 2022",
-               date = "9 May 2023")
+               subtitle = "April 2022 to March 2023",
+               date = "8 August 2023")
 
 # Creating publication's summary
 rmarkdown::render("markdown/PHS-NATIONAL-STATS-SUMMARY.Rmd")
