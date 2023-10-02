@@ -11,6 +11,8 @@
 # Description - Sets up environment required for running reproducible analytical
 # pipeline process. This is the only file which should require updating every
 # time the RAP process is run
+# 
+# TO UPDATE: update end_date (line 80).
 #
 # Approximate run time - xx minutes
 #########################################################################
@@ -69,34 +71,46 @@ Sys.umask("006")
 
 ### 3 - Extract dates ----
 
+#UPDATE end_date EACH QUARTER:
+#        All other dates in lines 85-115 are calculated relative to end_date
 
-# Define the dates that the data are extracted from and to
-# Dates are in ddmmyyyy format
+# end_date should be the final date for data included in this publication. 
+# For example, the 8 August 2023 publication had an end_date of 31032023
 
+end_date <- lubridate::dmy(31032023) 
 
-# The beginning of baseline period/extract window
-start_date        <- lubridate::dmy(01042020)
+# 1) start_date is the beginning of the baseline period/extract window 
+#   (one day less than 3 years prior to end_date)
 
-# The beginning of baseline period/extract window for trend data
-start_date_trends <- lubridate::dmy(01042018)
+start_date <- end_date - years(3) + days(1)
 
-# Add a buffer to the start of the trends extract. Extra time not included in
+# 2) The beginning of baseline period/extract window for trend data
+#   (start_date_trends is 2 years prior to start_date)
+
+start_date_trends <- start_date - years(2)
+
+# 3) Add a buffer to the start of the trends extract. Extra time not included in
 # output, but helps assign correct patients & deaths to 1st quarter.
-start_date_trends_buffer = start_date_trends %m-% months(3)
+start_date_trends_buffer <- start_date_trends - months(3)
 
-# The end of the baseline period (for model)
-base_end          <- lubridate::dmy(31032023)
+# 4) The end of the baseline period (for model)
+# base_end is the same date as end_date (legacy separation when publication used to 
+# be based on monthly data, not quarterly, but retaining for now).
 
-# Five years earlier for the five year look-back (pmorbs5)
-start_date_5      <- lubridate::dmy(01042015)
+base_end <- end_date
 
-# First day of latest quarter in current publication
-qtr_start         <- lubridate::dmy(01012023)
+# 5) Five years earlier for the five year look-back (pmorbs5)
+# (start_date_5 is 5 years prior to start date)
 
-# End date for the cut off for data
-end_date          <- lubridate::dmy(31032023)
+start_date_5 <- start_date - years(5)
 
-# Publication date
+# 6) First day of latest quarter in current publication
+#    (3 years, minus 3 months, after start_date)
+
+qtr_start <- start_date + years(3) - months(3)
+
+# 7) Publication dates - current and previous
+#  (calculated using the HSMR::pub_date function)
 pub_day <- pub_date(end_date = end_date, pub = "current")
 previous_pub <- pub_date(end_date, "previous")
 
