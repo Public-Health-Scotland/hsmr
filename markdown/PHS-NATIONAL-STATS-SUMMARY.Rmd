@@ -48,7 +48,7 @@ contact1 <- "Isabella Tortora Brayda | Senior Information Analyst | <phs.Quality
 contact2 <- "Peter Menzies | Information Analyst | <phs.QualityIndicators@phs.scot>"
 ```
 
-<Div custom-style = "Publication Title"> 
+<Div custom-style = "Publication title"> 
 # Hospital Standardised Mortality Ratios
 </div>
 <Div custom-style = "Publication subtitle"> 
@@ -90,15 +90,11 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 </div>
 Hospital mortality measures have an important role to play in stimulating reflection on the quality and safety of patient care. HSMRs are based on all acute inpatient and day case patients admitted to all specialties in hospital (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
 
-The Scottish HSMR is 1.00. If an HSMR value for a hospital is less than one, this means the number of deaths within 30 days of admission for this hospital is fewer than predicted. If an HSMR value for a hospital is greater than one, this means the number of deaths within 30 days for this hospital is more than predicted.
-
-If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or were attributable to failings in the quality of care.
+The Scottish HSMR is 1.00. If an HSMR value for a hospital is less than one, this means the number of deaths within 30 days of admission for this hospital is fewer than predicted. If an HSMR value for a hospital is greater than one, this means the number of deaths within 30 days for this hospital is more than predicted. If the number of deaths is more than predicted this does not necessarily mean that these were avoidable deaths (i.e. that they should not have happened), or that they were unexpected, or were attributable to failings in the quality of care.
 
 The methodology has been updated to ensure the diagnosis ICD-10 codes for COVID-19,
 U07.1 to U07.7, are included in the model. For more information please refer to
-the [HSMR COVID-19 Methodology Update paper (external website)](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/).
-
-During the pandemic hospitals have had to adjust their normal ways of working to react to this
+the [HSMR COVID-19 Methodology Update paper (external website)](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/). During the pandemic hospitals have had to adjust their normal ways of working to react to this
 healthcare emergency. As a result, there will be changes in the volumes of activity
 in some of the groups used to calculate the HSMRs, for example
 fewer elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
