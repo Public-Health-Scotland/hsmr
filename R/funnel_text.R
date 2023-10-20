@@ -108,8 +108,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                        "standardised mortality ratio than the national average.")
 
       output_2_cl <- paste0("This chart shows that there were no hospitals above the ",
-                         "upper control limit, which is three standard ",
-                         "deviations above the Scottish average. ")
+                         "upper control limit")
       
       if(n_hosps_uwl == 0){ #Scenario 1 - no hosps over UWL
         
@@ -145,8 +144,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                             collapse = ", "), ".")
 
       output_2_cl <- paste0("This chart shows that there was one hospital above the ",
-                         "upper control limit, which is three standard ",
-                         "deviations above the Scottish average: ",
+                         "upper control limit: ",
                          paste0(smr_data_ucl$location_name, " (",
                                 janitor::round_half_up(smr_data_ucl$smr, 2), ")",
                                 collapse = ", "), ".")
@@ -185,8 +183,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                     ")", collapse = ", "), ".")
 
       output_2_cl <- paste0("This chart shows there were ", numbers_to_words(n_hosps_ucl), " hospitals above the upper ",
-                         "control limit, which is three standard deviations ",
-                         "above the Scottish average: ",
+                         "control limit: ",
                          paste0(smr_data_ucl$location_name, " (",
                                 janitor::round_half_up(smr_data_ucl$smr, 2),
                                 ")", collapse = ", "), ".")
@@ -240,9 +237,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                        janitor::round_half_up(smr_data_lwl$smr, 2), ") ",
                                        collapse = ", "), "is below the lower warning limit.")
     
-    scen4_output_2_wl <- paste0("There was one hospital below the ",
-                                "lower warning limit, which is two standard ",
-                                "deviations below the Scottish average: ",
+    scen4_output_2_wl <- paste0(" and there was one hospital below the ",
+                                "lower warning limit: ",
                                 paste0(smr_data_lwl$location_name, " (",
                                        janitor::round_half_up(smr_data_lwl$smr, 2), ")",
                                        collapse = ", "), ".")
@@ -256,9 +252,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                        janitor::round_half_up(smr_data_lwl$smr, 2),
                                        ")", collapse = ", "), ".")
     
-    scen5_output_2_wl <- paste0("There were ",numbers_to_words(n_hosps_lwl), " hospitals below the lower ",
-                                "warning limit, which is two standard deviations ",
-                                "below the Scottish average: ",
+    scen5_output_2_wl <- paste0(str_to_sentence(numbers_to_words(n_hosps_lwl)), " hospitals were below the lower ",
+                                "warning limit: ",
                                 paste0(smr_data_lwl$location_name, " (",
                                        janitor::round_half_up(smr_data_lwl$smr, 2),
                                        ")", collapse = ", "), ".")
@@ -270,9 +265,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                        hsmr::yr(end_date), " no hospitals had a significantly lower ",
                        "standardised mortality ratio than the national average.")
 
-      output_2_cl <- paste0("There were no hospitals below ",
-                         "the lower control limit, which is three standard ",
-                         "deviations below the Scottish average. ")
+      output_2_cl <- paste0(" and there were no hospitals below ",
+                         "the lower control limit. ")
       
       if(n_hosps_lwl == 0){ #Scenario 1 - no hosps below UWL
         
@@ -307,9 +301,8 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                     janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2_cl <- paste0("There was one hospital below the",
-                         " lower control limit, which is three standard ",
-                         "deviations below the Scottish average: ",
+      output_2_cl <- paste0(" and there was one hospital below the",
+                         " lower control limit: ",
                          paste0(smr_data_lcl$location_name, " (",
                                 janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                 collapse = ", "), ".")
@@ -347,10 +340,9 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                                     janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2_cl <- paste0("There were ", numbers_to_words(n_hosps_lcl),
-                         " hospitals below the lower ",
-                         "control limit, which is three standard deviations ",
-                         "below the Scottish average: ",
+      output_2_cl <- paste0(" and", numbers_to_words(n_hosps_lcl),
+                         " hospitals were below the lower ",
+                         "control limit: ",
                          paste0(smr_data_lcl$location_name, " (",
                                 janitor::round_half_up(smr_data_lcl$smr, 2),
                                 ")", collapse = ", "), ".")
