@@ -654,11 +654,10 @@ To help local users better understand their data, and to encourage a sense of ow
 <Div custom-style = "Heading 1 alt">1 HSMR results and commentary</div>
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
-Chart 1 shows the funnel plot for the latest 12-month period. `r funnel_text(smr_data, "both")[3]`
+Chart 1 shows the funnel plot for the latest 12-month period. The control limits for this chart are three standard deviations above or below the Scottish average and shown in red. `r funnel_text(smr_data, "both")[3]`
 
 <Div custom-style = "Table or chart caption">Chart 1: HSMR for deaths within 30-days of admission, `r yr(end_date)` p</div>
 <Div custom-style = "centre_justify"> ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Chart_1.png) The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`). **p** Provisional </div>
-
 
 <Div custom-style = "Heading 1 alt">2 Crude mortality trends</div>
 
