@@ -78,7 +78,7 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 
 <Div custom-style = "Table or chart caption">
 
-**HSMR for deaths within 30-days of admission, `r yr(end_date)`**
+**HSMR for deaths within 30-days of admission, `r yr(end_date)` p**
 </div>
 <!-- Need to use Table Head style for image as it is the only available centred style that works - template styles locked with password -->
 <Div custom-style = "Table Head">
