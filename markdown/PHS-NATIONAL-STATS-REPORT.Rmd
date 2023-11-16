@@ -654,20 +654,17 @@ To help local users better understand their data, and to encourage a sense of ow
 <Div custom-style = "Heading 1 alt">1 HSMR results and commentary</div>
 A funnel plot is a type of ‘Statistical Process Control’ chart that helps to show data at a particular point in time. Funnel plots in this report allow comparisons between each hospital and the average for Scotland for a particular period. Please refer to the Funnel Plots appendix for further information on interpretation.
 
-Chart 1 shows the funnel plot for the latest 12-month  period. `r paste0(funnel_text(smr_data, "above")[2], " ", funnel_text(smr_data, "below")[2])` 
-
-One hospital, the Royal Infirmary of Edinburgh, was above the upper warning limit, which is two standard deviations above the Scottish average. Meanwhile two hospitals, the Western General Hospital and the Queen Elizabeth University Hospital, were below the lower warning limit, which is two standard deviations below the Scottish average.  
+Chart 1 shows the funnel plot for the latest 12-month period. The control limits for this chart are three standard deviations above or below the Scottish average and shown in red. `r funnel_text(smr_data, "both")[3]`
 
 <Div custom-style = "Table or chart caption">Chart 1: HSMR for deaths within 30-days of admission, `r yr(end_date)` p</div>
 <Div custom-style = "centre_justify"> ![This chart shows each hospitals HSMR for the latest 12 month period plotted on a funnel plot.](Chart_1.png) The data relating to this chart can be found in [Table1](`r url_list[1,"url"]`). **p** Provisional </div>
-
 
 <Div custom-style = "Heading 1 alt">2 Crude mortality trends</div>
 
 This section presents crude mortality rates for deaths within 30 days of admission, which can be used to show trends through time. Since crude mortality rates do not account for differences in case mix, they are less appropriate for comparing individual hospitals to Scotland. This section therefore does not make such comparisons, but does show overall results for Scotland before an examination of some of the factors that affect the underlying risk of death.
 
 <Div custom-style = "Heading 2 less spacing">Scotland – overall</div>
-Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The value was generally around 3%, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. Two factors influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients. The crude mortality rate did then reduce, but has since remained elevated at approximately 3.5%, with seasonal variation. 
+Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The average value was generally around 3% between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. Two factors influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients. The crude mortality rate did then reduce in the July to September 2020 quarter, but has since remained elevated at approximately 3.5%, with seasonal variation. 
 
 <Div custom-style = "Table or chart caption less spacing">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). Table 2 also provides crude mortality charts for each NHS Board and hospital. **p** Provisional</div>
@@ -713,7 +710,7 @@ Chart 7 shows that patients from the least deprived areas of Scotland consistent
 
 
 <Div custom-style = "Heading 2 page break">Scotland – by place of death</div>
-Chart 8 shows the proportion of deaths within 30 days of admission by place of death. Around 4 in 5 of these deaths generally occur in the community with 1 in 5 taking place in hospital.
+Chart 8 shows the proportion of deaths within 30 days of admission by place of death. Around 4 in 5 of these deaths generally occur in hospital with 1 in 5 taking place in the community.
 <Div custom-style = "Table or chart caption">Chart 8: Proportion of deaths within 30-days of admission by place of death, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">
 ![Trend chart showing proportion of deaths by place of admission for the last five years](Chart_8.png) The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). **p** Provisional</div>

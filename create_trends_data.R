@@ -25,7 +25,7 @@ smra_connect  <- suppressWarnings(dbConnect(odbc(),  dsn="SMRA",
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2023_1_simd2020v2.rds")) %>%
+                              "/postcode_2023_2_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
@@ -204,67 +204,67 @@ save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", de
 
 
 
-### TEMPORARY JULY 23 SPECIALTY FIX ### Removing episodes coded to "Other" specialty 
-## To be removed in future publications
-
-
-
-# File used for community hospital IR
-
-trends_data_lvl1_all_loc <- read_csv(paste0(data_folder, pub_day, "/output/2023-08-08_trends-data-all-loc-level1.csv")) %>% 
-  filter(label != "Other")
-
-save_file(trends_data_lvl1_all_loc, "trends-data-all-loc-level1", "output", "csv",
-          dev = F, overwrite = T)
-
-
-# LEVEL 1 FILES
-
-# read in data and filter out "Other" specialty
-trends_data_lvl1 <- read.xlsx(paste0(data_folder, pub_day, "/tde/Discovery HSMR Level 1 Trends.xlsx")) %>% 
-  filter(label != "Other")
-
-# File used for the Excel tables and offline dashboard
-save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = T)
-
-# yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = T)
-save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = T)
-
-
-# LEVEL 2 FILES
-
-# read in data and filter out "Other" specialty
-
-trends_data <- read.xlsx(paste0(data_folder, pub_day, "/tde/Discovery HSMR Level 2 Trends.xlsx")) %>% 
-  filter(label != "Other")
-
-
-
-# yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
-save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = T)
-save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = T)
-# Used for the offline dashboard and markdown script
-save_file(trends_data, "trends-data-level2", out_folder = "output",
-          type = "csv", dev = F, overwrite = T)
-
-
-
-# PUBLIC/Shiny dashboard
-
-public_dash_trends <- read_rds(paste0(data_folder, pub_day, "/output/2023-08-08_trend_data_public_dashboard.rds")) %>% 
-  filter(label != "Other")
-
-# Save into output folder
-save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", dev = F, overwrite = T)
-
-
-
-
-
-
-
+# ### TEMPORARY JULY 23 SPECIALTY FIX ### Removing episodes coded to "Other" specialty 
+# ## To be removed in future publications
+# 
+# 
+# 
+# # File used for community hospital IR
+# 
+# trends_data_lvl1_all_loc <- read_csv(paste0(data_folder, pub_day, "/output/2023-08-08_trends-data-all-loc-level1.csv")) %>% 
+#   filter(label != "Other")
+# 
+# save_file(trends_data_lvl1_all_loc, "trends-data-all-loc-level1", "output", "csv",
+#           dev = F, overwrite = T)
+# 
+# 
+# # LEVEL 1 FILES
+# 
+# # read in data and filter out "Other" specialty
+# trends_data_lvl1 <- read.xlsx(paste0(data_folder, pub_day, "/tde/Discovery HSMR Level 1 Trends.xlsx")) %>% 
+#   filter(label != "Other")
+# 
+# # File used for the Excel tables and offline dashboard
+# save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = T)
+# 
+# # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
+# save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde",
+#           type = "xlsx", dev = F, overwrite = T)
+# save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde",
+#           type = "xlsx", dev = F, overwrite = T)
+# 
+# 
+# # LEVEL 2 FILES
+# 
+# # read in data and filter out "Other" specialty
+# 
+# trends_data <- read.xlsx(paste0(data_folder, pub_day, "/tde/Discovery HSMR Level 2 Trends.xlsx")) %>% 
+#   filter(label != "Other")
+# 
+# 
+# 
+# # yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
+# save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
+#           type = "xlsx", dev = F, overwrite = T)
+# save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
+#           type = "xlsx", dev = F, overwrite = T)
+# # Used for the offline dashboard and markdown script
+# save_file(trends_data, "trends-data-level2", out_folder = "output",
+#           type = "csv", dev = F, overwrite = T)
+# 
+# 
+# 
+# # PUBLIC/Shiny dashboard
+# 
+# public_dash_trends <- read_rds(paste0(data_folder, pub_day, "/output/2023-08-08_trend_data_public_dashboard.rds")) %>% 
+#   filter(label != "Other")
+# 
+# # Save into output folder
+# save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", dev = F, overwrite = T)
+# 
+# 
+# 
+# 
+# 
+# 
+# 

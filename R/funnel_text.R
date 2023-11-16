@@ -20,7 +20,7 @@
 #' funnel_text(smr_data, indicator = "below")
 #'
 #' @export
-funnel_text <- function(smr_data, indicator = c("above", "below")){
+funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
   match.arg(indicator)
 
@@ -42,122 +42,339 @@ funnel_text <- function(smr_data, indicator = c("above", "below")){
                 " function."))
 
   }
-
-  if(indicator == "above"){
-
-    smr_data %<>%
+  
+  # TEXT WARNING LIMIT SCENARIOS TO BE NESTED WITHIN
+  # CONTROL LIMIT SCENARIOS
+  
+  # Scenario 1 (applies to both "above" and "below" arguments)
+  #  = no hospitals exceeding upper or lower wl
+  # ~~~~~~~~~~
+  
+  scen1_output_1_wl <- ""
+  
+  scen1_output_2_wl <- ""
+  
+  if(indicator %in% c("above","both")){
+    
+    #Upper control limit filter
+    smr_data_ucl <- smr_data |> 
       dplyr::filter(period == 3 & smr > ucl)
 
-    n_hosps <- nrow(smr_data)
+    n_hosps_ucl <- nrow(smr_data_ucl)
+    
+    #Upper warning limit filter
+    smr_data_uwl <- smr_data |> 
+      dplyr::filter(period == 3 & smr > uwl)
+    
+    n_hosps_uwl <- nrow(smr_data_uwl)
+    
+      
+    # UPPER WARNING LIMIT SCENARIOS ----
+    # Scenario 2 = 1 hospital exceeding upper wl
+    # ~~~~~~~~~~
 
-    if(n_hosps == 0){
+      scen2_output_1_wl <- paste0("The standardised mortality ratio for ",
+                            paste0(smr_data_uwl$location_name, " (",
+                                   janitor::round_half_up(smr_data_uwl$smr, 2), ") ",
+                                   collapse = ", "), "is above the upper warning limit.")
+      
+      scen2_output_2_wl <- paste0("There was one hospital above the ",
+                            "upper warning limit, which is two standard ",
+                            "deviations above the Scottish average: ",
+                            paste0(smr_data_uwl$location_name, " (",
+                                   janitor::round_half_up(smr_data_uwl$smr, 2), ")",
+                                   collapse = ", "), ".")
+    
+    # Scenario 3 = more than one hospital exceeding upper wl
+    # ~~~~~~~~~~
+    
+      scen3_output_1_wl <- paste0("There were ", n_hosps_uwl, " with a standardised mortality ratio ",
+                         "exceeding the upper warning limit: ",
+                         paste0(smr_data_uwl$location_name, " (",
+                                      janitor::round_half_up(smr_data_uwl$smr, 2),
+                                      ")", collapse = ", "), ".")
+      
+      scen3_output_2_wl <- paste0("There were ", n_hosps_uwl, " hospitals above the upper ",
+                         "warning limit, which is two standard deviations ",
+                         "above the Scottish average: ",
+                         paste0(smr_data_uwl$location_name, " (",
+                                janitor::round_half_up(smr_data_uwl$smr, 2),
+                                ")", collapse = ", "), ".")
 
-      output_1 <- paste0("* For the period ",
+    if(n_hosps_ucl == 0){
+
+      output_1_cl <- paste0("* For the period ",
                        hsmr::yr(end_date), " no hospitals had a significantly higher ",
                        "standardised mortality ratio than the national average.")
 
-      output_2 <- paste0("This chart shows that there were no hospitals above the ",
-                         "upper control limit, which is three standard ",
-                         "deviations above the Scottish average. ")
-
+      output_2_cl <- paste0("This chart shows that there were no hospitals above the ",
+                         "upper control limit")
+      
+      if(n_hosps_uwl == 0){ #Scenario 1 - no hosps over UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_uwl == 1){ #Scenario 2 - 1 hosp over UWL
+        
+        output_1_wl <- scen2_output_1_wl
+        output_2_wl <- scen2_output_2_wl
+        
+      } else if (n_hosps_uwl > 1){ #Scenario 3 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen3_output_1_wl
+        output_2_wl <- scen3_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_uwl <- output_2_wl
+      output_ucl <- output_2_cl
     }
+      
 
-    if(n_hosps == 1){
+    if(n_hosps_ucl == 1){
 
-      output_1 <- paste0("* For the period ",
+      output_1_cl <- paste0("* For the period ",
                        hsmr::yr(end_date), " one hospital had a significantly higher ",
                        "standardised mortality ratio  than the national average",
-                       ": ", paste0(smr_data$location_name, " (",
-                                    janitor::round_half_up(smr_data$smr, 2), ")",
+                       ": ", paste0(smr_data_ucl$location_name, " (",
+                                    janitor::round_half_up(smr_data_ucl$smr, 2), ")",
                                             collapse = ", "), ".")
 
-      output_2 <- paste0("This chart shows that there was one hospital above the ",
-                         "upper control limit, which is three standard ",
-                         "deviations above the Scottish average: ",
-                         paste0(smr_data$location_name, " (",
-                                janitor::round_half_up(smr_data$smr, 2), ")",
+      output_2_cl <- paste0("This chart shows that there was one hospital above the ",
+                         "upper control limit: ",
+                         paste0(smr_data_ucl$location_name, " (",
+                                janitor::round_half_up(smr_data_ucl$smr, 2), ")",
                                 collapse = ", "), ".")
+      
+      if(n_hosps_uwl == 0){ #Scenario 1 - no hosps over UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_uwl == 1){ #Scenario 2 - 1 hosp over UWL
+        
+        output_1_wl <- scen2_output_1_wl
+        output_2_wl <- scen2_output_2_wl
+        
+      } else if (n_hosps_uwl > 1){ #Scenario 3 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen3_output_1_wl
+        output_2_wl <- scen3_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_uwl <- output_2_wl
+      output_ucl <- output_2_cl
 
     }
+      
+    if(n_hosps_ucl > 1){
 
-    if(n_hosps > 1){
-
-      output_1 <- paste0("* For the period ", n_hosps, " had a significantly higher ",
+      output_1_cl <- paste0("* For the period ", numbers_to_words(n_hosps_ucl), " had a significantly higher ",
                        "standardised mortality ratio ",
                        hsmr::yr(end_date), " than the national average",
-                       ": ", paste0(smr_data$location_name, " (",
-                                    janitor::round_half_up(smr_data$smr, 2),
+                       ": ", paste0(smr_data_ucl$location_name, " (",
+                                    janitor::round_half_up(smr_data_ucl$smr, 2),
                                     ")", collapse = ", "), ".")
 
-      output_2 <- paste0("This chart shows there were ", n_hosps, " hospitals above the upper ",
-                         "control limit, which is three standard deviations ",
-                         "above the Scottish average: ",
-                         paste0(smr_data$location_name, " (",
-                                janitor::round_half_up(smr_data$smr, 2),
+      output_2_cl <- paste0("This chart shows there were ", numbers_to_words(n_hosps_ucl), " hospitals above the upper ",
+                         "control limit: ",
+                         paste0(smr_data_ucl$location_name, " (",
+                                janitor::round_half_up(smr_data_ucl$smr, 2),
                                 ")", collapse = ", "), ".")
+      
+      if(n_hosps_uwl == 0){ #Scenario 1 - no hosps over UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_uwl == 1){ #Scenario 2 - 1 hosp over UWL
+        
+        output_1_wl <- scen2_output_1_wl
+        output_2_wl <- scen2_output_2_wl
+        
+      } else if (n_hosps_uwl > 1){ #Scenario 3 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen3_output_1_wl
+        output_2_wl <- scen3_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_uwl <- output_2_wl
+      output_ucl <- output_2_cl
 
     }
 
   }
 
-  if(indicator == "below"){
+  if(indicator %in% c("below","both")){
 
-    smr_data %<>%
+    #Lower control limit filter
+    smr_data_lcl <- smr_data |> 
       dplyr::filter(period == 3 & smr < lcl)
 
-    n_hosps <- nrow(smr_data)
+    n_hosps_lcl <- nrow(smr_data_lcl)
+    
+    #Lower warning limit filter
+    smr_data_lwl <- smr_data |> 
+      dplyr::filter(period == 3 & smr < lwl)
+    
+    n_hosps_lwl <- nrow(smr_data_lwl)
+    
+    # LOWER WARNING LIMITS SCENARIOS ----
+    # Scenario 4 = 1 hospital exceeding lower wl
+    # ~~~~~~~~~~
+    
+    scen4_output_1_wl <- paste0("The standardised mortality ratio for ",
+                                paste0(smr_data_lwl$location_name, " (",
+                                       janitor::round_half_up(smr_data_lwl$smr, 2), ") ",
+                                       collapse = ", "), "is below the lower warning limit.")
+    
+    scen4_output_2_wl <- paste0(" and there was one hospital below the ",
+                                "lower warning limit: ",
+                                paste0(smr_data_lwl$location_name, " (",
+                                       janitor::round_half_up(smr_data_lwl$smr, 2), ")",
+                                       collapse = ", "), ".")
+    
+    # Scenario 5 = more than one hospital exceeding lower wl
+    # ~~~~~~~~~~
+    
+    scen5_output_1_wl <- paste0("There were ", numbers_to_words(n_hosps_lwl), " with a standardised mortality ratio ",
+                                "below the lower warning limit: ",
+                                paste0(smr_data_lwl$location_name, " (",
+                                       janitor::round_half_up(smr_data_lwl$smr, 2),
+                                       ")", collapse = ", "), ".")
+    
+    scen5_output_2_wl <- paste0(str_to_sentence(numbers_to_words(n_hosps_lwl)), " hospitals were below the lower ",
+                                "warning limit: ",
+                                paste0(smr_data_lwl$location_name, " (",
+                                       janitor::round_half_up(smr_data_lwl$smr, 2),
+                                       ")", collapse = ", "), ".")
+    
 
-    if(n_hosps == 0){
+    if(n_hosps_lcl == 0){
 
-      output_1 <- paste0("* For the period ",
+      output_1_cl <- paste0("* For the period ",
                        hsmr::yr(end_date), " no hospitals had a significantly lower ",
                        "standardised mortality ratio than the national average.")
 
-      output_2 <- paste0("There were no hospitals below ",
-                         "the lower control limit, which is three standard ",
-                         "deviations below the Scottish average. ")
-
+      output_2_cl <- paste0(" and there were no hospitals below ",
+                         "the lower control limit. ")
+      
+      if(n_hosps_lwl == 0){ #Scenario 1 - no hosps below UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_lwl == 1){ #Scenario 4 - 1 hosp under UWL
+        
+        output_1_wl <- scen4_output_1_wl
+        output_2_wl <- scen4_output_2_wl
+        
+      } else if (n_hosps_lwl > 1){ #Scenario 5 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen5_output_1_wl
+        output_2_wl <- scen5_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_lwl <- output_2_wl
+      output_lcl <- output_2_cl
 
     }
+    
+    if(n_hosps_lcl == 1){
 
-    if(n_hosps == 1){
-
-      output_1 <- paste0("* For the period ",
+      output_1_cl <- paste0("* For the period ",
                        hsmr::yr(end_date), " one hospital had a significantly lower ",
                        "standardised mortality ratio than the national average",
-                       ": ", paste0(smr_data$location_name, " (",
-                                    janitor::round_half_up(smr_data$smr, 2), ")",
+                       ": ", paste0(smr_data_lcl$location_name, " (",
+                                    janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2 <- paste0("There was one hospital below the",
-                         " lower control limit, which is three standard ",
-                         "deviations below the Scottish average: ",
-                         paste0(smr_data$location_name, " (",
-                                janitor::round_half_up(smr_data$smr, 2), ")",
+      output_2_cl <- paste0(" and there was one hospital below the",
+                         " lower control limit: ",
+                         paste0(smr_data_lcl$location_name, " (",
+                                janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                 collapse = ", "), ".")
+      
+      if(n_hosps_lwl == 0){ #Scenario 1 - no hosps below UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_lwl == 1){ #Scenario 4 - 1 hosp under UWL
+        
+        output_1_wl <- scen4_output_1_wl
+        output_2_wl <- scen4_output_2_wl
+        
+      } else if (n_hosps_lwl > 1){ #Scenario 5 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen5_output_1_wl
+        output_2_wl <- scen5_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_lwl <- output_2_wl
+      output_lcl <- output_2_cl
 
     }
 
-    if(n_hosps > 1){
+    if(n_hosps_lcl > 1){
 
-      output_1 <- paste0("* For the period ",
-                       hsmr::yr(end_date), n_hosps, " had a significantly lower ",
+      output_1_cl <- paste0("* For the period ",
+                       hsmr::yr(end_date),numbers_to_words(n_hosps_lcl), " had a significantly lower ",
                        "standardised mortality ratio "," than the national average",
-                       ": ", paste0(smr_data$location_name, " (",
-                                    janitor::round_half_up(smr_data$smr, 2), ")",
+                       ": ", paste0(smr_data_lcl$location_name, " (",
+                                    janitor::round_half_up(smr_data_lcl$smr, 2), ")",
                                     collapse = ", "), ".")
 
-      output_2 <- paste0("There were ", n_hosps,
-                         " hospitals below the lower ",
-                         "control limit, which is three standard deviations ",
-                         "below the Scottish average: ",
-                         paste0(smr_data$location_name, " (",
-                                janitor::round_half_up(smr_data$smr, 2),
+      output_2_cl <- paste0(" and", numbers_to_words(n_hosps_lcl),
+                         " hospitals were below the lower ",
+                         "control limit: ",
+                         paste0(smr_data_lcl$location_name, " (",
+                                janitor::round_half_up(smr_data_lcl$smr, 2),
                                 ")", collapse = ", "), ".")
+      
+      if(n_hosps_lwl == 0){ #Scenario 1 - no hosps below UWL
+        
+        output_1_wl <- scen1_output_1_wl
+        output_2_wl <- scen1_output_2_wl
+        
+      }else if (n_hosps_lwl == 1){ #Scenario 4 - 1 hosp under UWL
+        
+        output_1_wl <- scen4_output_1_wl
+        output_2_wl <- scen4_output_2_wl
+        
+      } else if (n_hosps_lwl > 1){ #Scenario 5 - more than 1 hosp over UWL
+        
+        output_1_wl <- scen5_output_1_wl
+        output_2_wl <- scen5_output_2_wl
+        
+      }
+      
+      output_1 <- paste(output_1_cl, output_1_wl)
+      output_2 <- paste(output_2_cl, output_2_wl)
+      output_lwl <- output_2_wl
+      output_lcl <- output_2_cl
 
     }
+    
   }
+  
+  
+  output_3 <- paste(output_ucl,output_lcl, output_uwl, output_lwl)
 
-  return(c(output_1, output_2))
-
+  return(c(output_1, output_2,output_3))
 }

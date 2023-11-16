@@ -34,6 +34,7 @@ library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
 library(devtools)      # For automatically building HSMR package
+library(xfun)          # For converting numbers to words
 
 # Install HSMR package, without creating a bundle and without checking/upgrading
 # dependencies. Ensures latest changes are used.
@@ -41,8 +42,8 @@ library(devtools)      # For automatically building HSMR package
 # Note this will not update the documentation.
 # Ctrl+Shift+B > install package > restart R to do that.
 # (Help returns error until R is restarted => cannot do programmatically.)
-devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never",
-                  quiet = TRUE)
+# devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never",
+#                   quiet = TRUE)
 
 library(hsmr)          # For HSMR functions
 
@@ -75,9 +76,10 @@ Sys.umask("006")
 #        All other dates in lines 85-115 are calculated relative to end_date
 
 # end_date should be the final date for data included in this publication. 
+# ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(31032023) 
+end_date <- lubridate::dmy(30062023) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)
