@@ -1,7 +1,7 @@
 ---
 output: 
   word_document:
-    reference_docx: "phs-national-stats-report_hsmr_template.dotx"
+    reference_docx: "phs-accredited-stats-report_hsmr_template.dotx"
     
 ---
 
@@ -1126,6 +1126,32 @@ data and information to enable it to be an independent voice for the public’s 
 collaboratively and effectively across the Scottish public health system, accountable at local
 and national levels, and providing leadership and focus for achieving better health and
 wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics (external website)](https://code.statisticsauthority.gov.uk/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the [‘five safes’ (external website)](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/).
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<Div custom-style = "Textbox_text">
+
+Translations and other formats are available on request at: <phs.otherformats@phs.scot> or 0131 314 5300.
+
+This publication is licensed for re-use under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/). For more information, visit [www.publichealthscotland.scot/ogl](http://www.publichealthscotland.scot/ogl)
+
+</div>
 
 
 

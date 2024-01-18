@@ -1,7 +1,7 @@
 ---
 output: 
   word_document:
-    reference_docx: "phs-national-stats-summary.dotx"
+    reference_docx: "phs-accredited-stats-summary.dotx"
 ---
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE,error=FALSE}
@@ -49,28 +49,28 @@ contact2 <- "Peter Menzies | Information Analyst | <phs.QualityIndicators@phs.sc
 ```
 
 <Div custom-style = "Publication title"> 
-# Hospital Standardised Mortality Ratios
+Hospital Standardised Mortality Ratios
 </div>
 <Div custom-style = "Publication subtitle"> 
-## `r yr(end_date)`
+`r yr(end_date)`
 </div>
 <Div custom-style = "Stats designation"> 
-#### A National Statistics publication for Scotland
+An Accredited official statistics release for Scotland
 </div>
 <Div custom-style = "Publication date"> 
-#### Publication date: `r format(pub_day, "%d %B %Y")`
+Publication date: `r format(pub_day, "%d %B %Y")`
 </div>
 <Div custom-style = "Restricted Stats"> 
-##### RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_day, "%d/%m/%Y")`
+ RESTRICTED STATISTICS: embargoed to 09:30 `r format(pub_day, "%d/%m/%Y")`
 </div>
 <Div custom-style = "Heading 1">
-### About this release
+About this release
 </div>
 This release by Public Health Scotland (PHS) provides information on Hospital Standardised Mortality Ratios (HSMRs) for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. These statistics are updated on a quarterly basis and reflect the HSMR for the latest 12-month reporting period, whilst crude mortality data is presented by quarter and month to show trends.
 
 </div>
 <Div custom-style = "Heading 1">
-### Main points
+Main points
 </div>
 
 `r funnel_text(smr_data, "above")[1]`
@@ -86,7 +86,7 @@ This release by Public Health Scotland (PHS) provides information on Hospital St
 </div>
 
 <Div custom-style = "Heading 1">
-### Background
+Background
 </div>
 Hospital mortality measures have an important role to play in stimulating reflection on the quality and safety of patient care. HSMRs are based on all acute inpatient and day case patients admitted to all specialties in hospital (apart from obstetrics and psychiatry which are excluded). The calculation takes account of patients who died within 30 days from admission and includes deaths that occurred in the community as well as those occurring in hospitals.
 
@@ -101,7 +101,7 @@ fewer elective admissions. Any changes in crude mortality trends and HSMRs shoul
 
 </div>
 <Div custom-style = "Heading 1">
-### Contact
+Contact
 </div>
 ```{r, echo = FALSE, results='asis'}
     writeLines(contact1)
@@ -117,8 +117,14 @@ For all media enquiries please email <phs.comms@phs.scot> or call 0131 275 6105.
 
 </div>
 <Div custom-style = "Heading 1">
-### Find out more
+Further information
 </div>
+Our statistical practice is regulated by the Office for Statistics Regulation (OSR). These official statistics were independently reviewed by the Office for Statistics Regulation in April 2013. They comply with the standards of trustworthiness, quality and value in the Code of Practice for Statistics and should be labelled ‘accredited official statistics’.
+
+[Accredited official statistics](https://osr.statisticsauthority.gov.uk/accredited-official-statistics/) are called National Statistics in the [Statistics and Registration Service Act 2007](https://www.legislation.gov.uk/ukpga/2007/18/contents).
+
+[Further information about our statistics and PHS as an Official Statistics producer.](https://publichealthscotland.scot/our-organisation/about-our-statistics/official-statistics/)
+
 Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios) on our website. Open data from this publication is available from the [Scottish Health and Social Care Open Data platform (external website)](https://www.opendata.nhs.scot/dataset/hospital-standardised-mortality-ratios). A [Technical Document (external website)](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Methodology/) is available on how HSMR is calculated. A [Frequently Asked Questions (external website)](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/FAQ/) document is also available. For more information on HSMR see [HSMR section of our website (external website)](http://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/). **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology**. For more information see [Research and Development (external website)](https://www.isdscotland.org/Health-Topics/Quality-Indicators/HSMR/Research-and-Development/).
 
 The next release of this publication will be `r format(pub_date(end_date, "next"), "%d %B %Y")`.
