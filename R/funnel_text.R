@@ -42,6 +42,11 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
                 " function."))
 
   }
+  output_ucl <- ""
+  output_lcl <- ""
+  output_uwl <- ""
+  output_lwl <- ""
+  
   
   # TEXT WARNING LIMIT SCENARIOS TO BE NESTED WITHIN
   # CONTROL LIMIT SCENARIOS
