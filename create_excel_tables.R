@@ -97,7 +97,7 @@ writeData(table2, "Raw Data",
 #Preparing location lookup and writing it in table
 locations <- read_csv("https://www.opendata.nhs.scot/dataset/cbd1802e-0e04-4282-88eb-d7bdcfb120f0/resource/c698f450-eeed-41a0-88f7-c1e40a568acc/download/current-hospital_flagged20211216.csv") %>% 
   janitor::clean_names() %>% 
-  select(location, location_name, hb) %>% 
+  select(location=hospital_code, location_name=hospital_name, hb=health_board) %>% 
   mutate(hbname = phsmethods::match_area(hb),
          hbname = case_when(location == 'D102H' ~ "Golden Jubilee",
                             T ~ paste0("NHS ", hbname)),
@@ -193,7 +193,7 @@ create_open_data(measure = "crude", split = "Population",
                  dev = od_dev, overwrite = od_over)
 
 # Place of Death
-create_open_data(measure = "crude", split = "Place of death",
+create_open_data(measure = "crude", split = "Place of death",label_var = "PlaceOfDeath",
                  filename = "place_open_data",
                  dev = od_dev, overwrite = od_over)
 
