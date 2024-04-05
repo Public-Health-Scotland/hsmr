@@ -144,6 +144,15 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                     model = FALSE,
                     y = FALSE)
 
+  # Before cleaning, save out the model in RDS format. This will take a while
+  # (60+ minutes) due to model size.
+  save_file(risk_model, 
+            "full_model", 
+            "base_files", 
+            "rds", 
+            dev = T, 
+            overwrite = F)
+  
   # Delete unnecessary model information using bespoke function in order to
   # retain special class of object for predicted probabilities below
   risk_model <- hsmr::clean_model(risk_model)

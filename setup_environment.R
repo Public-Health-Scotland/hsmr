@@ -64,8 +64,8 @@ plat_filepath <- dplyr::if_else(platform == "server",
                                 '//stats/cl-out/')
 
 data_folder <- dplyr::if_else(platform == "server",
-                                '/conf/quality_indicators/hsmr/quarter_cycle/data/',
-                                '//stats/quality_indicators/hsmr/quarter_cycle/data/')
+                             '/conf/quality_indicators/hsmr/quarter_cycle/data/',
+                             '//stats/quality_indicators/hsmr/quarter_cycle/data/')
 
 # Setting file permissions to anyone to allow writing/overwriting of project files
 Sys.umask("006")
