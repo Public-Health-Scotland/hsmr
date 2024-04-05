@@ -63,8 +63,6 @@ plat_filepath <- dplyr::if_else(platform == "server",
                                 '/conf/linkage/output/',
                                 '//stats/cl-out/')
 
-data_folder <- '/conf/linkage/output/charlh07'
-
 data_folder <- dplyr::if_else(platform == "server",
                              '/conf/quality_indicators/hsmr/quarter_cycle/data/',
                              '//stats/quality_indicators/hsmr/quarter_cycle/data/')
