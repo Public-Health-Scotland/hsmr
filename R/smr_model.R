@@ -17,6 +17,7 @@
 #' @param base_end The end of the time period for data that is run
 #' through the logistic regression model.
 #' @param index To define whether data produced are to be quarterly or annual.
+#' @param save_model Boolean for saving out the full model as an RDS file.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
@@ -24,7 +25,7 @@
 #' @export
 
 
-smr_model <- function(smr01, base_start, base_end, index = "Q"){
+smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
 
   ### 1 - Error handling ----
 
@@ -144,6 +145,17 @@ smr_model <- function(smr01, base_start, base_end, index = "Q"){
                     model = FALSE,
                     y = FALSE)
 
+  if(save_model == TRUE){
+    # Before cleaning, save out the model in RDS format. This will take a while
+    # (60+ minutes) due to model size.
+    save_file(risk_model, 
+              "full_model", 
+              "base_files", 
+              "rds", 
+              dev = T, 
+              overwrite = F)
+  }
+  
   # Delete unnecessary model information using bespoke function in order to
   # retain special class of object for predicted probabilities below
   risk_model <- hsmr::clean_model(risk_model)

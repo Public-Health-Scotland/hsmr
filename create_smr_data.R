@@ -47,7 +47,7 @@ morbs <- read_csv(here("reference_files", "morbs.csv")) %>%
 # them to be differentiated from one another
 simd_2020 <- readRDS(paste0(plat_filepath,
                               "lookups/Unicode/Deprivation",
-                              "/postcode_2023_2_simd2020v2.rds")) %>%
+                              "/postcode_2024_1_simd2020v2.rds")) %>%
   select(pc7, simd2020v2_sc_quintile) %>%
   rename(postcode = pc7,
          simd = simd2020v2_sc_quintile) %>%
@@ -140,13 +140,18 @@ smr01 <- smr_pmorbs(smr01        = smr01,
 # base_end   = The end of the baseline period
 # index      = Indicating whether the patient indexing is done quarterly
 #              or annually
+# save_model = Boolean flag for saving out the full model as an RDS
 #
 # This function runs the risk model and appends the probability of death on
-# to the SMR01 extract
+# to the SMR01 extract. As of April 2024 the full model is written out to an RDS
+# in base_files. This takes quite a while; smr_model() is likely to run
+# for ~ 90 minutes. Boolean flag can be set to F to skip this step.
+
 smr01 <- smr_model(smr01      = smr01,
                    base_start = start_date,
                    base_end   = base_end,
-                   index      = "Y")
+                   index      = "Y",
+                   save_model = T)
 
 # smr01 = The output from smr_model()
 # index = Indicating whether the patient indexing is done quarterly
