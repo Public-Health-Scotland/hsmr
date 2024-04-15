@@ -79,7 +79,7 @@ Sys.umask("006")
 # ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(30092023) 
+end_date <- lubridate::dmy(31122023) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)
