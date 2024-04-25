@@ -88,7 +88,7 @@ trend_palette <- scale_color_manual(values = c("#004949", "#006dd1", "#49006a",
                                                "#24ff24"))
 
 shape_palette <- scale_shape_manual(values = c(16, 15, 17, 3, 4, 8, 18))
-
+# ----
 ## FUNNEL PLOT ##
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
@@ -149,7 +149,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     # make space for legend above plot area
     plot.margin = unit(c(0.6,0.1,0.1,0.1), "cm")) +
   scale_x_continuous(labels = comma)
-
+print(funnel_plot)
+# ----
 qtr_list <- trend_data %>% 
   filter(label == "All admissions" & location == "Scot") %>% 
   select(quarter_short)
@@ -786,12 +787,17 @@ More details of the review work and recommendations are available in the [HSMR R
 
 <Div custom-style = "Heading 1 alt">Contact</div>
 
-**Isabella Tortora Brayda, Senior Information Analyst** 
-Quality Indicators  
+<!-- **Isabella Tortora Brayda, Senior Information Analyst** 
+Quality Indicators -->  
 
-
-**Paul Ogharanduku, Senior Information Analyst**  
+**Charlotte Hill, Information Analyst**
 Quality Indicators
+
+**Echo Lian, Senior Information Analyst**
+Quality Indicators
+
+<!-- **Paul Ogharanduku, Senior Information Analyst**  
+Quality Indicators -->
 
 [phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
 
