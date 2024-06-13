@@ -253,5 +253,9 @@ public_dash_all <- bind_rows(public_dash_scot, public_dash_hosps) %>%
 # Save into output folder
 save_file(public_dash_all, "SMR_data_public_dashboard", "output", "rds", dev = F, overwrite = F)
 
+### 4 - Model diagnostic -----------------------------------
+
+rmarkdown::render("roc/model_checks.Rmd")
+
 
 ### END OF SCRIPT ###
