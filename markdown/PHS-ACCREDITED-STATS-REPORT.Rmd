@@ -88,7 +88,7 @@ trend_palette <- scale_color_manual(values = c("#004949", "#006dd1", "#49006a",
                                                "#24ff24"))
 
 shape_palette <- scale_shape_manual(values = c(16, 15, 17, 3, 4, 8, 18))
-
+# ----
 ## FUNNEL PLOT ##
 funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) + 
   scale_color_manual(values = c("#006ba4", "#c85302", "#ffbc79", "#006ba4", 
@@ -149,7 +149,8 @@ funnel_plot <- ggplot(smr_data %>% filter(location_type == "hospital"), aes()) +
     # make space for legend above plot area
     plot.margin = unit(c(0.6,0.1,0.1,0.1), "cm")) +
   scale_x_continuous(labels = comma)
-
+print(funnel_plot)
+# ----
 qtr_list <- trend_data %>% 
   filter(label == "All admissions" & location == "Scot") %>% 
   select(quarter_short)
@@ -664,7 +665,7 @@ Chart 1 shows the funnel plot for the latest 12-month period. The control limits
 This section presents crude mortality rates for deaths within 30 days of admission, which can be used to show trends through time. Since crude mortality rates do not account for differences in case mix, they are less appropriate for comparing individual hospitals to Scotland. This section therefore does not make such comparisons, but does show overall results for Scotland before an examination of some of the factors that affect the underlying risk of death.
 
 <Div custom-style = "Heading 2 less spacing">Scotland – overall</div>
-Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The average value was generally around 3% between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. Two factors influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients. The crude mortality rate remained at an elevated level following the first wave of COVID-19, however the last four quarters are showing a decrease towards pre-2020 levels. 
+Chart 2 shows the overall crude hospital mortality percentage at Scotland level. The average value was generally around 3.5% between `r format(start_date_trends, "%B %Y")` and `r format(end_date, "%B %Y")`, with seasonal increases over the winter months. However, April to June 2020 saw a substantial increase above the historical average due to the impact of COVID-19. Two factors influenced this increase: deaths from COVID-19, and a reduction in overall patient numbers where those that did attend were the more seriously ill patients. The crude mortality rate remained at an elevated level following the first wave of COVID-19, however the last four quarters are showing a decrease towards pre-2020 levels. 
 
 <Div custom-style = "Table or chart caption less spacing">Chart 2: Overall crude mortality rates (%) for deaths within 30-days of admission, Scotland, `r qtr(start_date_trends, "short")` to `r qtr(start_date_trends + months(57), "short")` p</div>
 <Div custom-style = "centre_justify">![Trend chart showing crude mortality by quarter for latest five years.](Chart_2.png)The data relating to this chart can be found in [Table 2](`r url_list[2, "url"]`). Table 2 also provides crude mortality charts for each NHS Board and hospital. **p** Provisional</div>
@@ -786,12 +787,17 @@ More details of the review work and recommendations are available in the [HSMR R
 
 <Div custom-style = "Heading 1 alt">Contact</div>
 
-**Isabella Tortora Brayda, Senior Information Analyst** 
-Quality Indicators  
+<!-- **Isabella Tortora Brayda, Senior Information Analyst** 
+Quality Indicators -->  
 
-
-**Paul Ogharanduku, Senior Information Analyst**  
+**Charlotte Hill, Information Analyst**
 Quality Indicators
+
+**Echo Lian, Senior Information Analyst**
+Quality Indicators
+
+<!-- **Paul Ogharanduku, Senior Information Analyst**  
+Quality Indicators -->
 
 [phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
 
