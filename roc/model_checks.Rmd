@@ -1,0 +1,129 @@
+---
+title: "Model Checks"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+
+library(pROC) # For ROC/AUC
+
+source(here::here("setup_environment.R")) # For libraries and filepaths
+
+detach("package:tidylog", unload=TRUE)
+
+data <- read.csv(paste0(data_folder, # base files with predprob
+                        pub_day,
+                        "/base_files/", 
+                        pub_day, 
+                        "_SMR-with-predprob.csv"))
+
+```
+
+The HSMR model is **not** predictive; it is a retrospective tool used to assess patient outcomes at hospital level. One key feature of the model is that it is **inherently overfit**. This is because the test data is part of the training dataset. The model is retrained for every publication, so overfitting is never a cause for concern, as **the model will never be used to classify data it hasn't been trained on**.
+
+> What looks like good performance for the HSMR model may not be good performance for a purely predictive logistic model.
+
+For more information on the evaluation metrics used here, see [this publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6465431/).
+
+## ROC and AUC
+
+The [ROC](https://www.statology.org/interpret-roc-curve/) (**R**eceiver **O**perating **C**haracteristic) curve plots the true positive rate (sensitivity) against the false positive rate (1 - specificity) of the classifier. It shows how well the model discriminates between outcomes.
+
+> For the HSMR model, the positive (1) outcome is death within 30 days of admission.
+
+A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1]. The closer the curve is to this point, the better the discriminatory power of the model. A poor curve would be close to the *y=x* line - this is equivalent to a random guess, ie. the model is correct half of the time.
+
+AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the ROC curve. Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**. An AUC of 0.5 is equivalent to a random guess.
+
+> For a typical predictive model, we would compare the ROC and AUC for the training and testing data. For the HSMR model, this doesn't apply.
+
+AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
+
+```{r roc, echo=FALSE}
+
+roc_hsmr <- roc(data$death30, data$pred_eq)
+
+auc_hsmr <- auc(roc_hsmr)
+
+ggroc(roc_hsmr, 
+      legacy.axes = TRUE,
+      colour = '#3f3685') +
+  theme_bw() +
+  geom_abline(slope = 1,
+              intercept = 0,
+              colour = 'grey',
+              linetype = 'dashed') +
+  labs(title = paste0("ROC Curve - ", pub_day, " Publication")) +
+  xlab("False Positive Rate") +
+  ylab("True Positive Rate") +
+  annotate("label", label=paste0("AUC = ", round(auc_hsmr, 3)), x = 0.9, y= 0.1)
+```
+
+## Brier Score
+
+[Brier Score](https://www.statisticshowto.com/brier-score/) measures the accuracy of the predictions. It averages the mean squared error across all predictions.
+
+An ideal Brier Score is 0, which indicates complete accuracy. A Brier Score of 0.5 is equivalent to a random guess.
+
+```{r brier, echo=FALSE}
+
+  score <- data %>%
+    mutate(error = pred_eq - death30,
+           sqerror = error**2) %>%
+    summarise(N = n(),
+            sumsqerror = sum(sqerror),
+            bs = sumsqerror/N)
+
+  paste0("Brier Score: ", round(score$bs, 3))
+
+```
+
+## Hosmer-Lemeshow
+
+The [Hosmer-Lemeshow](https://en.wikipedia.org/wiki/Hosmer%E2%80%93Lemeshow_test) test statistic quantifies goodness of fit. It works similarly to a chi-squared statistic, but is geared specifically towards logistic regression models.
+
+The test statistic is calculated by ordering the data according to the predicted probability of success, dividing the probabilities into percentile groups, and calculating how closely the percentiles of the true outcomes match those of the predictions.
+
+The Hosmer-Lemeshow test statistic is used to calculate a P-value for the model. We would expect the model to fall within a 99% confidence interval *at minimum*.
+
+```{r hosmer, echo=FALSE}
+
+df <- data %>%
+  group_by(pred_eq) %>%
+  summarise(n_px = n(),
+            n_deaths = sum(death30)) %>%
+  mutate(grp = case_when(pred_eq < 0.1 ~ 1,
+                         pred_eq < 0.2 ~ 2,
+                         pred_eq < 0.3 ~ 3,
+                         pred_eq < 0.4 ~ 4,
+                         pred_eq < 0.5 ~ 5,
+                         pred_eq < 0.6 ~ 6,
+                         pred_eq < 0.7 ~ 7,
+                         pred_eq < 0.8 ~ 8,
+                         pred_eq < 0.9 ~ 9,
+                         .default = 10)) %>%
+  group_by(grp) %>%
+  summarise(n_px = sum(n_px),
+            n_deaths = sum(n_deaths),
+            n_exp = sum(pred_eq),
+            n_notexp = n_px - n_exp,
+            n_notdeaths = n_px - n_deaths)
+
+test_stat <- df %>%
+  group_by(grp) %>%
+  summarise(h1 = (n_deaths - n_exp)**2/n_exp,
+            h2 = (n_notdeaths - n_notexp)**2/n_notexp,
+            hoslem = h1-h2) %>%
+  ungroup() %>%
+  summarise(hoslem = sum(hoslem))
+
+h_statistic = test_stat$hoslem
+
+p_val <- pchisq(h_statistic, 8, lower.tail = FALSE)
+conf <- (1-p_val)*100
+
+paste0("P Value for model distribution: ", round(p_val, 3))
+
+paste0("Confidence: ", round(conf, 1), "%")
+
+```
