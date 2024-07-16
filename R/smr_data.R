@@ -19,8 +19,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 
 smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {

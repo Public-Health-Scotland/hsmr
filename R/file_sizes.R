@@ -39,8 +39,6 @@
 #' file_sizes(end_date = extract_end_date, filepath = getwd())[1]
 #'
 #' @importFrom magrittr %>%
-#'
-#' @export
 
 file_sizes <- function(end_date, filepath = here::here("data", "output")) {
 

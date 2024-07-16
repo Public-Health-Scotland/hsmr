@@ -22,9 +22,6 @@
 #' @param extract_end The extract end date, supplied with \code{Date} class.
 #' Must be the final day of either March, June, September or December.
 
-
-#' @export
-#' @rdname sql_ltt
 query_smr01_ltt <- function(extract_start, extract_end) {
 
   if (class(extract_start) != "Date" | class(extract_end) != "Date") {

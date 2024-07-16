@@ -22,8 +22,6 @@
 #' mit_available(end_date = lubridate::dmy(30092018))
 #' format(mit_available(end_date = lubridate::dmy(31122018)), "%d %B %Y")
 #' format(mit_available(end_date = lubridate::dmy(31032019)), "%d/%m/%Y")
-#'
-#' @export
 
 mit_available <- function(end_date) {
 

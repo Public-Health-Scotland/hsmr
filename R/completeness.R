@@ -45,8 +45,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 completeness <- function(quarter = c("previous", "current"),
                          level = c("board", "scotland"),

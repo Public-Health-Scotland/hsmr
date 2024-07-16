@@ -18,8 +18,8 @@
 #' @examples
 #' funnel_text(smr_data, indicator = "above")
 #' funnel_text(smr_data, indicator = "below")
-#'
-#' @export
+
+
 funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
   match.arg(indicator)

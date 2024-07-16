@@ -11,8 +11,6 @@
 #' @param dev A \code{character} string. It add a "dev_version" bit to the filename
 #' to be able to identify development work
 #' #' @param overwrite A \code{logical} value. To allow overwriting or not of files
-#'
-#' @export
 
 
 save_file <- function(dataset, filename, out_folder = c("base_file", "output", "tde", "open_data"),

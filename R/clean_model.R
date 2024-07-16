@@ -11,12 +11,6 @@
 #'
 #'
 #' @param model Input \code{glm}.
-#'
-#'
-#' @examples
-#'
-#'
-#' @export
 
 clean_model <- function(model) {
 

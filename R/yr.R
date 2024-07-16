@@ -9,11 +9,7 @@
 #' @param end_date The cut-off date for data to be included in the current HSMR
 #' publication, supplied with \code{Date} class. Must be the final day of
 #' either March, June, September or December.
-#'
-#' @examples
-#' yr(end_date = lubridate::dmy(31032019))
-#' @export
-#' @rdname yr
+
 yr <- function(end_date){
 
   if (class(end_date) != "Date") {

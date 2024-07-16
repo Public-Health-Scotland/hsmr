@@ -26,8 +26,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 nhs_performs <- function(input_data, end_date, indicator = c("hsmr", "crude")){
 

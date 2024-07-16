@@ -21,8 +21,6 @@
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @import data.table
-#'
-#' @export
 
 
 smr_pmorbs <- function(smr01, smr01_minus5, morbs){

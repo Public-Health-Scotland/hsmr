@@ -21,8 +21,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 
 create_open_data <- function(smr = NULL,

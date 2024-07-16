@@ -21,8 +21,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 
 smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){

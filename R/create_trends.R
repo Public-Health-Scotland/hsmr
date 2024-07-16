@@ -23,9 +23,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#'
-#' @export
 
 create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 

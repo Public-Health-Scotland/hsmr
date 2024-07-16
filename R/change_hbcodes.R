@@ -7,8 +7,6 @@
 #' @param version_to If you want to go 14 to 19 or 19 to 14.
 #' @param code_cols Character vector of names for the columns in dataset that
 #' contain codes to change. Optional - will default to "location" and "hb".
-#'
-#' @export
 
 change_hbcodes <- function(dataset, version_to,
                            code_cols = c("location", "hb")) {
