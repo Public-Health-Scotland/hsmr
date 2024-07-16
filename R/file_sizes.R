@@ -90,14 +90,10 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
     # Calculate the size of each HSMR Excel table in bytes
     purrr::map(~file.info(paste0(filepath, "/", .))$size) %>%
     unlist() %>%
-
-    # The gdata package defines a kilobyte as 1,000 bytes, and a kibibyte as
-    # 1,024 bytes
-    # We wish to take a kilobyte as 1,024 bytes
-    # As a workaround, calculate file sizes in kibibytes or mebibytes, then
-    # drop the `i` from the output, so the final result is displayed as KB or MB
-    gdata::humanReadable(standard = "IEC", digits = 0) %>%
-    gsub("i", "", .) %>%
-    trimws() %>%
-    paste0("Excel ", .)
+    # this used to be done with gdata, but the package was very unstable
+    # and caused problems on installation. This returns file sizes in kb only
+    # but as we expect all excel files to be kb magnitude it shouldn't cause
+    # any issues.
+    sapply(function(x) return(round(x/1024))) %>% 
+    paste0("Excel ", ., " KB")
 }
