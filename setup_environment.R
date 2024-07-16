@@ -17,7 +17,7 @@
 # Approximate run time - xx minutes
 #########################################################################
 
-### 1 - Load packages ----
+### 0 - Load packages ----
 library(odbc)          # For accessing SMRA databases
 library(dplyr)         # For data manipulation in the "tidy" way
 library(haven)         # For reading in SPSS files
@@ -33,19 +33,16 @@ library(scales)        # For use with ggplot2
 library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
-library(devtools)      # For automatically building HSMR package
 library(xfun)          # For converting numbers to words
 
-# Install HSMR package, without creating a bundle and without checking/upgrading
-# dependencies. Ensures latest changes are used.
-#
-# Note this will not update the documentation.
-# Ctrl+Shift+B > install package > restart R to do that.
-# (Help returns error until R is restarted => cannot do programmatically.)
-devtools::install(build = FALSE, dependencies = FALSE, upgrade = "never",
-                  quiet = TRUE)
+### 1 - Source HSMR functions (replaces building package) ----
 
-library(hsmr)          # For HSMR functions
+files.sources <- list.files(path = "R/")
+
+for(i in 1:length(files.sources)){
+  func_path = paste0("R/", files.sources[i])
+  source(func_path)
+}
 
 ### 2 - Define Whether Running on Server or Locally ----
 # Covers both the old server and the pro one
