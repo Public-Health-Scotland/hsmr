@@ -36,6 +36,6 @@ submission_deadline <- function(end_date) {
 
   # It's + 41 days as ceiling_date returns the first day of the next month,
   # rather than the final day of the current month
-  lubridate::ceiling_date(hsmr::pub_date(end_date = end_date, pub = "previous"),
+  lubridate::ceiling_date(pub_date(end_date = end_date, pub = "previous"),
                           unit = "months") + lubridate::days(41)
 }

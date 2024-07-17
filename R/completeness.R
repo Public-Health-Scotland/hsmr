@@ -129,7 +129,7 @@ completeness <- function(quarter = c("previous", "current"),
   last_month <- format(zoo::as.yearmon(last_month, "%b%y"), "%B %Y")
   last_month <- dplyr::last(last_month)
 
-  if (hsmr::qtr_end(first_day = first_day,
+  if (qtr_end(first_day = first_day,
                     quarter = "current") != last_month) {
     stop("Only the first day of the current quarter can be supplied")
   }
@@ -173,8 +173,8 @@ completeness <- function(quarter = c("previous", "current"),
         cat("All NHS Board HSMRs are based on completeness levels of 95% and",
             "above for",
             dplyr::if_else(quarter == "previous",
-                           hsmr::qtr_prev(first_day = first_day),
-                           hsmr::qtr(first_day = first_day,
+                           qtr_prev(first_day = first_day),
+                           qtr(first_day = first_day,
                                      format = "long")))))
     } else {
 
@@ -184,8 +184,8 @@ completeness <- function(quarter = c("previous", "current"),
         cat("All NHS Board HSMRs are based on completeness levels of 95% and",
             "above for",
             dplyr::if_else(quarter == "previous",
-                           hsmr::qtr_prev(first_day = first_day),
-                           hsmr::qtr(first_day = first_day,
+                           qtr_prev(first_day = first_day),
+                           qtr(first_day = first_day,
                                      format = "long")),
             "with the exception of",
             glue::glue_collapse(sort(comp), sep = ", ", last = " and "))))

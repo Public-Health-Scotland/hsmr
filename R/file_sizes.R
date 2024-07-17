@@ -77,7 +77,7 @@ file_sizes <- function(end_date, filepath = here::here("data", "output")) {
   # \\.xlsx$ = has .xlsx file extension
   x <- dir(path = filepath,
            pattern = paste0("^",
-                            hsmr::pub_date(end_date, "current"),
+                            pub_date(end_date, "current"),
                             "\\-(T|t)able[a-zA-Z0-9\\_\\-]*\\.xlsx$"))
 
   if (length(x) != 3) {
