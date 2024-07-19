@@ -35,6 +35,9 @@ library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
 library(xfun)          # For converting numbers to words
 
+# set working directory
+setwd(here::here())
+
 ### 1 - Source HSMR functions (replaces building package) ----
 
 files.sources <- list.files(path = "R/")
@@ -76,7 +79,7 @@ Sys.umask("006")
 # ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(31122023) 
+end_date <- lubridate::dmy(31032024) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)

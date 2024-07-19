@@ -95,7 +95,7 @@ writeData(table2, "Raw Data",
           startCol = 2)
 
 #Preparing location lookup and writing it in table
-locations <- read_csv("https://www.opendata.nhs.scot/dataset/cbd1802e-0e04-4282-88eb-d7bdcfb120f0/resource/c698f450-eeed-41a0-88f7-c1e40a568acc/download/current-hospital_flagged20211216.csv") %>% 
+locations <- read_csv("https://www.opendata.nhs.scot/dataset/cbd1802e-0e04-4282-88eb-d7bdcfb120f0/resource/c698f450-eeed-41a0-88f7-c1e40a568acc/download/hospitals.csv") %>% 
   janitor::clean_names() %>% 
   select(location=hospital_code, location_name=hospital_name, hb=health_board) %>% 
   mutate(hbname = phsmethods::match_area(hb),
