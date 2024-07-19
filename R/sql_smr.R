@@ -24,9 +24,6 @@
 #' @param extract_end The extract end date, supplied with \code{Date} class.
 #' Must be the final day of either March, June, September or December.
 
-
-#' @export
-#' @rdname sql_smr
 query_smr01 <- function(extract_start, extract_end) {
 
   if (class(extract_start) != "Date" | class(extract_end) != "Date") {
@@ -111,8 +108,6 @@ query_smr01 <- function(extract_start, extract_end) {
 }
 
 
-#' @export
-#' @rdname sql_smr
 query_smr01_minus5 <- function(extract_start, extract_end) {
 
   if (class(extract_start) != "Date" | class(extract_end) != "Date") {
@@ -145,8 +140,6 @@ query_smr01_minus5 <- function(extract_start, extract_end) {
 }
 
 
-#' @export
-#' @rdname sql_smr
 query_gro_smr <- function(extract_start) {
 
   if (class(extract_start) != "Date") {

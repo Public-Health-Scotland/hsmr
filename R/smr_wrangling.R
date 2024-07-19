@@ -21,8 +21,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
 

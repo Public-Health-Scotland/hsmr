@@ -21,19 +21,7 @@
 #' (January to March 2018).
 #' @param quarter A \code{character} string. Specifies which quarter should
 #' have its final month returned. Valid options are `current` and `next`.
-#'
-#' @examples
-#' qtr(first_day = lubridate::dmy(01012018), format = "short")
-#' qtr(first_day = lubridate::dmy(01102018), format = "long")
-#'
-#' qtr_end(first_day = lubridate::dmy(01072018), quarter = "current")
-#' qtr_end(first_day = lubridate::dmy(01042018), quarter = "next")
-#'
-#' qtr_prev(first_day = lubridate::dmy(01012018))
 
-
-#' @export
-#' @rdname qtr
 qtr <- function(first_day, format = c("long", "short")) {
 
   format <- match.arg(format)

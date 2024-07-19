@@ -19,8 +19,6 @@
 #' pub_date(end_date = extract_end_date, pub = "previous")
 #' format(pub_date(end_date = extract_end_date, pub = "current"), "%d %B %Y")
 #' format(pub_date(end_date = extract_end_date, pub = "next"), "%d/%m/%Y")
-#'
-#' @export
 
 pub_date <- function(end_date, pub = c("previous", "current", "next")) {
 

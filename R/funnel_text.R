@@ -18,8 +18,8 @@
 #' @examples
 #' funnel_text(smr_data, indicator = "above")
 #' funnel_text(smr_data, indicator = "below")
-#'
-#' @export
+
+
 funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
   match.arg(indicator)
@@ -109,7 +109,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
     if(n_hosps_ucl == 0){
 
       output_1_cl <- paste0("* For the period ",
-                       hsmr::yr(end_date), " no hospitals had a significantly higher ",
+                       yr(end_date), " no hospitals had a significantly higher ",
                        "standardised mortality ratio than the national average.")
 
       output_2_cl <- paste0("This chart shows that there were no hospitals above the ",
@@ -142,7 +142,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
     if(n_hosps_ucl == 1){
 
       output_1_cl <- paste0("* For the period ",
-                       hsmr::yr(end_date), " one hospital had a significantly higher ",
+                       yr(end_date), " one hospital had a significantly higher ",
                        "standardised mortality ratio  than the national average",
                        ": ", paste0(smr_data_ucl$location_name, " (",
                                     janitor::round_half_up(smr_data_ucl$smr, 2), ")",
@@ -182,7 +182,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
       output_1_cl <- paste0("* For the period ", numbers_to_words(n_hosps_ucl), " had a significantly higher ",
                        "standardised mortality ratio ",
-                       hsmr::yr(end_date), " than the national average",
+                       yr(end_date), " than the national average",
                        ": ", paste0(smr_data_ucl$location_name, " (",
                                     janitor::round_half_up(smr_data_ucl$smr, 2),
                                     ")", collapse = ", "), ".")
@@ -267,7 +267,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
     if(n_hosps_lcl == 0){
 
       output_1_cl <- paste0("* For the period ",
-                       hsmr::yr(end_date), " no hospitals had a significantly lower ",
+                       yr(end_date), " no hospitals had a significantly lower ",
                        "standardised mortality ratio than the national average.")
 
       output_2_cl <- paste0(" and there were no hospitals below ",
@@ -300,7 +300,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
     if(n_hosps_lcl == 1){
 
       output_1_cl <- paste0("* For the period ",
-                       hsmr::yr(end_date), " one hospital had a significantly lower ",
+                       yr(end_date), " one hospital had a significantly lower ",
                        "standardised mortality ratio than the national average",
                        ": ", paste0(smr_data_lcl$location_name, " (",
                                     janitor::round_half_up(smr_data_lcl$smr, 2), ")",
@@ -339,7 +339,7 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
     if(n_hosps_lcl > 1){
 
       output_1_cl <- paste0("* For the period ",
-                       hsmr::yr(end_date),numbers_to_words(n_hosps_lcl), " had a significantly lower ",
+                       yr(end_date),numbers_to_words(n_hosps_lcl), " had a significantly lower ",
                        "standardised mortality ratio "," than the national average",
                        ": ", paste0(smr_data_lcl$location_name, " (",
                                     janitor::round_half_up(smr_data_lcl$smr, 2), ")",
