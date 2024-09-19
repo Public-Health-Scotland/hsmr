@@ -144,6 +144,16 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                     family = "binomial",
                     model = FALSE,
                     y = FALSE)
+  
+  collinearity_test <- vif(risk_model) # VIF test for collinearity
+  
+  save_file(collinearity_test,     # save out VIF data
+            "VIF_result",
+            "base_files",
+            "rds",
+            dev = T,
+            overwrite = F)
+  
 
   if(save_model == TRUE){
     # Before cleaning, save out the model in RDS format. This will take a while
