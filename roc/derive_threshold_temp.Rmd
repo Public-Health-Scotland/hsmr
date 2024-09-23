@@ -1,0 +1,104 @@
+---
+title: "Model Checks (Decision Threshold)"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+
+library(pROC) # For ROC/AUC
+
+#source(here::here("setup_environment.R")) # For libraries and filepaths
+source("/conf/linkage/output/charlh07/hsmr-pra/setup_environment.R")
+
+data <- read.csv(paste0(data_folder, # base files with predprob
+                        pub_day,
+                        "/base_files/", 
+                        pub_day, 
+                        "_SMR-with-predprob.csv"))
+
+```
+
+### Method
+
+For each geography level (HB, hospital, Scotland) we have the following known values:
+
+-   Number of observed deaths, $N_o$
+
+-   Model output pred_eq $p_i$ for each patient $i$
+
+-   Number of expected deaths, $N_e = \Sigma p_i$
+
+Using these, we aim to define the threshold probability $p_x$ for which:
+
+$$ f(p_i) = \begin{cases} \mbox{true} & \mbox{if } p_i \geq p_x \\ \mbox{false} & \mbox{otherwise} \end{cases} $$
+where $f(p_i)$ is a prediction of death within 30 days of admission. This can also be stated with binary output rather than boolean, as:
+
+$$ f(p_i) = \begin{cases} \mbox{1} & \mbox{if } p_i \geq p_x \\ \mbox{0} & \mbox{otherwise} \end{cases} $$
+Recall that we know the value of $N_e$, which indicates the number of `true` outcomes we expect to see. This means that:
+
+$$ \sum_i f(p_i)  \approx N_e \therefore \sum_i f(p_i)  \approx \sum_i p_i $$
+
+With the key inequality being that $f(p_i)$ is integer-valued, and $p_i$ is not. As such, $f(p_i) \neq p_i$ and $\sum_i f(p_i) \neq N_e$.
+
+To rephrase this programmatically, we want to find `x` such that `sum(p >= x) - round(sum(p)) == 0` for a vector `p` of values `p[i]`.
+
+From the inequality above, we know that this cannot be solved analytically. This means it must be solved iteratively, using a minimisation algorithm to trial values of `x` until we find one to satisfy the stated condition.
+
+```{r threshold}
+
+# Define p
+
+p <- data$pred_eq
+
+# Define the function
+
+f <- function(p, x) {
+  
+  val1 <- round(sum(p))
+  
+  val2 <- sum(p >= x)
+  
+  out <- val1 - val2
+  
+  return(out)
+  
+}
+
+# Minimise WRT x
+
+out <- 1 # output of f
+x <- 0.75 # first guess at x
+x0 <- x
+it <- 0  # iteration number
+
+while(out != 0){
+  
+  inc <- 10e-5 # increment size
+  
+  out <- f(p, x) # get output of f
+  
+  mult <- 10^(floor(log10(sqrt(out**2)))-2) # multiplier to increment, depends
+                                            # on how far we are from 0
+  
+  ifelse(out < 0,
+         x <- x + (inc * mult),
+         x <- x - (inc * mult))
+  
+  it <- it + 1
+  
+  if(it %% 100 == 0){
+    if(x == x0){ # if x unchanged in 100 iterations
+      print(paste0("Best guess: x = ", x, " to accuracy ", inc))
+      break
+    }
+   x0 <- x # record value of x
+   print(x0)
+  }
+  
+}
+
+```
+
+
+
+
