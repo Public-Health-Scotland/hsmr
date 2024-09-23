@@ -1,11 +1,13 @@
 ---
-title: "Model Checks (Decision Threshold)"
+title: "Model Checks (Cont.)"
 output: html_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
 
 library(pROC) # For ROC/AUC
+
+options(scipen = 999)
 
 #source(here::here("setup_environment.R")) # For libraries and filepaths
 source("/conf/linkage/output/charlh07/hsmr-pra/setup_environment.R")
@@ -18,7 +20,7 @@ data <- read.csv(paste0(data_folder, # base files with predprob
 
 ```
 
-### Method
+### Decision Threshold
 
 For each geography level (HB, hospital, Scotland) we have the following known values:
 
@@ -44,61 +46,114 @@ To rephrase this programmatically, we want to find `x` such that `sum(p >= x) - 
 
 From the inequality above, we know that this cannot be solved analytically. This means it must be solved iteratively, using a minimisation algorithm to trial values of `x` until we find one to satisfy the stated condition.
 
-```{r threshold}
+Because the function $f(p_i)$ does not have a continuous derivative, we will need to define our own minimisation algorithm instead of using an out-of-the-box optimiser from R.
 
-# Define p
+```{r func_defs}
+
+# Define p, a vector of model output pred_eq values.
 
 p <- data$pred_eq
 
-# Define the function
+
+# Define the function f, as described above.
 
 f <- function(p, x) {
   
-  val1 <- round(sum(p))
+  # sum_p   = sum of pred_eq values
+  # count_p = number of pred_eq values above threshold x
+  # out     = function output; sum_p - count_p
   
-  val2 <- sum(p >= x)
+  sum_p <- round(sum(p))
   
-  out <- val1 - val2
+  count_p <- sum(p >= x)
+  
+  out <- sum_p - count_p
   
   return(out)
   
 }
 
-# Minimise WRT x
 
-out <- 1 # output of f
-x <- 0.75 # first guess at x
-x0 <- x
-it <- 0  # iteration number
+# Define the minimiser function minf, to minimise f with respect to x.
 
-while(out != 0){
+# There are three arguments to this function:
+# p   = a vector of pred_eq values p[i] 
+# x0  = an initial guess for the value of x
+# inc = the base increment to change x by
+
+# Smaller values of inc are more likely to give an accurate answer, but will
+# make the loop take longer to run.
+
+minf <- function(p, x0, inc = 1e-5){
   
-  inc <- 10e-5 # increment size
+  out <- 1              # dummy value for output of function f
+  it <- 0               # number of iterations
+  x <- x0               # current value of x
   
-  out <- f(p, x) # get output of f
   
-  mult <- 10^(floor(log10(sqrt(out**2)))-2) # multiplier to increment, depends
-                                            # on how far we are from 0
-  
-  ifelse(out < 0,
-         x <- x + (inc * mult),
-         x <- x - (inc * mult))
-  
-  it <- it + 1
-  
-  if(it %% 100 == 0){
-    if(x == x0){ # if x unchanged in 100 iterations
-      print(paste0("Best guess: x = ", x, " to accuracy ", inc))
-      break
+  while(out != 0){      # loop breaks when output of function f == 0
+    
+    out <- f(p, x)      # get output of function f
+    
+    # we want to change the value of x until we find one that gives the result
+    # f(p, x) == 0. We could do this just by adding or subtracting our increment
+    # value inc, but inc is set to be very small, so this could take a long
+    # time!
+    
+    # to speed things up, we will define a multiplier or scale factor, a.
+    # The value of a should be larger when we are further away from 0, and
+    # smaller when we get closer. This lets us make bigger jumps in the value
+    # of x when we know that we are not near the answer.
+    
+    a <- 10^(floor(log10(sqrt(out**2)))-2)
+    
+    # this means that if the current value of out is an order of magnitude N,
+    # we should scale up our increment by an order of N-2.
+    
+    # If the value of out is +ve, then we need to make x smaller. If out
+    # is -ve, we need to make x bigger.
+    # Either way, we do this by an increment of (inc * a).
+    
+    ifelse(out < 0,
+          x <- x + (inc * a),
+          x <- x - (inc * a))
+    
+    it <- it + 1 # increase the number of iterations by 1
+    
+    # every 100th iteration:
+    
+    if(it %% 100 == 0){
+      if(x == x0){ # if x unchanged in 100 iterations
+        print(paste0("Best guess: x = ", x, " to accuracy ", inc))
+        break # break the loop
+      }
+    x0 <- x # record current value of x
     }
-   x0 <- x # record value of x
-   print(x0)
+  
+  } # close while() loop
+
+  if(out == 0){
+    print(paste0("Solved! x = ", x))
   }
+
+  return(x)
   
 }
+```
 
+We run the function `minf(p, x)` using the `pred_eq` values for the whole of Scotland, and a first estimate of `x0 = 0.5`, for the default increment size of 0.0001.
+
+```{r run_funcs}
+x <- minf(p, 0.5)
 ```
 
 
+To verify this result, we look at the `pred_eq` values in the dataset.
+
+The sum of all `pred_eq` values is `r sum(p)`.
+
+The number of `pred_eq` values greater than, or equal to, `x`, is `r sum(p > x)`.
+
+> For the whole of Scotland, the probability threshold $p_x$ is `r round(x, 8)`.
 
 
