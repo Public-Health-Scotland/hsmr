@@ -35,7 +35,7 @@ The [ROC](https://www.statology.org/interpret-roc-curve/) (**R**eceiver **O**per
 
 A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1]. The closer the curve is to this point, the better the discriminatory power of the model. A poor curve would be close to the *y=x* line - this is equivalent to a random guess, ie. the model is correct half of the time.
 
-AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the ROC curve. Because we know that a perfect curve will be a rectangle with an area of 1, we know that **an AUC close to 1 suggests better discrimination**. An AUC of 0.5 is equivalent to a random guess.
+AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the ROC curve. Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**. An AUC of 0.5 is equivalent to a random guess.
 
 > For a typical predictive model, we would compare the ROC and AUC for the training and testing data. For the HSMR model, this doesn't apply.
 

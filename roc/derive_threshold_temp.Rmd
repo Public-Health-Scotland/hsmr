@@ -20,7 +20,7 @@ data <- read.csv(paste0(data_folder, # base files with predprob
 
 ```
 
-### Decision Threshold
+### Decision Thresholds - Overview
 
 For each geography level (HB, hospital, Scotland) we have the following known values:
 
@@ -47,6 +47,8 @@ To rephrase this programmatically, we want to find `x` such that `sum(p >= x) - 
 From the inequality above, we know that this cannot be solved analytically. This means it must be solved iteratively, using a minimisation algorithm to trial values of `x` until we find one to satisfy the stated condition.
 
 Because the function $f(p_i)$ does not have a continuous derivative, we will need to define our own minimisation algorithm instead of using an out-of-the-box optimiser from R.
+
+### Methodology - Overview
 
 ```{r func_defs}
 
@@ -154,6 +156,14 @@ The sum of all `pred_eq` values is `r sum(p)`.
 
 The number of `pred_eq` values greater than, or equal to, `x`, is `r sum(p > x)`.
 
-> For the whole of Scotland, the probability threshold $p_x$ is `r round(x, 8)`.
+For the whole of Scotland, for the full dataset, the probability threshold $p_x$ is `r round(x, 8)`.
+
+### Application of Methodology
+
+
+
+#### Granularity
+
+In reality, we calculate the SMR for the whole of Scotland and for each hospital separately, and we do it for each period included in the publication. This means that each of these cohorts will have a separate threshold $p_x$.
 
 
