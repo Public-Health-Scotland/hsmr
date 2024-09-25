@@ -86,7 +86,7 @@ f <- function(p, x) {
 # Smaller values of inc are more likely to give an accurate answer, but will
 # make the loop take longer to run.
 
-minf <- function(p, x0, inc = 1e-5){
+minf <- function(p, x0 = 0.5, inc = 1e-5){
   
   out <- 1              # dummy value for output of function f
   it <- 0               # number of iterations
@@ -160,10 +160,89 @@ For the whole of Scotland, for the full dataset, the probability threshold $p_x$
 
 ### Application of Methodology
 
+In reality, we calculate the SMR for the whole of Scotland and for each hospital separately, and we do it for each quarter included in the publication.
 
+> The threshold $p_x$ is different for every hospital and every quarter.
 
-#### Granularity
+We can calculate these thresholds as demonstrated above; the code below takes ~75 minutes to run.
 
-In reality, we calculate the SMR for the whole of Scotland and for each hospital separately, and we do it for each period included in the publication. This means that each of these cohorts will have a separate threshold $p_x$.
+```{r loop_funcs, eval = FALSE}
+
+# Tidy up location codes, and summarise to get every quarter/location combo
+
+grp <- data %>%
+  mutate(location = case_when(
+      location == "C206H" ~ "C418H",
+      location == "G207H" ~ "G107H",
+      location == "G306H" ~ "G405H",
+      location == "G516H" ~ "G405H",
+      location == "Y104H" ~ "Y146H",
+      location == "R101H" ~ "R103H",
+      TRUE ~ location)) %>%
+  group_by(location, quarter) %>%
+  summarise() %>%
+  mutate(threshold = 0) # 449 rows total
+
+# Loop over every group
+
+for(i in 1:nrow(grp)){
+  group <- grp[i,]
+  p <- left_join(group, data)$pred_eq  # get vector of pred_eq for this group
+  x <- minf(p, 0.5)                    # evaluate threshold
+  grp[i, 3] <- x                       # store result
+  print(i)
+}
+```
+
+To avoid rerunning the above loop, the threshold information has been saved out previously.
+
+```{r save_temp, include=FALSE, eval=FALSE}
+temp_out <- data %>%
+  mutate(location = case_when(
+      location == "C206H" ~ "C418H",
+      location == "G207H" ~ "G107H",
+      location == "G306H" ~ "G405H",
+      location == "G516H" ~ "G405H",
+      location == "Y104H" ~ "Y146H",
+      location == "R101H" ~ "R103H",
+      TRUE ~ location)) %>%
+  full_join(grp)
+
+saveRDS(temp_out,
+        paste0("/conf/quality_indicators/hsmr/projects/roc/",
+               pub_day,
+               "_SMR-with-thresholds.rds"))
+```
+
+We can verify the results as we did in the above section.
+
+```{r sanity_check}
+
+results <- readRDS(paste0("/conf/quality_indicators/hsmr/projects/roc/",
+                   pub_day,
+                   "_SMR-with-thresholds.rds"))
+
+results_check <- results %>%
+                 group_by(location, quarter) %>%
+                 summarise(preds_above_threshold = sum(pred_eq >= threshold),
+                           sum_preds             = round(sum(pred_eq)))
+
+fail <- results_check %>% filter(preds_above_threshold != sum_preds)
+
+print(fail)
+
+```
+
+Of the `r nrow(results_check)` combinations of hospital and quarter, there are `r nrow(fail)` for which the threshold could not
+be calculated exactly. These occurred over `r length(unique(fail$location))` different hospitals.
+
+This could be because the increment accuracy was too low, or because a large group of patients had identical `pred_eq` values and could
+not be split up regardless of the threshold placement. However, in all cases the 'best guess' threshold is sufficiently close to the true value.
+
+### Scale
+
+In the publication, the predicted SMR of Scotland is scaled to agree with the observed SMR; as such, the total number of predicted deaths
+is scaled up or down to agree with the total number of observed deaths.
+
 
 
