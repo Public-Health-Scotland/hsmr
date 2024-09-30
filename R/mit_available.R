@@ -22,8 +22,6 @@
 #' mit_available(end_date = lubridate::dmy(30092018))
 #' format(mit_available(end_date = lubridate::dmy(31122018)), "%d %B %Y")
 #' format(mit_available(end_date = lubridate::dmy(31032019)), "%d/%m/%Y")
-#'
-#' @export
 
 mit_available <- function(end_date) {
 
@@ -40,7 +38,7 @@ mit_available <- function(end_date) {
   }
 
   # Calculate the first day of the month, the month before publication
-  first <- lubridate::floor_date(hsmr::pub_date(end_date = end_date,
+  first <- lubridate::floor_date(pub_date(end_date = end_date,
                                                 pub = "current"),
                                  unit = "month") - months(1)
 
@@ -53,9 +51,9 @@ mit_available <- function(end_date) {
   # Return the date of the last Friday in the month before publication
   RcppBDT::getNthDayOfWeek(n,
                            5,
-                           lubridate::month(hsmr::pub_date(end_date = end_date,
+                           lubridate::month(pub_date(end_date = end_date,
                                                            pub = "current")
                                             - months(1)),
-                           lubridate::year(hsmr::pub_date(end_date = end_date,
+                           lubridate::year(pub_date(end_date = end_date,
                                                           pub = "current")))
 }

@@ -24,8 +24,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 hsmr_hid <- function(smr_data, trend_data, end_date){
 

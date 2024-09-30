@@ -21,8 +21,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 
 smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
@@ -168,7 +166,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
   
   # Delete unnecessary model information using bespoke function in order to
   # retain special class of object for predicted probabilities below
-  risk_model <- hsmr::clean_model(risk_model)
+  risk_model <- clean_model(risk_model)
 
   smr01 %<>%
 

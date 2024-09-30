@@ -45,8 +45,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 completeness <- function(quarter = c("previous", "current"),
                          level = c("board", "scotland"),
@@ -71,8 +69,10 @@ completeness <- function(quarter = c("previous", "current"),
 
   # Note that this file can occasionally change when a new quarter's data is
   # added, which will cause the function to error if not updated
-  httr::GET(url = "https://publichealthscotland.scot/media/23753/2024-01-smr-estimates.xlsx",
+  httr::GET(url = "https://publichealthscotland.scot/media/27218/smr_estimates_11june.xlsx",
             httr::write_disk(tmp))
+  
+  
 
   # Note that the range is based on B29 being "NHS Board" and B47 being "All
   # NHS Boards" - if these shift up or down slightly when the file is modified
@@ -131,7 +131,7 @@ completeness <- function(quarter = c("previous", "current"),
   last_month <- format(zoo::as.yearmon(last_month, "%b%y"), "%B %Y")
   last_month <- dplyr::last(last_month)
 
-  if (hsmr::qtr_end(first_day = first_day,
+  if (qtr_end(first_day = first_day,
                     quarter = "current") != last_month) {
     stop("Only the first day of the current quarter can be supplied")
   }
@@ -175,8 +175,8 @@ completeness <- function(quarter = c("previous", "current"),
         cat("All NHS Board HSMRs are based on completeness levels of 95% and",
             "above for",
             dplyr::if_else(quarter == "previous",
-                           hsmr::qtr_prev(first_day = first_day),
-                           hsmr::qtr(first_day = first_day,
+                           qtr_prev(first_day = first_day),
+                           qtr(first_day = first_day,
                                      format = "long")))))
     } else {
 
@@ -186,8 +186,8 @@ completeness <- function(quarter = c("previous", "current"),
         cat("All NHS Board HSMRs are based on completeness levels of 95% and",
             "above for",
             dplyr::if_else(quarter == "previous",
-                           hsmr::qtr_prev(first_day = first_day),
-                           hsmr::qtr(first_day = first_day,
+                           qtr_prev(first_day = first_day),
+                           qtr(first_day = first_day,
                                      format = "long")),
             "with the exception of",
             glue::glue_collapse(sort(comp), sep = ", ", last = " and "))))

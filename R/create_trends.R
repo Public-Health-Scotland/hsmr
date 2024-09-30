@@ -23,9 +23,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#'
-#' @export
 
 create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
 
@@ -130,8 +127,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   gro %<>%
     tidylog::group_by(quarter, year) %>%
     tidylog::mutate(adm_first = min(date_of_death)) %>%
-    tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
-                    quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
+    tidylog::mutate(quarter_full = qtr(as.Date(adm_first), "long"),
+                    quarter_short = qtr(as.Date(adm_first), "short")) %>%
     dplyr::ungroup() %>%
     tidylog::filter(date_of_death > end_date - years(5))
 
@@ -206,8 +203,8 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::mutate(last_cis = max(cis_marker)) %>%
     tidylog::group_by(quarter) %>%
     tidylog::mutate(adm_first = min(admission_date)) %>%
-    tidylog::mutate(quarter_full = hsmr::qtr(as.Date(adm_first), "long"),
-                    quarter_short = hsmr::qtr(as.Date(adm_first), "short")) %>%
+    tidylog::mutate(quarter_full = qtr(as.Date(adm_first), "long"),
+                    quarter_short = qtr(as.Date(adm_first), "short")) %>%
     dplyr::ungroup() %>%
     tidylog::filter(epinum == 1 & cis_marker == last_cis) %>%
 
@@ -605,7 +602,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
   # Joining all quarterly data ----
   # Create minimal tidy dataset
   long_term_trends <- dplyr::bind_rows(subgroups, dis, pop_deaths) %>%
-    mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
+    mutate(completeness_date = submission_deadline(end_date)) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name)) %>%
     # Recode location and healthboard codes to new ones
@@ -701,7 +698,7 @@ create_trends <- function(smr01, gro, pop, dep, spec, hospital_lookup) {
     tidylog::select(hb, location, month, month_label,
                     deaths, pats, scot_deaths, scot_pats, crd_rate, sub_grp,
                     label, agg_label) %>%
-    mutate(completeness_date = hsmr::submission_deadline(end_date)) %>%
+    mutate(completeness_date = submission_deadline(end_date)) %>%
     tidylog::left_join(hospital_lookup, by = "location") %>%
     tidylog::filter(!is.na(location_name)) %>%
     # Recode location and healthboard codes to new ones

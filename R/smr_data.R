@@ -19,8 +19,6 @@
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
-#'
-#' @export
 
 
 smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
@@ -115,7 +113,7 @@ smr_data <- function(smr01, index = c("M", "Q", "Y"), hospital_lookup) {
                                 location == "R103H" ~
                                   "The Balfour",
                                 TRUE ~ location_name),
-      completeness_date = hsmr::submission_deadline(end_date),
+      completeness_date = submission_deadline(end_date),
       period_label = yr(end_date)) %>%
     rename(hb = hbtreat_currentdate)
 
