@@ -5,6 +5,8 @@ output: html_document
 
 ```{r setup, include=FALSE, echo=FALSE}
 
+# Working script, subject to change
+
 library(pROC) # For ROC/AUC
 
 options(scipen = 999)
@@ -12,15 +14,64 @@ options(scipen = 999)
 #source(here::here("setup_environment.R")) # For libraries and filepaths
 source("/conf/linkage/output/charlh07/hsmr-pra/setup_environment.R")
 
+detach("package:tidylog", unload=TRUE)
+
 data <- read.csv(paste0(data_folder, # base files with predprob
                         pub_day,
                         "/base_files/", 
                         pub_day, 
                         "_SMR-with-predprob.csv"))
 
+loc <- read.csv(paste0(here::here(), "/reference_files/location_lookups.csv"))
+
 ```
 
-### Decision Thresholds - Overview
+NB: Data is from the `r pub_day` publication.
+
+## Decision Thresholds
+
+### Overview
+
+The first element of the HSMR modelling process is a logistic regression model.
+
+A regression model is a model that tries to fit a mathematical function to a set of data. The output of the model is a number;
+this number is usually in the range 0-1 and can be treated as a probability. For the HSMR model, this is the probability that a patient will die within 30 days of admission, based on their characteristics.
+
+Once we know these probabilities, we can use them to calculate the number of patients we expect to die within 30 days of admission.
+We do this by summing up all of the output probabilities from the model.
+
+For example, imagine a group of 100 patients, all with a probability of death of 0.2 - we would expect (100x0.2 = 20) deaths. If 50 of
+these patients had a probability of death of 0.1 instead, we would expect (50x0.1 + 50x0.2 = 15) deaths. If all 100 had a slightly
+different probability of death, we would expect (p1 + p2 + .... + p99 + p100) deaths.
+
+There is another type of machine learning model - a 'classification' model. A classification model tries to decide which group
+a particular piece of data falls into, usually out of two different groups.
+
+For the HSMR model, this means turning the output - a probability between 0 and 1 - into a YES or NO answer to the question,
+"will this patient die within 30 days of admission?"
+
+Turning a regression model into a classification model is as simple as deciding on a 'decision threshold' - a value between 0-1,
+where any number below the threshold can be taken as "NO" and any number equal to, or above, the threshold is "YES".
+
+The simplest example of a decision threshold is 0.5 - if a number is less than 0.5 we would round it down to 0, and at 0.5 or over
+we would round up to 1. In this case, 0 = NO and 1 = YES, so a higher probability will translate into a YES.
+
+### Method
+
+In a simple classification problem, we would be able to choose the decision threshold ourselves. For the HSMR model this is not the case.
+
+This is because we already know how many YES outcomes we should see, because we have already calculated the number of expected deaths
+by summing up the output probabilities from the model. Instead, we need to find the decision threshold that leads to this number
+of expected deaths, or YES outcomes.
+
+We need to find the threshold T such that the number of output probabilities greater than, or equal to, T, is the same as the sum of 
+all the output probabilities.
+
+We can't solve this analytically (ie. using a function to get the exact answer). Instead, we need to use a minimisation algorithm.
+
+This means that we trial different values of T until we find one that satisfies the condition.
+
+### Derivation
 
 For each geography level (HB, hospital, Scotland) we have the following known values:
 
@@ -32,11 +83,9 @@ For each geography level (HB, hospital, Scotland) we have the following known va
 
 Using these, we aim to define the threshold probability $p_x$ for which:
 
-$$ f(p_i) = \begin{cases} \mbox{true} & \mbox{if } p_i \geq p_x \\ \mbox{false} & \mbox{otherwise} \end{cases} $$
-where $f(p_i)$ is a prediction of death within 30 days of admission. This can also be stated with binary output rather than boolean, as:
+$$ f(p_i) = \begin{cases} \mbox{true} & \mbox{if } p_i \geq p_x \\ \mbox{false} & \mbox{otherwise} \end{cases} $$ where $f(p_i)$ is a prediction of death within 30 days of admission. This can also be stated with binary output rather than boolean, as:
 
-$$ f(p_i) = \begin{cases} \mbox{1} & \mbox{if } p_i \geq p_x \\ \mbox{0} & \mbox{otherwise} \end{cases} $$
-Recall that we know the value of $N_e$, which indicates the number of `true` outcomes we expect to see. This means that:
+$$ f(p_i) = \begin{cases} \mbox{1} & \mbox{if } p_i \geq p_x \\ \mbox{0} & \mbox{otherwise} \end{cases} $$ Recall that we know the value of $N_e$, which indicates the number of `true` outcomes we expect to see. This means that:
 
 $$ \sum_i f(p_i)  \approx N_e \therefore \sum_i f(p_i)  \approx \sum_i p_i $$
 
@@ -48,7 +97,7 @@ From the inequality above, we know that this cannot be solved analytically. This
 
 Because the function $f(p_i)$ does not have a continuous derivative, we will need to define our own minimisation algorithm instead of using an out-of-the-box optimiser from R.
 
-### Methodology - Overview
+## Code
 
 ```{r func_defs}
 
@@ -149,7 +198,6 @@ We run the function `minf(p, x)` using the `pred_eq` values for the whole of Sco
 x <- minf(p, 0.5)
 ```
 
-
 To verify this result, we look at the `pred_eq` values in the dataset.
 
 The sum of all `pred_eq` values is `r sum(p)`.
@@ -158,17 +206,19 @@ The number of `pred_eq` values greater than, or equal to, `x`, is `r sum(p > x)`
 
 For the whole of Scotland, for the full dataset, the probability threshold $p_x$ is `r round(x, 8)`.
 
-### Application of Methodology
+## Application
 
-In reality, we calculate the SMR for the whole of Scotland and for each hospital separately, and we do it for each quarter included in the publication.
+In reality, we calculate the SMR for the whole of Scotland and for each hospital separately.
 
-> The threshold $p_x$ is different for every hospital and every quarter.
+> The threshold $p_x$ is different for every location.
 
-We can calculate these thresholds as demonstrated above; the code below takes ~75 minutes to run.
+We can calculate these thresholds as demonstrated above.
 
 ```{r loop_funcs, eval = FALSE}
 
-# Tidy up location codes, and summarise to get every quarter/location combo
+# EDIT: read back through the code, and 'period' means YEAR not quarter.
+
+# Tidy up location codes, and summarise
 
 grp <- data %>%
   mutate(location = case_when(
@@ -179,9 +229,9 @@ grp <- data %>%
       location == "Y104H" ~ "Y146H",
       location == "R101H" ~ "R103H",
       TRUE ~ location)) %>%
-  group_by(location, quarter) %>%
+  group_by(location, period) %>%
   summarise() %>%
-  mutate(threshold = 0) # 449 rows total
+  mutate(threshold = 0) # 124 rows total
 
 # Loop over every group
 
@@ -191,7 +241,7 @@ for(i in 1:nrow(grp)){
   x <- minf(p, 0.5)                    # evaluate threshold
   grp[i, 3] <- x                       # store result
   print(i)
-}
+} 
 ```
 
 To avoid rerunning the above loop, the threshold information has been saved out previously.
@@ -211,19 +261,19 @@ temp_out <- data %>%
 saveRDS(temp_out,
         paste0("/conf/quality_indicators/hsmr/projects/roc/",
                pub_day,
-               "_SMR-with-thresholds.rds"))
+               "_SMR-with-thresholds-annual.rds"))
 ```
 
 We can verify the results as we did in the above section.
 
-```{r sanity_check}
+```{r sanity_check, message=FALSE}
 
 results <- readRDS(paste0("/conf/quality_indicators/hsmr/projects/roc/",
                    pub_day,
-                   "_SMR-with-thresholds.rds"))
+                   "_SMR-with-thresholds-annual.rds"))
 
 results_check <- results %>%
-                 group_by(location, quarter) %>%
+                 group_by(location, period, threshold) %>%
                  summarise(preds_above_threshold = sum(pred_eq >= threshold),
                            sum_preds             = round(sum(pred_eq)))
 
@@ -233,16 +283,98 @@ print(fail)
 
 ```
 
-Of the `r nrow(results_check)` combinations of hospital and quarter, there are `r nrow(fail)` for which the threshold could not
-be calculated exactly. These occurred over `r length(unique(fail$location))` different hospitals.
+Of the `r nrow(results_check)` hospitals, there are `r nrow(fail)` for which the threshold could not be calculated exactly.
 
-This could be because the increment accuracy was too low, or because a large group of patients had identical `pred_eq` values and could
-not be split up regardless of the threshold placement. However, in all cases the 'best guess' threshold is sufficiently close to the true value.
+This could be because the increment accuracy was too low - we can rerun these cases with a smaller increment to see if that helps.
 
-### Scale
+```{r small_inc, message=FALSE}
 
-In the publication, the predicted SMR of Scotland is scaled to agree with the observed SMR; as such, the total number of predicted deaths
-is scaled up or down to agree with the total number of observed deaths.
+for(i in 1:nrow(fail)){
+  group <- fail[i,]
+  p <- left_join(group, data)$pred_eq
+  x <- minf(p, group$threshold, inc=1e-8)
+  fail[i, 3] <- x
+}
+ 
+```
 
+Using an increment of $1e^{-8}$, all of these were solvable.
 
+> We now have threshold $p_x$ values for all hospitals.
 
+```{r save_temp_again, include=FALSE, eval=FALSE}
+
+fail_check <- fail %>%
+  left_join(data)  %>%
+  group_by(location, quarter, new_threshold = threshold) %>%
+  summarise(preds_above_threshold = sum(pred_eq >= new_threshold),
+            sum_preds             = round(sum(pred_eq)))
+
+results <- readRDS(paste0("/conf/quality_indicators/hsmr/projects/roc/",
+                   pub_day,
+                   "_SMR-with-thresholds-annual.rds"))
+
+tst <- fail_check %>%
+  select(location, quarter, new_threshold) %>%
+  right_join(results) %>%
+  mutate(threshold = case_when(!is.na(new_threshold) ~ new_threshold,
+                               .default = threshold)) %>%
+  select(-new_threshold)
+
+saveRDS(tst,
+        paste0("/conf/quality_indicators/hsmr/projects/roc/",
+               pub_day,
+               "_SMR-with-thresholds-annual_final.rds"))
+```
+
+```{r read_final, include=FALSE, message=FALSE}
+
+results <- readRDS(paste0("/conf/quality_indicators/hsmr/projects/roc/",
+                   pub_day,
+                   "_SMR-with-thresholds-annual_final.rds"))
+```
+
+## Results
+
+### True and False Positives
+
+There are 4 possible categories for a predicted outcome to fall into; true positive, false positive, true negative and false negative. These are summarised in the table below.
+
+|                |                    |                     |
+|----------------|--------------------|---------------------|
+| True Positive  | Prediction = TRUE  | Observation = TRUE  |
+| False Positive | Prediction = TRUE  | Observation = FALSE |
+| True Negative  | Prediction = FALSE | Observation = FALSE |
+| False Negative | Prediction = FALSE | Observation = TRUE  |
+
+In this case, TRUE represents a death within 30 days of admission.
+
+```{r check_results, include=FALSE}
+
+results_check <- results %>%
+  mutate(obs = case_match(death30,
+                          1 ~ TRUE,
+                          .default = FALSE),
+         pred = case_when(pred_eq < threshold ~ FALSE,
+                          TRUE ~ TRUE)) %>% 
+  group_by(location, obs, pred) %>%
+  summarise(N = n())
+
+results_check_scot <- results_check %>%
+  group_by(obs, pred) %>%
+  summarise(N = sum(N)) %>%
+  mutate(location = "Scot")
+
+results_check <- rbind(results_check, results_check_scot) %>%
+  left_join(loc)
+
+named_locations <- results_check %>% 
+  filter(!is.na(location_name)) %>%
+  group_by(location) %>%
+  mutate(pcent = round(100*N/sum(N), 2))
+
+saveRDS(named_locations,
+        paste0("/conf/quality_indicators/hsmr/projects/roc/",
+               pub_day,
+               "_confusion-data.rds"))
+```
