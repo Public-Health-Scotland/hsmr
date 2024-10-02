@@ -41,7 +41,7 @@ AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the 
 
 AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
 
-```{r roc, echo=FALSE}
+```{r roc, echo=FALSE, message=FALSE}
 
 roc_hsmr <- roc(data$death30, data$pred_eq)
 
@@ -60,6 +60,14 @@ ggroc(roc_hsmr,
   ylab("True Positive Rate") +
   annotate("label", label=paste0("AUC = ", round(auc_hsmr, 3)), x = 0.9, y= 0.1)
 ```
+
+### The C-Statistic
+
+For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the **C-statistic**. The C-statistic is equal to the AUC.
+
+If we take all possible pairs of patients, where Patient A died within 30 days of admission and Patient B did not, the C-statistic tells us what fraction of those pairs would see Patient A given a higher predicted risk than Patient B. It is a measure of how well the model is able to rank patients in order of risk.
+
+In `r 100*round(auc_hsmr, 3)`% of cases, patients who died within 30 days of admission were predicted higher risk than patients who did not.
 
 ## Brier Score
 
@@ -128,4 +136,29 @@ paste0("P Value for model distribution: ", round(p_val, 3))
 
 paste0("Confidence: ", round(conf, 1), "%")
 
+```
+
+### Predicted Risk vs Outcomes
+
+To illustrate this result, we can plot the predicted risk against the crude mortality rate - ideally, these should be perfectly correlated.
+
+```{r risk_plot, message=FALSE}
+plot_data <- data %>%
+  mutate(risk_round = round(pred_eq, 2)) %>%
+  group_by(risk_round) %>%
+  summarise(patients = n(),
+            deaths = sum(death30),
+            cmr = deaths/patients)
+
+ggplot(plot_data, 
+       aes(x = risk_round,
+           y = cmr)) +
+  geom_point(size = 1, shape = 'X') +
+  geom_smooth()
+
+ggplot(plot_data, 
+       aes(x = risk_round,
+           y = cmr)) +
+  geom_col()
+  
 ```
