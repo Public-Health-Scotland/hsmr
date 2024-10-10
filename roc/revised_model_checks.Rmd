@@ -1,0 +1,100 @@
+---
+title: "Model Checks"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+
+# WIP: revised version of the model checks markdown in line with old SSPS code.
+
+library(pROC) # For ROC/AUC
+
+source(here::here("setup_environment.R")) # For libraries and filepaths
+
+detach("package:tidylog", unload=TRUE)
+
+data <- read.csv(paste0(data_folder, # base files with predprob
+                        pub_day,
+                        "/base_files/", 
+                        pub_day, 
+                        "_SMR-with-predprob.csv"))
+
+pdg <- read.csv(paste0(here::here(), # diagnosis lookup table
+                       "/reference_files/",
+                       "diag_grps_lookup_updated.csv")) %>%
+  select(pdiag_grp = DIAGNOSIS_GROUP,
+         primary_diagnosis = label)
+
+data <- data %>%
+  left_join(pdg)
+
+```
+
+context of some kind
+
+## ROC, AUC and C-Statistic
+
+The [ROC](https://www.statology.org/interpret-roc-curve/) (Receiver Operating Characteristic) curve is used to show how well the model discriminates between outcomes.
+
+> For the HSMR model, the positive (1) outcome is death within 30 days of admission.
+
+The ROC curve plots the true positive rate (sensitivity) against the false positive rate (1 - specificity) of the classifier. 
+
+
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6465431/
+
+
+
+
+
+
+
+A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1]. The closer the curve is to this point, the better the discriminatory power of the model. A poor curve would be close to the *y=x* line - this is equivalent to a random guess, ie. the model is correct half of the time.
+
+AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the ROC curve. Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**. An AUC of 0.5, the area beneath the *y=x* line, is equivalent to a random guess.
+
+For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the **C-statistic**. The C-statistic is equal to the AUC.
+
+If we take all possible pairs of patients, where Patient A died within 30 days of admission and Patient B did not, the C-statistic tells us what fraction of those pairs would see Patient A given a higher predicted risk than Patient B. It is a measure of how well the model is able to rank patients in order of risk.
+
+AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
+
+```{r cstats, echo=FALSE, message=FALSE}
+
+c_stats <- data %>%         # get a dataframe of diagnosis codes only
+  group_by(pdiag_grp, primary_diagnosis) %>%
+  summarise(pats = n()) %>% 
+  mutate(c_stat = NA,
+         pcent_pats = 100*pats/sum(pats))       # add a dummy column for C-statistic
+
+for(i in 1:nrow(c_stats)){                          # for every diagnosis code
+  x <- data %>% filter(pdiag_grp == i)              # filter for this code
+  if(length(unique(x$death30)) == 2){               # make sure both outcomes are represented
+    auc_x <- as.numeric(auc(x$death30, x$pred_eq))  # get the AUC/C-statistic
+    c_stats[i, 4] <- auc_x                          # write to dataframe
+  }
+  print(i)
+}
+
+```
+
+```{r roc, echo=FALSE, message=FALSE}
+
+roc_hsmr <- roc(data$death30, data$pred_eq)
+
+auc_hsmr <- auc(roc_hsmr)
+
+ggroc(roc_hsmr, 
+      legacy.axes = TRUE,
+      colour = '#3f3685') +
+  theme_bw() +
+  geom_abline(slope = 1,
+              intercept = 0,
+              colour = 'grey',
+              linetype = 'dashed') +
+  labs(title = paste0("ROC Curve - ", pub_day, " Publication")) +
+  xlab("False Positive Rate") +
+  ylab("True Positive Rate") +
+  annotate("label", label=paste0("AUC = ", round(auc_hsmr, 3)), x = 0.9, y= 0.1)
+```

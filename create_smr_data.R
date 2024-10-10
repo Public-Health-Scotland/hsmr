@@ -151,7 +151,7 @@ smr01 <- smr_model(smr01      = smr01,
                    base_start = start_date,
                    base_end   = base_end,
                    index      = "Y",
-                   save_model = F)
+                   save_model = FALSE)
 
 # smr01 = The output from smr_model()
 # index = Indicating whether the patient indexing is done quarterly

@@ -34,6 +34,8 @@ library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
 library(xfun)          # For converting numbers to words
+library(car)           # For regression QA funcs
+library(pROC)          # For ROC/AUC
 
 # set working directory
 setwd(here::here())
@@ -124,6 +126,7 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day, "/tde"))
   dir.create(paste0(data_folder, pub_day, "/output"))
   dir.create(paste0(data_folder, pub_day, "/open_data"))
+  dir.create(paste0(data_folder, pub_day, "/diagnostics"))
 }
 
 ## 5 - Load common lookups to all scripts ----

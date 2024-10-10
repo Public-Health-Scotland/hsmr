@@ -141,16 +141,25 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                     data = data_lr,
                     family = "binomial",
                     model = FALSE,
-                    y = FALSE)
+                    y = TRUE) # needed for cooks distance
   
-  collinearity_test <- vif(risk_model) # VIF test for collinearity
+  collinearity_stats <- vif(risk_model) # VIF test for collinearity
   
-  save_file(collinearity_test,     # save out VIF data
+  save_file(collinearity_stats,     # save out VIF data
             "VIF_result",
             "base_files",
             "rds",
-            dev = T,
-            overwrite = F)
+            dev = F,
+            overwrite = T)
+  
+  cooks <- cooks.distance(risk_model)
+  
+  save_file(cooks,     # save out CD data
+            "cooks_result",
+            "base_files",
+            "rds",
+            dev = F,
+            overwrite = T)
   
 
   if(save_model == TRUE){
