@@ -3,9 +3,9 @@
 # Description - Runs expensive ROC/AUC and c-statistic calculations
 # for the model_assessment markdown.
 #
-# Note - Requires a large session (100k+) due to size of temporary objects
+# Note - Requires a large session (80k+) due to size of temporary objects
 #
-# Approximate run time - ??
+# Approximate run time - 10 mins
 
 # 1. Housekeeping --------------------------------------------------------------
 
@@ -26,6 +26,18 @@ pdg <- read.csv(paste0(here::here(),
   select(pdiag_grp = DIAGNOSIS_GROUP,
          primary_diagnosis = label) %>%
   distinct()
+
+# VIF for collinearity
+vif <- readRDS(paste0(data_folder,
+                      pub_day,
+                      "/diagnostics/", 
+                      "vif_result.rds"))
+
+# Cooks distance
+cooks <- readRDS(paste0(data_folder,
+                        pub_day,
+                        "/diagnostics/",
+                        "cooks_result.rds"))
 
 ## 1.1 Joining lookups ---------------------------------------------------------
 
@@ -63,7 +75,9 @@ c_statistics <- data.frame(low_bound = c(0., 0.5, 0.6, 0.7, 0.8, 0.9),
 ## 1.3 Clean up env (for space) ------------------------------------------------
 rm(pdg, hospitals, specialty_group)
 
-# 2. C-Statistic by diagnosis --------------------------------------------------
+# 2. C-Statistic and ROC -------------------------------------------------------
+
+## 2.1 C-Statistic by diagnosis --------------------------------------------------
 
 # Get a dataframe of diagnosis names and codes
 # with a column for % patients in this diagnosis group
@@ -91,7 +105,7 @@ for(i in 1:nrow(c_diagnosis)){
 
 rm(auc_x)
 
-## 2.1 Join to ranking ---------------------------------------------------------
+### 2.1.1 Join to ranking ------------------------------------------------------
 
 # Use trunc() to extract (NOT round) the 1st dec place
 # and treat as the lower bound
@@ -103,7 +117,7 @@ c_diagnosis <- c_diagnosis %>%
             by = c("c_trunc" = "low_bound")) %>%
   select(-c_trunc)
 
-# 3. C-Statistic by hospital ---------------------------------------------------
+## 2.2 C-Statistic by hospital ------------------------------------------------
 
 # Get a dataframe of hospital names
 # with a column for % patients at this hospital
@@ -133,7 +147,7 @@ for(i in 1:nrow(c_hospital)){
 
 rm(auc_x)
 
-## 3.1 Join to ranking ---------------------------------------------------------
+### 2.2.1 Join to ranking ------------------------------------------------------
 
 # Use trunc() to extract (NOT round) the 1st dec place
 # and treat as the lower bound
@@ -145,9 +159,9 @@ c_hospital <- c_hospital %>%
             by = c("c_trunc" = "low_bound")) %>%
   select(-c_trunc)
 
-# 4. Whole-Scotland result -----------------------------------------------------
+## 2.3 Whole-Scotland result ---------------------------------------------------
 
-## 4.1 ROC plot ----------------------------------------------------------------
+### 2.3.1 ROC plot -------------------------------------------------------------
 roc_scot <- roc(data$death30, data$pred_eq)
 auc_scot <- auc(roc_scot)
 
@@ -168,12 +182,12 @@ ggroc(roc_scot,
            x = 0.8, 
            y= 0.1)
 
-ggsave(paste0(data_folder, pub_day, "/diagnostics/", "ROC.png"),
+ggsave(paste0(data_folder, pub_day, "/diagnostics/", "roc.png"),
        last_plot(),
        width = 7,
        height = 5)
 
-## 4.2 C-statistic and ranking
+### 2.3.2 C-statistic and ranking ----------------------------------------------
 
 c_scot <- data.frame("location" = "Scotland",
                      "c_stat" = as.numeric(auc_scot)) %>%
@@ -182,7 +196,7 @@ c_scot <- data.frame("location" = "Scotland",
                     by = c("c_trunc" = "low_bound")) %>%
           select(-c_trunc)
 
-# 5. Save out ------------------------------------------------------------------
+## 2.4 Save out ----------------------------------------------------------------
 
 wb <- createWorkbook()
 pdg <- addWorksheet(wb, "Diagnosis")
@@ -194,3 +208,13 @@ writeData(wb, scot, c_scot)
 saveWorkbook(wb,
              paste0(data_folder, pub_day, "/diagnostics/", "c_stats.xlsx"),
              overwrite = TRUE)
+
+## 2.5 Clean up env (for space) ------------------------------------------------
+
+rm(c_diagnosis, c_hospital, c_scot, c_statistics, roc_scot, x, auc_scot)
+
+# 3. Collinearity --------------------------------------------------------------
+
+
+
+# 4. Cooks Distance ------------------------------------------------------------

@@ -133,6 +133,13 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                        n = length(death30)) %>%
     dplyr::ungroup()
 
+  # Save training data for diagnostics
+  saveRDS(data_lr,
+          paste0(data_folder,
+                 pub_day,
+                 "/diagnostics/",
+                 "training_data.rds"))
+  
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
                       pmorbs5_sum + age_in_years + factor(sex) +
@@ -145,32 +152,31 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
   
   collinearity_stats <- vif(risk_model) # VIF test for collinearity
   
-  save_file(collinearity_stats,     # save out VIF data
-            "VIF_result",
-            "base_files",
-            "rds",
-            dev = F,
-            overwrite = T)
+  saveRDS(collinearity_stats,
+          paste0(data_folder,
+                 pub_day,
+                 "/diagnostics/",
+                 "vif_result.rds"))
   
   cooks <- cooks.distance(risk_model)
   
-  save_file(cooks,     # save out CD data
-            "cooks_result",
-            "base_files",
-            "rds",
-            dev = F,
-            overwrite = T)
+  # data_with_cooks <- data_lr %>% cbind(cooks)
+  
+  saveRDS(cooks,
+          paste0(data_folder,
+                 pub_day,
+                 "/diagnostics/",
+                 "cooks_result.rds"))
   
 
   if(save_model == TRUE){
     # Before cleaning, save out the model in RDS format. This will take a while
     # (60+ minutes) due to model size.
-    save_file(risk_model, 
-              "full_model", 
-              "base_files", 
-              "rds", 
-              dev = T, 
-              overwrite = F)
+    saveRDS(risk_model,
+            paste0(data_folder,
+                   pub_day,
+                   "/diagnostics/",
+                   "full_model.rds"))
   }
   
   # Delete unnecessary model information using bespoke function in order to

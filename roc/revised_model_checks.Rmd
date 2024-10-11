@@ -5,44 +5,63 @@ output: html_document
 
 ```{r setup, include=FALSE, echo=FALSE}
 
-# WIP: revised version of the model checks markdown in line with old SSPS code.
-
-library(pROC) # For ROC/AUC
-
 source(here::here("setup_environment.R")) # For libraries and filepaths
 
 detach("package:tidylog", unload=TRUE)
 
-data <- read.csv(paste0(data_folder, # base files with predprob
+c_scot <- read.xlsx(paste0(data_folder,
+                           pub_day,
+                           "/diagnostics/",
+                           "c_stats.xlsx"),
+                    sheet = "Scotland")
+
+c_pdg <- read.xlsx(paste0(data_folder,
+                          pub_day,
+                          "/diagnostics/",
+                          "c_stats.xlsx"),
+                   sheet = "Diagnosis")
+
+c_loc <- read.xlsx(paste0(data_folder,
+                          pub_day,
+                          "/diagnostics/",
+                          "c_stats.xlsx"),
+                   sheet = "Location")
+
+cooks <- readRDS(paste0(data_folder,
                         pub_day,
-                        "/base_files/", 
-                        pub_day, 
-                        "_SMR-with-predprob.csv"))
-
-pdg <- read.csv(paste0(here::here(), # diagnosis lookup table
-                       "/reference_files/",
-                       "diag_grps_lookup_updated.csv")) %>%
-  select(pdiag_grp = DIAGNOSIS_GROUP,
-         primary_diagnosis = label)
-
-data <- data %>%
-  left_join(pdg)
-
+                        "/diagnostics/",
+                        "cooks_result.rds"))
 ```
 
 context of some kind
 
-## ROC, AUC and C-Statistic
+## Model Training
+### Collinearity
+### Cook's Distance
 
-The [ROC](https://www.statology.org/interpret-roc-curve/) (Receiver Operating Characteristic) curve is used to show how well the model discriminates between outcomes.
+[Cook's Distance](https://www.statology.org/how-to-identify-influential-data-points-using-cooks-distance/) is a measure of how much influence each individual training data point has over the shape of the model output function. The larger the value, the more influential the specific point is.
 
-> For the HSMR model, the positive (1) outcome is death within 30 days of admission.
+**A large Cook's distance is not necessarily a problem**, but it does indicate that the corresponding data has a strong impact on the model.  For example, if only a few patients had a specific primary diagnosis, we would expect to see large Cook's distances for those patients.
 
-The ROC curve plots the true positive rate (sensitivity) against the false positive rate (1 - specificity) of the classifier. 
+If a small number of training data points are found to be very influential, we should investigate why this is. If they appear to be outliers, or to have data quality issues that may negatively impact the fit of the model, we may want to retrain the model and exclude these rows.
+
+A common threshold to use when determining which values are large is $\frac{4}{N}$, where $N$ is the number of rows in the training data. **This threshold is quite low because of the large value of N**.
+
+### Cook's Distance Results
+
+```{r cook_plot, echo=FALSE}
+
+n <- length(cooks)
+thresh <- 4/n
+
+n_over_thresh <- as.numeric(sum(cooks>thresh, na.rm = TRUE))
+pcent_over_thresh <- 100*n_over_thresh/n
+```
+
+We find that `r n_over_thresh` points have a Cook's distance over this threshold, which constitutes `r pcent_over_thresh`% of the training data.
 
 
 
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6465431/
 
 
 
@@ -50,51 +69,130 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6465431/
 
 
 
-A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1]. The closer the curve is to this point, the better the discriminatory power of the model. A poor curve would be close to the *y=x* line - this is equivalent to a random guess, ie. the model is correct half of the time.
 
-AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the ROC curve. Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**. An AUC of 0.5, the area beneath the *y=x* line, is equivalent to a random guess.
 
-For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the **C-statistic**. The C-statistic is equal to the AUC.
+
+
+## Model Performance
+
+### ROC, AUC and C-statistic
+
+The [ROC](https://www.statology.org/interpret-roc-curve/) (Receiver Operating Characteristic) curve is used to show how well the model discriminates between outcomes. It plots the true positive rate (sensitivity) against the false positive rate (1 - specificity) of the model. **For the HSMR model, the positive (1) outcome is death within 30 days of admission.**
+
+A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1] to indicate a sensitivity and specificity of 1. The closer the curve is to this point, the better the discriminatory power of the model.
+
+A poor curve would be close to the $y=x$ line - this is equivalent to a random guess, ie. the model is correct half of the time.
+
+[AUC](https://www.statology.org/what-is-a-good-auc-score/) (Area Under the Curve) is a single value metric to describe the ROC curve.
+
+Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**.
+
+An AUC of 0.5, the area beneath the $y=x$ line, is equivalent to a random guess.
+
+For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the [C-statistic](https://www.statology.org/how-to-interpret-the-c-statistic-of-a-logistic-regression-model/). **The C-statistic is equal to the AUC.**
 
 If we take all possible pairs of patients, where Patient A died within 30 days of admission and Patient B did not, the C-statistic tells us what fraction of those pairs would see Patient A given a higher predicted risk than Patient B. It is a measure of how well the model is able to rank patients in order of risk.
 
 AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
 
-```{r cstats, echo=FALSE, message=FALSE}
+There is no strict rule about what constitutes a good or bad C-statistic; however, for the HSMR model we use the following system.
 
-c_stats <- data %>%         # get a dataframe of diagnosis codes only
-  group_by(pdiag_grp, primary_diagnosis) %>%
-  summarise(pats = n()) %>% 
-  mutate(c_stat = NA,
-         pcent_pats = 100*pats/sum(pats))       # add a dummy column for C-statistic
+| C-Statistic Value    | Discrimination Score |
+|----------------------|----------------------|
+| c $\leq$ 0.5         | Very Poor            |
+| 0.5 $<$ c $\leq$ 0.6 | Poor                 |
+| 0.6 $<$ c $\leq$ 0.7 | Fair                 |
+| 0.7 $<$ c $\leq$ 0.8 | Good                 |
+| 0.8 $<$ c $\leq$ 0.9 | Very Good            |
+| c $>$ 0.9            | Excellent            |
 
-for(i in 1:nrow(c_stats)){                          # for every diagnosis code
-  x <- data %>% filter(pdiag_grp == i)              # filter for this code
-  if(length(unique(x$death30)) == 2){               # make sure both outcomes are represented
-    auc_x <- as.numeric(auc(x$death30, x$pred_eq))  # get the AUC/C-statistic
-    c_stats[i, 4] <- auc_x                          # write to dataframe
-  }
-  print(i)
-}
 
+### ROC for Scotland
+
+The ROC curve for the logistic regression model is shown below.
+
+```{r roc_curve, echo=FALSE, out.width = '80%'}
+
+png_path <- paste0(data_folder,
+                   pub_day,
+                   "/diagnostics/",
+                   "roc.png")
+
+knitr::include_graphics(png_path)
 ```
 
-```{r roc, echo=FALSE, message=FALSE}
+The AUC, or C-statistic, for the whole of Scotland is `r round(c_scot$c_stat, 3)`. This means that the model is able to correctly discriminate between high-risk and low-risk patients `r round(c_scot$c_stat, 3)*100`% of the time.
 
-roc_hsmr <- roc(data$death30, data$pred_eq)
+We expect the C-statistic for the whole of Scotland to be greater than 0.9 (Excellent).
 
-auc_hsmr <- auc(roc_hsmr)
+### C-Static By Hospital
 
-ggroc(roc_hsmr, 
-      legacy.axes = TRUE,
-      colour = '#3f3685') +
-  theme_bw() +
-  geom_abline(slope = 1,
-              intercept = 0,
-              colour = 'grey',
-              linetype = 'dashed') +
-  labs(title = paste0("ROC Curve - ", pub_day, " Publication")) +
-  xlab("False Positive Rate") +
-  ylab("True Positive Rate") +
-  annotate("label", label=paste0("AUC = ", round(auc_hsmr, 3)), x = 0.9, y= 0.1)
+We can also calculate the C-statistic for each named hospital in the publication. This lets us know if there are any locations which are particularly impacted by poor discrimination from the model.
+
+**If the HSMR value for a particular hospital is outside of the warning limits, the first thing to check is how well the model predicts outcomes there.**
+
+The full list of hospital-level C-statistics can be found in the `diagnostics` folder. A summary is shown below.
+
+```{r c_hosp, echo=FALSE}
+
+c_loc_sum <- c_loc %>%
+  group_by(discrimination) %>%
+  summarise('# Hospitals' = n(),
+            '# Patients' = sum(pats)) %>%
+  rename('Discrimination Score' = discrimination)
+
+c_loc_sum$`Discrimination Score` <- factor(c_loc_sum$`Discrimination Score`,
+                                           levels = c("Very Poor",
+                                                  "Poor",
+                                                  "Fair",
+                                                  "Good",
+                                                  "Very Good",
+                                                  "Excellent",
+                                                  NA))
+
+knitr::kable(c_loc_sum %>% arrange(`Discrimination Score`),
+             caption = "Summary of C-statistics by hospital.")
 ```
+An `NA` C-statistic means that there was only 1 outcome for a particular hospital (eg. no deaths within 30 days), so the C-statistic could not be calculated.
+
+
+### C-Statistic By Primary Diagnosis
+
+Similarly, we can calculate the C-statistic for each primary diagnosis group.
+
+The full list of diagnosis-level C-statistics can be found in the `diagnostics` folder. A summary is shown below.
+
+```{r c_diag, echo=FALSE}
+
+c_pdg_sum <- c_pdg %>%
+  group_by(discrimination) %>%
+  summarise('# Diagnoses' = n(),
+            '# Patients' = sum(pats)) %>%
+  rename('Discrimination Score' = discrimination)
+
+c_pdg_sum$`Discrimination Score` <- factor(c_pdg_sum$`Discrimination Score`,
+                                           levels = c("Very Poor",
+                                                  "Poor",
+                                                  "Fair",
+                                                  "Good",
+                                                  "Very Good",
+                                                  "Excellent",
+                                                  NA))
+
+good_plus <- c_pdg_sum %>%
+  filter(`Discrimination Score` %in% c("Good", "Very Good", "Excellent")) %>%
+  summarise(n_pdg = sum(`# Diagnoses`),
+            n_pats = sum(`# Patients`)) %>%
+  mutate(tot_pdg = nrow(c_pdg),
+         tot_pats = sum(c_pdg$pats),
+         pcent_pdg = 100*(n_pdg/tot_pdg),
+         pcent_pats = 100*(n_pats/tot_pats))
+
+knitr::kable(c_pdg_sum %>% arrange(`Discrimination Score`),
+             caption = "Summary of C-statistics by primary diagnosis group.")
+```
+
+An `NA` C-statistic means that there was only 1 outcome for a particular diagnosis (eg. no deaths within 30 days), so the C-statistic could not be calculated.
+
+`r round(good_plus$pcent_pdg, 2)`% of primary diagnosis groups, constituting `r round(good_plus$pcent_pats, 2)`% of patients, had Good, Very Good or Excellent C-statistics.
+
