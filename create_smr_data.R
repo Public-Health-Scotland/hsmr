@@ -11,7 +11,7 @@
 # Description - Extracts SMR01 & deaths data and carries out required
 # manipulations and modelling to create the minimal tidy datasets for HSMR
 #
-# Approximate run time - xx minutes
+# Approximate run time - 3 hours
 #########################################################################
 
 
