@@ -1,0 +1,79 @@
+---
+title: "Model Checks"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+
+source(here::here("setup_environment.R")) # For libraries and filepaths
+
+detach("package:tidylog", unload=TRUE)
+
+cooks <- readRDS(paste0(data_folder,
+                        pub_day,
+                        "/diagnostics/",
+                        "cooks_result.rds"))
+
+training_data <- readRDS(paste0(data_folder,
+                                pub_day,
+                                "/diagnostics/",
+                                "training_data.rds"))
+```
+
+context of some kind
+
+## Model Training
+### Collinearity
+### Cook's Distance
+
+[Cook's Distance](https://www.statology.org/how-to-identify-influential-data-points-using-cooks-distance/) is a measure of how much influence each individual training data point has over the shape of the model output function. The larger the value, the more influential the specific point is.
+
+**A large Cook's distance is not necessarily a problem**, but it does indicate that the corresponding data has a strong impact on the model.  For example, if only a few patients had a specific primary diagnosis, we might expect to see large Cook's distances for those patients.
+
+If a small number of training data points are found to be very influential, we should investigate why this is. If they appear to be outliers, or to have data quality issues that may negatively impact the fit of the model, we may want to retrain the model and exclude these rows.
+
+A common threshold to use when determining which values are large is $\frac{4}{N}$, where $N$ is the number of rows in the training data. **This threshold is quite low because of the large value of N**, and we may see a large number of points over the threshold.
+
+### Cook's Distance Results
+
+```{r cook_d, echo=FALSE}
+
+n <- length(cooks)
+thresh <- 4/n
+
+n_over_thresh <- as.numeric(sum(cooks>thresh, na.rm = TRUE))
+pcent_over_thresh <- 100*n_over_thresh/n
+```
+
+We find that `r n_over_thresh` points have a Cook's distance over this threshold, which constitutes `r pcent_over_thresh`% of the training data.
+
+We can also take a closer look to see if any of the points have a much larger Cook's distance than the others.
+
+```{r cook_d_rank}
+
+cooks <- as.data.frame(cooks)
+
+cooks_rank <- cooks %>%
+  filter(!is.na(cooks)) %>% 
+  mutate(log_c = round(log10(cooks)),
+         `Order of Magnitude` = 10**log_c) %>%
+  group_by(`Order of Magnitude`) %>%
+  summarise(`N Rows` = n())
+
+knitr::kable(cooks_rank %>% arrange(`Order of Magnitude`),
+             caption = "Order of magnitude summary of Cook's distances.")
+
+training_w_cooks <- training_data %>% cbind(cooks)
+
+saveRDS(training_w_cooks,
+        paste0(data_folder,
+               pub_day,
+               "/diagnostics/",
+               "training_data_with_cooks.rds"))
+
+```
+
+If a small number of rows has a much larger order of magnitude than the others, we may want to investigate these.
+
+The full training dataset, with Cook's distances, is saved in the `diagnostics` folder.
+

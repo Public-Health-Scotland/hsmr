@@ -1,5 +1,5 @@
 ---
-title: "Model Checks"
+title: "Model Diagnostic"
 output: html_document
 ---
 
@@ -26,52 +26,7 @@ c_loc <- read.xlsx(paste0(data_folder,
                           "/diagnostics/",
                           "c_stats.xlsx"),
                    sheet = "Location")
-
-cooks <- readRDS(paste0(data_folder,
-                        pub_day,
-                        "/diagnostics/",
-                        "cooks_result.rds"))
 ```
-
-context of some kind
-
-## Model Training
-### Collinearity
-### Cook's Distance
-
-[Cook's Distance](https://www.statology.org/how-to-identify-influential-data-points-using-cooks-distance/) is a measure of how much influence each individual training data point has over the shape of the model output function. The larger the value, the more influential the specific point is.
-
-**A large Cook's distance is not necessarily a problem**, but it does indicate that the corresponding data has a strong impact on the model.  For example, if only a few patients had a specific primary diagnosis, we would expect to see large Cook's distances for those patients.
-
-If a small number of training data points are found to be very influential, we should investigate why this is. If they appear to be outliers, or to have data quality issues that may negatively impact the fit of the model, we may want to retrain the model and exclude these rows.
-
-A common threshold to use when determining which values are large is $\frac{4}{N}$, where $N$ is the number of rows in the training data. **This threshold is quite low because of the large value of N**.
-
-### Cook's Distance Results
-
-```{r cook_plot, echo=FALSE}
-
-n <- length(cooks)
-thresh <- 4/n
-
-n_over_thresh <- as.numeric(sum(cooks>thresh, na.rm = TRUE))
-pcent_over_thresh <- 100*n_over_thresh/n
-```
-
-We find that `r n_over_thresh` points have a Cook's distance over this threshold, which constitutes `r pcent_over_thresh`% of the training data.
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Model Performance
 
@@ -137,8 +92,8 @@ The full list of hospital-level C-statistics can be found in the `diagnostics` f
 
 c_loc_sum <- c_loc %>%
   group_by(discrimination) %>%
-  summarise('# Hospitals' = n(),
-            '# Patients' = sum(pats)) %>%
+  summarise('N Hospitals' = n(),
+            'N Patients' = sum(pats)) %>%
   rename('Discrimination Score' = discrimination)
 
 c_loc_sum$`Discrimination Score` <- factor(c_loc_sum$`Discrimination Score`,
@@ -166,8 +121,8 @@ The full list of diagnosis-level C-statistics can be found in the `diagnostics` 
 
 c_pdg_sum <- c_pdg %>%
   group_by(discrimination) %>%
-  summarise('# Diagnoses' = n(),
-            '# Patients' = sum(pats)) %>%
+  summarise('N Diagnoses' = n(),
+            'N Patients' = sum(pats)) %>%
   rename('Discrimination Score' = discrimination)
 
 c_pdg_sum$`Discrimination Score` <- factor(c_pdg_sum$`Discrimination Score`,
@@ -181,8 +136,8 @@ c_pdg_sum$`Discrimination Score` <- factor(c_pdg_sum$`Discrimination Score`,
 
 good_plus <- c_pdg_sum %>%
   filter(`Discrimination Score` %in% c("Good", "Very Good", "Excellent")) %>%
-  summarise(n_pdg = sum(`# Diagnoses`),
-            n_pats = sum(`# Patients`)) %>%
+  summarise(n_pdg = sum(`N Diagnoses`),
+            n_pats = sum(`N Patients`)) %>%
   mutate(tot_pdg = nrow(c_pdg),
          tot_pats = sum(c_pdg$pats),
          pcent_pdg = 100*(n_pdg/tot_pdg),
@@ -195,4 +150,5 @@ knitr::kable(c_pdg_sum %>% arrange(`Discrimination Score`),
 An `NA` C-statistic means that there was only 1 outcome for a particular diagnosis (eg. no deaths within 30 days), so the C-statistic could not be calculated.
 
 `r round(good_plus$pcent_pdg, 2)`% of primary diagnosis groups, constituting `r round(good_plus$pcent_pats, 2)`% of patients, had Good, Very Good or Excellent C-statistics.
+
 
