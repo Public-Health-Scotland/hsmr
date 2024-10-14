@@ -1,11 +1,13 @@
 ---
-title: "Model Checks"
+title: "Predictor Analysis"
 output: html_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
 
 source(here::here("setup_environment.R")) # For libraries and filepaths
+
+options(scipen = 99)
 
 detach("package:tidylog", unload=TRUE)
 
@@ -18,12 +20,36 @@ training_data <- readRDS(paste0(data_folder,
                                 pub_day,
                                 "/diagnostics/",
                                 "training_data.rds"))
+
+vif <-readRDS(paste0(data_folder,
+                     pub_day,
+                     "/diagnostics/",
+                     "vif_result.rds"))
+
+vif <- data.frame(Variable=row.names(vif), vif) %>% 
+  select(Variable, VIF = GVIF)
+
 ```
 
-context of some kind
 
-## Model Training
 ### Collinearity
+
+[Variance Influence Factor](https://www.statology.org/variance-inflation-factor-r/) (or VIF) is a measure of the correlation between predictors in a regression model. VIF can be used to detect collinearity.
+
+A high degree of collinearity between predictors means that the coefficient and p-value estimation is likely to be unreliable.
+
+Each numerical predictor has its own VIF value. In general, a value of **5 or less** is considered to be acceptable.
+
+**For one-hot encoded categorical variables like primary diagnosis, large values are no cause for concern**. This is because one-hot encoding introduces an inherent correlation, ie. a person with a primary diagnosis of 7 will never have a primary diagnosis of 8, so the negative correlation between levels of the variable is very high.
+
+The VIFs for the predictors are summarised below.
+
+```{r vif, echo=FALSE}
+knitr::kable(vif, row.names = FALSE)
+```
+
+If any variables **other than pdiag_grp** have a VIF of 5 or more, we may need to revise our choice of predictor variables.
+
 ### Cook's Distance
 
 [Cook's Distance](https://www.statology.org/how-to-identify-influential-data-points-using-cooks-distance/) is a measure of how much influence each individual training data point has over the shape of the model output function. The larger the value, the more influential the specific point is.
@@ -45,22 +71,24 @@ n_over_thresh <- as.numeric(sum(cooks>thresh, na.rm = TRUE))
 pcent_over_thresh <- 100*n_over_thresh/n
 ```
 
-We find that `r n_over_thresh` points have a Cook's distance over this threshold, which constitutes `r pcent_over_thresh`% of the training data.
+We find that `r n_over_thresh` points have a Cook's distance over this threshold, which constitutes `r round(pcent_over_thresh, 2)`% of the training data.
 
 We can also take a closer look to see if any of the points have a much larger Cook's distance than the others.
 
-```{r cook_d_rank}
+```{r cook_d_rank, echo=FALSE, message=FALSE}
 
 cooks <- as.data.frame(cooks)
 
 cooks_rank <- cooks %>%
   filter(!is.na(cooks)) %>% 
   mutate(log_c = round(log10(cooks)),
-         `Order of Magnitude` = 10**log_c) %>%
-  group_by(`Order of Magnitude`) %>%
-  summarise(`N Rows` = n())
+         `Order of Magnitude` = paste0("10e", log_c)) %>%
+  group_by(`Order of Magnitude`, log_c) %>%
+  summarise(`N Rows` = n()) %>%
+  arrange(log_c) %>%
+  select(-log_c)
 
-knitr::kable(cooks_rank %>% arrange(`Order of Magnitude`),
+knitr::kable(cooks_rank,
              caption = "Order of magnitude summary of Cook's distances.")
 
 training_w_cooks <- training_data %>% cbind(cooks)
@@ -76,4 +104,3 @@ saveRDS(training_w_cooks,
 If a small number of rows has a much larger order of magnitude than the others, we may want to investigate these.
 
 The full training dataset, with Cook's distances, is saved in the `diagnostics` folder.
-

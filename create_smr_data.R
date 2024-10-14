@@ -256,11 +256,18 @@ save_file(public_dash_all, "SMR_data_public_dashboard", "output", "rds", dev = F
 ### 4 - Model diagnostic -----------------------------------
 
 source("roc/diagnostic_script.R")
+
 rmarkdown::render("roc/model_diagnostic.Rmd", 
                   output_file = paste0(data_folder,
                                 pub_day,
                                 "/diagnostics/",
                                 "model_diagnostic.html"))
+
+rmarkdown::render("roc/predictor_analysis.Rmd", 
+                  output_file = paste0(data_folder,
+                                       pub_day,
+                                       "/diagnostics/",
+                                       "predictor_analysis.html"))
 
 
 ### END OF SCRIPT ###
