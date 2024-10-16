@@ -5,6 +5,8 @@ output: html_document
 
 ```{r setup, include=FALSE, echo=FALSE}
 
+# WIP: revised version of the model checks markdown in line with old SSPS code.
+
 library(pROC) # For ROC/AUC
 
 source(here::here("setup_environment.R")) # For libraries and filepaths
@@ -19,7 +21,7 @@ data <- read.csv(paste0(data_folder, # base files with predprob
 
 ```
 
-The HSMR model is **not** predictive; it is a retrospective tool used to assess patient outcomes at hospital level. One key feature of the model is that it is **inherently overfit**. This is because the test data is part of the training dataset. The model is retrained for every publication, so overfitting is never a cause for concern, as **the model will never be used to classify data it hasn't been trained on**.
+The HSMR model is **not** predictive; it is a retrospective tool used to assess patient outcomes at hospital level. One key feature of the model is that it is **inherently overfit**. This is because the test data is part of the training dataset. The model is retrained for every publication, so overfitting is never a cause for concern, as **the model will never be used to fit data it hasn't been trained on**.
 
 > What looks like good performance for the HSMR model may not be good performance for a purely predictive logistic model.
 
@@ -39,7 +41,7 @@ AUC (**A**rea **U**nder the **C**urve) is a single value metric to describe the 
 
 AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
 
-```{r roc, echo=FALSE}
+```{r roc, echo=FALSE, message=FALSE}
 
 roc_hsmr <- roc(data$death30, data$pred_eq)
 
@@ -58,6 +60,14 @@ ggroc(roc_hsmr,
   ylab("True Positive Rate") +
   annotate("label", label=paste0("AUC = ", round(auc_hsmr, 3)), x = 0.9, y= 0.1)
 ```
+
+### The C-Statistic
+
+For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the **C-statistic**. The C-statistic is equal to the AUC.
+
+If we take all possible pairs of patients, where Patient A died within 30 days of admission and Patient B did not, the C-statistic tells us what fraction of those pairs would see Patient A given a higher predicted risk than Patient B. It is a measure of how well the model is able to rank patients in order of risk.
+
+In `r 100*round(auc_hsmr, 3)`% of cases, patients who died within 30 days of admission were predicted higher risk than patients who did not.
 
 ## Brier Score
 
@@ -84,46 +94,39 @@ The [Hosmer-Lemeshow](https://en.wikipedia.org/wiki/Hosmer%E2%80%93Lemeshow_test
 
 The test statistic is calculated by ordering the data according to the predicted probability of success, dividing the probabilities into percentile groups, and calculating how closely the percentiles of the true outcomes match those of the predictions.
 
-The Hosmer-Lemeshow test statistic is used to calculate a P-value for the model. We would expect the model to fall within a 99% confidence interval *at minimum*.
+**DEV NOTE: I'm not 100% sure I fully understand H-L, or whether it's the best choice for GOF test.**
 
 ```{r hosmer, echo=FALSE}
 
-df <- data %>%
-  group_by(pred_eq) %>%
-  summarise(n_px = n(),
-            n_deaths = sum(death30)) %>%
-  mutate(grp = case_when(pred_eq < 0.1 ~ 1,
-                         pred_eq < 0.2 ~ 2,
-                         pred_eq < 0.3 ~ 3,
-                         pred_eq < 0.4 ~ 4,
-                         pred_eq < 0.5 ~ 5,
-                         pred_eq < 0.6 ~ 6,
-                         pred_eq < 0.7 ~ 7,
-                         pred_eq < 0.8 ~ 8,
-                         pred_eq < 0.9 ~ 9,
-                         .default = 10)) %>%
-  group_by(grp) %>%
-  summarise(n_px = sum(n_px),
-            n_deaths = sum(n_deaths),
-            n_exp = sum(pred_eq),
-            n_notexp = n_px - n_exp,
-            n_notdeaths = n_px - n_deaths)
+hl <- ResourceSelection::hoslem.test(data$death30,
+                                      data$pred_eq,
+                                      g=20)
 
-test_stat <- df %>%
-  group_by(grp) %>%
-  summarise(h1 = (n_deaths - n_exp)**2/n_exp,
-            h2 = (n_notdeaths - n_notexp)**2/n_notexp,
-            hoslem = h1-h2) %>%
-  ungroup() %>%
-  summarise(hoslem = sum(hoslem))
+print(hl)
 
-h_statistic = test_stat$hoslem
+```
 
-p_val <- pchisq(h_statistic, 8, lower.tail = FALSE)
-conf <- (1-p_val)*100
+### Predicted Risk vs Outcomes
 
-paste0("P Value for model distribution: ", round(p_val, 3))
+To illustrate this result, we can plot the predicted risk against the crude mortality rate - ideally, these should be perfectly correlated.
 
-paste0("Confidence: ", round(conf, 1), "%")
+```{r risk_plot, message=FALSE}
+plot_data <- data %>%
+  mutate(risk_round = round(pred_eq, 2)) %>%
+  group_by(risk_round) %>%
+  summarise(patients = n(),
+            deaths = sum(death30),
+            cmr = deaths/patients)
 
+ggplot(plot_data, 
+       aes(x = risk_round,
+           y = cmr)) +
+  geom_point(size = 1, shape = 'X') +
+  geom_smooth()
+
+ggplot(plot_data, 
+       aes(x = risk_round,
+           y = cmr)) +
+  geom_col()
+  
 ```

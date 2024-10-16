@@ -15,11 +15,11 @@ change_hbcodes <- function(dataset, version_to,
 
       dataset %>%
         mutate(across(all_of(code_cols),
-                      ~recode(.,
-                              'S08000029' = "S08000018",
-                              'S08000030' = "S08000027",
-                              'S08000031' = "S08000021",
-                              'S08000032' = "S08000023")))
+                      ~dplyr::recode(., # explicit namespace to avoid error
+                              "S08000029" = "S08000018",
+                              "S08000030" = "S08000027",
+                              "S08000031" = "S08000021",
+                              "S08000032" = "S08000023")))
 
   } else if (version_to == "19") { # From 2014 to 2019
 

@@ -11,7 +11,7 @@
 # Description - Extracts SMR01 & deaths data and carries out required
 # manipulations and modelling to create the minimal tidy datasets for HSMR
 #
-# Approximate run time - xx minutes
+# Approximate run time - 3 hours
 #########################################################################
 
 
@@ -151,7 +151,7 @@ smr01 <- smr_model(smr01      = smr01,
                    base_start = start_date,
                    base_end   = base_end,
                    index      = "Y",
-                   save_model = F)
+                   save_model = FALSE)
 
 # smr01 = The output from smr_model()
 # index = Indicating whether the patient indexing is done quarterly
@@ -255,7 +255,19 @@ save_file(public_dash_all, "SMR_data_public_dashboard", "output", "rds", dev = F
 
 ### 4 - Model diagnostic -----------------------------------
 
-rmarkdown::render("roc/model_checks.Rmd")
+source("roc/diagnostic_script.R")
+
+rmarkdown::render("roc/model_diagnostic.Rmd", 
+                  output_file = paste0(data_folder,
+                                pub_day,
+                                "/diagnostics/",
+                                "model_diagnostic.html"))
+
+rmarkdown::render("roc/predictor_analysis.Rmd", 
+                  output_file = paste0(data_folder,
+                                       pub_day,
+                                       "/diagnostics/",
+                                       "predictor_analysis.html"))
 
 
 ### END OF SCRIPT ###
