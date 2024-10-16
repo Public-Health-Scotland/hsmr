@@ -3,9 +3,8 @@
 # Description - Runs expensive ROC/AUC and c-statistic calculations
 # for the model_assessment markdown.
 #
-# Note - Requires a large session (80k+) due to size of temporary objects
 #
-# Approximate run time - 10 mins
+# Approximate run time - 2-5 mins
 
 # 1. Housekeeping --------------------------------------------------------------
 
@@ -70,7 +69,7 @@ data <- data %>%
 
 c_statistics <- data.frame(low_bound = c(0., 0.5, 0.6, 0.7, 0.8, 0.9),
                            discrimination = c("Very Poor", "Poor", "Fair",
-                                              "Very Good", "Good", "Excellent"))
+                                              "Good", "Very Good", "Excellent"))
 
 ## 1.3 Clean up env (for space) ------------------------------------------------
 rm(pdg, hospitals, specialty_group)
@@ -213,8 +212,3 @@ saveWorkbook(wb,
 
 rm(c_diagnosis, c_hospital, c_scot, c_statistics, roc_scot, x, auc_scot)
 
-# 3. Collinearity --------------------------------------------------------------
-
-
-
-# 4. Cooks Distance ------------------------------------------------------------

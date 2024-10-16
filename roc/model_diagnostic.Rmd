@@ -110,6 +110,23 @@ knitr::kable(c_loc_sum %>% arrange(`Discrimination Score`),
 ```
 An `NA` C-statistic means that there was only 1 outcome for a particular hospital (eg. no deaths within 30 days), so the C-statistic could not be calculated.
 
+Hospitals, if any, that showed **Fair or worse** discrimination are listed below.
+
+```{r poor_loc, echo=FALSE, message=FALSE}
+c_loc_poor <- c_loc %>% 
+             filter(c_stat <= 0.7) %>% 
+             arrange(c_stat) %>%
+             select(Hospital = location_name,
+                    `N Patients` = pats,
+                    `C Statistic` = c_stat,
+                    `Score` = discrimination)
+
+if(nrow(c_loc_poor) > 0){
+  knitr::kable(c_loc_poor,
+             caption = "Hospitals with C-statistics below 0.7.")
+}
+
+```
 
 ### C-Statistic By Primary Diagnosis
 
@@ -150,5 +167,19 @@ knitr::kable(c_pdg_sum %>% arrange(`Discrimination Score`),
 An `NA` C-statistic means that there was only 1 outcome for a particular diagnosis (eg. no deaths within 30 days), so the C-statistic could not be calculated.
 
 `r round(good_plus$pcent_pdg, 2)`% of primary diagnosis groups, constituting `r round(good_plus$pcent_pats, 2)`% of patients, had Good, Very Good or Excellent C-statistics.
+
+Diagnoses, if any, that showed **Fair or worse** discrimination are listed below.
+
+```{r poor_pdg, echo=FALSE, message=FALSE}
+knitr::kable(c_pdg %>% 
+             filter(c_stat <= 0.7) %>% 
+             arrange(c_stat) %>%
+             select(`Diagnosis Code` = pdiag_grp,
+                    `Diagnosis` = primary_diagnosis,
+                    `N Patients` = pats,
+                    `C Statistic` = c_stat,
+                    `Score` = discrimination),
+             caption = "Primary diagnosis groups with C-statistics below 0.7.")
+```
 
 
