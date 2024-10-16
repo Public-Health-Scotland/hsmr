@@ -80,7 +80,7 @@ The AUC, or C-statistic, for the whole of Scotland is `r round(c_scot$c_stat, 3)
 
 We expect the C-statistic for the whole of Scotland to be greater than 0.9 (Excellent).
 
-### C-Static By Hospital
+### C-Statistic By Hospital
 
 We can also calculate the C-statistic for each named hospital in the publication. This lets us know if there are any locations which are particularly impacted by poor discrimination from the model.
 
