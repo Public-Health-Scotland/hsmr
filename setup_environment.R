@@ -34,6 +34,8 @@ library(ggrepel)       # For funnel plot labels
 library(here)          # For the here() function
 library(openxlsx)      # For manipulating Excel files
 library(xfun)          # For converting numbers to words
+library(car)           # For regression QA funcs
+library(pROC)          # For ROC/AUC
 
 # set working directory
 setwd(here::here())
@@ -79,7 +81,7 @@ Sys.umask("006")
 # ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(31032024) 
+end_date <- lubridate::dmy(30062024) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)
@@ -124,6 +126,7 @@ if (dir.exists(paste0(data_folder, pub_day)) == FALSE) {
   dir.create(paste0(data_folder, pub_day, "/tde"))
   dir.create(paste0(data_folder, pub_day, "/output"))
   dir.create(paste0(data_folder, pub_day, "/open_data"))
+  dir.create(paste0(data_folder, pub_day, "/diagnostics"))
 }
 
 ## 5 - Load common lookups to all scripts ----

@@ -1,0 +1,185 @@
+---
+title: "Model Diagnostic"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+
+source(here::here("setup_environment.R")) # For libraries and filepaths
+
+detach("package:tidylog", unload=TRUE)
+
+c_scot <- read.xlsx(paste0(data_folder,
+                           pub_day,
+                           "/diagnostics/",
+                           "c_stats.xlsx"),
+                    sheet = "Scotland")
+
+c_pdg <- read.xlsx(paste0(data_folder,
+                          pub_day,
+                          "/diagnostics/",
+                          "c_stats.xlsx"),
+                   sheet = "Diagnosis")
+
+c_loc <- read.xlsx(paste0(data_folder,
+                          pub_day,
+                          "/diagnostics/",
+                          "c_stats.xlsx"),
+                   sheet = "Location")
+```
+
+## Model Performance
+
+### ROC, AUC and C-statistic
+
+The [ROC](https://www.statology.org/interpret-roc-curve/) (Receiver Operating Characteristic) curve is used to show how well the model discriminates between outcomes. It plots the true positive rate (sensitivity) against the false positive rate (1 - specificity) of the model. **For the HSMR model, the positive (1) outcome is death within 30 days of admission.**
+
+A perfect model will have an ROC curve that reaches the top left corner of the axes [0, 1] to indicate a sensitivity and specificity of 1. The closer the curve is to this point, the better the discriminatory power of the model.
+
+A poor curve would be close to the $y=x$ line - this is equivalent to a random guess, ie. the model is correct half of the time.
+
+[AUC](https://www.statology.org/what-is-a-good-auc-score/) (Area Under the Curve) is a single value metric to describe the ROC curve.
+
+Because we know that a perfect curve will have an AUC of 1, we know that **an AUC close to 1 suggests better discrimination**.
+
+An AUC of 0.5, the area beneath the $y=x$ line, is equivalent to a random guess.
+
+For a regression model that aims to predict risk, such as the HSMR model, we can also use the ROC curve to determine the [C-statistic](https://www.statology.org/how-to-interpret-the-c-statistic-of-a-logistic-regression-model/). **The C-statistic is equal to the AUC.**
+
+If we take all possible pairs of patients, where Patient A died within 30 days of admission and Patient B did not, the C-statistic tells us what fraction of those pairs would see Patient A given a higher predicted risk than Patient B. It is a measure of how well the model is able to rank patients in order of risk.
+
+AUC and ROC are calculated and plotted using [pROC](https://rdrr.io/cran/pROC/man/pROC-package.html).
+
+There is no strict rule about what constitutes a good or bad C-statistic; however, for the HSMR model we use the following system.
+
+| C-Statistic Value    | Discrimination Score |
+|----------------------|----------------------|
+| c $\leq$ 0.5         | Very Poor            |
+| 0.5 $<$ c $\leq$ 0.6 | Poor                 |
+| 0.6 $<$ c $\leq$ 0.7 | Fair                 |
+| 0.7 $<$ c $\leq$ 0.8 | Good                 |
+| 0.8 $<$ c $\leq$ 0.9 | Very Good            |
+| c $>$ 0.9            | Excellent            |
+
+
+### ROC for Scotland
+
+The ROC curve for the logistic regression model is shown below.
+
+```{r roc_curve, echo=FALSE, out.width = '80%'}
+
+png_path <- paste0(data_folder,
+                   pub_day,
+                   "/diagnostics/",
+                   "roc.png")
+
+knitr::include_graphics(png_path)
+```
+
+The AUC, or C-statistic, for the whole of Scotland is `r round(c_scot$c_stat, 3)`. This means that the model is able to correctly discriminate between high-risk and low-risk patients `r round(c_scot$c_stat, 3)*100`% of the time.
+
+We expect the C-statistic for the whole of Scotland to be greater than 0.9 (Excellent).
+
+### C-Statistic By Hospital
+
+We can also calculate the C-statistic for each named hospital in the publication. This lets us know if there are any locations which are particularly impacted by poor discrimination from the model.
+
+**If the HSMR value for a particular hospital is outside of the warning limits, the first thing to check is how well the model predicts outcomes there.**
+
+The full list of hospital-level C-statistics can be found in the `diagnostics` folder. A summary is shown below.
+
+```{r c_hosp, echo=FALSE}
+
+c_loc_sum <- c_loc %>%
+  group_by(discrimination) %>%
+  summarise('N Hospitals' = n(),
+            'N Patients' = sum(pats)) %>%
+  rename('Discrimination Score' = discrimination)
+
+c_loc_sum$`Discrimination Score` <- factor(c_loc_sum$`Discrimination Score`,
+                                           levels = c("Very Poor",
+                                                  "Poor",
+                                                  "Fair",
+                                                  "Good",
+                                                  "Very Good",
+                                                  "Excellent",
+                                                  NA))
+
+knitr::kable(c_loc_sum %>% arrange(`Discrimination Score`),
+             caption = "Summary of C-statistics by hospital.")
+```
+An `NA` C-statistic means that there was only 1 outcome for a particular hospital (eg. no deaths within 30 days), so the C-statistic could not be calculated.
+
+Hospitals, if any, that showed **Fair or worse** discrimination are listed below.
+
+```{r poor_loc, echo=FALSE, message=FALSE}
+c_loc_poor <- c_loc %>% 
+             filter(c_stat <= 0.7) %>% 
+             arrange(c_stat) %>%
+             select(Hospital = location_name,
+                    `N Patients` = pats,
+                    `C Statistic` = c_stat,
+                    `Score` = discrimination)
+
+if(nrow(c_loc_poor) > 0){
+  knitr::kable(c_loc_poor,
+             caption = "Hospitals with C-statistics below 0.7.")
+}
+
+```
+
+### C-Statistic By Primary Diagnosis
+
+Similarly, we can calculate the C-statistic for each primary diagnosis group.
+
+The full list of diagnosis-level C-statistics can be found in the `diagnostics` folder. A summary is shown below.
+
+```{r c_diag, echo=FALSE}
+
+c_pdg_sum <- c_pdg %>%
+  group_by(discrimination) %>%
+  summarise('N Diagnoses' = n(),
+            'N Patients' = sum(pats)) %>%
+  rename('Discrimination Score' = discrimination)
+
+c_pdg_sum$`Discrimination Score` <- factor(c_pdg_sum$`Discrimination Score`,
+                                           levels = c("Very Poor",
+                                                  "Poor",
+                                                  "Fair",
+                                                  "Good",
+                                                  "Very Good",
+                                                  "Excellent",
+                                                  NA))
+
+good_plus <- c_pdg_sum %>%
+  filter(`Discrimination Score` %in% c("Good", "Very Good", "Excellent")) %>%
+  summarise(n_pdg = sum(`N Diagnoses`),
+            n_pats = sum(`N Patients`)) %>%
+  mutate(tot_pdg = nrow(c_pdg),
+         tot_pats = sum(c_pdg$pats),
+         pcent_pdg = 100*(n_pdg/tot_pdg),
+         pcent_pats = 100*(n_pats/tot_pats))
+
+knitr::kable(c_pdg_sum %>% arrange(`Discrimination Score`),
+             caption = "Summary of C-statistics by primary diagnosis group.")
+```
+
+An `NA` C-statistic means that there was only 1 outcome for a particular diagnosis (eg. no deaths within 30 days), so the C-statistic could not be calculated.
+
+`r round(good_plus$pcent_pdg, 2)`% of primary diagnosis groups, constituting `r round(good_plus$pcent_pats, 2)`% of patients, had Good, Very Good or Excellent C-statistics.
+
+Diagnoses, if any, that showed **Fair or worse** discrimination are listed below.
+
+```{r poor_pdg, echo=FALSE, message=FALSE}
+knitr::kable(c_pdg %>% 
+             filter(c_stat <= 0.7) %>% 
+             arrange(c_stat) %>%
+             select(`Diagnosis Code` = pdiag_grp,
+                    `Diagnosis` = primary_diagnosis,
+                    `N Patients` = pats,
+                    `C Statistic` = c_stat,
+                    `Score` = discrimination),
+             caption = "Primary diagnosis groups with C-statistics below 0.7.")
+```
+
+
