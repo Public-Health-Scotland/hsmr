@@ -25,7 +25,7 @@ change_hbcodes <- function(dataset, version_to,
 
       dataset %>%
         mutate(across(all_of(code_cols),
-                      ~recode(.,
+                      ~dplyr::recode(.,
                               "S08000018" = 'S08000029',
                               "S08000027" = 'S08000030',
                               "S08000021" = 'S08000031',
