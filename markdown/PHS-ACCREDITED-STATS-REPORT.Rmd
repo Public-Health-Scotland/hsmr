@@ -793,11 +793,11 @@ Quality Indicators -->
 **Cemre Su Lode, Senior Information Analyst**
 Quality Indicators
 
-<!--**Charlotte Hill, Information Analyst**
-Quality Indicators-->
-
-**Echo Lian, Senior Information Analyst**
+**Charlotte Hill, Information Analyst**
 Quality Indicators
+
+<!--**Echo Lian, Senior Information Analyst**
+Quality Indicators-->
 
 <!-- **Paul Ogharanduku, Senior Information Analyst**  
 Quality Indicators -->
