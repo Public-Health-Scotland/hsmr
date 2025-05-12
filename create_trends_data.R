@@ -75,7 +75,7 @@ pop_proj <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
   "HB2019_pop_proj_2018_2043.rds")) %>%
   clean_names() %>%
-  filter(year >= 2023) %>%
+  filter(year >= 2024) %>% # Change this if the pop estimate file gets updated above line 66
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
   ungroup() %>%  rename(hb2014 =hb2019)
@@ -158,23 +158,23 @@ trends_data_lvl1 = filter(trends_data_lvl1_all_loc,
 trends_data = filter(trends_data, location %in% locations_filter_hb14)
 
 # File used for the Excel tables and offline dashboard
-save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = F)
+save_file(trends_data_lvl1, "trends-data-level1", "output", "csv", dev = F, overwrite = T)
 
 # Create TDE files
 # yyyy-mm-dd_trend-data-level1.csv – Discovery HSMR Level 1 Trends & Discovery HSMR Level 1 Trends Live
 save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = F)
+          type = "xlsx", dev = F, overwrite = T)
 save_file(trends_data_lvl1, "Discovery HSMR Level 1 Trends Live", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = F)
+          type = "xlsx", dev = F, overwrite = T)
 
 # yyyy-mm-dd_trend-data-level2.csv – Discovery HSMR Level 2 Trends & Discovery HSMR Level 2 Trends Live
 save_file(trends_data, "Discovery HSMR Level 2 Trends", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = F)
+          type = "xlsx", dev = F, overwrite = T)
 save_file(trends_data, "Discovery HSMR Level 2 Trends Live", out_folder = "tde",
-          type = "xlsx", dev = F, overwrite = F)
+          type = "xlsx", dev = F, overwrite = T)
 # Used for the offline dashboard and markdown script
 save_file(trends_data, "trends-data-level2", out_folder = "output",
-          type = "csv", dev = F, overwrite = F)
+          type = "csv", dev = F, overwrite = T)
 
 
 # Create file for RShiny public dashboard
@@ -195,7 +195,7 @@ public_dash_trends %<>%
          scot_crd_rate)
 
 # Save into output folder
-save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", dev = F, overwrite = F)
+save_file(public_dash_trends, "trend_data_public_dashboard", "output", "rds", dev = F, overwrite = T)
 
 
 ### END OF SCRIPT ###
