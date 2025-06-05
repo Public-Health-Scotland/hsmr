@@ -63,11 +63,11 @@ if (sessionInfo()$platform %in% c("x86_64-redhat-linux-gnu (64-bit)",
 # on server
 plat_filepath <- dplyr::if_else(platform == "server",
                                 '/conf/linkage/output/',
-                                '//stats/cl-out/')
+                                '/conf/linkage/output/')
 
 data_folder <- dplyr::if_else(platform == "server",
                              '/conf/quality_indicators/hsmr/quarter_cycle/data/',
-                             '//stats/quality_indicators/hsmr/quarter_cycle/data/')
+                             '/conf/quality_indicators/hsmr/quarter_cycle/data/')
 
 # Setting file permissions to anyone to allow writing/overwriting of project files
 Sys.umask("006")
@@ -81,7 +81,7 @@ Sys.umask("006")
 # ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(30092024) 
+end_date <- lubridate::dmy(31122024) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)

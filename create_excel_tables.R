@@ -214,10 +214,15 @@ metadata <- read_csv(here("reference_files/metadata.csv")) %>%
 metadata %<>%
   mutate(`Completed fields` =
            case_when(Label == "Time frame of data and timeliness" ~ paste0("Hospital Standardised Mortality Ratios (HSMR) for the latest 12 month period from ", yr(end_date),
-                                                                           ". Quarterly crude mortality trends from July to September 2016 to ", qtr(qtr_start) , "."),
+                                                                           ". Quarterly crude mortality trends from July to September 2016 to ", qtr(qtr_start) , "."), 
+
                      Label == "Coverage" ~ paste0("Scotland, July 2016 - ", format(end_date, "%B %Y")),
+
+
                      Label == "Completeness" ~ paste0("Approximately ", completeness(quarter = "current", level = "scotland", first_day = qtr_start),
                                                       " for the latest quarter. "),
+
+                     
                      Label == "Description" ~ paste0("Release of HSMR at Scotland, NHS Board and Hospital levels for the period ", yr(end_date),
                                                      ". Also includes analyses of crude mortality trends over the longer term from July to September 2016 to ", qtr(qtr_start), "."),
                      TRUE ~ `Completed fields`))
