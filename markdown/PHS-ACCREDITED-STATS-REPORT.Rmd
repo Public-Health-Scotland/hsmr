@@ -85,9 +85,9 @@ completeness_next <- case_when(month(end_date) == 12 ~ paste0("31 March ",
 # Create custom colour/shape palette for the trend charts
 trend_palette <- scale_color_manual(values = c("#004949", "#006dd1", "#49006a", 
                                                "#920000", "#924900", "#db6d00", 
-                                               "#24ff24"))
+                                               "#24ff24","#E4764C"))
 
-shape_palette <- scale_shape_manual(values = c(16, 15, 17, 3, 4, 8, 18))
+shape_palette <- scale_shape_manual(values = c(16, 15, 17, 3, 4, 8, 18,1))
 # ----
 ## FUNNEL PLOT ##
 smr_data <- smr_data %>%
@@ -824,14 +824,16 @@ More details of the review work and recommendations are available in the [HSMR R
 **Cemre Su Lode, Senior Information Analyst**
 Quality Indicators
 
-**Isabella Tortora Brayda, Senior Information Analyst** 
-Quality Indicators
+-- **Paul Ogharanduku, Senior Information Analyst**  
+Quality Indicators 
+
+<!--** Tortora Brayda, Senior Information Analyst** 
+Quality Indicators-->
 
 <!--**Echo Lian, Senior Information Analyst**
 Quality Indicators-->
 
-<!-- **Paul Ogharanduku, Senior Information Analyst**  
-Quality Indicators -->
+
 
 [phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
 
