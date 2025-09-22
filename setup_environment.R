@@ -36,6 +36,8 @@ library(openxlsx)      # For manipulating Excel files
 library(xfun)          # For converting numbers to words
 library(car)           # For regression QA funcs # version 3.1-2 required
 library(pROC)          # For ROC/AUC
+library(comorbidity)   # For calculating elixhauser comorbidity weightings
+library(data.table)    # For working with large dataset in pmorbs calculations
 
 # set working directory
 setwd(here::here())
