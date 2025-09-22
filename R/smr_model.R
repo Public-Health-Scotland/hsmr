@@ -141,9 +141,10 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                  "training_data.rds"))
   
   # Run logistic regression
-  risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum + pmorbs1_sum +
-                      pmorbs5_sum + age_in_years + factor(sex) +
-                      factor(spec_grp) + factor(pdiag_grp) + factor(admfgrp) +
+  risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum +
+                      pmorbs5_sum + age_in_years +
+                      factor(spec_grp) + 
+                      relevel(factor(pdiag_grp),ref=52) + factor(admfgrp) +
                       factor(admgrp) + factor(ipdc) + factor(simd),
                     data = data_lr,
                     family = "binomial",
