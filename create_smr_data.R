@@ -119,21 +119,18 @@ smr01 <- smr_wrangling(smr01    = smr01,
                        gro      = deaths,
                        pdiags   = pdiag_grp_data,
                        postcode = simd_all,
-                       morbs    = morbs,
                        spec     = specialty_group)
 
 # smr01        = The output from smr_wrangling()
 # smr01_minus5 = The SMR01 extract used to calculate the prior morbidities.
 #                This should contain all publication quarters plus an extra
 #                five years at the start
-# morbs        = The lookup tibble for morbidity groupings
 #
 # This function does the final bits of wrangling required for HSMR. These
 # are done separately from the rest because they are quite resource-heavy
 # and prone to crashing
 smr01 <- smr_pmorbs(smr01        = smr01,
-                    smr01_minus5 = data_pmorbs,
-                    morbs        = morbs)
+                    smr01_minus5 = data_pmorbs)
 
 # smr01      = The output from smr_pmorbs()
 # base_start = The beginning of the baseline period
