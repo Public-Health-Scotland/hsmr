@@ -16,7 +16,6 @@
 #' @param gro Input tibble for deaths, see details.
 #' @param pdiags Input tibble for primary diagnosis groupings lookup.
 #' @param postcode Input tibble for deprivation lookup.
-#' @param morbs Input tibble for the charlson index for comorbidities lookup.
 #' @param spec Input tibble for for specialty groupings lookup.
 #'
 #' @importFrom magrittr %>%
@@ -28,7 +27,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
 
   if(!tibble::is_tibble(smr01) | !tibble::is_tibble(gro) |
      !tibble::is_tibble(pdiags) | !tibble::is_tibble(postcode) |
-     !tibble::is_tibble(morbs) | !tibble::is_tibble(spec)) {
+     !tibble::is_tibble(spec)) {
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
@@ -78,16 +77,6 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
 
   }
 
-  if(!all(c("morb", "wmorbs", "diag") %in% names(morbs))){
-
-    stop(paste0("Object morbs does not contain the required variables.",
-                "Must contain:
-                morb
-                wmorbs
-                diag"))
-
-  }
-
   if(!all(c("link_no", "date_of_death") %in% names(gro))) {
 
     stop(paste0("Object gro does not contain the required variables.",
@@ -129,13 +118,6 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
 
   }
 
-  if(!all(1:17 %in% morbs$morb)){
-
-    stop(paste0("Co-morbidities lookup does not contain all 17 comorbidity
-                groups."))
-
-  }
-
   ### 2 - Match deaths data to SMR01 ----
   # Remove duplicate records on link_no
   # The deaths file is matched on to SMR01 by link_no,
@@ -144,12 +126,12 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
     tidylog::distinct(link_no, .keep_all = TRUE)
 
   # Match deaths data on to SMR01 data
-  smr01_ <-smr01 %>% 
+  smr01_ <- smr01 %>%
     tidylog::left_join(gro, by = "link_no") %>%
-
+    
     # Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date)
-
+  
 
   ### 3 - Basic SMR01 processing ----
 
@@ -164,12 +146,9 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
   # diagx        = ICD-10 code to 3 and 4 digits, separated by an underscore
   # pdiag_grp    = matches the primary diagnosis group on the 4-digit ICD-10
   #                code
-  # wcomorbsx    = matches the charlson index weighting if the relevant ICD-10
-  #                codes are present in any of the five "other diagnosis"
-  #                positions
   # comorbs_sum  = sum of the wcomorbsx values across the episode
 
-  smr01 %<>%
+  smr01_ %<>%
     tidylog::mutate(death_inhosp = dplyr::if_else(dplyr::between(
       as.numeric(discharge_type), 40, 49),
       1, 0),
@@ -196,16 +175,16 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
       diag6 = paste(substr(other_condition_5, 1, 3),
                     substr(other_condition_5, 1, 4),
                     sep = "_")) %>%
-
+    
     # Create the pdiag_grp and wcomorbsx variables using joins to the morbs
     # dataset
     tidylog::left_join(tidylog::select(pdiags,
                                        pdiag_grp = diagnosis_group,
                                        diag1_4),
                        by = "diag1_4") %>%
-
+    
     # Match on specialty grouping by the specialty variable
-    tidylog::left_join(spec, by = "specialty") %>%
+    tidylog::left_join(spec, by = "specialty")# %>%
     
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Comorbidities  ----
@@ -231,7 +210,6 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
     select(rownum,comorbs_sum) %>% 
     left_join(smr01_ %>% mutate(rownum = dplyr::row_number())) 
 
-    
     # Create two further variables at CIS level:
     # epinum = the episode number for each individual episode within the CIS
     # death_inhosp_max = 1 if the patient died in hospital during any episode
@@ -246,10 +224,8 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
     # Sort data as per guidance and remove variables no longer required
     dplyr::arrange(link_no, cis_marker, admission_date, discharge_date) %>%
     tidylog::select(-dplyr::contains("condition"),
-                    -dplyr::starts_with("wcomorbs"),
-                    -comorbs1, -comorbs2, -comorbs3, -comorbs4, -comorbs5,
                     -quarter_name)
-
+  
   ### 4 - SIMD ----
 
   # Fix formatting of postcode variable
@@ -296,3 +272,4 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
 }
 
 ### END OF SCRIPT ###
+
