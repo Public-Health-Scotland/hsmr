@@ -22,7 +22,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 
-smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
+smr_wrangling <- function(smr01, gro, pdiags, postcode, spec) {
 
   ### 1 - Error handling ----
 
@@ -144,7 +144,7 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
     tidylog::distinct(link_no, .keep_all = TRUE)
 
   # Match deaths data on to SMR01 data
-  smr01 %<>%
+  smr01_ <-smr01 %>% 
     tidylog::left_join(gro, by = "link_no") %>%
 
     # Sort data by link_no, cis_marker, adm_date and dis_date as per guidance
