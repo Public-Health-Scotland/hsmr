@@ -206,136 +206,38 @@ smr_wrangling <- function(smr01, gro, pdiags, postcode, morbs, spec) {
 
     # Match on specialty grouping by the specialty variable
     tidylog::left_join(spec, by = "specialty") %>%
+    
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Comorbidities  ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  # Use comorbidity function to extract elixhauser comorbidities for each 'other' condition
+  # Then apply weights to each of the conditions
+  # Sum the weights for each patient, for each episode
+  comorbs <-  smr01_ %>% 
+    
+    # identify each row by its row number
+    mutate(rownum = dplyr::row_number()) %>% 
+    
+    # pivot longer the other condition columns for each row
+    pivot_longer( starts_with("other_condition"),names_to = "diagnosis_position", values_to = "code") %>% 
+    
+    # for each row identified by rownum, calculate score for its other conditions (i.e co morbidities)
+    comorbidity(id = "rownum", code = "code", map = "elixhauser_icd10_quan", assign0 = FALSE) %>%
+    mutate(comorbs_sum = score(., weights = "vw", assign0 = TRUE))
+  
+  # join the scores for each row back to the original data (via rownum which is the row identifier)
+  smr01_ <- comorbs %>% 
+    select(rownum,comorbs_sum) %>% 
+    left_join(smr01_ %>% mutate(rownum = dplyr::row_number())) 
 
-    # Fuzzy joins add the (in this case, not needed) joining variable by
-    # default, so append these with "_z" so they can be easily removed
-    # afterwards
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               wcomorbs1 = wmorbs,
-                                               comorbs1 = morb,
-                                               diag2_z = diag),
-                               by = c("diag2" = "diag2_z"),
-                               match_fun = stringr::str_detect) %>%
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               wcomorbs2 = wmorbs,
-                                               comorbs2 = morb,
-                                               diag3_z = diag),
-                               by = c("diag3" = "diag3_z"),
-                               match_fun = stringr::str_detect) %>%
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               wcomorbs3 = wmorbs,
-                                               comorbs3 = morb,
-                                               diag4_z = diag),
-                               by = c("diag4" = "diag4_z"),
-                               match_fun = stringr::str_detect) %>%
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               wcomorbs4 = wmorbs,
-                                               comorbs4 = morb,
-                                               diag5_z = diag),
-                               by = c("diag5" = "diag5_z"),
-                               match_fun = stringr::str_detect) %>%
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               wcomorbs5 = wmorbs,
-                                               comorbs5 = morb,
-                                               diag6_z = diag),
-                               by = c("diag6" = "diag6_z"),
-                               match_fun = stringr::str_detect) %>%
-
-    # Remove joining variables
-    tidylog::select(-dplyr::ends_with("_z")) %>%
-
-    # Replace cases with no match with zero
-    tidyr::replace_na(list(wcomorbs1 = 0,
-                           wcomorbs2 = 0,
-                           wcomorbs3 = 0,
-                           wcomorbs4 = 0,
-                           wcomorbs5 = 0,
-                           comorbs1  = 0,
-                           comorbs2  = 0,
-                           comorbs3  = 0,
-                           comorbs4  = 0,
-                           comorbs5  = 0)) %>%
-    # Comorbs cleaning
-    tidylog::mutate(wcomorbs1 = replace(wcomorbs1,
-                                        comorbs1 == 12 &
-                                          (comorbs2 != 6 & comorbs3 != 6 &
-                                             comorbs4 != 6 & comorbs5 != 6),
-                                        2),
-                    wcomorbs2 = replace(wcomorbs2,
-                                        comorbs2 == 12 &
-                                          (comorbs1 != 6 & comorbs3 != 6 &
-                                             comorbs4 != 6 & comorbs5 != 6),
-                                        2),
-                    wcomorbs3 = replace(wcomorbs3,
-                                        comorbs3 == 12 &
-                                          (comorbs2 != 6 & comorbs1 != 6 &
-                                             comorbs4 != 6 & comorbs5 != 6),
-                                        2),
-                    wcomorbs4 = replace(wcomorbs4,
-                                        comorbs4 == 12 &
-                                          (comorbs2 != 6 & comorbs3 != 6 &
-                                             comorbs1 != 6 & comorbs5 != 6),
-                                        2),
-                    wcomorbs5 = replace(wcomorbs5,
-                                        comorbs5 == 12 &
-                                          (comorbs2 != 6 & comorbs3 != 6 &
-                                             comorbs4 != 6 & comorbs1 != 6),
-                                        2)) %>%
-    tidylog::mutate(wcomorbs1 = replace(wcomorbs1,
-                                        comorbs1 == 11 & (comorbs2 == 15 |
-                                                            comorbs3 == 15 |
-                                                            comorbs4 == 15 |
-                                                            comorbs5 == 15),
-                                        0),
-                    wcomorbs2 = replace(wcomorbs2,
-                                        comorbs2 == 11 & (comorbs1 == 15 |
-                                                            comorbs3 == 15 |
-                                                            comorbs4 == 15 |
-                                                            comorbs5 == 15),
-                                        0),
-                    wcomorbs3 = replace(wcomorbs3,
-                                        comorbs3 == 11 & (comorbs2 == 15 |
-                                                            comorbs1 == 15 |
-                                                            comorbs4 == 15 |
-                                                            comorbs5 == 15),
-                                        0),
-                    wcomorbs4 = replace(wcomorbs4,
-                                        comorbs4 == 11 & (comorbs2 == 15 |
-                                                            comorbs3 == 15 |
-                                                            comorbs1 == 15 |
-                                                            comorbs5 == 15),
-                                        0),
-                    wcomorbs5 = replace(wcomorbs5,
-                                        comorbs5 == 11 & (comorbs2 == 15 |
-                                                            comorbs3 == 15 |
-                                                            comorbs4 == 15 |
-                                                            comorbs1 == 15),
-                                        0)) %>%
-    tidylog::mutate(wcomorbs2 = replace(wcomorbs2,
-                                        comorbs2 == comorbs1,
-                                        0),
-                    wcomorbs3 = replace(wcomorbs3,
-                                        comorbs3 == comorbs1 |
-                                          comorbs3 == comorbs2,
-                                        0),
-                    wcomorbs4 = replace(wcomorbs4,
-                                        comorbs4 == comorbs1 |
-                                          comorbs4 == comorbs2 |
-                                          comorbs4 == comorbs3,
-                                        0),
-                    wcomorbs5 = replace(wcomorbs5,
-                                        comorbs5 == comorbs1 |
-                                          comorbs5 == comorbs2 |
-                                          comorbs5 == comorbs3 |
-                                          comorbs5 == comorbs4,
-                                        0)) %>%
-    tidylog::mutate(comorbs_sum = rowSums(
-      tidylog::select(., dplyr::starts_with("wcomorbs")))) %>%
-
+    
     # Create two further variables at CIS level:
     # epinum = the episode number for each individual episode within the CIS
     # death_inhosp_max = 1 if the patient died in hospital during any episode
     # of the CIS
+  
+  smr01 <- smr01_ %>%
     tidylog::group_by(link_no, cis_marker) %>%
     tidylog::mutate(epinum = dplyr::row_number(),
                     death_inhosp_max = max(death_inhosp)) %>%

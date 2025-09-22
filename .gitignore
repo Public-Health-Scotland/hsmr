@@ -5,17 +5,15 @@
 *.Rproj
 odbc_connect.
 testing.R
-
 # 'data' folder #
 data/
-
 # Markdown/notebook output
 *.docx
 *.doc
 *.html
-
 # Images
 *.png
 *.jpg
 *.jpeg
 *.svg
+*trends_data.csv
