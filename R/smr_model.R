@@ -139,12 +139,15 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                  pub_day,
                  "/diagnostics/",
                  "training_data.rds"))
+  #Re-level the Primary Diagnosis Group to 52
+  
+  data_lr$pdiag_grp <- relevel(factor(data_lr$pdiag_grp), ref = 52)
   
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum +
                       pmorbs5_sum + age_in_years +
                       factor(spec_grp) + 
-                      relevel(factor(pdiag_grp),ref=52) + factor(admfgrp) +
+                      factor(pdiag_grp)+ factor(admfgrp) +
                       factor(admgrp) + factor(ipdc) + factor(simd),
                     data = data_lr,
                     family = "binomial",
@@ -161,7 +164,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
   
   cooks <- cooks.distance(risk_model)
   
-  # data_with_cooks <- data_lr %>% cbind(cooks)
+ data_with_cooks <- data_lr %>% cbind(cooks)
   
   saveRDS(cooks,
           paste0(data_folder,
