@@ -8,7 +8,7 @@
 #' SMR01 that has already been through \code{\link{smr_wrangling}}.
 #' It also expects a \code{tibble} of data extracted from SMR01 covering a
 #' time-period that begins five years prior to that of the data in \code{smr01}.
-#' This is so that the function is able to calculate the Charlson Index for
+#' This is so that the function is able to calculate the Elixhauser weighted grouping for
 #' Comorbidities weighting for the previous five years.
 #' It also expects a \code{tibble} for the Charlson Index lookups.
 #'
@@ -16,19 +16,20 @@
 #' @param smr01 Input tibble for admissions, see details.
 #' @param smr01_minus5 Input tibble for admissions going back five years, see
 #' details.
-#' @param morbs Input tibble for the charlson index for comorbidities lookup.
+#' @param morbs Input tibble for the Elixhauser for comorbidities lookup.
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
 #' @import data.table
 
 
-smr_pmorbs <- function(smr01, smr01_minus5, morbs){
+smr_pmorbs <- function(smr01, smr01_minus5){
 
   ### 1 - Error handling ----
 
-  if(!tibble::is_tibble(smr01) | !tibble::is_tibble(smr01_minus5) |
-     !tibble::is_tibble(morbs)) {
+  if(!tibble::is_tibble(smr01) | 
+     !tibble::is_tibble(smr01_minus5)) {
+     
 
     stop(paste0("All arguments provided to the function ",
                 "must be in tibble format. Verify whether ",
@@ -82,285 +83,157 @@ smr_pmorbs <- function(smr01, smr01_minus5, morbs){
 
   }
 
-  ### 2 - Creating Prior Morbidities ----
-  # Vector of unique link numbers used for filtering below
-  unique_id <- smr01 %>%
-    tidylog::distinct(link_no) %>%
-    dplyr::pull(link_no)
-
-  # Create the following variables:
-  # diag1   = ICD10 code for main condition to 3 and 4 digits, separated by an
-  #           underscore
-  # pmorbs  = Charlson Index grouping (1-17) for main condition
-  #           (0 if none apply)
-  # pmorbs5_1 to pmorbs1_17 = initialise empty vectors for use in loop below
-  # n_emerg                 = initialise empty vector for use in loop below
-
-  smr01_minus5 %<>%
-    tidylog::mutate(diag1 = paste(substr(main_condition, 1, 3),
-                                  substr(main_condition, 1, 4),
-                                  sep = "_")) %>%
-
-    # Create the pmorbs variable using a join to the morbs dataset
-    fuzzyjoin::fuzzy_left_join(tidylog::select(morbs,
-                                               pmorbs = morb,
-                                               diag1_z = diag),
-                               by = c("diag1" = "diag1_z"),
-                               match_fun = stringr::str_detect) %>%
-
-    # Remove the joining variable
-    tidylog::select(-dplyr::ends_with("_z")) %>%
-
-    # Replace cases with no match with zero
-    tidyr::replace_na(list(pmorbs = 0)) %>%
-    tidylog::mutate(pmorbs5_1  = 0,
-                    pmorbs5_2  = 0,
-                    pmorbs5_3  = 0,
-                    pmorbs5_4  = 0,
-                    pmorbs5_5  = 0,
-                    pmorbs5_6  = 0,
-                    pmorbs5_7  = 0,
-                    pmorbs5_8  = 0,
-                    pmorbs5_9  = 0,
-                    pmorbs5_10 = 0,
-                    pmorbs5_11 = 0,
-                    pmorbs5_12 = 0,
-                    pmorbs5_13 = 0,
-                    pmorbs5_14 = 0,
-                    pmorbs5_15 = 0,
-                    pmorbs5_16 = 0,
-                    pmorbs5_17 = 0,
-                    pmorbs1_1  = 0,
-                    pmorbs1_2  = 0,
-                    pmorbs1_3  = 0,
-                    pmorbs1_4  = 0,
-                    pmorbs1_5  = 0,
-                    pmorbs1_6  = 0,
-                    pmorbs1_7  = 0,
-                    pmorbs1_8  = 0,
-                    pmorbs1_9  = 0,
-                    pmorbs1_10 = 0,
-                    pmorbs1_11 = 0,
-                    pmorbs1_12 = 0,
-                    pmorbs1_13 = 0,
-                    pmorbs1_14 = 0,
-                    pmorbs1_15 = 0,
-                    pmorbs1_16 = 0,
-                    pmorbs1_17 = 0) %>%
-
-    # In order to increase the efficiency of the following for loop:
-    # Only keep records with link numbers which appear in the main extract
-    # (smr01)
-
-    tidylog::filter(link_no %in% unique_id)
-
-  # For every row in the pmorbs extract, look at each of the prior 50 rows and
-  # IF the previous episode belongs to the same person
-  # AND the admission date on the episode is after the start date
-  # AND the pmorbs value belongs to one of the Charlson index groups
-  # AND the time between the two episodes is either 5 or 1 year(s)
-  # THEN assign the correct Charlson Index weighting. These weightings are
-  # saved in the 34 (pmorbs5_1 to pmorbs1_17) vectors initiliased above.
-
-  # NOTE: This section of code uses the data.table package rather than dplyr
-
-  # convert tibble to data.table format
-  smr01_minus5 <- data.table::data.table(smr01_minus5)
-
-  for(i in 1:50) {
-
-    # 1:50 because the 95th percentile of episode counts per patient was 51
-
-    # Pre-calculating several variables so this only has to be done once per
-    # iteration and doesn't have to be repeated for every group
-    # old_admission = number of days between current record and previous ith
-    #                 admission
-    # old_pmorbs    = the pmorbs group the ith previous record is assigned to
-    # old_link      = the link number of the ith previous record
-    smr01_minus5[, `:=` (old_admission =
-                           (admission_date - data.table::shift(admission_date,
-                                                               i))/60/60/24,
-                         old_pmorbs = data.table::shift(pmorbs, i),
-                         old_link = data.table::shift(link_no, i))]
-
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 1  &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_1 := 5]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 2 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_2 := 11]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 3 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_3 := 13]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 4 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_4 := 4]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 5 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_5 := 14]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 6 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_6 := 3]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 7 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_7 := 8]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 8 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_8 := 9]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 9 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_9 := 6]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 10 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_10 := 4]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 11 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_11 := 8]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 12 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_12 := -1]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 13 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_13 := 1]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 14 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_14 := 10]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 15 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_15 := 14]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 16 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_16 := 18]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 17 &
-                   old_admission <= 1825 & old_link == link_no,
-                 pmorbs5_17 := 2]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 1 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_1 := 5]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 2 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_2 := 11]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 3 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_3 := 13]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 4 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_4 := 4]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 5 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_5 := 14]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 6 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_6 := 3]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 7 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_7 := 8]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 8 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_8 := 9]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 9 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_9 := 6]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 10 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_10 := 4]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 11 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_11 := 8]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 12 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_12 := -1]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 13 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_13 := 1]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 14 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_14 := 10]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 15 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_15 := 14]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 16 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_16 := 18]
-    smr01_minus5[admission_date >= start_date & old_pmorbs == 17 &
-                   old_admission <= 365 & old_link == link_no,
-                 pmorbs1_17 := 2]
-
-  }
-
-
-  # Calculate the sum of the Charlson Index weightings for each CIS, for both 1
-  # and 5 years prior to admission
-  # smr01_minus5 will be automatically converted back to a tibble here
-  smr01_minus5 %<>%
-    tidylog::mutate(pmorbs1_12 = replace(pmorbs1_12,
-                                         pmorbs1_12 == -1 & pmorbs1_6 == 0,
-                                         2),
-                    pmorbs5_12 = replace(pmorbs5_12,
-                                         pmorbs5_12 == -1 & pmorbs5_6 == 0,
-                                         2),
-                    pmorbs1_11 = replace(pmorbs1_11,
-                                         pmorbs1_15 == 14 & pmorbs1_11 == 8,
-                                         0),
-                    pmorbs5_11 = replace(pmorbs5_11,
-                                         pmorbs5_15 == 14 & pmorbs5_11 == 8,
-                                         0)) %>%
-    tidylog::mutate(pmorbs1_sum = rowSums(
-      tidylog::select(., dplyr::starts_with("pmorbs1")))) %>%
-    tidylog::mutate(pmorbs5_sum = rowSums(
-      tidylog::select(., dplyr::starts_with("pmorbs5")))) %>%
-    tidylog::group_by(link_no, cis_marker) %>%
-    tidylog::mutate_at(dplyr::vars(dplyr::ends_with("_sum")), max) %>%
-
-    # Add epinum to filter down to first episode within a CIS for the
-    # calculation of the number of previous emergency admissions
-    tidylog::mutate(epinum = dplyr::row_number()) %>%
-    dplyr::ungroup() %>%
-    tidylog::filter(epinum == 1) %>%
-    tidylog::mutate(n_emerg = 0)
-
-
-  # Convert back to a data.table for the number of previous emergency
-  # admissions
-  smr01_minus5 <- data.table::data.table(smr01_minus5)
-
-
-  ### 3 - Previous emergency admissions ----
-
-  # For every row in the pmorbs extract, look at each of the prior 50 rows and
-  # IF the previous episode belongs to the same person
-  # AND the time between the two episodes is 1 year
-  # AND the previous episode is an emergency admission
-  # THEN increase the number of emergency admissions by one in the n_emerg
-  # vector initiliased above.
-
-  for (i in 1:50) {
-
-    # 1:50 because the 95th percentile of episode counts per patient was 51
-
-    smr01_minus5[, `:=`(old_admission =
-                          (admission_date - data.table::shift(admission_date,
-                                                              i))/60/60/24,
-                        admtype = data.table::shift(admission_type, i),
-                        old_link = data.table::shift(link_no, i))]
-
-    smr01_minus5[admission_date >= start_date & old_link == link_no &
-                   (admtype = 18 | (admtype >= 20 & admtype <=48))  & old_admission <= 365,
-                 n_emerg := n_emerg + 1]
-
-  }
-
-  # Select required variables from smr01_minus5
-  smr01_minus5 %<>%
-    tidylog::select(link_no, cis_marker, pmorbs1_sum, pmorbs5_sum, n_emerg)
-
-  # Join smr01_minus5 on to the main tibble
-  smr01 %<>%
-    tidylog::left_join(smr01_minus5, by = c("link_no", "cis_marker"))
-
+  setDT(smr01)
+  setDT(smr01_minus5)
+  
+  # smr01_minus5 contains data for the current 3year training period and the 5 years before that
+  # Convert to data.table and make sure dates are Date type
+  smr01_minus5[, admission_date := as.Date(admission_date)]
+  smr01_minus5[, epinum := seq_len(.N), by = .(link_no, cis_marker)] # number episodes within cis
+  
+  #  ensure data is sorted
+  setorder(smr01_minus5, link_no, admission_date)
+  
+  # from the smr01_minus5 data retrieve admissions for the current three year publication period
+  current_admissions <- smr01_minus5[admission_date >= start_date & admission_date <= end_date]
+  current_admissions[, row_id := .I]  # temporary ID to track original rows and for data joins
+  current_admissions[, five_year_cutoff := admission_date - 1825]
+  current_admissions[, one_year_cutoff := admission_date - 365]
+  
+  # Rename 'admission_date' in smr01_minus5 to 'prior_admission_date'
+  setnames(smr01_minus5, "admission_date", "prior_admission_date")
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #Prior morbs 5 ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # From smr01_minus5 which holds all prior admissions, retrieve relevant prior
+  # admissions in the past 5 years
+  # "Find rows in smr01_minus5 that match each row in current_admissions based 
+  # on the conditions in the "on" argument"
+  # i.e For each row in current_admissions, find all rows in smr01_minus5 such 
+  # that is for same link_no (smr01_minus5$link_no == current_admissions$link_no)
+  # and the prior_admission_date of the prior admission is within the 5 years 
+  # before the current admission date
+  # The row_id from current admission will be part of prior_admissions_5 also 
+  # when joined so we can know what current admission, the matched prior admission 
+  # is for
+  prior_admissions_5 <- smr01_minus5[
+    current_admissions,
+    on = .(link_no,
+           prior_admission_date < admission_date, prior_admission_date >= five_year_cutoff),
+    allow.cartesian = TRUE,
+    nomatch = NULL,
+    .(link_no,prior_admission_date = x.prior_admission_date,main_condition,admission_type,row_id)
+  ]
+  
+  # retrieve main conditions for each prior admission within past five years
+  # for each row_id, Aggregate the matched main_conditions in the past 5 years into a list
+  prior_conditions_5_dt <- prior_admissions_5[, .(prior_conditions_5 = list(unique(main_condition))), by = row_id]
+  
+  # calculate the morbidity scores for each set of identified conditions
+  pmorb5_scores <-   prior_conditions_5_dt %>%
+    unnest(prior_conditions_5) %>% 
+    comorbidity(id = "row_id", code = "prior_conditions_5", map = "elixhauser_icd10_quan", assign0 = FALSE) %>%
+    mutate(pmorbs_5 = score(., weights = "vw", assign0 = TRUE)) %>% 
+    select(row_id,pmorbs_5)
+  
+  # append the scores to the prior conditions5 data table
+  prior_conditions_5_dt <- prior_conditions_5_dt[pmorb5_scores, on = "row_id"]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #Prior morbs 1 ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  prior_admissions_1 <- smr01_minus5[
+    current_admissions,
+    on = .(link_no,
+           prior_admission_date < admission_date, prior_admission_date >= one_year_cutoff),
+    allow.cartesian = TRUE,
+    nomatch = NULL,
+    .(link_no,prior_admission_date = x.prior_admission_date,main_condition,admission_type,row_id)
+  ]
+  
+  # retrieve main conditions for each prior admission within the past one year
+  # for each row_id, Aggregate the matched main_conditions in the past one year into a list
+  prior_conditions_1_dt <- prior_admissions_1[, .(prior_conditions_1 = list(unique(main_condition))), by = row_id]
+  
+  # calculate the morbidity scores for each set of identified conditions
+  pmorb1_scores <-   prior_conditions_1_dt %>%
+    unnest(prior_conditions_1) %>% 
+    comorbidity(id = "row_id", code = "prior_conditions_1", map = "elixhauser_icd10_quan", assign0 = FALSE) %>%
+    mutate(pmorbs_1 = score(., weights = "vw", assign0 = TRUE)) %>% 
+    select(row_id,pmorbs_1)
+  
+  # append the scores to the prior conditions5 data table
+  prior_conditions_1_dt <- prior_conditions_1_dt[pmorb1_scores, on = "row_id"]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Number of prior emergency admissions ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  # Filter smr01_minus5 for emergency admissions (where starting episode of the cis is an emergency admission )
+  smr01_minus5_emerg <- smr01_minus5[
+    epinum == 1 & admission_type %in% c(18, 20:48)
+  ]
+  
+  # For each link_no in every row in current_admissions, find all rows in smr01_minus5_emerg for that link 
+  # within a one year period
+  prior_emerg_admissions_1 <- smr01_minus5_emerg[
+    current_admissions,
+    on = .(link_no,
+           prior_admission_date < admission_date, prior_admission_date >= one_year_cutoff),
+    allow.cartesian = TRUE,
+    nomatch = NULL,
+    .(link_no,prior_admission_date = x.prior_admission_date,main_condition,admission_type,row_id)
+  ]
+  
+  # retrieve aggregate counts of previous emergency admissions for each row
+  prior_emerg_counts_1_dt <- prior_emerg_admissions_1[, .(n_emerg = .N), by = row_id]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Merge new pmorbs1, pmorbs5 and n_emerg back to current admissions ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  # Merge back to current_admissions
+  current_admissions <- merge(current_admissions, prior_conditions_5_dt, by = "row_id", all.x = TRUE)
+  current_admissions <- merge(current_admissions, prior_conditions_1_dt, by = "row_id", all.x = TRUE)
+  current_admissions <- merge(current_admissions, prior_emerg_counts_1_dt, by = "row_id", all.x = TRUE)
+  
+  #TODO uncomment this line if i want the episode level output for inspections
+  #return(current_admissions) 
+  
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Aggregating to cis and merge to smr01 data  ----
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  # for each cis, retrieve prior morb scores and number of emergencies at the start of the cis, i.e from first episode in cis
+  # the smr-model is built on first episode in CIS
+  current_admissions <- current_admissions[, .(
+    pmorbs_1 = pmorbs_1[1],  pmorbs_5 = pmorbs_5[1], 
+    n_emerg = n_emerg[1]),
+    by = .(link_no, cis_marker)]
+  
+  # merge to smr01 
+  smr01 <- merge(smr01, current_admissions[, .(link_no,cis_marker, pmorbs_1, pmorbs_5, n_emerg)],
+                 by = c("link_no", "cis_marker"),
+                 all.x = TRUE)
+  
+  # Fill NAs with zero
+  smr01[, `:=`(
+    pmorbs_1 = fifelse(is.na(pmorbs_1), 0, pmorbs_1),
+    pmorbs_5 = fifelse(is.na(pmorbs_5), 0, pmorbs_5),
+    n_emerg = fifelse(is.na(n_emerg), 0, n_emerg)
+  )]
+  
+  # rename columns to expected names
+  setnames(smr01, 
+           old = c("pmorbs_1", "pmorbs_5", "n_emerg"), 
+           new = c("pmorbs1_sum", "pmorbs5_sum", "n_emerg"))
+  
+  smr01<- as_tibble(smr01)
+  
   return(smr01)
-
-
+  
 }
 
 ### END OF SCRIPT ###
