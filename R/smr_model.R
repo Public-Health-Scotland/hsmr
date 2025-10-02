@@ -145,7 +145,7 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
   
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum +
-                      pmorbs5_sum + age_in_years +
+                      pmorbs5_sum + age_in_years + factor(sex) +
                       factor(spec_grp) + 
                       factor(pdiag_grp)+ factor(admfgrp) +
                       factor(admgrp) + factor(ipdc) + factor(simd),
