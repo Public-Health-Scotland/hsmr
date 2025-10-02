@@ -209,6 +209,7 @@ public_dash_scot <- public_dash %>%
 # Create warning and control confidence limits for funnel plot
 public_dash_hosps <- public_dash %>%
   filter(period == 3 & location %in% c(hosp_filter)) %>%
+  group_by(period_label) %>% 
   mutate(st_err = round_half_up(sqrt(1/round_half_up(pred, 8)), 8),
          z = if_else(location_type == "hospital",
                      round_half_up(((round_half_up(smr, 8) - 1)/round_half_up(st_err,8)), 8),
