@@ -63,7 +63,7 @@ simd_all <- bind_rows(simd_2020, simd_2016, simd_2012, simd_2009) %>%
 # Population lookups, combining both estimations and projections
 pop_est  <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Estimates/",
-  "HB2019_pop_est_1981_2023.rds")) %>% # Updated?
+  "HB2019_pop_est_1981_2024.rds")) %>% # Updated?
   clean_names() %>%
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
