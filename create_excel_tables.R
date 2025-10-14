@@ -83,7 +83,7 @@ writeData(table1, "Raw Data", smr_data, startCol = 2)
 sheetVisibility(table1)[4:6] = FALSE
 
 # Output Table 1
-save_file(table1, "Table1-HSMR", "output", "xlsx", dev = F, overwrite = T)
+save_file(table1, "Table1-HSMR", "output", "xlsx", dev = F, overwrite = F)
 
 # Load in Table 2 template
 table2 <- loadWorkbook(here("reference_files",
@@ -119,7 +119,7 @@ sheetVisibility(table2)[9:11] = FALSE
 
 # Output Table 2
 save_file(table2, "Table2-Crude-Mortality-subgroups", "output", "xlsx",
-          dev = F, overwrite = T)
+          dev = F, overwrite = F)
 
 # Load in Table 3 template
 table3 <- loadWorkbook(here("reference_files",
@@ -136,12 +136,12 @@ sheetVisibility(table3)[4] = FALSE
 
 # Output Table 3
 save_file(table3, "Table3-Crude-Mortality-population-based-and-30-day-from-discharge",
-          "output", "xlsx", dev = F, overwrite = T)
+          "output", "xlsx", dev = F, overwrite = F)
 
 # Load in Hopsital Intelligence Dashboard file
 hid_data <- hsmr_hid(smr_data, trend_data, end_date)
 
-save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = T)
+save_file(hid_data, "QHSMR_HID", "output", "csv", dev = F, overwrite = F)
 
 ### SECTION 3 - CREATE OPEN DATA ----
 
@@ -227,7 +227,7 @@ metadata %<>%
                                                      ". Also includes analyses of crude mortality trends over the longer term from July to September 2016 to ", qtr(qtr_start), "."),
                      TRUE ~ `Completed fields`))
 
-save_file(metadata, "metadata", "open_data", "csv", dev = F, overwrite = T)
+save_file(metadata, "metadata", "open_data", "csv", dev = F, overwrite = F)
 
 
 ### END OF SCRIPT ###
