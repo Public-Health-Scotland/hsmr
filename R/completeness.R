@@ -127,19 +127,19 @@ completeness <- function(quarter = c("previous", "current"),
   # Calculate the final month in the most recent quarter, to ensure that the
   # function can only be used on the two most recent quarters
   
-  # 1. Get the last two column names
+  # Get the last two column names
   last_month <- colnames(comp)[2:3]  # e.g., "jan_mar_2025", "apr_jun_2025"
   
-  # 2. Split each by "_"
+  # Split each by "_"
   last_month_split <- stringr::str_split(last_month, "_")
   
-  # 3. For each, take the last month and year, and combine
+  # For each, take the last month and year, and combine
   last_month_str <- mapply(function(x) paste0(x[2], x[3]), last_month_split)
   
-  # 4. Convert to yearmon and format
+  # Convert to yearmon and format
   last_month_fmt <- format(zoo::as.yearmon(last_month_str, "%b%Y"), "%B %Y")
   
-  # 5. Take the last one (most recent quarter)
+  # Take the last one (most recent quarter)
   last_month <- dplyr::last(last_month_fmt)
 
   if (qtr_end(first_day = first_day,
