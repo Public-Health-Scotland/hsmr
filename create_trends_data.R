@@ -73,9 +73,11 @@ pop_est  <- readRDS(paste0(plat_filepath,
 
 pop_proj <- readRDS(paste0(plat_filepath,
   "lookups/Unicode/Populations/Projections/",
-  "HB2019_pop_proj_2018_2043.rds")) %>%
+  "HB2019_pop_proj_2022_2047.rds")) %>%
   clean_names() %>%
-  filter(year >= 2024) %>% # Change this if the pop estimate file gets updated above line 66
+  filter(!year %in% pop_est$year) %>% # excludes every year appears in the pop_est 
+                                      # file above so no double counting the population
+  mutate(year = as.numeric(year)) %>%  # Convert year to numeric
   group_by(year, hb2019) %>%
   summarise(pop = sum(pop)) %>%
   ungroup() %>%  rename(hb2014 =hb2019)
