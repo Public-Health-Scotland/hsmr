@@ -139,9 +139,11 @@ smr_model <- function(smr01, base_start, base_end, index = "Q", save_model){
                  pub_day,
                  "/diagnostics/",
                  "training_data.rds"))
-  #Re-level the Primary Diagnosis Group to 52
   
-  data_lr$pdiag_grp <- relevel(factor(data_lr$pdiag_grp), ref = 52)
+  #Re-level the Primary Diagnosis Group to 52 and Male
+  
+  data_lr$pdiag_grp <- relevel(factor(data_lr$pdiag_grp), ref = 52,
+                               factor(data_lr$sex), ref =1)
   
   # Run logistic regression
   risk_model <- glm(cbind(x, n - x) ~ n_emerg + comorbs_sum +
