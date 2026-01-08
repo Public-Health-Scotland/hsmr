@@ -69,7 +69,7 @@ completeness <- function(quarter = c("previous", "current"),
 
   # Note that this file can occasionally change when a new quarter's data is
   # added, which will cause the function to error if not updated
-  httr::GET(url = "https://publichealthscotland.scot/media/26762/2025-06-12-smr_estimates.xlsx",
+  httr::GET(url = "https://publichealthscotland.scot/media/34053/2025-09-11_smr_estimates.xlsx",
             httr::write_disk(tmp))
   
   
@@ -126,10 +126,21 @@ completeness <- function(quarter = c("previous", "current"),
 
   # Calculate the final month in the most recent quarter, to ensure that the
   # function can only be used on the two most recent quarters
-  last_month <- colnames(comp)[2:3]
-  last_month <- unlist(stringr::str_split(last_month, "_"))
-  last_month <- format(zoo::as.yearmon(last_month, "%b%y"), "%B %Y")
-  last_month <- dplyr::last(last_month)
+  
+  # Get the last two column names
+  last_month <- colnames(comp)[2:3]  # e.g., "jan_mar_2025", "apr_jun_2025"
+  
+  # Split each by "_"
+  last_month_split <- stringr::str_split(last_month, "_")
+  
+  # For each, take the last month and year, and combine
+  last_month_str <- mapply(function(x) paste0(x[2], x[3]), last_month_split)
+  
+  # Convert to yearmon and format
+  last_month_fmt <- format(zoo::as.yearmon(last_month_str, "%b%Y"), "%B %Y")
+  
+  # Take the last one (most recent quarter)
+  last_month <- dplyr::last(last_month_fmt)
 
   if (qtr_end(first_day = first_day,
                     quarter = "current") != last_month) {
