@@ -383,3 +383,69 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
   return(c(output_1, output_2,output_3))
 }
+
+
+
+
+# Clean Main Point Text Function
+clean_and_annotate_text <- function(smr_data, type) {
+  # Hospital names list
+  hospital_names <- c(
+    "Arran War Memorial Hospital", "University Hospital Crosshouse", "University Hospital Ayr",
+    "Borders General Hospital", "Lorn & Islands Hospital", "Inverclyde Royal Hospital",
+    "Royal Alexandra Hospital", "Golden Jubilee University National Hospital", "Victoria Hospital",
+    "Glasgow Royal Infirmary", "Queen Elizabeth University Hospital", "Caithness General Hospital",
+    "Raigmore Hospital", "Belford Hospital", "University Hospital Monklands", "University Hospital Hairmyres",
+    "University Hospital Wishaw", "Aberdeen Royal Infirmary", "Dr Gray's Hospital", "The Balfour",
+    "Western General Hospital", "St John's Hospital", "Royal Infirmary of Edinburgh at Little France",
+    "Ninewells Hospital", "Perth Royal Infirmary", "Stracathro Hospital", "Forth Valley Royal Hospital",
+    "Western Isles Hospital", "Galloway Community Hospital", "Dumfries & Galloway Royal Infirmary",
+    "Gilbert Bain Hospital"
+  )
+  
+  # Get text from funnel_text
+  text <- funnel_text(smr_data, type)[1]
+  
+  # Remove dynamic date range
+  text <- str_remove_all(text, "For the period\\s+[A-Za-z]+\\s+\\d{4}\\s+to\\s+[A-Za-z]+\\s+\\d{4}")
+  
+  # Trim spaces
+  text <- str_trim(text)
+  
+  # Remove trailing full stop
+  text <- str_remove(text, "\\.$")
+  
+  # Capitalize first alphabetic character
+  if (nchar(text) > 0) {
+    first_alpha <- regexpr("[A-Za-z]", text)
+    if (first_alpha > 0) {
+      substr(text, first_alpha, first_alpha) <- toupper(substr(text, first_alpha, first_alpha))
+    }
+  }
+  
+  # Check if any hospital name is mentioned
+  hospital_mentioned <- any(sapply(hospital_names, function(name) grepl(name, text, ignore.case = TRUE)))
+  
+  # Apply logic
+  if (text == "" || grepl("^\\s*$", text)) {
+    if (type == "above") {
+      text <- "None were identified as having more deaths than predicted."
+    } else {
+      text <- "None were recorded as having fewer deaths than predicted."
+    }
+  } else if (!hospital_mentioned) {
+    if (type == "above") {
+      text <- paste0(text, "; none were identified as having more deaths than predicted.")
+    } else {
+      text <- paste0(text, "; none were recorded as having fewer deaths than predicted.")
+    }
+  } else {
+    if (type == "above") {
+      text <- paste0(text, "; these were identified as having more deaths than predicted.")
+    } else {
+      text <- paste0(text, "; having recorded fewer deaths than predicted.")
+    }
+  }
+  
+  return(text)
+}
