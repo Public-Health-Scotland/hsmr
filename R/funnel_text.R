@@ -385,6 +385,34 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 }
 
 
+#' Clean and annotate funnel text
+#'
+#' @description
+#' Retrieves the first text string from above function `funnel_text(smr_data, type)`,
+#' cleans it (removes a dynamic date range, trims whitespace, drops any trailing
+#' full stop, and capitalises the first alphabetic character), then appends a
+#' clarifying clause depending on whether any known hospital names are mentioned
+#' and whether `type` indicates "above" (more deaths than predicted) or "below"
+#' (fewer deaths than predicted).
+#'
+#' @param smr_data A data object passed to `funnel_text()` (typically an SMR dataset).
+#' @param type A character scalar indicating the direction of interest:
+#'   `"above"` for more deaths than predicted, or `"below"` for fewer deaths than predicted.
+#'
+#' @details
+#' - The function removes a date range of the form
+#'   `For the period <Month> <Year> to <Month> <Year>`.
+#' - It ensures the first alphabetic character is uppercase without altering any
+#'   leading non-letter characters.
+#' - It checks for the presence of any of a predefined set of Scottish hospital names
+#'   (case-insensitive).
+#' - It then appends one of three messages:
+#'   * If the cleaned text is blank: a default message stating none were identified/recorded.
+#'   * If no hospital is mentioned: appends a clause stating none were identified/recorded.
+#'   * If one or more hospitals are mentioned: appends a clause confirming those were
+#'     identified/recorded relative to predictions.
+#'
+#' @return A length-1 character string containing the cleaned and annotated message.
 
 
 # Clean Main Point Text Function
