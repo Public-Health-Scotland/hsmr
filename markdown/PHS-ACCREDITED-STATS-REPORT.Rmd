@@ -557,12 +557,10 @@ table_list <- data.frame(c1, c2)
 
 ```{r quarterly process, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
 c1 <- c(months(pub_date(end_date, "current") - months(1)),
-        months(pub_date(end_date, "current")),
-        months(pub_date(end_date, "current") + months(1)))
+        months(pub_date(end_date, "current")))
 
 c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (", format(mit_available(end_date), "%d %B %Y"),")"),
-paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
-"Hospital Intelligence Dashboard released to Scottish Government’s Directorate for Health Performance and Delivery; Scottish Government and HIS briefed by PHS on analytical data issues and interpretation of the dashboard; dashboard presented to Scottish Government Health & Social Care Management Meeting.")
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."))
 
 q_process <- data.frame(c1, c2)
 
@@ -592,7 +590,7 @@ c1 <- c("**Patients**",
 c2 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
         "Deaths within 30 days of admission to an acute hospital (wherever they occur); In-hospital deaths occurring beyond 30-days are excluded.
 ",
-        "CCS group (primary diagnosis)/ Specialty (medical or surgical) / age / sex / admitted from / number and severity of prior morbidities in the previous (i) 12 months (ii) 5-years / number and severity of co-morbidities on admitting episode / number of emergency admissions in the previous 12 months / inpatient or day case / type of admission (elective / non-elective)/ deprivation")
+        "CCS group (primary diagnosis)/ Specialty (medical or surgical) / age / sex / admitted from / number and severity of prior morbidities in the previous 5-years / number and severity of co-morbidities on admitting episode / number of emergency admissions in the previous 12 months / inpatient or day case / type of admission (elective / non-elective)/ deprivation")
 
 c3 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
         "All deaths occurring in hospital; and deaths within 30 days of discharge from acute hospital (wherever they occur)",
@@ -951,7 +949,8 @@ In Scotland, the HSMR has focussed only on deaths within 30-days of admission (b
 The table below shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
 <Div custom-style = "Table or chart caption">Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
-```{r kable_table_eng_comp, echo = FALSE}
+
+```{r kable_table_eng_comp, echo=FALSE}
 
 knitr::kable(table_eng_comp, col.names = c("**Key Comparison Parameters**","**Scotland (HSMR)**",
 "**England and Wales Summary Hospital-level Mortality Indicator (SHMI)**",
@@ -961,7 +960,7 @@ knitr::kable(table_eng_comp, col.names = c("**Key Comparison Parameters**","**Sc
 <Div custom-style = "Heading 2 page break">Appendix 2 – Quarterly process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
-There are three key stages to this quarterly process which include other indicators of quality. 
+There are two key stages to this quarterly process which include other indicators of quality. 
 
 **Stage One: HSMR Management Information Tool**
 
@@ -970,10 +969,6 @@ The HSMR Management Information Tool is produced and shared with the NHS Boards 
 **Stage Two: Official Statistics publication of HSMR for Scotland **
 
 The first Official Statistics release of the information was a set of abbreviated summary tables in June 2010. The publication has since been expanded to include more substantial commentary and context, including stratified patterns of mortality at Scotland level and longer-term trends.
-
-**Stage Three: Hospital Intelligence Dashboard**  
-
-The Hospital Intelligence Dashboard is a management information product commissioned by the Scottish Government. The dashboard incorporates HSMR with a series of other indicators: readmissions, length of stay, hospital acquired infection rates, A&E waiting times and patient experience. A major benefit of this dashboard is that it allows an overview of patient care so that governance processes can be based on more information than HSMR alone.  
 
 Throughout the quarterly cycle, interaction with NHS Boards is of paramount importance. There has been dialogue with the majority of NHS Boards since HSMRs were first released. This has been through a number of routes, including SPSP learning sessions, and the QI Hub.
 
