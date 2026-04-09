@@ -65,13 +65,23 @@ completeness <- function(quarter = c("previous", "current"),
   quarter <- match.arg(quarter)
   level <- match.arg(level)
 
-  tmp <- tempfile(fileext = ".xlsx")
 
-  # Note that this file can occasionally change when a new quarter's data is
-  # added, which will cause the function to error if not updated
-  httr::GET(url = "https://publichealthscotland.scot/media/34053/2025-09-11_smr_estimates.xlsx",
-            httr::write_disk(tmp))
+ # Extract SMR Completeness from  PHS webpage
   
+  #Define the webpage
+  page_url <- "https://publichealthscotland.scot/publications/scottish-morbidity-records-smr-completeness-estimates/"
+  #Scrape the page and find the Excel link
+  page <- read_html(page_url)
+  #Look for links ending with .xlsx
+  excel_link <- page %>%
+    html_nodes("a") %>%
+    html_attr("href") %>%
+    grep("\\.xlsx$", ., value = TRUE)
+  #Construct full URL (if relative)
+  excel_url <- paste0("https://publichealthscotland.scot", excel_link)
+  #Download the file
+  tmp <- tempfile(fileext = ".xlsx")
+  httr::GET(url = excel_url, httr::write_disk(tmp))
   
 
   # Note that the range is based on B29 being "NHS Board" and B47 being "All

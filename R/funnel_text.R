@@ -383,3 +383,97 @@ funnel_text <- function(smr_data, indicator = c("above", "below","both")){
 
   return(c(output_1, output_2,output_3))
 }
+
+
+#' Clean and annotate funnel text
+#'
+#' @description
+#' Retrieves the first text string from above function `funnel_text(smr_data, type)`,
+#' cleans it (removes a dynamic date range, trims whitespace, drops any trailing
+#' full stop, and capitalises the first alphabetic character), then appends a
+#' clarifying clause depending on whether any known hospital names are mentioned
+#' and whether `type` indicates "above" (more deaths than predicted) or "below"
+#' (fewer deaths than predicted).
+#'
+#' @param smr_data A data object passed to `funnel_text()` (typically an SMR dataset).
+#' @param type A character scalar indicating the direction of interest:
+#'   `"above"` for more deaths than predicted, or `"below"` for fewer deaths than predicted.
+#'
+#' @details
+#' - The function removes a date range of the form
+#'   `For the period <Month> <Year> to <Month> <Year>`.
+#' - It ensures the first alphabetic character is uppercase without altering any
+#'   leading non-letter characters.
+#' - It checks for the presence of any of a predefined set of Scottish hospital names
+#'   (case-insensitive).
+#' - It then appends one of three messages:
+#'   * If the cleaned text is blank: a default message stating none were identified/recorded.
+#'   * If no hospital is mentioned: appends a clause stating none were identified/recorded.
+#'   * If one or more hospitals are mentioned: appends a clause confirming those were
+#'     identified/recorded relative to predictions.
+#'
+#' @return A length-1 character string containing the cleaned and annotated message.
+
+
+# Clean Main Point Text Function
+clean_and_annotate_text <- function(smr_data, type) {
+  # Hospital names list
+  hospital_names <- c(
+    "Arran War Memorial Hospital", "University Hospital Crosshouse", "University Hospital Ayr",
+    "Borders General Hospital", "Lorn & Islands Hospital", "Inverclyde Royal Hospital",
+    "Royal Alexandra Hospital", "Golden Jubilee University National Hospital", "Victoria Hospital",
+    "Glasgow Royal Infirmary", "Queen Elizabeth University Hospital", "Caithness General Hospital",
+    "Raigmore Hospital", "Belford Hospital", "University Hospital Monklands", "University Hospital Hairmyres",
+    "University Hospital Wishaw", "Aberdeen Royal Infirmary", "Dr Gray's Hospital", "The Balfour",
+    "Western General Hospital", "St John's Hospital", "Royal Infirmary of Edinburgh at Little France",
+    "Ninewells Hospital", "Perth Royal Infirmary", "Stracathro Hospital", "Forth Valley Royal Hospital",
+    "Western Isles Hospital", "Galloway Community Hospital", "Dumfries & Galloway Royal Infirmary",
+    "Gilbert Bain Hospital"
+  )
+  
+  # Get text from funnel_text
+  text <- funnel_text(smr_data, type)[1]
+  
+  # Remove dynamic date range
+  text <- str_remove_all(text, "For the period\\s+[A-Za-z]+\\s+\\d{4}\\s+to\\s+[A-Za-z]+\\s+\\d{4}")
+  
+  # Trim spaces
+  text <- str_trim(text)
+  
+  # Remove trailing full stop
+  text <- str_remove(text, "\\.$")
+  
+  # Capitalize first alphabetic character
+  if (nchar(text) > 0) {
+    first_alpha <- regexpr("[A-Za-z]", text)
+    if (first_alpha > 0) {
+      substr(text, first_alpha, first_alpha) <- toupper(substr(text, first_alpha, first_alpha))
+    }
+  }
+  
+  # Check if any hospital name is mentioned
+  hospital_mentioned <- any(sapply(hospital_names, function(name) grepl(name, text, ignore.case = TRUE)))
+  
+  # Apply logic
+  if (text == "" || grepl("^\\s*$", text)) {
+    if (type == "above") {
+      text <- "None were identified as having more deaths than predicted."
+    } else {
+      text <- "None were recorded as having fewer deaths than predicted."
+    }
+  } else if (!hospital_mentioned) {
+    if (type == "above") {
+      text <- paste0(text, "; none were identified as having more deaths than predicted.")
+    } else {
+      text <- paste0(text, "; none were recorded as having fewer deaths than predicted.")
+    }
+  } else {
+    if (type == "above") {
+      text <- paste0(text, "; these were identified as having more deaths than predicted.")
+    } else {
+      text <- paste0(text, "; having recorded fewer deaths than predicted.")
+    }
+  }
+  
+  return(text)
+}

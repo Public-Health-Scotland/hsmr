@@ -557,12 +557,10 @@ table_list <- data.frame(c1, c2)
 
 ```{r quarterly process, echo = FALSE, message = FALSE, warning = FALSE, error = FALSE}
 c1 <- c(months(pub_date(end_date, "current") - months(1)),
-        months(pub_date(end_date, "current")),
-        months(pub_date(end_date, "current") + months(1)))
+        months(pub_date(end_date, "current")))
 
 c2 <- c(paste0("Source database refreshed (", format(submission_deadline(end_date), "%d %B %Y"),");	Analytical work begins, involving extraction of patient observations with outcome, mapping of predictions from baseline model, calculation of observed & predicted deaths at Hospital-level calculated by aggregating outcomes and predictions, import to reporting template, internal QA and data scrutiny (data completeness); Management Information Tool made available to NHS Boards (", format(mit_available(end_date), "%d %B %Y"),")"),
-paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."),
-"Hospital Intelligence Dashboard released to Scottish Government’s Directorate for Health Performance and Delivery; Scottish Government and HIS briefed by PHS on analytical data issues and interpretation of the dashboard; dashboard presented to Scottish Government Health & Social Care Management Meeting.")
+paste0("Official statistics report production cycle commences; Scottish Government and NHS Boards receive standard pre-release access (", format(pub_date(end_date, "current") - days(7), "%d %B %Y"),");	PHS briefs Scottish Government on content of report (", format(pub_date(end_date, "current") - days(6), "%d %B %Y"),"); Report published on PHS website at 09:30 on Tuesday ", format(pub_date(end_date, "current"), "%d %B %Y"),"."))
 
 q_process <- data.frame(c1, c2)
 
@@ -592,7 +590,7 @@ c1 <- c("**Patients**",
 c2 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
         "Deaths within 30 days of admission to an acute hospital (wherever they occur); In-hospital deaths occurring beyond 30-days are excluded.
 ",
-        "CCS group (primary diagnosis)/ Specialty (medical or surgical) / age / sex / admitted from / number and severity of prior morbidities in the previous (i) 12 months (ii) 5-years / number and severity of co-morbidities on admitting episode / number of emergency admissions in the previous 12 months / inpatient or day case / type of admission (elective / non-elective)/ deprivation")
+        "CCS group (primary diagnosis)/ Specialty (medical or surgical) / age / sex / admitted from / number and severity of prior morbidities in the previous 5-years / number and severity of co-morbidities on admitting episode / number of emergency admissions in the previous 12 months / inpatient or day case / type of admission (elective / non-elective)/ deprivation")
 
 c3 <- c("One patient observation per spell attributed to the last acute trust prior to death.",
         "All deaths occurring in hospital; and deaths within 30 days of discharge from acute hospital (wherever they occur)",
@@ -612,24 +610,14 @@ This report by Public Health Scotland (PHS) presents Hospital Standardised Morta
 
 The mix of patients seen varies between hospitals, and the mortality rate may be higher or lower at a hospital for many reasons; the patients seen, for example, may be more seriously ill than average. HSMRs therefore take account of some of the factors known to affect the risk of death, so that comparisons between individual hospitals and Scotland are made on a comparable basis.
 
-Quarterly HSMR publications have been released since 2009, with periodic reviews of the methodology. The most recent changes were made in August 2019, ensuring that the methodology continues to be robust and that comparisons which are made against the national average continue to be appropriate and relevant for each point in time. As a result, **HSMRs published from August 2019 onwards cannot be compared to prior releases using a different methodology. **
+Quarterly HSMR publications have been released since 2009, with periodic reviews of the methodology. 
+In August 2019, there was significant change to methodology and any data **published from August 2019 onwards cannot be compared to prior releases using a different methodology. ** The HSMR methodology had been updated to ensure the diagnosis ICD-10 codes for COVID-19, U07.1 to U07.7, are included in the model. For more information please refer to the [HSMR COVID-19 Methodology Update paper ](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-supporting-resources/).
+
+During the pandemic, hospitals have had to adjust their normal ways of working to react to this healthcare emergency. As a result, there will be changes in the volume of activity in some of the groups used to calculate the HSMRs, for example less elective admissions. Any changes in crude mortality trends and HSMRs should be considered in this context.
+
+The most recent review took place in August 2025 and has been reflected in the methodology since the November 2025 publication, ensuring that the performance of the HSMR model continues to be robust. These changes are relatively minor and mainly reflect the best practice in statistical modelling and clinical relevance. Therefore, no changes are expected to the crude mortality rates or to the volume of activity which is used to calculate the HSMRs. For more information, please refer to [2025 HSMR Model Review](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-2025/) and [2025 Technical Document](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-2025/).
 
 This release provides HSMRs for the period `r yr(end_date)`, using validated hospital SMR01 returns as at `r format(submission_deadline(end_date), "%d %B %Y")`. This information has previously been released to NHS Boards as management information. Additional information and commentary on patterns of mortality by key demographic factors is included for the period `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")` so that changes over time can be evaluated. There is also extensive information on the development of the measure and how it compares to similar information used in other parts of the UK.
-
-<Div custom-style = "Heading 1 alt">COVID-19</div>
-Since the start of the COVID-19 outbreak, Public Health Scotland (PHS) has been working closely with
-the Scottish Government and health and care colleagues to support the surveillance and
-monitoring of COVID-19 amongst the population. There is a large amount of data being
-regularly published regarding COVID-19 (for example, [PHS weekly reports, including wider impacts analysis](https://www.publichealthscotland.scot/our-areas-of-work/covid-19/covid-19-data-and-intelligence/); [Coronavirus in Scotland – Scottish Government (external website)](https://www.gov.scot/coronavirus-covid-19/) and [Deaths involving coronavirus in Scotland – National Records of Scotland (external website)](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/general-publications/weekly-and-monthly-data-on-births-and-deaths/deaths-involving-coronavirus-covid-19-in-scotland)).
-
-The HSMR methodology has been updated to ensure the diagnosis ICD-10 codes for
-COVID-19, U07.1 to U07.7, are included in the model. For more
-information please refer to the [HSMR COVID-19 Methodology Update paper ](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-supporting-resources/).
-
-During the pandemic, hospitals have had to adjust their normal ways of working to react to
-this healthcare emergency. As a result, there will be changes in the volume
-of activity in some of the groups used to calculate the HSMRs, for example less elective admissions.  Any changes in crude mortality
-trends and HSMRs should be considered in this context.
 
 <Div custom-style = "Heading 1 alt">Hospital Standardised Mortality Ratios</div>
 Hospital Standardised Mortality Ratios adjust death data, also known as mortality data, to take account of some of the factors known to affect the underlying risk of death. The adjusted mortality at individual hospitals can then be compared to the Scottish average. This approach provides a better starting point for investigating hospital mortality than crude mortality rates, which do not provide a fair comparison: the mix of patients admitted to different hospitals likely have a different underlying risk of death. Note that a mix of patients is called a case mix in this report.
@@ -668,18 +656,11 @@ Safety is a priority ambition for the **[Healthcare Quality Strategy for NHSScot
 
 **NHS Boards** use these statistics to reflect on the quality of patient care, monitor local hospital mortality, and report on their progress. A considerable amount of activity is being carried out in individual hospitals nationwide to use this tool to reflect on clinical practice and facilitate improvements in patient care.  
 
-In addition, a guide for NHS Boards has been developed **[‘Using the Hospital Standardised Mortality Ratio to help improve patient care’ (external website)](http://www.healthcareimprovementscotland.org/his/idoc.ashx?docid=712b01d0-1cbc-4c2f-8c9e-bb3bf4086a16&version=-1)**.
-To help local users better understand their data, and to encourage a sense of ownership of the information, an infrastructure has been put in place in partnership between PHS and Healthcare Improvement Scotland, offering: 
-
-*	sub-group analysis 
-*	audit of specific cases
-*	our assistance in interpretation of the national statistics and local intelligence
-
 <Div custom-style = "Heading 1 alt">Main points</div>
 
 `r funnel_text(smr_data, "above")[1]`
 `r funnel_text(smr_data, "below")[1]`
-* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. However, larger increases occurred during the COVID-19 epidemic in Scotland, with unadjusted hospital mortality reaching 5.4% during the first wave, 4.4% during the second wave. Since the quarter April to June 2021, the crude mortality rate has been between 3.2% to 4.0%, showing seasonal variation.  
+* Unadjusted hospital mortality remained relatively stable at between 2.6% and 3.3% over the majority of the five-year period from `r format(start_date_trends, "%B %Y")` to `r format(end_date, "%B %Y")`. The relatively small variation shows clear seasonal patterns with increases in mortality during the winter months. It is important to note that large increases occurred during the COVID-19 pandemic in Scotland, with crude mortality rates reaching 5.4% during the first wave, 4.4% during the second wave. 
 *	Non-elective admissions consistently account for the largest proportion of deaths within 30-days of admission.
 *	Patients from the least deprived areas of Scotland consistently have lower levels of crude 30-day mortality than patients from more deprived areas. 
 *	Around 4 in 5 deaths within 30-days of admission take place in hospital while the remaining deaths take place in the community.
@@ -788,6 +769,8 @@ HSMR data are provided by PHS to allow an individual hospital to monitor its mor
 Individual hospital level data for any combined sites are available on request.
 
 <Div custom-style = "Heading 1 alt">Refinements to HSMR methodology</div>
+<Div custom-style = "Heading 2 less spacing">2019 Model Review</div>
+
 Since the HSMR statistics were first released in 2009, the model methodology has been periodically reviewed to ensure that it continues to be robust and that comparisons against the national average continue to be appropriate and relevant for each point in time.
 
 Any improvements had to be balanced against the overall policy strategy and purpose of the HSMR which, from 2016, was to monitor progress towards the Scottish Patient Safety Programme (SPSP) aim of reducing mortality by a further 10% by end December 2018. The end of this phase of the SPSP provided the opportunity to review the model methodology and subsequently update/refine it. A previous significant review also took place in 2015/16.
@@ -800,6 +783,28 @@ The main changes made to the HSMR methodology from August 2019 were:
 
 More details of the review work and recommendations are available in the [HSMR Review Paper ](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-supporting-resources/). A [Technical Document ](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-supporting-resources/) is also available that describes the current HSMR methodology in more detail. [Interpretation Guidance and Frequently Asked Questions](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-supporting-resources/) documents answer questions on the differences between the previous and current methodologies.
 
+<Div custom-style = "Heading 2 less spacing">2025 Model Review</div>
+As a part of this publication, we are using the updated 2025 HSMR Model. The main points of the HSMR model changes and considerations are as follows:
+
+**Changes**
+
+*	**Comorbidity weighting index changed from Charlson to the Elixhauser Comorbidity Index:** This index marginally improves the model and will align with best practice.
+
+*	**Prior morbidities within 1 year removed as a predictor from the model:** The two prior morbidities predictors - within 1 year and within 5 years - prior to the last continuous inpatient stay (CIS), provide similar information in the model. Therefore, to ensure no statistical overfitting in the model, the factor prior morbidities within 1 year will be removed.Prior morbidity within 5 years will continue to be included due to its clinical usefulness for providing context for patient's longer term medical history.
+
+* **Primary Diagnosis Groupings** have been updated from 141 groups to 143, in line with NHS England's SHMI indicator recommendations.
+
+* **Refactoring the model to more representative and clinically significant groups - Sex and primary diagnosis groups (PDGs):** In the model, although there is no statistical difference from rebasing the variables in the model, for best practice, we have decided to use more representative and clinically significant groups than the default currently in use. 
+
+**Considerations**
+
+* **Sex retained as a predictor in the model:** Although sex was found to have no statistically significant impact on model performance, it will remain in the model to support clinical interpretation and relevance.
+
+* **Ethnicity data is not appropriate to include in the model:** PHS are periodically reviewing the quality and completeness of the data and aim to trial its inclusion as a part of a crude mortality analysis by ethnicity in a future model review. 
+
+* **Continue to use the first episode of a patient's last Continuous Inpatient Stay (CIS):** We considered to use the last episode instead of first, however decided to continue to use first episode as this ensures that we continue to capture the whole patient journey and initial diagnosis.
+
+More details of the review work and recommendations are available in the [2025 HSMR Model Review](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-2025/). A [Technical Document](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-2025/) is also available that describes the current HSMR methodology in more detail. [Interpretation Guidance and Frequently Asked Questions](https://publichealthscotland.scot/publications/hospital-standardised-mortality-ratios-hsmr-quick-access-guides/) documents answer questions on the differences between the previous and current methodologies.
 
 <Div custom-style = "Heading 1 alt">Glossary</div>
 <Div custom-style = "Glossary Item Name">HSMR</div>
@@ -824,16 +829,8 @@ More details of the review work and recommendations are available in the [HSMR R
 **Cemre Su Lode, Senior Information Analyst**
 Quality Indicators
 
--- **Paul Ogharanduku, Senior Information Analyst**  
+**Paul Ogharanduku, Senior Information Analyst**  
 Quality Indicators 
-
-<!--** Tortora Brayda, Senior Information Analyst** 
-Quality Indicators-->
-
-<!--**Echo Lian, Senior Information Analyst**
-Quality Indicators-->
-
-
 
 [phs.QualityIndicators@phs.scot](mailto:phs.QualityIndicators@phs.scot)
 
@@ -952,9 +949,10 @@ In Scotland, the HSMR has focussed only on deaths within 30-days of admission (b
 The table below shows a summary of some of the key comparisons between the English and Scottish approaches. 
 
 <Div custom-style = "Table or chart caption">Key comparisons between the favoured methods for hospital mortality indicators in Scotland and England.</div>
-```{r kable_table_eng_comp, echo = FALSE}
 
-knitr::kable(table_eng_comp, col.names = c("","**Scotland (HSMR)**",
+```{r kable_table_eng_comp, echo=FALSE}
+
+knitr::kable(table_eng_comp, col.names = c("**Key Comparison Parameters**","**Scotland (HSMR)**",
 "**England and Wales Summary Hospital-level Mortality Indicator (SHMI)**",
 "**England and Wales Dr Foster (HSMR)**"))
 ```
@@ -962,7 +960,7 @@ knitr::kable(table_eng_comp, col.names = c("","**Scotland (HSMR)**",
 <Div custom-style = "Heading 2 page break">Appendix 2 – Quarterly process </div>
 Since the first release of quarterly HSMR statistics to NHS Boards across Scotland in December 2009, a pattern of analysis and reporting coupled with cross agency governance procedures has been established.  
 
-There are three key stages to this quarterly process which include other indicators of quality. 
+There are two key stages to this quarterly process which include other indicators of quality. 
 
 **Stage One: HSMR Management Information Tool**
 
@@ -971,10 +969,6 @@ The HSMR Management Information Tool is produced and shared with the NHS Boards 
 **Stage Two: Official Statistics publication of HSMR for Scotland **
 
 The first Official Statistics release of the information was a set of abbreviated summary tables in June 2010. The publication has since been expanded to include more substantial commentary and context, including stratified patterns of mortality at Scotland level and longer-term trends.
-
-**Stage Three: Hospital Intelligence Dashboard**  
-
-The Hospital Intelligence Dashboard is a management information product commissioned by the Scottish Government. The dashboard incorporates HSMR with a series of other indicators: readmissions, length of stay, hospital acquired infection rates, A&E waiting times and patient experience. A major benefit of this dashboard is that it allows an overview of patient care so that governance processes can be based on more information than HSMR alone.  
 
 Throughout the quarterly cycle, interaction with NHS Boards is of paramount importance. There has been dialogue with the majority of NHS Boards since HSMRs were first released. This has been through a number of routes, including SPSP learning sessions, and the QI Hub.
 

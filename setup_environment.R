@@ -38,6 +38,8 @@ library(car)           # For regression QA funcs # version 3.1-2 required
 library(pROC)          # For ROC/AUC
 library(comorbidity)   # For calculating elixhauser comorbidity weightings
 library(data.table)    # For working with large dataset in pmorbs calculations
+library(rvest)         # For scraping and parsing HTML content from the webpage to find the latest Excel file link
+library(httr)          # For performing the HTTP request and downloading the Excel file programmatically
 
 # set working directory
 setwd(here::here())
@@ -83,7 +85,7 @@ Sys.umask("006")
 # ADVANCE PREVIOUS PUBLICATION DATE BY THREE MONTHS.
 # For example, the 8 August 2023 publication had an end_date of 31032023
 
-end_date <- lubridate::dmy(30062025) 
+end_date <- lubridate::dmy(30092025) 
 
 # 1) start_date is the beginning of the baseline period/extract window 
 #   (one day less than 3 years prior to end_date)
